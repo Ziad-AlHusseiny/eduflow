@@ -10,8 +10,7 @@
 
 16 دورة · 303 درسًا مكتوبًا · 297 تمرينًا عمليًا · 1,630 سؤالًا · يعمل دون إنترنت
 
-[![افتح EduFlow](https://img.shields.io/badge/%D8%A7%D9%81%D8%AA%D8%AD_EduFlow-7c3aed?style=for-the-badge)](https://eduflow-lf-2.vercel.app/ar)
-[![English](https://img.shields.io/badge/English-5b21b6?style=for-the-badge)](https://eduflow-lf-2.vercel.app)
+### [افتح EduFlow بالعربية ←](https://eduflow-lf-2.vercel.app/ar)
 
 [Read this in English](README.md)
 

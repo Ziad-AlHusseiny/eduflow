@@ -9,13 +9,13 @@
 16 courses · 303 written lessons · 297 hands-on exercises · 1,630 quiz questions · works offline
 
 [![Open EduFlow](https://img.shields.io/badge/Open_EduFlow-7c3aed?style=for-the-badge&logo=googlechrome&logoColor=white)](https://eduflow-lf-2.vercel.app)
-[![بالعربية](https://img.shields.io/badge/%D8%A8%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9-5b21b6?style=for-the-badge)](https://eduflow-lf-2.vercel.app/ar)
+[![Open in Arabic](https://img.shields.io/badge/Open_in_Arabic-5b21b6?style=for-the-badge)](https://eduflow-lf-2.vercel.app/ar)
 
 ![React 19](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)
 ![Vite 7](https://img.shields.io/badge/Vite-7-646cff?logo=vite&logoColor=white)
 ![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06b6d4?logo=tailwindcss&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-offline-5a0fc8?logo=pwa&logoColor=white)
-![English · العربية](https://img.shields.io/badge/English_·_العربية-RTL-0f766e)
+![English + Arabic](https://img.shields.io/badge/English_+_Arabic-RTL-0f766e)
 ![No sign-up](https://img.shields.io/badge/no_sign--up-no_tracking-16a34a)
 
 [Read this in Arabic · اقرأ بالعربية](README.ar.md)
