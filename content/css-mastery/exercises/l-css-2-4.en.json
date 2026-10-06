@@ -1,0 +1,18 @@
+{
+  "title": "Size the card from its content",
+  "prompt": "The checks resize `.wrap` between 220px and 1000px. Without media queries:\n\n1. Make `.abstract` at most **40ch** wide, but never wider than the card's content box.\n2. Make the block-level `.badge` hug its text instead of stretching (keep `display: block`).\n3. Give `.session-card` padding of **4%** of the wrapper's width, never less than **12px** and never more than **32px**.",
+  "hints": [
+    "Each task is one declaration. Think: ceiling, shrink-wrap, range.",
+    "`min()` acts as a ceiling, a keyword makes a block hug its content, and `clamp()` takes three values.",
+    "`.abstract { width: min(100%, 40ch); }`, `.badge { width: fit-content; }`, `.session-card { padding: clamp(12px, 4%, 32px); }`."
+  ],
+  "explanation": "`width: min(100%, 40ch)` resolves to whichever is smaller, so the abstract stops at 40ch in a wide card and shrinks to the content box in a narrow one, where a plain `40ch` would overflow. `fit-content` sizes the badge to its max-content width, capped at the space available, while it stays a block. `clamp(12px, 4%, 32px)` returns 4% of the containing block's width (20px at 500px), but never drops below 12px or rises above 32px, so one declaration replaces two breakpoints.",
+  "checks": {
+    "abstract-capped": "In a wide card, the abstract is 40ch wide",
+    "abstract-fits-narrow": "In a narrow card, the abstract doesn't overflow",
+    "badge-hugs": "The badge hugs its text and stays a block",
+    "padding-min": "Padding never drops below 12px",
+    "padding-fluid": "Padding is 4% of the width in between",
+    "padding-max": "Padding never exceeds 32px"
+  }
+}

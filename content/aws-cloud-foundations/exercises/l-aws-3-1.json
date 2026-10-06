@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["spot-batch", "sp-steady", "lambda-long", "ondemand-trial", "spot-db", "ec2-idle-api"], "correct": ["spot-batch", "sp-steady", "ondemand-trial"] }

@@ -1,0 +1,18 @@
+{
+  "title": "Name the areas, let the speakers flow",
+  "prompt": "The page is fixed at 860px for this exercise.\n\n1. Give `.page` a `grid-template-areas` layout: `header` across both columns on the first row, then `filters` and `main` side by side. Assign `.site-header`, `.filters` and `.speakers` to those areas.\n2. Replace the speakers' fixed `repeat(3, 1fr)` with columns that are **at least 180px**, as many as fit, and that **stretch to fill the row** when there are only a few speakers.\n3. Make the `.featured` speaker span the full row.\n\nThe checks resize the page and hide some speakers to see how your grid reacts.",
+  "hints": [
+    "Each string in `grid-template-areas` is one row; repeat a name to span columns.",
+    "For the speakers you want `repeat()` with a keyword that collapses empty tracks, and `minmax()` with 180px as the minimum.",
+    "`grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));` and `.speaker.featured { grid-column: 1 / -1; }`."
+  ],
+  "explanation": "`grid-template-areas` describes the layout as rows of names; `header header` spans both columns and `filters main` puts the two side by side, and `grid-area` drops each element into its slot. For the speakers, `minmax(180px, 1fr)` sets each column's range and `repeat(auto-fit, …)` creates as many as fit: three in the 640px main column, two when the page shrinks. With only two speakers visible, `auto-fit` collapses the empty tracks so the cards stretch to half the row each; `auto-fill` would have left them narrow. `grid-column: 1 / -1` runs the keynote from the first grid line to the last, whatever the column count.",
+  "checks": {
+    "uses-areas": "The page uses grid-template-areas",
+    "header-spans": "The header spans the top; filters sit left of the speakers",
+    "three-columns": "The speakers form three columns at this width",
+    "featured-spans": "The featured speaker spans the full row",
+    "narrow-two-columns": "A narrower page gets two columns",
+    "few-items-stretch": "With two speakers, they stretch to fill the row"
+  }
+}

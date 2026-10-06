@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["crash-logs", "pending-describe", "pull-logs", "notready-probe", "crash-delete"],
+  "correct": ["crash-logs", "pending-describe", "notready-probe"]
+}

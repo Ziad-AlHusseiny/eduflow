@@ -1,0 +1,20 @@
+{
+  "title": "انشر الموقع الثابت",
+  "prompt": "رتّب خطوات أول عملية نشر للواجهة الأمامية لـ Lantern في الإنتاج ترتيبًا يعمل. يبقى الـ bucket خاصًّا، ولا يُقدَّم الموقع إلا عبر CloudFront على `https://lantern.example`. أنهِ أعمال البناء وS3 أولًا، ثم انتقل إلى الشهادة وCloudFront وDNS.",
+  "hints": [
+    "لا يمكنك رفع ملفات لم تبنِها، ولا الرفع إلى bucket غير موجود.",
+    "يحتاج الـ distribution إلى الشهادة عندما تربط به النطاق المخصّص، وتحتاج سياسة الـ bucket إلى ARN الـ distribution.",
+    "يأتي DNS أخيرًا قبل الاختبار، كي لا يصل الزوّار أبدًا إلى distribution نصف مُعَدّ."
+  ],
+  "explanation": "ابنِ أولًا كي يوجد ما ترفعه، ثم أنشئ الـ bucket الخاص وزامن الملفات مع ترويسات الـ cache الخاصة بها. يجب أن توجد الشهادة (وأن يُتحقَّق منها) في us-east-1 قبل أن تستطيع ربط `lantern.example` بالـ distribution. ويجب أن يوجد الـ distribution قبل سياسة الـ bucket، لأن الشرط `AWS:SourceArn` في السياسة يسمّي ARN الـ distribution. ولا توجّه DNS إليه إلا حين يستطيع CloudFront قراءة الـ bucket، والفحص الأخير يثبت النصفين: الموقع يُحمَّل عبر CloudFront، والـ bucket يرفض الطلبات المباشرة بالرمز 403.",
+  "items": {
+    "build": "شغّل `npm run build` لإنتاج المجلّد `dist/`.",
+    "bucket": "أنشئ الـ bucket الخاص `lantern-site-prod` في الـ Region الخاصة بـ Lantern، مع إبقاء Block Public Access مفعّلًا.",
+    "upload": "ارفع `dist/` باستخدام `aws s3 sync`، مع ترويسات cache طويلة للأصول ذات الـ hash و`no-cache` لـ `index.html`.",
+    "cert": "اطلب شهادة ACM لـ `lantern.example` في `us-east-1` وتحقّق منها عبر DNS.",
+    "distribution": "أنشئ الـ distribution في CloudFront مع origin access control، و`index.html` ككائن جذر افتراضي، والشهادة مرفقة.",
+    "policy": "أضف سياسة الـ bucket التي تسمح بـ `s3:GetObject` لـ `cloudfront.amazonaws.com` مع شرط `AWS:SourceArn` لهذا الـ distribution.",
+    "dns": "أنشئ سجلات alias من نوع A وAAAA لـ `lantern.example` تشير إلى الـ distribution.",
+    "verify": "تحقّق من أن `https://lantern.example` يُحمَّل وأن الرابط المباشر للـ bucket يعيد 403."
+  }
+}

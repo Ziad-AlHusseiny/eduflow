@@ -1,0 +1,17 @@
+{
+  "title": "Ship a token change from Figma to code and back",
+  "prompt": "A Northwind designer wants to darken `color/text/subtle` because it fails contrast in the Tidewater dark theme. The JSON in the tokens repository is the source of truth, and the Figma library is a mirror. Put the steps of the change in order.",
+  "hints": [
+    "Nothing reaches the published Figma library before it has been released from the repository.",
+    "Checks run on the pull request, before humans approve it."
+  ],
+  "explanation": "The designer explores in a branch, so nothing published changes yet. The exported JSON enters the source of truth through a pull request, where CI validates names, references and contrast and builds every platform. Humans review with that evidence, the release publishes a new version with a changelog, and only then is the released JSON imported into the main library and published, so Figma mirrors exactly what shipped.",
+  "items": {
+    "propose": "Designer tries the darker value in a branch of the Figma library file",
+    "export": "Export the changed modes as DTCG JSON and open a pull request in the tokens repository",
+    "ci": "CI runs the naming, reference and contrast checks and builds CSS, Swift and Kotlin",
+    "review": "A core designer and engineer review the pull request and its visual diffs",
+    "release": "Merge and publish a new tokens version with a changelog entry",
+    "sync": "Import the released JSON into the main library's variables and publish the library update"
+  }
+}

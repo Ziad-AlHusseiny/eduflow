@@ -1,0 +1,10 @@
+{
+  "title": "Find the leaks",
+  "prompt": "A colleague's churn notebook reports a cross-validated ROC AUC of 0.98. The model predicts on 30 September; the January export also includes `orders_oct_to_dec`, the orders placed between October and December. Select every line that leaks information the model won't have at prediction time, or lets validation rows influence training.",
+  "hints": [
+    "Check every feature against the timeline: what would you know on 30 September?",
+    "Look for anything that calls `fit` or `fit_transform` on data before the split.",
+    "There are two leaky lines: one in the data, one in the code."
+  ],
+  "explanation": "**Line 9** builds a feature from `orders_oct_to_dec`, which covers the 90-day outcome window: customers who churned have zero orders there by definition, so `lifetime_orders` partly encodes the label. Line 10 drops the raw column, but too late: its values already live on inside `lifetime_orders`. Drop the derived feature too, or compute any order counts strictly up to the snapshot. **Line 11** fits the imputer on all rows before splitting, so medians are computed with test and validation rows included. Move it into the pipeline instead:\n\n```python\nmodel = make_pipeline(SimpleImputer(strategy=\"median\"), StandardScaler(), LogisticRegression())\n```\n\nThe rest is fine: the scaler is already inside the pipeline, the split is stratified, and cross-validation runs on the training part only."
+}

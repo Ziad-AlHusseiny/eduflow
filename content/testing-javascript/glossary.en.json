@@ -1,0 +1,182 @@
+[
+  {
+    "id": "testing-trophy",
+    "term": "Testing trophy",
+    "definition": "A model of a test suite with four layers: static analysis, unit, integration and end-to-end tests. It is widest at integration, which usually gives the most confidence for its cost.",
+    "lesson": "l-tj-1-1"
+  },
+  {
+    "id": "unit-test",
+    "term": "Unit test",
+    "definition": "A test that checks one function or module in isolation, usually in milliseconds. Ideal for pure logic with many edge cases, such as rounding money.",
+    "lesson": "l-tj-1-1"
+  },
+  {
+    "id": "integration-test",
+    "term": "Integration test",
+    "definition": "A test that checks several units working together, such as a form component using the real parsing code with a faked network. It catches wiring bugs unit tests miss.",
+    "lesson": "l-tj-1-1"
+  },
+  {
+    "id": "end-to-end-test",
+    "term": "End-to-end test",
+    "definition": "A test that drives the real application in a real browser, through the UI, API and data layer. The most realistic and the most expensive kind of test.",
+    "lesson": "l-tj-4-1"
+  },
+  {
+    "id": "watch-mode",
+    "term": "Watch mode",
+    "definition": "Vitest's default locally: after a run it waits, and when you save a file it reruns only the tests affected by that change, using Vite's module graph.",
+    "lesson": "l-tj-1-2"
+  },
+  {
+    "id": "aaa",
+    "term": "Arrange, Act, Assert",
+    "definition": "A three-part shape for tests: build the inputs, perform the one action under test, then state what should now be true. It makes tests easy to scan.",
+    "lesson": "l-tj-1-3"
+  },
+  {
+    "id": "assertion",
+    "term": "Assertion",
+    "definition": "A check inside a test that throws when a value is not what you expected, such as `expect(total).toBe(1000)`. A test fails when an assertion throws.",
+    "lesson": "l-tj-1-3"
+  },
+  {
+    "id": "implementation-detail",
+    "term": "Implementation detail",
+    "definition": "How code produces its result (private helpers, internal state, call order), as opposed to the behaviour callers observe. Tests coupled to it break on harmless refactors.",
+    "lesson": "l-tj-2-1"
+  },
+  {
+    "id": "invariant",
+    "term": "Invariant",
+    "definition": "A property that holds for every valid input, such as \"the shares add up to the total\". Asserting an invariant across several inputs catches whole families of bugs.",
+    "lesson": "l-tj-2-1"
+  },
+  {
+    "id": "boundary-value",
+    "term": "Boundary value analysis",
+    "definition": "Testing inputs just below, on and just above each limit in a rule, such as 0 and 0.01 or two and three decimals, because bugs cluster at those edges.",
+    "lesson": "l-tj-2-2"
+  },
+  {
+    "id": "table-driven-test",
+    "term": "Table-driven test",
+    "definition": "A test written once and run for each row of a table of inputs and expected outputs. In Vitest, `test.each` creates one named test per row.",
+    "lesson": "l-tj-2-2"
+  },
+  {
+    "id": "stub",
+    "term": "Stub",
+    "definition": "A stand-in collaborator that returns canned answers so a test can control a dependency, for example an API object whose `post` method always resolves with an id.",
+    "lesson": "l-tj-2-3"
+  },
+  {
+    "id": "test-double",
+    "term": "Test double",
+    "definition": "Any stand-in for a real collaborator in a test: stubs return canned answers, spies record calls, mocks are spies you assert on, and fakes are simpler working versions.",
+    "lesson": "l-tj-2-4"
+  },
+  {
+    "id": "spy",
+    "term": "Spy",
+    "definition": "A function or method wrapper that records how it was called. `vi.spyOn(object, method)` watches a real method and can also override it until restored.",
+    "lesson": "l-tj-2-4"
+  },
+  {
+    "id": "fake-timers",
+    "term": "Fake timers",
+    "definition": "A test clock that replaces `setTimeout`, `setInterval` and `Date`, so tests can skip ahead with calls like `vi.advanceTimersByTime(2000)` instead of waiting in real time.",
+    "lesson": "l-tj-2-4"
+  },
+  {
+    "id": "accessible-name",
+    "term": "Accessible name",
+    "definition": "The name assistive technology announces for an element, computed from `aria-labelledby`, `aria-label`, an associated label or its text. Role queries match on it.",
+    "lesson": "l-tj-3-1"
+  },
+  {
+    "id": "query-priority",
+    "term": "Query priority",
+    "definition": "Testing Library's recommended order for finding elements: by role, label, placeholder, text or display value first; then alt text and title; test ids last.",
+    "lesson": "l-tj-3-1"
+  },
+  {
+    "id": "user-event",
+    "term": "user-event",
+    "definition": "A Testing Library package that simulates whole user interactions, including pointer, focus and keyboard events, instead of dispatching single events like `fireEvent` does.",
+    "lesson": "l-tj-3-2"
+  },
+  {
+    "id": "findby",
+    "term": "findBy query",
+    "definition": "An asynchronous Testing Library query that retries until a matching element appears, resolving with it or rejecting after a timeout (one second by default).",
+    "lesson": "l-tj-3-3"
+  },
+  {
+    "id": "msw",
+    "term": "MSW (Mock Service Worker)",
+    "definition": "A library that intercepts network requests in Node and the browser and answers them with handlers you define, so your real fetch and data code still run in tests.",
+    "lesson": "l-tj-3-4"
+  },
+  {
+    "id": "locator",
+    "term": "Locator",
+    "definition": "In Playwright, a lazy, strict description of how to find an element, such as `page.getByRole('button', { name: 'Save' })`. It is resolved again on every action.",
+    "lesson": "l-tj-4-1"
+  },
+  {
+    "id": "web-first-assertion",
+    "term": "Web-first assertion",
+    "definition": "A Playwright assertion on a locator, such as `toHaveText`, that re-checks the page until it passes or times out, instead of reading a value once.",
+    "lesson": "l-tj-4-1"
+  },
+  {
+    "id": "fixture",
+    "term": "Fixture",
+    "definition": "In Playwright, a value a test requests by name, like `page` or a custom `group`, with setup before `use()` and teardown after it, created only for tests that need it.",
+    "lesson": "l-tj-4-2"
+  },
+  {
+    "id": "trace",
+    "term": "Trace",
+    "definition": "A Playwright recording of a test run with every action, DOM snapshots before and after it, console output and network calls, opened in the trace viewer.",
+    "lesson": "l-tj-4-3"
+  },
+  {
+    "id": "flaky-test",
+    "term": "Flaky test",
+    "definition": "A test that sometimes passes and sometimes fails without any code change, usually because of timing, shared data or uncontrolled time. It teaches teams to ignore failures.",
+    "lesson": "l-tj-4-3"
+  },
+  {
+    "id": "tdd",
+    "term": "Test-driven development",
+    "definition": "Writing one failing test, making it pass with the simplest code, then refactoring with the tests green, in short repeated cycles known as red, green, refactor.",
+    "lesson": "l-tj-5-1"
+  },
+  {
+    "id": "code-coverage",
+    "term": "Code coverage",
+    "definition": "The share of statements, branches, functions and lines that ran during the tests. It shows untested code but not whether the executed code was actually checked.",
+    "lesson": "l-tj-5-2"
+  },
+  {
+    "id": "mutation-testing",
+    "term": "Mutation testing",
+    "definition": "Grading a test suite by making small deliberate bugs (mutants) in the code and rerunning the tests; killed mutants were caught, survived mutants reveal weak tests.",
+    "lesson": "l-tj-5-3"
+  },
+  {
+    "id": "equivalent-mutant",
+    "term": "Equivalent mutant",
+    "definition": "A mutant whose change does not alter any behaviour a caller could observe, so no reasonable test can kill it. It should be ignored, not chased.",
+    "lesson": "l-tj-5-3"
+  },
+  {
+    "id": "required-check",
+    "term": "Required status check",
+    "definition": "A CI job that must pass before a pull request can merge into a protected branch, turning the test pipeline from a suggestion into a gate.",
+    "lesson": "l-tj-5-4"
+  }
+]

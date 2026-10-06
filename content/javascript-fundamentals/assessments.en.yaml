@@ -1,0 +1,518 @@
+checkpoints:
+  s-js-1:
+    - q: |-
+        What does this log?
+        ```js
+        let total = "0";
+        total = total + 450;
+        total = total + 1220;
+        console.log(total);
+        ```
+      options:
+        - text: "`1670`"
+          why: That needs numbers on both sides. `total` starts as the string "0", so every `+` joins text instead of adding.
+        - text: '`"1670"`'
+          why: No addition ever happens here. `+` with a string on one side joins the pieces as text.
+        - text: "`NaN`"
+          why: "`NaN` comes from maths that fails. Joining strings never fails, so no `NaN` appears."
+        - text: "`04501220`"
+          why: Correct. "0" + 450 is "0450", and "0450" + 1220 is "04501220". Start the total at the number 0.
+      answer: 3
+    - q: "`const count = 0;` followed later by `count++;` throws `TypeError: Assignment to constant variable.` What is the right fix?"
+      options:
+        - text: Declare it with `var` so it works everywhere.
+          why: "`var` would run, but it brings confusing scope rules. `let` is the modern way to allow reassignment."
+        - text: Declare it with `let count = 0;` because the value has to change.
+          why: Correct. `let` exists for names that are reassigned; `const` is for names that never are.
+        - text: Replace `count++` with `count = count + 1`.
+          why: That is still a reassignment, so a `const` rejects it in exactly the same way.
+        - text: "Wrap the increment in parentheses: `(count)++`."
+          why: Parentheses do not change what the statement does. It still tries to reassign a constant.
+      answer: 1
+    - q: A checkout shows "Total does not match" because `subtotal === 0.3` is false after adding `0.1` and `0.2`. What is the best fix for a money app?
+      options:
+        - text: Compare with `==` instead of `===`.
+          why: "`==` only adds type conversion. Both sides are already numbers, and they really are slightly different."
+        - text: Compare `subtotal.toFixed(2) === 0.3`.
+          why: "`toFixed` returns a string, and a string is never strictly equal to a number, so this is always false."
+        - text: Store every amount as whole cents (integers), so `10 + 20 === 30` exactly.
+          why: Correct. Whole-number arithmetic is exact, so totals never drift. Convert to dollars only for display.
+        - text: Call `parseFloat(subtotal)` before comparing.
+          why: "`subtotal` is already a number. Parsing it changes nothing about the tiny binary rounding error."
+      answer: 2
+    - q: |-
+        What does this log?
+        ```js
+        const label = "  Rent ";
+        const clean = label.trim().toLowerCase();
+        console.log(label.length, clean);
+        ```
+      options:
+        - text: "`7 rent`"
+          why: Correct. String methods return new strings, so `label` keeps its 7 characters, spaces included, and `clean` is "rent".
+        - text: "`4 rent`"
+          why: "`trim()` did not change `label`; it returned a new string stored in `clean`. `label` still has its spaces."
+        - text: "`7 Rent`"
+          why: "`clean` comes from `toLowerCase()`, so its first letter is lowercase."
+        - text: "`4 Rent`"
+          why: "Neither part is right: `label` is untouched (7 characters) and `clean` is lowercased."
+      answer: 0
+    - q: With `const cents = 1250;` and `const item = "lunch";`, which expression produces exactly `Spent $12.50 on lunch`?
+      options:
+        - text: '`"Spent $" + cents / 100 + " on " + item`'
+          why: Numbers drop trailing zeros when they become text, so this gives "Spent $12.5 on lunch".
+        - text: "`` `Spent ${cents / 100} on ${item}` ``"
+          why: This is missing the dollar sign and, like the first option, shows 12.5 instead of 12.50.
+        - text: "`'Spent $${(cents / 100).toFixed(2)} on ${item}'`"
+          why: Single quotes make an ordinary string, so the `${...}` parts are printed literally instead of being filled in.
+        - text: "`` `Spent $${(cents / 100).toFixed(2)} on ${item}` ``"
+          why: Correct. Backticks make a template literal, the first `$` is a plain character, and `toFixed(2)` keeps two decimals.
+      answer: 3
+  s-js-2:
+    - q: |-
+        What does this log?
+        ```js
+        function sizeLabel(amount) {
+          if (amount > 100) return "big";
+          if (amount > 1000) return "huge";
+          return "small";
+        }
+        console.log(sizeLabel(5000));
+        ```
+      options:
+        - text: "`huge`"
+          why: The first `if` already matches 5000 and returns, so the "huge" check is never reached. Put the narrower check first.
+        - text: "`small`"
+          why: "`small` is returned only when neither condition is true, but 5000 is greater than 100."
+        - text: "`big`"
+          why: "Correct, and it is a bug: `return` ends the function at the first true condition, so the order of checks matters."
+        - text: "`undefined`"
+          why: Every path through the function returns a string, so the result is never `undefined`.
+      answer: 2
+    - q: A function shows "No note" when `if (note)` is false. Which of these notes is treated as missing?
+      options:
+        - text: '`"0"`'
+          why: A non-empty string is truthy, even when it contains the character zero.
+        - text: '`" "` (a single space)'
+          why: A space is a character, so the string is not empty and counts as truthy.
+        - text: '`"false"`'
+          why: This is a five-letter string, not the boolean `false`, so it is truthy.
+        - text: '`""` (an empty string)'
+          why: Correct. The empty string is one of the eight falsy values.
+      answer: 3
+    - q: |-
+        What does this log?
+        ```js
+        let count = 0;
+        for (let i = 0; i < 5; i++) {
+          if (i === 3) break;
+          count++;
+        }
+        console.log(count);
+        ```
+      options:
+        - text: "`3`"
+          why: Correct. Passes with `i` = 0, 1 and 2 increase `count`; when `i` is 3, `break` ends the loop before `count++` runs.
+        - text: "`4`"
+          why: "`break` runs before `count++` on the pass where `i` is 3, so that pass does not count."
+        - text: "`5`"
+          why: That would be true without the `break`. The loop stops early.
+        - text: "`2`"
+          why: The pass with `i` = 0 counts too, so three passes complete before the `break`.
+      answer: 0
+    - q: |-
+        What does this log?
+        ```js
+        const add = (a, b = 10) => a + b;
+        console.log(add(5), add(5, 0), add(5, null));
+        ```
+      options:
+        - text: "`15 15 15`"
+          why: A default applies only when the argument is missing or `undefined`. 0 and `null` are real arguments.
+        - text: "`15 5 5`"
+          why: Correct. Only the first call uses the default. In the last call `null` is used, and in arithmetic it converts to 0.
+        - text: "`15 5 15`"
+          why: Passing `null` does not trigger the default; only `undefined` does.
+        - text: "`15 15 5`"
+          why: Passing 0 is a real argument, so `b` is 0, not 10.
+      answer: 1
+    - q: |-
+        What does this log?
+        ```js
+        function makeLimiter(max) {
+          let used = 0;
+          return () => {
+            if (used >= max) return false;
+            used++;
+            return true;
+          };
+        }
+        const canAdd = makeLimiter(2);
+        console.log(canAdd(), canAdd(), canAdd());
+        ```
+      options:
+        - text: "`true true true`"
+          why: "`used` is remembered between calls by the closure, so the limit of 2 is reached."
+        - text: "`false false false`"
+          why: The first two calls find `used` below `max`, so they return `true`.
+        - text: "`true true false`"
+          why: "Correct. The closure keeps `used` alive: it goes 0, 1, 2, and the third call finds the limit reached."
+        - text: "`true false false`"
+          why: The limit is 2, so two calls succeed before `used >= max` becomes true.
+      answer: 2
+  s-js-3:
+    - q: "`const names = expenses.map((e) => { e.label.toUpperCase(); });` gives an array of `undefined`. What is the fix?"
+      options:
+        - text: Use `forEach` instead of `map`.
+          why: "`forEach` returns `undefined` itself, so you would get no array at all."
+        - text: Remove the braces, `(e) => e.label.toUpperCase()`, or add `return` inside them.
+          why: Correct. With braces the callback needs an explicit `return`; otherwise it returns `undefined` for every item.
+        - text: Use `filter` instead of `map`.
+          why: "`filter` keeps or drops items; it does not transform them. With this callback it would return an empty array."
+        - text: Declare `names` with `let` instead of `const`.
+          why: How the result is stored does not change what `map` returns.
+      answer: 1
+    - q: What does `[5, 25, 100].sort()` return?
+      options:
+        - text: "`[5, 25, 100]`"
+          why: That needs a comparator such as `(a, b) => a - b`. The default sort compares text.
+        - text: "`[5, 100, 25]`"
+          why: As text, "1" sorts before "2" and "5", so "100" comes first.
+        - text: "`[25, 5, 100]`"
+          why: 'Text comparison looks at the first character first: "1" < "2" < "5".'
+        - text: "`[100, 25, 5]`"
+          why: 'Correct. Without a comparator the numbers are compared as strings: "100" < "25" < "5".'
+      answer: 3
+    - q: |-
+        What does this log?
+        ```js
+        const settings = { currency: "USD", limits: { food: 400 } };
+        const copy = { ...settings };
+        copy.limits.food = 500;
+        copy.currency = "EUR";
+        console.log(settings.currency, settings.limits.food);
+        ```
+      options:
+        - text: "`USD 400`"
+          why: "Spread is shallow: `copy.limits` and `settings.limits` are the same inner object, so the food limit changes for both."
+        - text: "`EUR 500`"
+          why: "`currency` is a top-level property, copied by value into the new object, so changing `copy.currency` leaves `settings` alone."
+        - text: "`USD 500`"
+          why: Correct. Top-level properties were copied, but the nested `limits` object is shared. Use `structuredClone` for a deep copy.
+        - text: "`EUR 400`"
+          why: "Both parts are reversed: the top-level change stays in the copy, and the nested change is shared."
+      answer: 2
+    - q: Which expression returns a saved discount of `0` as 0, and uses 10 only when no discount was saved?
+      options:
+        - text: "`user.discount ?? 10`"
+          why: Correct. `??` falls back only for `null` and `undefined`, so a real 0 is kept.
+        - text: "`user.discount || 10`"
+          why: "`||` falls back for every falsy value, and 0 is falsy, so the saved discount is replaced by 10."
+        - text: "`user.discount ? user.discount : 10`"
+          why: The ternary tests truthiness, exactly like `||`, so 0 becomes 10.
+        - text: "`user?.discount || 10`"
+          why: "`?.` only protects against `user` being missing; the `||` still throws away the 0."
+      answer: 0
+    - q: Pocket marks expenses as "reviewed" and checks `isReviewed(id)` for every item on every render. Which structure fits best for the reviewed ids?
+      options:
+        - text: A string of ids joined by commas.
+          why: Strings must be searched character by character and can match parts of other ids, such as "exp-1" inside "exp-12".
+        - text: A Map from id to the full expense object.
+          why: You only need a yes/no answer, so storing whole expenses duplicates data that already lives in the list.
+        - text: An array that you push each id into.
+          why: It works, but it allows duplicates and `includes` searches the whole array on every check.
+        - text: A Set of ids.
+          why: Correct. A Set stores each id once and `has(id)` answers quickly without searching.
+      answer: 3
+  s-js-4:
+    - q: A script in the `<head>` runs `document.querySelector("#total").textContent = "$0.00";` and throws `Cannot set properties of null`. The id is spelled correctly. What fixes it?
+      options:
+        - text: Use `getElementById("total")` instead.
+          why: Any lookup returns `null` when the element does not exist yet. The problem is timing, not the method.
+        - text: Wrap the line in `try`/`catch`.
+          why: That hides the error, and the total is still never set.
+        - text: Use `innerHTML` instead of `textContent`.
+          why: "The failure happens before either property is set: the element itself is `null`."
+        - text: Add `defer` to the script tag (or load it with `type="module"`), so it runs after the page is parsed.
+          why: Correct. A plain script in the head runs before the body exists, so the element is not there yet.
+      answer: 3
+    - q: Pocket adds a click listener to each `<li>` when the page loads. Expenses added later do not respond to clicks. What is the best fix?
+      options:
+        - text: Put one listener on the list container and use `event.target.closest("li")` to find the clicked item.
+          why: Correct. Clicks on new items bubble to the same container, so delegation covers items added at any time.
+        - text: Add the listeners again a second later with `setTimeout`.
+          why: Items added after that second would still be missed. Timing is not the real problem.
+        - text: Put an `onclick="..."` attribute in each item's HTML string.
+          why: That mixes code into markup strings, risks injection, and still needs every item handled one by one.
+        - text: Re-add listeners to every item every second with `setInterval`.
+          why: It wastes work and stacks duplicate listeners on items that already had one.
+      answer: 0
+    - q: After pressing Enter in Pocket's form, the page reloads and the URL gains `?label=Tea`. The handler is `form.addEventListener("submit", () => { addExpense(); });`. What is the cause?
+      options:
+        - text: The `submit` event only fires for mouse clicks, not for Enter.
+          why: "`submit` fires however the form is submitted, which is exactly why you listen to it."
+        - text: "`addExpense` must be an `async` function."
+          why: Whether it is async does not affect the reload. The browser's default action is still happening.
+        - text: The handler never calls `event.preventDefault()`, so the browser performs its normal submission.
+          why: Correct. The default action sends the form and loads a new page. Cancel it first thing in the handler.
+        - text: The form is missing an `action` attribute.
+          why: Without `action` the form submits to the current page, which is the reload you see. The fix is to cancel the submission.
+      answer: 2
+    - q: After a reload, `localStorage.getItem("pocket")` returns the text `[object Object]`. What went wrong when saving?
+      options:
+        - text: Storage was full, so the data was truncated.
+          why: A full storage throws an error; it does not replace data with "[object Object]".
+        - text: The object was passed to `setItem` without `JSON.stringify`, so it was converted with `String()`.
+          why: Correct. Storage keeps strings only. Serialise with `JSON.stringify` and read back with `JSON.parse`.
+        - text: "`JSON.parse` was called twice on load."
+          why: Parsing happens on load and cannot change what was stored. The text was already wrong when saved.
+        - text: The key was misspelled when loading.
+          why: A misspelled key returns `null`, not "[object Object]".
+      answer: 1
+    - q: |-
+        The server answers this request with status 500 and an HTML error page. What happens?
+        ```js
+        async function load() {
+          const res = await fetch("/api/expenses");
+          return res.json();
+        }
+        ```
+      options:
+        - text: '`fetch` rejects with an error saying "HTTP 500".'
+          why: "`fetch` only rejects when the network fails. A 500 is still a complete HTTP response."
+        - text: "`load()` resolves with `undefined`."
+          why: "`res.json()` does not quietly return `undefined`; it tries to parse the body and fails."
+        - text: "`fetch` resolves, then `res.json()` rejects with a SyntaxError because the body is HTML, not JSON."
+          why: Correct. Check `res.ok` before parsing and throw a clear error of your own.
+        - text: The browser retries the request until it succeeds.
+          why: Browsers do not retry failed HTTP responses automatically. Your code gets the 500 response.
+      answer: 2
+  s-js-5:
+    - q: '`money.js` contains `export function formatMoney(cents) { … }`. `main.js` contains `import formatMoney from "./money.js";`. What happens?'
+      options:
+        - text: 'Loading fails: `money.js` has no default export. Write `import { formatMoney } from "./money.js";`.'
+          why: Correct. Braces import named exports; without braces you are asking for a default export that does not exist.
+        - text: It works, because the names match.
+          why: Names matter only for named imports, which need braces. Without braces, the import asks for the default export.
+        - text: "`formatMoney` is `undefined` until it is first called."
+          why: Imports are linked before any code runs. A missing export stops the module from loading at all.
+        - text: It works only if the file is renamed to `money.mjs`.
+          why: The file extension does not change how named and default exports work.
+      answer: 0
+    - q: |-
+        What does this log?
+        ```js
+        class Store {
+          #items = [];
+          add(x) { this.#items.push(x); }
+          get size() { return this.#items.length; }
+        }
+        const s = new Store();
+        s.add(1);
+        console.log(s.size, s.items);
+        ```
+      options:
+        - text: "`1 [1]`"
+          why: "`#items` and `items` are different names. The private field is not exposed as a public `items` property."
+        - text: "`undefined undefined`"
+          why: "`size` is a getter, so reading `s.size` runs it and returns 1."
+        - text: It throws a SyntaxError.
+          why: Only writing `s.#items` outside the class is a syntax error. Reading a property that does not exist is allowed.
+        - text: "`1 undefined`"
+          why: Correct. The getter returns the length, and `s.items` is simply a property that does not exist.
+      answer: 3
+    - q: |-
+        Your loader catches every error in this block. A bug inside `render` now goes unnoticed. What is the better structure?
+        ```js
+        try {
+          const data = JSON.parse(text);
+          render(data);
+        } catch {
+          render([]);
+        }
+        ```
+      options:
+        - text: Keep it, and leave the catch block empty instead.
+          why: "An empty catch hides even more: now nothing renders and nothing is reported."
+        - text: Wrap only `JSON.parse` in `try`/`catch` with a fallback, and call `render` outside it, so its bugs surface.
+          why: Correct. Catch only what you expect and can handle, here bad JSON. Unexpected errors should reach the console.
+        - text: Wrap the whole app in one big `try`/`catch` at the top.
+          why: That catches everything everywhere, which makes real bugs even harder to find.
+        - text: Remove the `try` entirely.
+          why: Then a corrupted saved value crashes the app on start-up, which is a real, expected failure you should handle.
+      answer: 1
+    - q: "Pocket shows `Total: $NaN` after you add an expense. A breakpoint in `totalCents` shows the new expense has `amount: undefined`. Where do you look next?"
+      options:
+        - text: The stylesheet, in case the total is hidden.
+          why: The value itself is wrong, so styling cannot be the cause.
+        - text: The `reduce` call inside `totalCents`.
+          why: "`reduce` is adding correctly; it received a bad value. The bug is earlier, where that value was made."
+        - text: The submit handler code that builds the new expense object.
+          why: Correct. Trace the bad value back to where it was created, for example a misspelled field name such as `data.get("amout")`.
+        - text: The storage size limit.
+          why: A full storage throws on save. It does not change an amount to `undefined` in memory.
+      answer: 2
+    - q: In Pocket, the delete handler calls `button.closest("li").remove()`. Deleted expenses come back when the filter changes. Why?
+      options:
+        - text: "`remove()` is asynchronous and had not finished."
+          why: "`remove()` takes effect immediately. The element was removed; something drew it again."
+        - text: The browser caches the list between renders.
+          why: There is no cache. `render` builds the list fresh from the state each time.
+        - text: The filter select reloads the page.
+          why: A `change` event does not reload the page. It calls `update`, which re-renders.
+        - text: The handler changed the page but not `state.expenses`, so the next render draws the expense again.
+          why: Correct. Change the state through `update`, and let `render` remove it from the page.
+      answer: 3
+final:
+  - q: What does `console.log(typeof (450 + "50"), 450 - "50")` print?
+    options:
+      - text: "`number 400`"
+        why: With a string on one side, `+` joins text, so the first result is a string.
+      - text: "`string 45050`"
+        why: '`-` only does maths, so "50" is converted to a number and the result is 400.'
+      - text: "`string 400`"
+        why: Correct. `+` joins to "45050", a string; `-` converts "50" to 50 and subtracts.
+      - text: "`number 500`"
+        why: Neither operation adds 450 and 50 as numbers here.
+    answer: 2
+  - q: What does `[3, 1, 2].map((n) => n * 2).filter((n) => n > 2)` return?
+    options:
+      - text: "`[6, 4]`"
+        why: Correct. `map` gives [6, 2, 4], then `filter` keeps the values above 2, in their original order.
+      - text: "`[4, 6]`"
+        why: Neither `map` nor `filter` sorts. Items keep their order.
+      - text: "`[6, 2, 4]`"
+        why: That is the result of `map` alone; `filter` then removes the 2.
+      - text: "`[3, 2]`"
+        why: "`filter` runs on the doubled values, not on the original array."
+    answer: 0
+  - q: An expense has no `receipt` property. Which expression throws?
+    options:
+      - text: "`expense.receipt?.url`"
+        why: "`?.` stops at the missing receipt and returns `undefined`."
+      - text: "`expense?.receipt`"
+        why: Reading a missing property is fine; it gives `undefined`.
+      - text: '`expense.receipt ?? "none"`'
+        why: This reads a missing property, which is allowed, then falls back to "none".
+      - text: "`expense.receipt.url`"
+        why: Correct. `expense.receipt` is `undefined`, and reading `.url` from `undefined` throws a TypeError.
+    answer: 3
+  - q: |-
+      In what order are the letters logged?
+      ```js
+      setTimeout(() => console.log("A"), 0);
+      (async () => {
+        console.log("B");
+        await null;
+        console.log("C");
+      })();
+      console.log("D");
+      ```
+    options:
+      - text: A B C D
+        why: The timer callback is a task, which waits until the script and all microtasks are done.
+      - text: B D C A
+        why: Correct. B runs synchronously, `await` pauses the function, D finishes the script, C resumes as a microtask, and A runs last as a task.
+      - text: B C D A
+        why: "`await` pauses the async function even for a value that is not a promise, so D is logged before C."
+      - text: D B C A
+        why: An async function runs synchronously until its first `await`, so B is logged before D.
+    answer: 1
+  - q: "`totalsByCategory` uses `reduce` with `{}` as the initial value and throws `Cannot read properties of undefined` on the second expense. What is the most likely cause?"
+    options:
+      - text: The initial value should be `[]`, not `{}`.
+        why: An object is right for per-category totals; an array would need different code.
+      - text: The expenses must be sorted by category first.
+        why: Grouping with `reduce` works in any order.
+      - text: "`reduce` cannot build objects, only numbers."
+        why: The accumulator can be any value, including an object.
+      - text: The callback has braces but does not `return totals`, so the second call receives `undefined`.
+        why: Correct. Whatever the callback returns becomes the next accumulator; without a `return` that is `undefined`.
+    answer: 3
+  - q: Two parts of Pocket each call `createIdGenerator("exp")` and sometimes produce the same id. What is the right fix?
+    options:
+      - text: Store the counter in a global `var` instead.
+        why: A global counter can be reset or changed by any code, which is the problem closures were solving.
+      - text: Call `createIdGenerator("exp")` inside each click handler.
+        why: Each call creates a fresh counter starting at 1, which makes duplicates even more likely.
+      - text: Create one generator in one module and import that same function wherever ids are needed.
+        why: Correct. One generator means one counter, so every id it hands out is unique.
+      - text: Use `Math.round(Math.random() * 10)` as the id.
+        why: With only 11 possible values, collisions are guaranteed. Use one counter or `crypto.randomUUID()`.
+    answer: 2
+  - q: A labels list is rendered with ``li.innerHTML = `<b>${label}</b>`;`` and a user saves the label `<img src=x onerror=alert(1)>`. What is the safe fix?
+    options:
+      - text: Wrap the label in quotes inside the template.
+        why: Quotes are just characters to the HTML parser; the tag is still created and its code still runs.
+      - text: Create the `<b>` with `createElement` and set its `textContent` to the label.
+        why: Correct. `textContent` never parses HTML, so the label is shown as plain text.
+      - text: Use `outerHTML` instead of `innerHTML`.
+        why: "`outerHTML` also parses HTML, so it has the same injection problem."
+      - text: Limit labels to 20 characters.
+        why: Short payloads can still run code. The fix is to never parse user text as HTML.
+    answer: 1
+  - q: |-
+      `getJson` returns a promise that rejects. What does `safeLoad()` do?
+      ```js
+      async function safeLoad() {
+        try {
+          return getJson("/api/rates");
+        } catch {
+          return {};
+        }
+      }
+      ```
+    options:
+      - text: It returns a promise that rejects, because without `await` the rejection happens after the `try` block has finished.
+        why: Correct. Write `return await getJson(...)` so the rejection is thrown inside the `try` and caught.
+      - text: It resolves with `{}`.
+        why: The `catch` only sees errors thrown while the `try` block runs, and nothing is thrown there without `await`.
+      - text: It resolves with `undefined`.
+        why: "The returned promise is adopted, so the result follows `getJson`: it rejects."
+      - text: It throws synchronously when called.
+        why: An async function never throws synchronously; it always returns a promise.
+    answer: 0
+  - q: You need `amounts` sorted from largest to smallest for a chart, while another panel still shows `amounts` in its original order. Which line is right?
+    options:
+      - text: "`amounts.sort((a, b) => b - a)`"
+        why: The comparator is right, but `sort` reorders the original array, breaking the other panel.
+      - text: "`amounts.toSorted()`"
+        why: It returns a copy, but without a comparator it sorts as text, ascending.
+      - text: "`[...amounts].sort()`"
+        why: The copy protects the original, but the default sort compares as text and sorts ascending.
+      - text: "`amounts.toSorted((a, b) => b - a)`"
+        why: Correct. A sorted copy, numeric and descending, leaving the original untouched.
+    answer: 3
+  - q: "`items.forEach(store.add);` throws `Cannot read properties of undefined (reading '#items')` inside `add`. Which change fixes it?"
+    options:
+      - text: Declare `store` with `let` instead of `const`.
+        why: How the variable is declared does not change how `add` is called.
+      - text: Write `items.forEach(store.add());`.
+        why: That calls `add` once immediately with no item and passes its return value to `forEach`.
+      - text: Write `items.forEach((item) => store.add(item));`.
+        why: Correct. The arrow function calls `add` on `store`, so `this` is the store again.
+      - text: Assign `const add = store.add;` first and pass `add`.
+        why: That is the same detached method under another name, so `this` is still lost.
+    answer: 2
+  - q: The check `if (amountInput.value == 0)` is meant to catch an amount of zero. Why does it also run when the field is empty?
+    options:
+      - text: Empty number inputs contain the text "0".
+        why: An empty input's value is the empty string "", not "0".
+      - text: '`==` converts `""` to the number 0 before comparing, so `"" == 0` is true.'
+        why: Correct. Convert explicitly, check for empty input first, and compare with `===`.
+      - text: "`value` is `null` when the field is empty."
+        why: '`value` is always a string; for an empty field it is "".'
+      - text: Number inputs return `NaN` when empty, and `NaN == 0` is true.
+        why: '`value` is "" rather than `NaN`, and `NaN` is not equal to anything, not even itself.'
+    answer: 1
+  - q: "What happens with `JSON.parse(JSON.stringify({ when: new Date() })).when.getFullYear()`?"
+    options:
+      - text: It throws a TypeError, because `when` comes back as a string, which has no `getFullYear` method.
+        why: Correct. JSON stores dates as ISO strings. Convert back with `new Date(text)`, or store dates as strings from the start.
+      - text: It returns the current year.
+        why: That would need `when` to be a Date again, but `JSON.parse` has no way to know the string was a date.
+      - text: It returns `NaN`.
+        why: There is no Date object to return `NaN` from; the method does not exist on a string at all.
+      - text: It returns `undefined`.
+        why: Calling something that is not a function throws; it does not return `undefined`.
+    answer: 0

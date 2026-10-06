@@ -1,0 +1,394 @@
+checkpoints:
+  s-rn-1:
+    - q: A product manager asks whether Trailhead's list will "feel native" or "feel like a website in an app". What's the accurate answer?
+      options:
+        - text: It will feel like a website, because React Native renders HTML inside a WebView.
+          why: There is no WebView or HTML involved. React Native renders platform views.
+        - text: It depends on whether you enable the New Architecture in app.json.
+          why: The New Architecture is the only architecture in current React Native; there is nothing to enable, and it doesn't decide whether views are native.
+        - text: It will use real platform views, so scrolling, text selection and inputs behave like other apps on the phone.
+          why: Correct. Your components describe the UI; React Native creates and updates native views from that description.
+        - text: It will feel native on iOS and like a website on Android.
+          why: Both platforms get native views. Android isn't rendered differently.
+      answer: 2
+    - q: You install `react-native-keyboard-controller` in Trailhead, save, and the app crashes in Expo Go with a message that a native module can't be found. What's going on?
+      options:
+        - text: The library needs Fast Refresh to be turned off.
+          why: Fast Refresh only swaps JavaScript. The missing piece is native code.
+        - text: You need to run `npx expo start --clear` to rebuild the native code.
+          why: Clearing the Metro cache resets JavaScript bundling; it never compiles native code.
+        - text: Expo Go only supports libraries written in TypeScript.
+          why: Language isn't the issue. Expo Go can only run native code that was compiled into Expo Go itself.
+        - text: The library contains native code that Expo Go doesn't include, so you need a development build of your own app.
+          why: Correct. A development build compiles the native modules your project uses, with the same dev tools as Expo Go.
+      answer: 3
+    - q: Which snippet renders a hike's stats without crashing when `hike.elevationM` is 0?
+      options:
+        - text: "`<View><Text>{hike.distanceKm} km</Text>{hike.elevationM > 0 && <Text>{hike.elevationM} m up</Text>}</View>`"
+          why: Correct. Every string sits inside a Text, and the condition is a real boolean, so 0 renders nothing.
+        - text: "`<View><Text>{hike.distanceKm} km</Text>{hike.elevationM && <Text>{hike.elevationM} m up</Text>}</View>`"
+          why: When elevation is 0, `0 && …` evaluates to 0, which React Native tries to render as text directly inside the View.
+        - text: "`<View>{hike.distanceKm} km<Text>{hike.elevationM} m up</Text></View>`"
+          why: The distance and "km" are raw text inside a View, which throws for every hike.
+      answer: 0
+    - q: A tester says the Save button on Trailhead's quick-log form "sometimes doesn't notice taps" while walking. The button is a 28-point-tall Pressable. What should you change first?
+      options:
+        - text: Replace Pressable with the built-in Button component.
+          why: Button can't be styled to fit the design, and it doesn't solve the size problem.
+        - text: Make the touch area at least 44 points tall, with padding or `hitSlop`, and give pressed feedback.
+          why: Correct. Small targets are hard to hit on the move; a bigger area and instant feedback fix both halves of the complaint.
+        - text: Switch to `onLongPress` so accidental taps are ignored.
+          why: That makes every save slower and doesn't help users hit the target.
+      answer: 1
+    - q: Trailhead stores the distance input with `const [km, setKm] = useState(0)` and `onChangeText={(t) => setKm(Number(t))}`. Users can't type "8.4". Why?
+      options:
+        - text: "`onChangeText` doesn't fire for decimal points."
+          why: It fires for every change, including the dot.
+        - text: "`keyboardType` must be set to `number` for decimals to work."
+          why: That value doesn't exist; the issue is the state, not the keyboard.
+        - text: Typing "8." becomes `Number("8.")`, which is 8, so the dot disappears from the controlled input before the user can add the 4.
+          why: Correct. Keep the raw string in state and parse it when you need the number.
+        - text: TextInput values are limited to integers on Android.
+          why: TextInput values are always strings, on both platforms.
+      answer: 2
+  s-rn-2:
+    - q: "A teammate writes `style={{ padding: '12px 16px', fontSize: '15px' }}` on Trailhead's card. What should the review comment say?"
+      options:
+        - text: Use `rem` units so text scales with accessibility settings.
+          why: React Native has no rem units. Text already scales with the user's font settings.
+        - text: Move these values into a CSS file imported at the top of the component.
+          why: React Native doesn't load CSS files; styles are JavaScript objects.
+        - text: It's fine; React Native converts CSS strings automatically.
+          why: It doesn't. Multi-value strings and px units are either errors or ignored.
+        - text: "Use unitless numbers and longhand keys: `paddingVertical: 12, paddingHorizontal: 16, fontSize: 15`."
+          why: Correct. One unitless number per property, measured in points.
+      answer: 3
+    - q: "A screen shows a ScrollView inside a View. The ScrollView's content is cut off at the bottom and won't scroll. The ScrollView has `style={{ flex: 1 }}`. What's missing?"
+      options:
+        - text: "`overflow: 'scroll'` on the ScrollView."
+          why: ScrollView scrolls by itself; overflow styles don't create scrolling.
+        - text: "`contentContainerStyle={{ flex: 1 }}`"
+          why: That stretches the content to the viewport height, which often stops scrolling rather than fixing it.
+        - text: "`flex: 1` on the parent View, so the ScrollView inherits a bounded height to scroll within."
+          why: Correct. Without a bounded parent, the ScrollView grows to its content and the screen cuts it off.
+        - text: "`horizontal={false}`"
+          why: That is already the default.
+      answer: 2
+    - q: Trailhead's settings screen has no header, and on a recent Android phone the title sits under the status bar clock. What's the correct fix?
+      options:
+        - text: Pad the content with `useSafeAreaInsets().top` from react-native-safe-area-context.
+          why: Correct. Android draws apps edge to edge, so screens without a header must apply the top inset themselves.
+        - text: Use `SafeAreaView` from react-native.
+          why: It's deprecated and only ever applied padding on iOS.
+        - text: "Add `marginTop: 24`, the height of the Android status bar."
+          why: Status bar heights vary by device and setting; a hard-coded value is wrong on many phones.
+        - text: Hide the status bar on Android.
+          why: Users lose the clock and battery level, and gesture areas at the bottom still overlap.
+      answer: 0
+    - q: Trailhead's list rows each have an "expanded" toggle stored in `useState` inside the row. Which bug will users eventually report?
+      options:
+        - text: Rows expand on iOS but not on Android.
+          why: State works the same on both platforms; nothing here is platform-specific.
+        - text: Expanded rows collapse by themselves after scrolling far away and back.
+          why: Correct. FlatList unmounts distant rows to save memory, and their local state is lost with them.
+        - text: The app crashes when two rows are expanded.
+          why: Several rows can hold state at once without problems.
+      answer: 1
+    - q: Which change most improves a FlatList of 800 hikes where each row shows a 4000-pixel photo scaled down to a 56-point thumbnail?
+      options:
+        - text: Increase `windowSize` to keep more rows mounted.
+          why: More mounted rows means more full-size images in memory, which makes it worse.
+        - text: Wrap the FlatList in a ScrollView so it renders once.
+          why: That disables virtualization and renders every row with its huge image.
+        - text: Replace FlatList with SectionList.
+          why: SectionList is also a virtualized list; the images would cost the same.
+        - text: Load small thumbnail versions of the photos for the list, ideally with a caching image component like expo-image.
+          why: Correct. Decoding huge images for tiny thumbnails wastes memory and time on every visible row.
+      answer: 3
+  s-rn-3:
+    - q: Trailhead needs a screen at `/hikes/42/photos`. Which file creates it?
+      options:
+        - text: "`src/app/hikes/photos/[id].tsx`"
+          why: That serves `/hikes/photos/42`, with the segments in the wrong order.
+        - text: "`src/app/(hikes)/[id]/photos.tsx`"
+          why: A group in parentheses adds no URL segment, so this serves `/42/photos`.
+        - text: "`src/app/hikes/[id]/photos.tsx`"
+          why: Correct. Each folder is a segment, and `[id]` captures the 42.
+        - text: "`src/components/HikePhotos.tsx`"
+          why: Files outside `src/app` are never routes.
+      answer: 2
+    - q: "In the detail screen, `const { id } = useLocalSearchParams<{ id: string }>()` and `useHike(Number(id))` is called. A link arrives for `/hikes/abc`. What should the screen show?"
+      options:
+        - text: A red error screen, because Number("abc") throws.
+          why: Number("abc") doesn't throw; it returns NaN, and no hike matches.
+        - text: A friendly "hike not found" state, because the lookup returns nothing and the screen handles that case.
+          why: Correct. Params are untrusted strings, so every screen with params needs a not-found state.
+        - text: The first hike in the list, as a fallback.
+          why: Showing the wrong hike is worse than saying it doesn't exist.
+        - text: Nothing; Expo Router refuses to match non-numeric ids.
+          why: A dynamic segment matches any value; validation is your job.
+      answer: 1
+    - q: After a hike is deleted on its detail screen, the code calls `router.push('/')`. What problem does this create?
+      options:
+        - text: A second copy of the log is pushed on top of the first, so the back gesture returns to the deleted hike's screen.
+          why: Correct. Use `router.back()` (or `replace`) so the deleted screen leaves the stack.
+        - text: The tab bar disappears permanently.
+          why: Pushing a route doesn't remove the tab layout.
+        - text: The hikes reducer runs twice.
+          why: Navigation doesn't dispatch actions; the duplication is in the stack, not the state.
+      answer: 0
+    - q: Which statement about Trailhead's `HikesProvider` with separate state and dispatch contexts is true?
+      options:
+        - text: Components that read hikes never re-render when hikes change.
+          why: They do re-render; that's how they show the new list.
+        - text: It makes the reducer run on a background thread.
+          why: Reducers run on the JS thread like all React code.
+        - text: It removes the need to return new arrays from the reducer.
+          why: Immutability is still required; React compares references.
+        - text: A delete button that only uses dispatch doesn't re-render when the list changes, because the dispatch context never changes.
+          why: Correct. `dispatch` is stable, so components that read only it skip list updates.
+      answer: 3
+    - q: On iOS, users of Trailhead's add-hike form must tap Save twice whenever the keyboard is open. Which prop fixes it?
+      options:
+        - text: "`autoFocus` on the Save button."
+          why: Buttons don't take focus that way; the first tap is still swallowed.
+        - text: '`behavior="height"` on the KeyboardAvoidingView.'
+          why: That changes how the layout avoids the keyboard, not how taps are handled.
+        - text: '`keyboardShouldPersistTaps="handled"` on the ScrollView that contains the form.'
+          why: Correct. Taps on buttons then go through while the keyboard is open.
+        - text: '`submitBehavior="blurAndSubmit"` on the last input.'
+          why: That affects the return key, not taps on the Save button.
+      answer: 2
+  s-rn-4:
+    - q: Trailhead's explore screen shows "Could not load trails" even though the API responds. The server logs a 200. Debugging shows `res.ok` is true but the list is empty. Which state should the screen have shown?
+      options:
+        - text: Error, because an empty response is a failure.
+          why: The request succeeded; nothing failed.
+        - text: Loading, until at least one trail arrives.
+          why: The request finished; staying in loading would spin forever.
+        - text: Error, with a Retry button, to try another server.
+          why: Retrying a successful request returns the same empty list.
+        - text: Success with zero items, rendered as an empty state like "No trails within 50 km".
+          why: Correct. Empty is a successful result that deserves its own designed message.
+      answer: 3
+    - q: Where should Trailhead keep the user's chosen units (km or mi)?
+      options:
+        - text: expo-secure-store, because every setting is personal data.
+          why: SecureStore is for secrets like tokens; a unit preference isn't sensitive.
+        - text: AsyncStorage (or expo-sqlite/kv-store), as part of a small JSON preferences value.
+          why: Correct. Small, non-secret preferences are what key-value storage is for.
+        - text: A new SQLite table with one row and one column.
+          why: It works, but it's heavier than needed for a single preference.
+        - text: An `EXPO_PUBLIC_` environment variable.
+          why: Those are fixed at build time for every user; they can't store a user's choice.
+      answer: 1
+    - q: A Trailhead user denied location permanently, later enabled it in Settings, and returned to the app. The tracking screen still says location is off. What's the likely bug?
+      options:
+        - text: The screen checked the permission only once when it mounted, instead of again when it regained focus.
+          why: Correct. Re-check with `getForegroundPermissionsAsync()` in `useFocusEffect` or when the app returns to the foreground.
+        - text: iOS needs the app to be reinstalled before a permission change applies.
+          why: Permission changes in Settings apply immediately to the installed app.
+        - text: "`canAskAgain` must be reset to true in the app's storage."
+          why: The OS owns that value; your app only reads it.
+      answer: 0
+    - q: Trailhead v3 adds a `difficulty` column to the hikes table. A teammate edits the version 0 block of the migration to include the new column. What happens to existing users?
+      options:
+        - text: They get the new column automatically on next launch.
+          why: Their database is already past version 0, so that block never runs for them.
+        - text: Their hike log is deleted and recreated.
+          why: Nothing deletes it; the edited block simply doesn't run.
+        - text: Nothing changes for them, so queries that use `difficulty` fail with "no such column".
+          why: Correct. Add a new versioned step (`ALTER TABLE … ADD COLUMN`) instead of editing a shipped one.
+        - text: SQLite rejects the database file at startup.
+          why: The file is valid; it just lacks the new column.
+      answer: 2
+    - q: A tracked hike shows 14 km for a walk the hiker knows was 9 km. The route has many sharp zigzags under forest cover. What's the best fix?
+      options:
+        - text: Switch to `Accuracy.Lowest` to save battery.
+          why: Lower accuracy makes readings worse, not better.
+        - text: Round each coordinate to three decimal places.
+          why: That snaps points to a coarse grid of roughly 100 m, which adds its own error.
+        - text: Ignore readings whose `coords.accuracy` exceeds a threshold before adding them to the route.
+          why: Correct. Low-quality readings cause the zigzags; filtering them keeps the distance honest.
+        - text: Multiply the result by a correction factor of 0.65.
+          why: A fixed factor is wrong for every other hike.
+      answer: 2
+  s-rn-5:
+    - q: "Trailhead feels sluggish. The Performance Monitor (from the dev menu) shows the UI thread dropping frames while the JS thread is fine. Which cause fits?"
+      options:
+        - text: A component re-renders on every keystroke.
+          why: Re-renders are JavaScript work; they would show as JS thread drops.
+        - text: Very large images decoded and drawn for small views, or deeply nested views with shadows.
+          why: Correct. That's native rendering work, which shows up on the UI thread.
+        - text: A slow network request.
+          why: Waiting on the network doesn't consume frames on either thread.
+      answer: 1
+    - q: Which test is written the way React Native Testing Library recommends?
+      options:
+        - text: Snapshot the rendered tree and update the snapshot whenever it changes.
+          why: Snapshots record whatever renders, including bugs, and break on harmless changes.
+        - text: Assert that the component's internal `setDraft` was called with a specific object.
+          why: That tests implementation, so refactors break it even when behaviour is correct.
+        - text: Find the input by its testID `input-2` and read its `props.value`.
+          why: It works, but it doesn't reflect what users see and misses accessibility problems.
+        - text: Type into the field labelled "Distance (km)", press the "Save" button by role, and expect `onSave` to receive 8.4.
+          why: Correct. It exercises the component the way a user (and a screen reader) does.
+      answer: 3
+    - q: Your preview build works, but the production build crashes on launch with a missing environment variable. What does this tell you?
+      options:
+        - text: Production builds can differ from development and preview; always install and test the actual release build before submitting.
+          why: Correct. Build profiles can set different environment variables, and release builds have no Metro to fall back on.
+        - text: EAS Build is unreliable and you should build locally.
+          why: Building locally with the same configuration would crash the same way.
+        - text: The stores modified the binary during upload.
+          why: Stores don't change your JavaScript or environment.
+      answer: 0
+    - q: You publish a JavaScript fix with `eas update --channel production`, but users on builds made from the `preview` profile don't receive it. Why?
+      options:
+        - text: Updates take a week to propagate.
+          why: Updates are available within minutes; the issue is targeting.
+        - text: Preview builds can't receive updates at all.
+          why: They can, on their own channel.
+        - text: Preview builds listen to the preview channel, so they only get updates published there.
+          why: Correct. Each build profile's `channel` decides which updates it receives.
+        - text: The runtime version must be raised for every update.
+          why: Raising it would make the update skip existing builds, not reach more of them.
+      answer: 2
+    - q: Trailhead 1.3 adds a native module. What's the right way to get it to users?
+      options:
+        - text: Publish an `eas update` to production; users will download the module.
+          why: Updates can't deliver native code.
+        - text: Publish an update and ask users to restart twice.
+          why: Restarting doesn't compile native code into the app.
+        - text: Keep the same `version` so existing updates still apply.
+          why: Then old builds could receive JavaScript calling a module they lack.
+        - text: Raise `version`, make a production build, submit it for review and release it; updates for 1.3 then target the new runtime version.
+          why: Correct. Native changes always travel in a new binary.
+      answer: 3
+final:
+  - q: Which description of Trailhead's architecture is accurate?
+    options:
+      - text: React components render HTML that a WebView displays.
+        why: React Native has no HTML or WebView in the rendering path.
+      - text: Swift and Kotlin code is generated from your JSX at build time.
+        why: Your JSX is not translated into Swift or Kotlin; it runs as JavaScript.
+      - text: JavaScript runs on the UI thread and draws directly to the screen.
+        why: JavaScript runs on its own thread; the UI thread draws native views.
+      - text: JavaScript runs in Hermes on its own thread, and the Fabric renderer creates native views that the UI thread draws.
+        why: Correct. That's the New Architecture pipeline every current React Native app uses.
+    answer: 3
+  - q: "A new hike card looks squashed: the title overflows and pushes the date badge off screen. The row is `flexDirection: 'row'`. Which change is idiomatic?"
+    options:
+      - text: "Give the title `width: 200`."
+        why: A fixed width breaks on other screen sizes and with larger text.
+      - text: "Give the badge `position: 'absolute'`."
+        why: Taking the badge out of the flow lets the title run underneath it.
+      - text: "Give the title's container `flex: 1` and the Text `numberOfLines={1}`."
+        why: Correct. The container absorbs the leftover width and long titles truncate.
+      - text: "Switch the row to `flexDirection: 'column'`."
+        why: That changes the design instead of fixing the overflow.
+    answer: 2
+  - q: Which list setup is right for 1,000 hikes grouped by month with sticky headers?
+    options:
+      - text: A ScrollView with nested `.map()` calls for months and hikes.
+        why: It renders every row at once, which is slow and memory-hungry.
+      - text: A SectionList with sections shaped `{ title, data }` and a keyExtractor returning each hike's id.
+        why: Correct. It virtualizes rows and renders sticky section headers.
+      - text: One FlatList per month inside a ScrollView.
+        why: Nesting virtualized lists in a ScrollView defeats virtualization and triggers a warning.
+    answer: 1
+  - q: Trailhead's Stats tab is part of a `(tabs)` group, and `hikes/[id]` is in the root Stack. A user on Stats opens a hike and swipes back. Where do they land?
+    options:
+      - text: On the Stats tab, with its scroll position intact.
+        why: Correct. The detail screen was pushed over the tabs; popping it reveals the tab they came from, still mounted.
+      - text: On the first tab, because the tab group resets.
+        why: Tabs keep their state; nothing resets on back.
+      - text: On the sign-in screen.
+        why: Back pops one screen; it doesn't leave the protected area.
+      - text: Nowhere; detail screens in the root Stack can't be swiped back.
+        why: Stack screens support the back gesture by default.
+    answer: 0
+  - q: What is the main reason Trailhead keeps parsing and validation in pure functions like `parseDistanceKm` and `validateHikeForm`?
+    options:
+      - text: Pure functions run on the UI thread, so they're faster.
+        why: They run on the JS thread like everything else in your app code.
+      - text: React Native requires validation to live outside components.
+        why: There's no such requirement; it's a design choice.
+      - text: They can be tested in milliseconds with plain Jest, without devices, mocks or rendering.
+        why: Correct. On mobile, a fast test loop saves far more time than on the web.
+      - text: They make the JavaScript bundle smaller.
+        why: Bundle size barely changes; the payoff is testability and clarity.
+    answer: 2
+  - q: A deep link opens `trailhead://hikes/9999`, but that hike doesn't exist. What should happen?
+    options:
+      - text: The app crashes, which is acceptable for invalid links.
+        why: Any link from anywhere can open your app; a crash is never acceptable.
+      - text: The detail screen shows a clear "hike not found" message with a way back to the log.
+        why: Correct. Treat deep links as untrusted input and design the not-found state.
+      - text: Expo Router silently redirects to `+not-found.tsx` because the id is unknown.
+        why: The router only matches the URL shape; it doesn't know which ids exist in your data.
+    answer: 1
+  - q: Trailhead must remember the sign-in token, 600 hikes, and the user's preferred units. Which mapping is right?
+    options:
+      - text: All three in AsyncStorage under separate keys.
+        why: The token would be unencrypted, and the hikes would be slow to query.
+      - text: All three in expo-secure-store.
+        why: SecureStore is designed for small secrets, not a 600-record log.
+      - text: Token in SQLite, hikes in AsyncStorage, units in SecureStore.
+        why: Each item is in the store least suited to it.
+      - text: Token in expo-secure-store, hikes in expo-sqlite, units in AsyncStorage.
+        why: Correct. Secrets encrypted, records queryable, preferences simple.
+    answer: 3
+  - q: When is the best moment for Trailhead to ask for camera permission?
+    options:
+      - text: On first launch, together with location and notifications, to get it over with.
+        why: Users deny what they don't understand, and on iOS the first denial is hard to undo.
+      - text: Never; expo-image-picker doesn't need permission for the camera.
+        why: Launching the camera always requires the camera permission.
+      - text: When the user taps "Take photo" on a hike, after a short explanation if needed.
+        why: Correct. The reason is obvious at that moment, so people say yes.
+      - text: After the user has logged ten hikes, as a reward.
+        why: Asking at an unrelated moment is as confusing as asking at launch.
+    answer: 2
+  - q: A tracking screen starts `watchPositionAsync` in an effect. Which cleanup is correct?
+    options:
+      - text: Store the subscription and call `subscription.remove()` in the effect's cleanup, handling the case where it arrives after unmount.
+        why: Correct. Otherwise GPS keeps running and draining the battery after the screen closes.
+      - text: Call `Location.stopAllAsync()` when the app goes to the background.
+        why: That function doesn't exist; you remove the subscription you created.
+      - text: No cleanup is needed; React Native stops native subscriptions on unmount.
+        why: Native subscriptions don't know about your components.
+    answer: 0
+  - q: You need to know which components re-render while scrolling Trailhead's log. Which tool answers that directly?
+    options:
+      - text: LogBox
+        why: LogBox shows errors and warnings, not render activity.
+      - text: The Profiler in React Native DevTools, recording why each component rendered.
+        why: Correct. It shows what rendered, how long it took and what changed.
+      - text: The Xcode console
+        why: It shows native logs; it knows nothing about React renders.
+      - text: "`eas build --profile development`"
+        why: That builds an app; it doesn't inspect one.
+    answer: 1
+  - q: Which sequence ships Trailhead's first version to the App Store?
+    options:
+      - text: "`eas update --channel production`, then wait for review."
+        why: Updates modify existing installs; they can't create the first store release.
+      - text: "`npx expo start --no-dev`, then upload the QR code to App Store Connect."
+        why: The dev server isn't a build; stores need a signed binary.
+      - text: "`eas submit`, then `eas build --profile production`."
+        why: You can't submit a build that doesn't exist yet.
+      - text: "`eas build --platform ios --profile production`, then `eas submit --platform ios`, test in TestFlight, then submit for review."
+        why: Correct. Build, upload, test the real binary, then review.
+    answer: 3
+  - q: A crash in Trailhead's comma parsing reaches production. Which response is fastest while staying safe?
+    options:
+      - text: Remove the app from the store until a new version passes review.
+        why: Removing the app hurts every user for a bug you can fix over the air.
+      - text: Publish the fix directly to production without testing to save time.
+        why: An untested update can break more than it fixes, for everyone, quickly.
+      - text: Fix and test it, publish with `eas update` to the preview channel, verify on a real phone, then publish to production.
+        why: Correct. JavaScript-only fixes can ship the same day, with a quick check first.
+      - text: Raise the runtime version so the fix reaches all builds.
+        why: A new runtime version would stop the update from reaching existing builds.
+    answer: 2

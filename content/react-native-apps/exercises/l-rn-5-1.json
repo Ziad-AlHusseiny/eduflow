@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "jsx",
+  "code": "import { memo, useEffect, useState } from 'react';\nimport { FlatList, Text, View } from 'react-native';\nimport { useHikes } from '../state/hikes';\n\nconst HikeRow = memo(function HikeRow({ hike }) {\n  return (\n    <View style={{ padding: 12 }}>\n      <Text>{hike.name}</Text>\n      <Text>{hike.distanceKm} km</Text>\n    </View>\n  );\n});\n\nexport default function HikeLog() {\n  const hikes = useHikes();\n  const [now, setNow] = useState(Date.now());\n\n  useEffect(() => {\n    const id = setInterval(() => setNow(Date.now()), 16);\n    return () => clearInterval(id);\n  }, []);\n\n  return (\n    <View style={{ flex: 1 }}>\n      <Text>Updated {new Date(now).toLocaleTimeString()}</Text>\n      <FlatList\n        data={hikes}\n        keyExtractor={(item, index) => String(index)}\n        renderItem={({ item }) => <HikeRow hike={{ ...item }} />}\n      />\n    </View>\n  );\n}",
+  "bugLines": [
+    19,
+    28,
+    29
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "ratings",
+    "average-rating",
+    "sort-order",
+    "sorted-movies",
+    "is-sorted-by-year"
+  ],
+  "correct": [
+    "ratings",
+    "sort-order"
+  ]
+}

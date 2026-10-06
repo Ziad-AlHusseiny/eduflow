@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "json",
+  "code": "{\n  \"primitives\": {\n    \"teal/700\": \"#0F766E\",\n    \"gray/900\": \"#1A1A1A\",\n    \"gray/500\": \"#6B7280\",\n    \"gray/400\": \"#9CA3AF\",\n    \"gray/200\": \"#E5E7EB\",\n    \"white\":    \"#FFFFFF\"\n  },\n  \"semantic\": {\n    \"color/text/primary\":    \"{gray/900}\",\n    \"color/text/secondary\":  \"{gray/400}\",\n    \"color/surface/default\": \"{white}\",\n    \"color/border/default\":  \"{gray/200}\",\n    \"color/action/primary\":  \"#0F766E\",\n    \"color/teal-checkbox\":   \"{teal/700}\",\n    \"color/on-action\":       \"{white}\"\n  }\n}",
+  "bugLines": [
+    12,
+    15,
+    16
+  ]
+}

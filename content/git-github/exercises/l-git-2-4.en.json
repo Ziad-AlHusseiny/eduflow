@@ -1,0 +1,11 @@
+{
+  "title": "Rebase the projects grid",
+  "prompt": "Your `projects-grid` branch is behind `main`, and you want a linear history. Fill in the blanks to rebase it, get through one conflict, and update the branch you already pushed for review without risking anyone else's commits.",
+  "hints": [
+    "The command you need has the same name as the operation.",
+    "After `git add`, a rebase in progress needs one more word to keep going.",
+    "There's a force-push option that checks the remote hasn't changed since you last fetched. It's long; it includes the word lease."
+  ],
+  "explanation": "`git rebase main` replays the branch's commits on top of `main`'s tip. When a replayed commit conflicts, you fix the file, `git add` it and run `git rebase --continue` (or `--abort` to give up). The rebased commits have new IDs, so a normal push is rejected; `git push --force-with-lease` replaces the remote branch only if nobody pushed to it since you last looked. This is fine on your own review branch, and never on `main`.",
+  "checks": {}
+}

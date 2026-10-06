@@ -1,0 +1,10 @@
+{
+  "title": "Stop the workflow from publishing broken code",
+  "prompt": "This GitHub Actions workflow is meant to publish `@northwind/ui` to npm after changes are merged and tested. As written, it can put untested, unreviewed code in front of all 40 teams. Select the line or lines that cause that.",
+  "hints": [
+    "When does this workflow run? Has the code been reviewed and merged at that point?",
+    "Read the steps top to bottom: what happens if the build or the visual tests fail?"
+  ],
+  "explanation": "Two lines are wrong.\n\n- **Line 3** triggers the workflow on `pull_request`, so every open pull request publishes, before review or merge. A release workflow should run on `push` to `main`.\n- **Line 18** publishes right after installing, before `npm run build`, `npm test` and the visual tests. If any of those fail, the package is already on npm. Publishing must be the last step.\n\nThe fix: `on: push: branches: [main]`, and move the publish step (or the Changesets action that runs it) after build, tests and visual tests.",
+  "checks": {}
+}

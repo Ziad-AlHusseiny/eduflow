@@ -1,0 +1,15 @@
+{
+  "title": "Declare what the compiler can't see",
+  "prompt": "The app code below already works at runtime, but it does not type-check. Without editing the app code or the tests, add declarations in the marked spot:\n\n1. Declare the global `cartwheelAnalytics` from the vendor snippet: a `track(event, props?)` method where `event` is an `AnalyticsEvent` and `props` maps strings to strings or numbers, plus a read-only `sent` list of strings.\n2. Add `findLast` to arrays (it exists in the browser but not in the playground's ES2022 lib), returning the element type or `undefined`.\n3. Extend `CheckoutConfig` with a required `giftWrap: boolean`, without editing the original interface.",
+  "hints": [
+    "A global that exists at runtime is described with `declare var name: { … };` (this file is a script, so it is global).",
+    "Global lib interfaces can be extended by declaring an interface with the same name: `interface Array<T> { findLast(…): T | undefined; }`.",
+    "Interfaces merge: write a second `interface CheckoutConfig { giftWrap: boolean; }`."
+  ],
+  "explanation": "`declare var` tells TypeScript that `cartwheelAnalytics` exists at runtime without emitting any code, and the precise `AnalyticsEvent` parameter turns typos into compile errors that the snippet itself would never report. Because this file is a script, a second `interface Array<T>` merges with the lib's global `Array`, filling the gap between the ES2022 lib and the browser. The second `CheckoutConfig` declaration merges with the first, which is exactly how module augmentation extends a library's interfaces. All three are unchecked promises about the runtime, so they should stay minimal and say what they were checked against.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including the type tests",
+    "latest": "`latestShipped` returns the last shipped order",
+    "tracks": "`placeOrder` sends an `order_placed` event"
+  }
+}

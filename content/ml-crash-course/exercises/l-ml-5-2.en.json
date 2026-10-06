@@ -1,0 +1,17 @@
+{
+  "title": "Train and inspect a small network",
+  "prompt": "1. `net`: a pipeline of `StandardScaler` then `MLPClassifier` with **one** hidden layer of 32 neurons (`max_iter=500, random_state=42`), fitted on the digits training data.\n2. From the fitted network, set `n_params` (all weights plus all biases), `epochs` (how many epochs training actually ran) and `test_acc` (accuracy on the test set).",
+  "hints": [
+    "One hidden layer of 32 is `hidden_layer_sizes=(32,)`; the trailing comma makes it a tuple.",
+    "`net[-1]` is the fitted `MLPClassifier`. Its `coefs_` and `intercepts_` are lists of NumPy arrays; add up their `.size`.",
+    "`n_iter_` holds the number of epochs run."
+  ],
+  "explanation": "The network has a 64×32 weight matrix into the hidden layer and a 32×10 matrix out to the ten digits, plus 32 and 10 biases: 2,410 parameters. Training stops by itself once the loss stops improving, well before 500 epochs, and the test accuracy lands around 97–98%, about the same as logistic regression on these small images. Without the scaler, pixel values from 0 to 16 make training slower and less stable.",
+  "checks": {
+    "pipeline": "net scales, then runs an MLPClassifier",
+    "architecture": "One hidden layer of 32 neurons",
+    "params": "n_params counts every weight and bias",
+    "trained": "epochs matches the epochs run, and the loss fell",
+    "accuracy": "test_acc is above 0.95"
+  }
+}

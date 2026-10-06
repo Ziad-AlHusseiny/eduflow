@@ -1,0 +1,11 @@
+{
+  "title": "Upload, protect and archive",
+  "prompt": "Finish three commands for Lantern's storage. Step 1 copies the local `posters/` folder and all its subfolders into the bucket with the copy command. Step 2 turns on versioning. Step 3 uploads a database export that must be kept for seven years at the lowest storage price, where waiting hours for a restore is acceptable. Use the storage class's API name, in capitals.",
+  "hints": [
+    "The high-level `aws s3` copy command is two letters, and it needs a flag to descend into folders.",
+    "Versioning's status values are `Enabled` and `Suspended`.",
+    "The archive class with the lowest storage price and a 180-day minimum is written with an underscore."
+  ],
+  "explanation": "`aws s3 cp` with `--recursive` copies every file under the folder, keeping the relative paths as key prefixes. (`aws s3 sync` would also work and only uploads changed files, but it takes no `--recursive` flag.) `Status=Enabled` turns versioning on; after that you can only suspend it. `--storage-class DEEP_ARCHIVE` puts the export straight into S3 Glacier Deep Archive, which has the lowest storage price, a 180-day minimum storage duration and restores measured in hours, a good fit for files you hope never to need.",
+  "checks": {}
+}

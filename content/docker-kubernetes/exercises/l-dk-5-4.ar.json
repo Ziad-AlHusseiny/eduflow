@@ -1,0 +1,33 @@
+{
+  "title": "الخطوة الأولى لكل عَرَض",
+  "prompt": "أنت في المناوبة على notes-api. لكل عَرَض أدناه، يقترح زميلك خطوة أولى. اختر **كل** ربط تكون فيه الخطوة الأولى صحيحة.",
+  "hints": [
+    "اسأل عن كل واحد: هل عمل container فعلًا حتى الآن؟ إن لم يعمل، فلا سجلات له.",
+    "أي الخطوات تجمع الأدلّة، وأيها يدمّرها؟",
+    "ثلاثة من الروابط صحيحة."
+  ],
+  "explanation": "حلقة الانهيار تترك خطأها في مخرجات الـ container السابق، لذا يأتي `logs --previous` أولًا. والـ Pod العالق في Pending لم يُجدوَل أصلًا؛ و`describe` يُظهر سبب الـ scheduler. والـ Pod الذي يعمل لكنه غير جاهز يفشل في الـ readiness probe؛ و`describe` يُظهر الإخفاقات، و`/readyz` يخبرك بالاعتمادية المتعطّلة. أما فشل سحب الـ image فلا سجلات له لأن أي container لم يعمل؛ اقرأ خطأ السحب في `describe`. وحذف Pod ينهار يُضيّع سجلاته وأحداثه، والبديل ينهار بالطريقة نفسها.",
+  "options": {
+    "crash-logs": {
+      "text": "`CrashLoopBackOff` ← `kubectl logs <pod> --previous`",
+      "why": "صحيح. مخرجات النسخة المنهارة تحتوي عادةً على الخطأ الذي قتلها."
+    },
+    "pending-describe": {
+      "text": "`Pending` لخمس دقائق ← `kubectl describe pod <pod>` وقراءة أحداث الجدولة",
+      "why": "صحيح. أحداث مثل `Insufficient memory` أو node selector غير مطابق تشرح لماذا لم يقبله أي node."
+    },
+    "pull-logs": {
+      "text": "`ImagePullBackOff` ← `kubectl logs <pod>`",
+      "why": "الـ container لم يبدأ أبدًا، فلا توجد سجلات. ‏`describe` يُظهر خطأ السحب."
+    },
+    "notready-probe": {
+      "text": "`Running` لكن `0/1` جاهز ← `kubectl describe pod <pod>` لرؤية إخفاقات الـ probe، ثم التحقّق مما يعتمد عليه `/readyz`",
+      "why": "صحيح. إخفاقات الـ readiness تُسجَّل كأحداث، واعتماديات ذلك الـ endpoint هي السبب عادةً."
+    },
+    "crash-delete": {
+      "text": "`CrashLoopBackOff` ← `kubectl delete pod <pod>` حتى يُعاد تشغيله نظيفًا",
+      "why": "البديل يشغّل الـ image والإعدادات نفسها وينهار بالطريقة نفسها، وتذهب أدلّة الـ Pod القديم."
+    }
+  },
+  "checks": {}
+}

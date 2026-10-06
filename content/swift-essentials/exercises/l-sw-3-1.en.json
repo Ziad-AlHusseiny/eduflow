@@ -1,0 +1,28 @@
+{
+  "title": "Build the category pill",
+  "prompt": "Pocket Budget's design calls for a category label shaped like a pill: blue capsule background, with the text inset from the capsule's edges by some breathing room. Which modifier chain produces it?",
+  "hints": [
+    "The blue must cover the space around the text, so the space has to exist before the background is applied.",
+    "`clipShape` cuts a view to a shape. What does it cut if the background hasn't been added yet?",
+    "`background(_:in:)` paints a style inside a shape in one step."
+  ],
+  "explanation": "Modifiers apply top to bottom, each wrapping the result so far. In the correct chain the two `padding` calls create the inset first, and `background(.blue, in: Capsule())` then paints a capsule behind the text and its padding.\n\nThe other chains apply the background too early (so the padding is outside the blue) or clip before there's any background to clip. When a SwiftUI shape is the wrong size, check the modifier order before anything else.",
+  "options": {
+    "a": {
+      "text": "`Text(\"Food\").background(.blue).padding().clipShape(Capsule())`",
+      "why": "The blue is applied before the padding, so it hugs the text; the clip then rounds a mostly transparent area."
+    },
+    "b": {
+      "text": "`Text(\"Food\").padding(.horizontal, 12).padding(.vertical, 6).background(.blue, in: Capsule())`",
+      "why": "Correct. The padding exists first, then the capsule is painted behind the text plus its padding."
+    },
+    "c": {
+      "text": "`Text(\"Food\").clipShape(Capsule()).padding().background(.blue)`",
+      "why": "This clips the bare text, then paints a blue rectangle around the padding. You get a rectangle, not a pill."
+    },
+    "d": {
+      "text": "`Text(\"Food\").background(.blue).clipShape(Capsule()).padding()`",
+      "why": "This makes a tiny pill that hugs the letters with no inset, then adds clear space outside it."
+    }
+  }
+}

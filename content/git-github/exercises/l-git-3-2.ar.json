@@ -1,0 +1,19 @@
+{
+  "title": "أعِدّ SSH للموقع الشخصي",
+  "prompt": "قرّرت أن ترفع الموقع الشخصي عبر SSH. رتّب خطوات الإعداد بالترتيب الذي ينجح، من عدم وجود أي مفتاح إلى `git push` ناجح عبر SSH. أنهِ كل العمل المحلي على المفتاح (توليده وتحميله في الـ agent) قبل أن تلمس GitHub، وتأكّد أن SSH يعمل قبل أن تغيّر إعدادات الـ repository.",
+  "hints": [
+    "لا تستطيع إضافة مفتاح أو نسخه قبل أن يوجد.",
+    "يجب أن يعرف GitHub مفتاحك العام قبل أن يرحّب بك اختبار الاتصال.",
+    "تغيير عنوان الـ remote هو الخطوة الأخيرة، بعد أن تتأكّد أن SSH يعمل."
+  ],
+  "explanation": "ولّد الزوج أولًا بـ `ssh-keygen -t ed25519`، ثم حمّل المفتاح الخاص في الـ agent كي لا تعيد كتابة عبارة المرور. انسخ المفتاح العام (ملف `.pub`) وأضفه إلى حسابك على GitHub. الأمر `ssh -T git@github.com` يثبت أن الإعداد يعمل قبل أن تغيّر أي شيء في الـ repository. وأخيرًا، يبدّل `git remote set-url` الـ `origin` إلى عنوان SSH فيستخدم Git المفتاح في الرفع التالي.",
+  "items": {
+    "keygen": "شغّل `ssh-keygen -t ed25519 -C \"maya.okafor@example.com\"` واضبط عبارة مرور.",
+    "agent": "شغّل الـ agent ثم `ssh-add ~/.ssh/id_ed25519`.",
+    "copy": "انسخ محتوى `~/.ssh/id_ed25519.pub`.",
+    "github": "على GitHub، افتح Settings ثم SSH and GPG keys ثم New SSH key، والصقه.",
+    "test": "شغّل `ssh -T git@github.com` وتأكّد أنه يرحّب بك باسم المستخدم.",
+    "seturl": "شغّل `git remote set-url origin git@github.com:maya-okafor/portfolio.git`، ثم `git push`."
+  },
+  "checks": {}
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Is Pocket on budget?",
+  "prompt": "Fill in `budgetStatus(spentCents, budgetCents)` so it returns `\"over\"` when spending is **more than** the budget, `\"close\"` when it is at least 80% of the budget (but not over), and `\"ok\"` otherwise. Spending exactly the budget counts as `\"close\"`, not over.\n\nThen fill in `amountLabel(amountCents)` with a **ternary**: return `\"big\"` for 10000 cents ($100) or more, and `\"small\"` otherwise. Writing `return` followed by a value hands that value back to whoever called the function.\n",
+  "hints": [
+    "Check the narrowest case first. Over budget is also \"at least 80%\", so test `spentCents > budgetCents` before the 80% check.",
+    "80% of the budget is `budgetCents * 0.8`. Use `>=` so that exactly 80% counts as close.",
+    "The ternary reads `condition ? valueIfTrue : valueIfFalse`, so: `return amountCents >= 10000 ? \"big\" : \"small\";`."
+  ],
+  "explanation": "The chain checks `spentCents > budgetCents` first because it is the narrowest condition: every over-budget amount is also at least 80% of the budget, so checking the 80% rule first would label overspending as merely \"close\". Using `>` for \"over\" and `>=` for \"close\" makes the boundaries exact: 2000 of 2000 is close, 2001 is over, and 1600 (exactly 80%) is close. The ternary in `amountLabel` picks one of two values and returns it directly, which is the job it was designed for.\n",
+  "checks": {
+    "over": "Returns \"over\" when spending is more than the budget",
+    "close": "Returns \"close\" from 80% up to and including the budget",
+    "ok": "Returns \"ok\" below 80%",
+    "label": "`amountLabel` returns \"big\" from 10000 cents and \"small\" below"
+  }
+}

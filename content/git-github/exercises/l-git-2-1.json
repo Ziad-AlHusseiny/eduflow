@@ -1,0 +1,24 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "git switch {{0}} footer          # create the branch and move onto it\ngit add index.html styles.css\ngit commit -m \"Add site footer with contact links\"\ngit switch {{1}}                 # back to main to check it's untouched\ngit branch -m footer {{2}}       # rename to site-footer",
+  "blanks": [
+    {
+      "answers": [
+        "-c",
+        "--create"
+      ]
+    },
+    {
+      "answers": [
+        "main",
+        "-"
+      ]
+    },
+    {
+      "answers": [
+        "site-footer"
+      ]
+    }
+  ]
+}

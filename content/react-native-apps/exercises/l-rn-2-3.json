@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Work out how many photo cards fit across the screen, and how wide each one is.\nfunction gridLayout(screenWidth, { minCardWidth = 160, gap = 12, padding = 16 } = {}) {\n  const columns = Math.floor(screenWidth / minCardWidth);\n  const cardWidth = screenWidth / columns;\n  return { columns, cardWidth };\n}\n\nconsole.log(gridLayout(390)); // iPhone in portrait\nconsole.log(gridLayout(820)); // iPad in portrait\n"
+  },
+  "solution": {
+    "js": "function gridLayout(screenWidth, { minCardWidth = 160, gap = 12, padding = 16 } = {}) {\n  const available = screenWidth - padding * 2;\n  const columns = Math.max(1, Math.floor((available + gap) / (minCardWidth + gap)));\n  const cardWidth = Math.floor((available - gap * (columns - 1)) / columns);\n  return { columns, cardWidth };\n}\n\nconsole.log(gridLayout(390)); // iPhone in portrait\nconsole.log(gridLayout(820)); // iPad in portrait\n"
+  },
+  "checks": [
+    {
+      "id": "phone",
+      "test": "return typeof gridLayout === 'function' && (() => { const r = gridLayout(390); return r && r.columns === 2 && r.cardWidth === 173; })();"
+    },
+    {
+      "id": "small-phone",
+      "test": "return (() => { const r = gridLayout(320); return r && r.columns === 1 && r.cardWidth === 288; })();"
+    },
+    {
+      "id": "tablet",
+      "test": "return (() => { const r = gridLayout(820); return r && r.columns === 4 && r.cardWidth === 188; })();"
+    },
+    {
+      "id": "options",
+      "test": "return (() => { const r = gridLayout(400, { minCardWidth: 100, gap: 8, padding: 20 }); return r && r.columns === 3 && r.cardWidth === 114; })();"
+    },
+    {
+      "id": "never-zero",
+      "test": "return (() => { const r = gridLayout(200, { minCardWidth: 300 }); return r && r.columns === 1 && r.cardWidth === 168; })();"
+    }
+  ]
+}

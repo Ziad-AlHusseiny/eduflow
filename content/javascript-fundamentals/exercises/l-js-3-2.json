@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450, category: \"food\" },\n  { id: \"exp-2\", label: \"Train\", amount: 1220, category: \"travel\" },\n];\n\n// Return a NEW array with the expense added at the end\nfunction addExpense(list, expense) {\n  list.push(expense);\n  return list;\n}\n\n// Return a NEW array where the expense with this id has the new amount\nfunction updateAmount(list, id, amount) {\n  const found = list.find((e) => e.id === id);\n  found.amount = amount;\n  return list;\n}\n\n// \"Train: $12.20 (travel)\"; category defaults to \"other\"\nfunction describe(expense) {\n  return expense.label;\n}\n\nconsole.log(describe(expenses[1]));\n"
+  },
+  "solution": {
+    "js": "const expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450, category: \"food\" },\n  { id: \"exp-2\", label: \"Train\", amount: 1220, category: \"travel\" },\n];\n\nfunction addExpense(list, expense) {\n  return [...list, expense];\n}\n\nfunction updateAmount(list, id, amount) {\n  return list.map((e) => (e.id === id ? { ...e, amount } : e));\n}\n\nfunction describe({ label, amount, category = \"other\" }) {\n  return `${label}: $${(amount / 100).toFixed(2)} (${category})`;\n}\n\nconsole.log(describe(expenses[1]));\n"
+  },
+  "checks": [
+    {
+      "id": "add",
+      "test": "const list = [{ id: 'a', label: 'A', amount: 1 }];\nconst item = { id: 'b', label: 'B', amount: 2 };\nconst out = addExpense(list, item);\nreturn Array.isArray(out) && out.length === 2 && out[1] === item && out[0] === list[0];\n"
+    },
+    {
+      "id": "add-pure",
+      "test": "const list = [{ id: 'a', label: 'A', amount: 1 }];\nconst out = addExpense(list, { id: 'b', label: 'B', amount: 2 });\nreturn list.length === 1 && out !== list;\n"
+    },
+    {
+      "id": "update",
+      "test": "const list = [{ id: 'a', label: 'A', amount: 1 }, { id: 'b', label: 'B', amount: 2 }];\nconst out = updateAmount(list, 'b', 300);\nreturn Array.isArray(out) && out.length === 2 && out[1].amount === 300 && out[1].label === 'B' && out[1].id === 'b' && out[0].amount === 1;\n"
+    },
+    {
+      "id": "update-pure",
+      "test": "const list = [{ id: 'a', label: 'A', amount: 1 }, { id: 'b', label: 'B', amount: 2 }];\nconst out = updateAmount(list, 'b', 300);\nreturn list[1].amount === 2 && out !== list && out[1] !== list[1];\n"
+    },
+    {
+      "id": "describe",
+      "test": "return describe({ label: 'Train', amount: 1220, category: 'travel' }) === 'Train: $12.20 (travel)' && describe({ label: 'Gift', amount: 5000 }) === 'Gift: $50.00 (other)';\n"
+    }
+  ]
+}

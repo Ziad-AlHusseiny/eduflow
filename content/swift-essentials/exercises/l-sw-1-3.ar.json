@@ -1,0 +1,28 @@
+{
+  "title": "توقّع التقرير الشهري",
+  "prompt": "اقرأ هذا المقطع من التقرير الشهري في Pocket Budget وتوقّع بالضبط ما يطبعه. مرّ على كل تصنيف بالترتيب، وتتبّع ما يعيده كل بحث في القاموسين.\n\n```swift\nlet limits: [String: Decimal] = [\"Food\": 300, \"Transport\": 120]\nvar spent: [String: Decimal] = [\"Food\": 280]\nspent[\"Fun\", default: 0] += 15\n\nfor category in [\"Food\", \"Transport\", \"Fun\"] {\n    let used = spent[category] ?? 0\n    let limit = limits[category] ?? 0\n    switch used {\n    case 0:\n        print(\"\\(category): nothing yet\")\n    case let amount where amount > limit:\n        print(\"\\(category): over by \\(amount - limit)\")\n    default:\n        print(\"\\(category): ok\")\n    }\n}\n```",
+  "hints": [
+    "بعد السطر 3 يحتوي `spent` على مفتاحين. ما هما، وما قيمتاهما؟",
+    "المفتاح الغائب مع `?? 0` يعطي 0. وهذا ينطبق على `spent` و`limits` معًا.",
+    "التصنيف \"Fun\" ليس له حدّ أصلًا، فحدّه 0. هل 15 أكبر من 0؟"
+  ],
+  "explanation": "السطر `spent[\"Fun\", default: 0] += 15` يضيف مدخلًا باسم \"Fun\"، فيصبح `spent` هو `[\"Food\": 280, \"Fun\": 15]`.\n\n- **Food**: المستهلك 280 والحدّ 300. ليس 0 ولا يتجاوز الحدّ، فتطبع `default` العبارة \"Food: ok\".\n- **Transport**: لا مدخل له في `spent`، فالمستهلك 0 وتطبع الحالة الأولى \"Transport: nothing yet\".\n- **Fun**: المستهلك 15 ولا حدّ له، فتكون `limits[\"Fun\"] ?? 0` مساوية لـ 0. و15 > 0 فيُطبع \"Fun: over by 15\".\n\nالسطر الأخير سؤال منتج حقيقي متنكّر: هل يُعدّ التصنيف الذي لا حدّ له «متجاوزًا»؟ الكود يقول نعم لأن `?? 0` اختار هذه القيمة الافتراضية. القيم الافتراضية قرارات.",
+  "options": {
+    "a": {
+      "text": "Food: ok / Transport: ok / Fun: ok",
+      "why": "لم يُنفَق شيء على Transport، فيطابق `case 0` أولًا. وليس لـ Fun حدّ، والكود يعامل ذلك على أنه 0."
+    },
+    "b": {
+      "text": "Food: ok / Transport: nothing yet / Fun: nothing yet",
+      "why": "الصيغة `default:` في السطر 3 كتبت 15 في \"Fun\"، فلم تعد قيمته 0."
+    },
+    "c": {
+      "text": "Food: ok / Transport: nothing yet / Fun: over by 15",
+      "why": "صحيح. المفتاح الغائب لـ Transport يصبح 0، والحدّ الغائب لـ Fun يصبح 0، فتُحسب 15 تجاوزًا."
+    },
+    "d": {
+      "text": "Food: over by 20 / Transport: nothing yet / Fun: over by 15",
+      "why": "280 أقل من حدّ Food البالغ 300، فلا تطابق الحالة `where amount > limit`."
+    }
+  }
+}

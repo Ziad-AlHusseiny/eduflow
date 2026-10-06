@@ -1,0 +1,31 @@
+{
+  "title": "Find the minimal state",
+  "prompt": "The Watchlist gets two new features. Each movie can now have a star rating from 1 to 5 that you set by clicking stars, and a dropdown lets you sort the list by **title** or by **year**. The header also shows the average rating of the movies you've watched.\n\n**Which of these should be stored in state?** Pick every one that is truly state; leave out anything that's derived.",
+  "hints": [
+    "For each item, ask: can I calculate this from other data I already have?",
+    "An average, a sorted copy and a yes/no about the sort can all be computed from the ratings and the chosen sort order."
+  ],
+  "explanation": "Only two things change on their own because of what the user does: each movie's rating (stored on the movie in the movies state) and the chosen sort order. Everything else is calculated during render. The average is `watched ratings ÷ count`, the sorted list is a sorted copy of the movies based on the sort order, and \"is sorted by year\" is just `sortOrder === 'year'`. Storing any of those would create a second copy that can go stale.",
+  "options": {
+    "ratings": {
+      "text": "Each movie's rating, stored as a field on the movie in the movies state",
+      "why": "Correct. A rating changes when the user clicks a star and can't be computed from anything else."
+    },
+    "average-rating": {
+      "text": "The average rating shown in the header",
+      "why": "Derived. Compute it from the watched movies' ratings during render, or it will drift when a rating changes."
+    },
+    "sort-order": {
+      "text": "The selected sort order: \"title\" or \"year\"",
+      "why": "Correct. It changes when the user picks from the dropdown, and nothing else can tell you what they picked."
+    },
+    "sorted-movies": {
+      "text": "A sorted copy of the movie list",
+      "why": "Derived. Sort a copy of the movies by the current sort order while rendering; storing it means re-sorting by hand after every change."
+    },
+    "is-sorted-by-year": {
+      "text": "A boolean `isSortedByYear` used to style the dropdown",
+      "why": "Derived. It's `sortOrder === 'year'`. Keeping it in its own state lets it disagree with the actual sort order."
+    }
+  }
+}

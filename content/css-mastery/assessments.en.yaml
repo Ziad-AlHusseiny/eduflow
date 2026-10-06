@@ -1,0 +1,393 @@
+checkpoints:
+  s-css-1:
+    - q: |
+        What color is the link?
+        ```css
+        @layer base, components;
+        @layer components {
+          .btn { color: white; }
+        }
+        a { color: blue; }
+        ```
+        ```html
+        <a class="btn" href="#">Buy tickets</a>
+        ```
+      options:
+        - text: "white, because `components` is the last declared layer."
+          why: "Being the last named layer only beats other named layers; the unlayered rule outranks all of them."
+        - text: "blue, because unlayered normal styles beat every layer."
+          why: "Correct. Unlayered styles sit in an implicit layer above all named ones, so the type selector wins despite its lower specificity."
+        - text: "white, because a class is more specific than a type selector."
+          why: "Specificity is only compared within the same layer. Layer priority is settled first."
+        - text: "The browser default link color, because the two rules cancel out."
+          why: "Rules never cancel each other; the cascade always picks one winner."
+      answer: 1
+    - q: |
+        Both rules target `<h3 class="title">` inside `.card`. Which color wins?
+        ```css
+        :where(.card) .title { color: green; }
+        .title { color: red; }
+        ```
+      options:
+        - text: "red, because both selectors score (0,1,0) and red comes later."
+          why: "Correct. `:where()` contributes nothing, so the specificities tie and order of appearance decides."
+        - text: "green, because it is more specific."
+          why: "`:where(.card)` adds zero specificity, so green's selector scores the same (0,1,0) as red's."
+        - text: "green, because descendant selectors beat single selectors."
+          why: "Combinators add no specificity; only the simple selectors count."
+        - text: "Neither; `:where()` makes the first rule invalid."
+          why: "`:where()` is valid everywhere and still matches; it just weighs nothing."
+      answer: 0
+    - q: "A card's glow should grow on hover with `transition: --glow 300ms`, using `box-shadow: 0 0 var(--glow) violet`. The glow jumps instead of animating. What fixes it?"
+      options:
+        - text: "Add `transition-behavior: allow-discrete` so the custom property is allowed to transition."
+          why: "`allow-discrete` lets a value that can't be interpolated take part in a transition, but it still flips in one step, at the halfway point. The browser needs to know `--glow` is a length to blend it."
+        - text: "Move `--glow` to `:root` so it inherits."
+          why: "Where the property is defined doesn't change whether it can be interpolated."
+        - text: "Register `--glow` with `@property` using `syntax: \"<length>\"` and an initial value."
+          why: "Correct. Once the browser knows `--glow` is a length, it can interpolate it, and the shadow animates smoothly."
+        - text: "Add `will-change: --glow`."
+          why: "`will-change` is a performance hint; it doesn't make an untyped value animatable."
+      answer: 2
+    - q: "The markup is `<label class=\"field\">Email <input type=\"email\"></label>`. Which selector styles the label while its input has focus?"
+      options:
+        - text: "`.field:focus`"
+          why: "The label itself never receives focus; the input inside it does."
+        - text: "`input:focus + .field`"
+          why: "The `+` combinator looks for a following sibling, but the label is the input's parent."
+        - text: "`.field > input:focus`"
+          why: "That selects the input, not the label."
+        - text: "`.field:has(input:focus)`"
+          why: "Correct. The label matches when it contains a focused input. `.field:focus-within` would also work here."
+      answer: 3
+    - q: |
+        Inside a nested `.session-card` rule, which selector targets the card itself when it also has the class `is-live`?
+        ```css
+        .session-card {
+          /* ??? */ { border-color: red; }
+        }
+        ```
+      options:
+        - text: "`& .is-live`"
+          why: "The space makes it a descendant selector: an `.is-live` element inside the card."
+        - text: "`.is-live`"
+          why: "A nested selector without `&` is treated as a descendant, so this also means an element inside the card."
+        - text: "`&:is-live`"
+          why: "`:is-live` isn't a pseudo-class, so the selector is invalid."
+        - text: "`&.is-live`"
+          why: "Correct. With no space, `&` and `.is-live` form one compound selector: `.session-card.is-live`."
+      answer: 3
+  s-css-2:
+    - q: "A page is `display: flex` with a 16rem sidebar and a `main` with `flex: 1`. A wide data table inside `main` pushes the page into horizontal scrolling. What's the targeted fix?"
+      options:
+        - text: "Add `min-width: 0` to `main` and let the table scroll inside its own `overflow-x: auto` wrapper."
+          why: "Correct. `main`'s automatic minimum width is its content width; removing it lets `main` shrink and contains the overflow where it belongs."
+        - text: "Add `flex-shrink: 1` to `main`."
+          why: "`flex-shrink: 1` is already the default; shrinking stops at the automatic minimum anyway."
+        - text: "Set `overflow: hidden` on `body`."
+          why: "That hides content users need and makes the table impossible to read on small screens."
+        - text: "Change `flex: 1` to `flex: auto` on `main`."
+          why: "`auto` makes `main` start from its content width, which makes the overflow worse, not better."
+      answer: 0
+    - q: "A grid uses `grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))` with no gap in a 500px container. How many columns are there, and how wide?"
+      options:
+        - text: "Two columns of 200px and 100px of empty space."
+          why: "The `1fr` maximum lets the tracks grow to share the leftover space."
+        - text: "Two columns of 250px."
+          why: "Correct. Two 200px tracks fit and a third doesn't, then the `1fr` maximum shares the leftover 100px between the two."
+        - text: "Three columns of about 167px."
+          why: "Each track has a 200px minimum, so three can't fit in 500px."
+        - text: "One column of 500px."
+          why: "`auto-fill` creates as many tracks as fit at their minimum size, which is two here."
+      answer: 1
+    - q: "A speaker sign-up form has three fieldsets, each with label and input pairs. The labels should form one column of equal width across all fieldsets. The form is a two-column grid. What do you add to each fieldset?"
+      options:
+        - text: "`display: grid; grid-template-columns: max-content 1fr;`"
+          why: "Each fieldset sizes its own label column, so a long label in one fieldset doesn't widen the others."
+        - text: "`display: contents;`"
+          why: "That can align the fields, but it removes the fieldset's box (and its border and legend layout), which breaks the grouping."
+        - text: "`display: grid; grid-column: span 2; grid-template-columns: subgrid;`"
+          why: "Correct. Each fieldset spans both form columns and adopts them, so every label shares one column track."
+        - text: "`width: 100%;`"
+          why: "Width doesn't connect the fieldsets' internal columns to each other."
+      answer: 2
+    - q: "A session card sits in a 300px sidebar. Its layout switches with `@container (width > 400px)`, and the sidebar is the size container. The browser window is 1400px wide. Which layout does the card get?"
+      options:
+        - text: "The narrow layout, because the query measures the 300px sidebar."
+          why: "Correct. Container queries ignore the viewport; the nearest size container is what's measured."
+        - text: "The wide layout, because the window is wider than 400px."
+          why: "That's how a media query behaves. A container query measures the container."
+        - text: "Neither; container queries need a container name to match."
+          why: "Unnamed queries use the nearest ancestor size container."
+        - text: "It depends on the card's own width."
+          why: "An element can't query itself; the measurement is the sidebar container's width."
+      answer: 0
+    - q: "What width does `width: clamp(280px, 50%, 600px)` produce inside a 400px-wide parent?"
+      options:
+        - text: "280px"
+          why: "Correct. 50% of 400px is 200px, which is below the 280px minimum, so the minimum wins."
+        - text: "200px"
+          why: "200px is the preferred value, but clamp() never goes below its minimum."
+        - text: "400px"
+          why: "The parent's width isn't one of the three values; clamp() returns min, preferred or max."
+        - text: "600px"
+          why: "The maximum only applies when the preferred value exceeds it."
+      answer: 0
+  s-css-3:
+    - q: "A designer asks why the hero heading uses `clamp(2rem, 1.2rem + 3vw, 3.5rem)` rather than `clamp(32px, 3vw + 19px, 56px)`. What's the best answer?"
+      options:
+        - text: "The rem version scales with the user's default font size and zoom; the px version locks the range to the designer's settings."
+          why: "Correct. rem limits and a rem intercept keep user preferences in the calculation, which Resize Text depends on."
+        - text: "The px version doesn't work in Safari."
+          why: "Both are valid in every current browser; the difference is accessibility, not support."
+        - text: "rem renders faster than px."
+          why: "There's no rendering speed difference between the units."
+        - text: "You can't add px and vw inside clamp()."
+          why: "Mixed units are allowed in math functions; `3vw + 19px` is valid."
+      answer: 0
+    - q: "A dismiss button is positioned with `inset-inline-end: 8px`. The page is `dir=\"rtl\"`. Which physical property does it map to?"
+      options:
+        - text: "`left: 8px`"
+          why: "Correct. In right-to-left text, the inline end is on the left."
+        - text: "`right: 8px`"
+          why: "That's the mapping in left-to-right text, where lines end on the right."
+        - text: "`top: 8px`"
+          why: "`top` is a block-axis position; inline properties map to left and right in horizontal writing."
+        - text: "It has no effect in RTL."
+          why: "Logical properties exist precisely to work in both directions."
+      answer: 0
+    - q: "Which declaration gives a disabled button a grey with the same perceived lightness as the brand color?"
+      options:
+        - text: "`background: hsl(from var(--brand) h 0% l);`"
+          why: "HSL lightness isn't perceptual, so the grey's apparent lightness won't match the brand color."
+        - text: "`background: oklch(from var(--brand) l 0 h);`"
+          why: "Correct. Setting chroma to 0 removes the colorfulness while keeping L, so the grey looks equally light."
+        - text: "`background: color-mix(in srgb, var(--brand), grey);`"
+          why: "Mixing with grey keeps half the color and shifts lightness towards grey's, not the brand's."
+        - text: "`filter: grayscale(1);`"
+          why: "The filter also greys out the text and any icons, and works in a non-perceptual space."
+      answer: 1
+    - q: "The page is in dark mode, but a 'print preview' panel inside it should render with the light values of every `light-dark()` token. What do you set on the panel?"
+      options:
+        - text: "`@media (prefers-color-scheme: light)` around the panel's rules."
+          why: "That media query checks the user's OS setting, which is still dark."
+        - text: "`data-theme=\"light\"` on the panel."
+          why: "The toggle rules in this course read `data-theme` on the root, so the attribute on a panel does nothing unless CSS targets it."
+        - text: "`color-scheme: light;`"
+          why: "Correct. `light-dark()` resolves against each element's used color scheme, which the panel's descendants inherit."
+        - text: "`filter: invert(1);`"
+          why: "Inverting flips images and brand colors too, and doesn't touch the token values."
+      answer: 2
+    - q: "Waypoint adds a sticky 'cookie settings' bar 56px tall at the bottom of the viewport. Keyboard users report that the focused link is sometimes hidden behind it. Which fix addresses WCAG's Focus Not Obscured?"
+      options:
+        - text: "`:focus-visible { outline-offset: 56px; }`"
+          why: "Offsetting the ring doesn't move the element out from under the bar."
+        - text: "`.cookie-bar { opacity: 0.9; }`"
+          why: "Slight transparency still obscures the element; the criterion is about it being hidden, not about the bar's look."
+        - text: "`body { padding-top: 56px; }`"
+          why: "The bar is at the bottom; top padding doesn't change where focused elements land."
+        - text: "`html { scroll-padding-bottom: 56px; }`"
+          why: "Correct. Scroll padding marks the bottom 56px as covered, so focus scrolling keeps the focused element above the bar."
+      answer: 3
+  s-css-4:
+    - q: "Which pair of properties can a browser animate without re-running layout or paint on each frame?"
+      options:
+        - text: "`translate` and `opacity`"
+          why: "Correct. They change how an already-painted layer is composited, so the browser can skip layout and paint."
+        - text: "`width` and `height`"
+          why: "Both change geometry, so layout runs every frame."
+        - text: "`top` and `left`"
+          why: "Positions are geometry too; changing them triggers layout."
+        - text: "`background-color` and `box-shadow`"
+          why: "These skip layout but still repaint on every frame."
+      answer: 0
+    - q: "During a view transition on the schedule, the sticky header crossfades along with the page, which looks like a flicker. How do you keep it still?"
+      options:
+        - text: "Set `position: fixed` on the header."
+          why: "Fixed elements are still captured in the root snapshot, so they crossfade too."
+        - text: "Set `z-index: 1000` on the header."
+          why: "Stacking order on the live page doesn't matter during the transition; the header is still part of the root snapshot that crossfades."
+        - text: "Give the header `view-transition-name: header` and set `animation: none` on `::view-transition-group(header)`."
+          why: "Correct. Naming the header gives it its own group, separate from the root crossfade, and removing that group's animation keeps it still."
+        - text: "Add `will-change: transform` to the header."
+          why: "That's a rendering hint and has no effect on how the transition captures the header."
+      answer: 2
+    - q: "A reading progress bar uses `animation: grow ease both; animation-timeline: scroll(root);`. Halfway down the page, the bar is already 80% full. Why?"
+      options:
+        - text: "`scroll(root)` measures the viewport, not the document."
+          why: "`scroll(root)` tracks the document scroller's progress; the distortion comes from the easing."
+        - text: "The fill mode `both` makes the bar jump ahead."
+          why: "`both` only applies the first and last keyframes outside the active range."
+        - text: "Scroll timelines always run at double speed in the middle."
+          why: "Progress is proportional to scroll position; only the easing changes how it's mapped to keyframes."
+        - text: "The `ease` timing curve maps scroll progress non-linearly; use `linear` so the bar tracks scroll distance exactly."
+          why: "Correct. Timing functions still apply on scroll timelines, so a curve distorts the mapping."
+      answer: 3
+    - q: "A new developer adds `.session-card { margin-block-start: 24px; }` so cards in the sidebar don't touch. What should the review suggest instead?"
+      options:
+        - text: "Use `margin-top` instead, for older browsers."
+          why: "Logical properties are supported everywhere; the problem is the component spacing itself."
+        - text: "Add `!important` so the margin survives other layouts."
+          why: "That makes the margin impossible to adjust per context, which is the opposite of what's needed."
+        - text: "Move the margin into the utilities layer."
+          why: "The card would still carry spacing everywhere; the sidebar is the place that needs it."
+        - text: "Give the sidebar layout `display: grid` (or flex) with a `gap`, and keep the card free of outer margins."
+          why: "Correct. The context owns the spacing, so the card stays reusable in the grid, sidebar and carousel."
+      answer: 3
+    - q: "You add `content-visibility: auto` to each day section of a long schedule but nothing else. What do users notice?"
+      options:
+        - text: "The scrollbar jumps as sections render, because skipped sections have no height until they're laid out."
+          why: "Correct. `contain-intrinsic-size: auto <length>` gives skipped sections a placeholder height and fixes the jumping."
+        - text: "Off-screen sections disappear from find-in-page results."
+          why: "Content skipped by `content-visibility: auto` remains searchable and accessible."
+        - text: "Nothing changes, because content-visibility only works with JavaScript."
+          why: "It's pure CSS and takes effect immediately."
+        - text: "Every section renders twice, slowing the page down."
+          why: "The browser renders a section when it nears the viewport; it doesn't render twice."
+      answer: 0
+final:
+  - q: |
+      What color is the paragraph?
+      ```html
+      <p style="color: red">Doors open at 08:30</p>
+      ```
+      ```css
+      p { color: blue !important; }
+      ```
+    options:
+      - text: "red, because inline styles always win."
+        why: "Inline styles beat normal stylesheet rules, but `!important` is decided earlier in the cascade."
+      - text: "red, because it is more specific."
+        why: "Inline styles aren't compared by specificity; and importance is settled before either."
+      - text: "blue, because stylesheet rules load after inline styles."
+        why: "Load order isn't the reason; importance outranks the inline style."
+      - text: "blue, because an important declaration beats a normal inline style."
+        why: "Correct. Importance is part of the first cascade criterion, which is checked before inline styles."
+    answer: 3
+  - q: |
+      An element has the `hidden` attribute and the class `card`. What is its display?
+      ```css
+      @layer reset, components;
+      @layer reset { [hidden] { display: none !important; } }
+      @layer components { .card { display: grid !important; } }
+      ```
+    options:
+      - text: "none, because important declarations in earlier layers win."
+        why: "Correct. For `!important`, layer order reverses, so `reset` beats `components`."
+      - text: "grid, because `components` is the later layer."
+        why: "That's true for normal declarations; important ones reverse the order."
+      - text: "grid, because a class beats an attribute selector."
+        why: "Both score (0,1,0), and in any case layers are compared before specificity."
+      - text: "The browser default for the element."
+        why: "Both rules apply; the cascade picks one of them."
+    answer: 0
+  - q: "`--accent` is never defined anywhere. What does `color: var(--accent, teal)` produce?"
+    options:
+      - text: "The inherited color, because the declaration is invalid."
+        why: "The fallback exists for this case; the declaration is only invalid if there's no usable fallback."
+      - text: "black, the initial value of color."
+        why: "Even without a fallback, `color` would inherit from the parent rather than reset to black; here the fallback applies anyway."
+      - text: "teal"
+        why: "Correct. An undefined custom property has the guaranteed-invalid value, so `var()` uses its fallback."
+      - text: "An empty string, so the text becomes transparent."
+        why: "Custom properties never produce transparency on their own; the fallback applies."
+    answer: 2
+  - q: "A two-column grid uses `grid-template-columns: 1fr 1fr`. A code sample with a very long line makes the first column much wider. Which change keeps the columns equal and lets the code scroll?"
+    options:
+      - text: "`grid-template-columns: repeat(2, auto)`"
+        why: "`auto` tracks size to content, so the long line makes things worse."
+      - text: "`grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)` plus `overflow-x: auto` on the code block."
+        why: "Correct. Removing the automatic minimum keeps the tracks equal; the code block handles its own overflow."
+      - text: "`white-space: nowrap` on the code block."
+        why: "That keeps the line from wrapping, which is already the problem."
+      - text: "`grid-auto-flow: column`"
+        why: "That changes placement direction, not track sizing."
+    answer: 1
+  - q: "A component uses `font-size: clamp(1rem, 4cqi, 2rem)`, but on one page it isn't inside any size container. What does `4cqi` resolve against there?"
+    options:
+      - text: "4% of the small viewport's inline size, the fallback for container units."
+        why: "Correct. With no eligible container, container units fall back to the small viewport units, so the rule still works."
+      - text: "Zero, so the font size sits at the 1rem minimum."
+        why: "Container units don't resolve to zero; they fall back to viewport units."
+      - text: "The parent element's width."
+        why: "Only size containers count; an ordinary parent isn't measured."
+      - text: "The declaration is invalid and ignored."
+        why: "The value is valid; it just uses the viewport fallback."
+    answer: 0
+  - q: "Which declaration centers a fixed-width block horizontally in both left-to-right and right-to-left pages?"
+    options:
+      - text: "`margin-inline-start: auto;`"
+        why: "Only one side absorbs the space, so the block is pushed to the end, not centered."
+      - text: "`text-align: center;`"
+        why: "That centers inline content inside the block, not the block itself."
+      - text: "`inset-inline: 0;`"
+        why: "Inset properties only affect positioned elements, and they set positions, not centering margins."
+      - text: "`margin-inline: auto;`"
+        why: "Correct. Both inline margins absorb the free space equally, whatever the direction."
+    answer: 3
+  - q: "What does `background: color-mix(in oklch, var(--brand), transparent 80%)` produce?"
+    options:
+      - text: "The brand color at 20% opacity."
+        why: "Correct. Transparent takes 80% of the mix, so the brand color keeps 20% of its alpha."
+      - text: "The brand color at 80% opacity."
+        why: "The 80% belongs to `transparent`, the color it follows, so the brand only gets 20%."
+      - text: "A grey, because mixing with transparent removes chroma."
+        why: "Transparent has no hue to pull towards, so the brand's lightness, chroma and hue are kept."
+      - text: "An invalid value, because transparent can't be mixed."
+        why: "`transparent` is a normal color in `color-mix()` and is the standard way to add alpha."
+    answer: 0
+  - q: "Your dark mode swaps every token correctly, but form `<select>` menus and scrollbars stay bright white. What's missing?"
+    options:
+      - text: "Dark tokens for `--select-bg` and `--scrollbar-bg`."
+        why: "Browser-native UI doesn't read your custom properties by default."
+      - text: "A `prefers-color-scheme` media query around the tokens."
+        why: "That changes your tokens, which already work; native controls still need `color-scheme`."
+      - text: "`appearance: none` on every control."
+        why: "That throws away native styling and accessibility affordances to fix something one property handles."
+      - text: "A `color-scheme` declaration that includes `dark`, so the browser renders its own UI in dark mode."
+        why: "Correct. Built-in controls and scrollbars follow `color-scheme`, not your custom properties."
+    answer: 3
+  - q: "A mouse user clicks a button and sees no focus ring; a keyboard user tabs to it and sees one. The CSS uses `:focus-visible`. Is this a bug?"
+    options:
+      - text: "Yes. The ring must appear for every user on every focus."
+        why: "WCAG requires a visible indicator for keyboard operation, which `:focus-visible` provides."
+      - text: "No. `:focus-visible` uses browser heuristics to show the indicator for keyboard focus but not after a mouse click on a button."
+        why: "Correct. That's the intended behaviour, and it satisfies Focus Visible for keyboard users."
+      - text: "Yes. Programmatic focus is required for mouse users."
+        why: "Mouse users already see where they clicked; no programmatic focus is needed."
+      - text: "No, but only because the button has no outline in the reset."
+        why: "The reset isn't involved; the heuristics of `:focus-visible` explain the behaviour."
+    answer: 1
+  - q: "A dialog shown with `showModal()` should fade in from opacity 0. The transition on `opacity` never runs on open. What's the fix?"
+    options:
+      - text: "Increase the transition duration."
+        why: "The transition never starts, so its duration doesn't matter."
+      - text: "Add `@starting-style { dialog[open] { opacity: 0; } }` so the first style has a starting value."
+        why: "Correct. Without a before-state, there's nothing to transition from when the dialog first renders."
+      - text: "Use `animation-delay` instead of a transition."
+        why: "A delay doesn't give the browser a starting style either."
+      - text: "Set `will-change: opacity` on the dialog."
+        why: "`will-change` is a performance hint and doesn't create a starting value."
+    answer: 1
+  - q: "Speaker cards reveal with a scroll-driven animation inside `@supports (animation-timeline: view())`. What does a visitor using stable Firefox in 2026 see?"
+    options:
+      - text: "The cards fully visible, with no reveal animation."
+        why: "Correct. The `@supports` block doesn't apply, so the cards keep their normal, visible styles."
+      - text: "Invisible cards, because the reveal starts at opacity 0."
+        why: "The opacity 0 keyframe is only used inside the `@supports` block that Firefox skips."
+      - text: "A time-based fade-in on page load."
+        why: "Nothing in the guarded block applies, so there's no animation at all."
+      - text: "An error overlay from the browser."
+        why: "Browsers silently skip CSS they don't support."
+    answer: 0
+  - q: "Fifty speaker cards transition `box-shadow` on hover, and moving the mouse across the grid feels heavy. What's a cheaper way to get the same look?"
+    options:
+      - text: "Add `will-change: box-shadow` to every card."
+        why: "Layer promotion doesn't stop the shadow from repainting each frame, and fifty layers cost memory."
+      - text: "Lower the transition duration to 50ms."
+        why: "Fewer frames of repaint is still repainting, and the effect becomes abrupt."
+      - text: "Put the larger shadow on a `::after` pseudo-element and transition its `opacity` instead."
+        why: "Correct. The shadow is painted once; hovering only changes compositing, so no repaint runs per frame."
+      - text: "Use `filter: drop-shadow()` instead."
+        why: "Changing a filter's shadow still requires repainting the filtered element each frame."
+    answer: 2

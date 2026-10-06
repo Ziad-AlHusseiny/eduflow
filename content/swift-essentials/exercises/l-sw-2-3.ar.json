@@ -1,0 +1,10 @@
+{
+  "title": "الـ extension الذي لا يُترجَم",
+  "prompt": "نقل أحد زملائك سلوك `Budget` إلى extension، والآن لا يُبنى المشروع. اختر السطر الذي يرفضه الـ compiler.",
+  "hints": [
+    "`Budget` هو struct. أيّ سطر في الـ extension يغيّر إحدى خصائصه المخزّنة؟",
+    "الخصائص المحسوبة تقرأ `limit` و`spent` فقط. ابحث عن عملية إسناد.",
+    "الـ methods في الـ structs التي تغيّر `self` تحتاج إلى كلمة مفتاحية قبل `func`."
+  ],
+  "explanation": "السطر 12 يغيّر `spent` من داخل method عادية، والـ methods في الـ structs لا تستطيع تعديل `self` إلا إذا عُلّمت بـ `mutating`. يُبلغ الـ compiler بالرسالة \"left side of mutating operator isn't mutable: 'self' is immutable\". نقل الكود إلى extension لا يغيّر القواعد:\n\n```swift\nmutating func record(_ amount: Decimal) { spent += amount }\n```\n\nموضع الاستدعاء يستخدم `var food` أصلًا، فيُترجَم الكود بمجرّد أن تصبح الـ method من نوع `mutating`. أما مع `let food` فسيفشل مرة أخرى، للسبب الذي رأيته في درس الـ structs."
+}

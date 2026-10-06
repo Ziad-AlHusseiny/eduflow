@@ -1,0 +1,16 @@
+{
+  "title": "Total in cents, exactly",
+  "prompt": "The starter adds three dollar amounts and a typed string, and gets a mess. Fix `totalCents` so it is the **exact total in whole cents** of all four amounts (convert each one to cents with `Math.round(amount * 100)`, and turn `typedAmount` into a number first). Then declare `isOverBudget`, a boolean that is `true` when `totalCents` is greater than `budgetCents`, and `leftCents`, the budget minus the total.\n",
+  "hints": [
+    "Log the starter's `totalCents` to see the problem: a string, because `+` met `\"3\"` and started joining text.",
+    "`Number(typedAmount)` turns `\"3\"` into `3`. Convert each dollar amount with `Math.round(x * 100)`.",
+    "A comparison is already a boolean: `const isOverBudget = totalCents > budgetCents;`."
+  ],
+  "explanation": "Multiplying by 100 moves each amount into cents, but `4.1 * 100` is `409.99999999999994`, so `Math.round` snaps it to the whole number it should be. `typedAmount` must go through `Number()` first; otherwise the first `+` that meets it joins text instead of adding. Once everything is a whole number, the sum is exact: 410 + 1220 + 270 + 300 = 2200. `totalCents > budgetCents` evaluates to `false`, and you store that boolean directly instead of writing an `if`.\n",
+  "checks": {
+    "total-number": "`totalCents` is a number, not a string",
+    "total-exact": "`totalCents` is exactly 2200",
+    "over-budget": "`isOverBudget` is the boolean `false`",
+    "left": "`leftCents` is 300"
+  }
+}

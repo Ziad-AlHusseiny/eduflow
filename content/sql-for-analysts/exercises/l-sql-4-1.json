@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Data-quality check: products sold before their launch date\n-- Write it from scratch. One row per offending product with:\n--   product_id, name, launched_on, first_sold (YYYY-MM-DD), lines\nSELECT product_id, name, launched_on\nFROM products;",
+  "solution": "SELECT\n  p.product_id,\n  p.name,\n  p.launched_on,\n  date(MIN(o.order_date)) AS first_sold,\n  COUNT(*) AS lines\nFROM order_items AS oi\nJOIN orders AS o ON o.order_id = oi.order_id\nJOIN products AS p ON p.product_id = oi.product_id\nWHERE o.order_date < p.launched_on\nGROUP BY p.product_id, p.name, p.launched_on;",
+  "orderMatters": false
+}

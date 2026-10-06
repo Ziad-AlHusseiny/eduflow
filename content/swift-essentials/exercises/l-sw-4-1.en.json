@@ -1,0 +1,10 @@
+{
+  "title": "The data race Swift 6 refuses to build",
+  "prompt": "This helper totals a list of amounts using a task group. It would run fine in a quick test, yet the Swift 6 compiler refuses to build it. Select the line that creates the data race.",
+  "hints": [
+    "How many child tasks are running at the same time, and what are they all touching?",
+    "`Tally` is an ordinary class with a `var`. Is it `Sendable`?",
+    "In structured concurrency, children should hand results back to the parent rather than writing to shared state."
+  ],
+  "explanation": "Line 11 starts one child task per amount, and every child mutates the same `Tally` object. Child tasks run in parallel, so two of them can read and write `total` at the same moment and lose an update. Because `Tally` isn't `Sendable`, Swift 6 rejects the capture (\"passing closure as a 'sending' parameter risks causing data races\", or a main-actor isolation error when your project uses main-actor default isolation).\n\nLet each child return its value and sum in the parent, which only ever runs one loop iteration at a time:\n\n```swift\nfunc totalOfAll(_ amounts: [Decimal]) async -> Decimal {\n    await withTaskGroup(of: Decimal.self) { group in\n        for amount in amounts {\n            group.addTask { amount }\n        }\n        var total: Decimal = 0\n        for await part in group {\n            total += part\n        }\n        return total\n    }\n}\n```\n\nIf the state really must be shared, make `Tally` an `actor` and call `await tally.add(amount)`."
+}

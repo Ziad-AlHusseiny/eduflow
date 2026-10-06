@@ -1,0 +1,20 @@
+{
+  "title": "Ship the static site",
+  "prompt": "Put the steps for Lantern's first production deploy of the front end in a working order. The bucket stays private and the site is served only through CloudFront on `https://lantern.example`. Finish the build-and-S3 work first, then do the certificate, CloudFront and DNS work.",
+  "hints": [
+    "You can't upload files you haven't built, or into a bucket that doesn't exist.",
+    "The distribution needs the certificate when you attach the custom domain, and the bucket policy needs the distribution's ARN.",
+    "DNS goes last before testing, so visitors never land on a half-configured distribution."
+  ],
+  "explanation": "Build first so there is something to upload, then create the private bucket and sync the files with their cache headers. The certificate must exist (and be validated) in us-east-1 before you can attach `lantern.example` to the distribution. The distribution must exist before the bucket policy, because the policy's `AWS:SourceArn` condition names the distribution's ARN. Only when CloudFront can read the bucket do you point DNS at it, and the final check proves both halves: the site loads through CloudFront and the bucket refuses direct requests with 403.",
+  "items": {
+    "build": "Run `npm run build` to produce the `dist/` folder.",
+    "bucket": "Create the private `lantern-site-prod` bucket in Lantern's Region, with Block Public Access left on.",
+    "upload": "Upload `dist/` with `aws s3 sync`, long cache headers for hashed assets and `no-cache` for `index.html`.",
+    "cert": "Request and DNS-validate an ACM certificate for `lantern.example` in `us-east-1`.",
+    "distribution": "Create the CloudFront distribution with origin access control, `index.html` as default root object and the certificate attached.",
+    "policy": "Add the bucket policy that allows `s3:GetObject` for `cloudfront.amazonaws.com` with an `AWS:SourceArn` condition for this distribution.",
+    "dns": "Create alias A and AAAA records for `lantern.example` pointing at the distribution.",
+    "verify": "Check that `https://lantern.example` loads and that the bucket's direct URL returns 403."
+  }
+}

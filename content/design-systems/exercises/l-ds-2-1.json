@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"app\">\n  <button class=\"nw-button\" id=\"main\">Assign driver</button>\n</section>\n<section class=\"promo\">\n  <button class=\"nw-button\" id=\"promo\">Start free trial</button>\n</section>",
+    "css": "/* Tier 1: primitives (done) */\n:root {\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-700: #1848b8;\n  --nw-white: #ffffff;\n  --nw-space-2: 0.5rem;\n  --nw-space-4: 1rem;\n}\n\n/* Tier 2: add semantic tokens here */\n\n/* Tier 3: the button skips straight to primitives. Fix it. */\n.nw-button {\n  background: var(--nw-blue-600);\n  color: var(--nw-white);\n  padding: var(--nw-space-2) var(--nw-space-4);\n  border: 0;\n  border-radius: 6px;\n  font: inherit;\n}\n.promo { margin-top: 16px; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<section class=\"app\">\n  <button class=\"nw-button\" id=\"main\">Assign driver</button>\n</section>\n<section class=\"promo\">\n  <button class=\"nw-button\" id=\"promo\">Start free trial</button>\n</section>",
+    "css": "/* Tier 1: primitives (done) */\n:root {\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-700: #1848b8;\n  --nw-white: #ffffff;\n  --nw-space-2: 0.5rem;\n  --nw-space-4: 1rem;\n}\n\n/* Tier 2: semantic tokens */\n:root {\n  --nw-color-action-bg: var(--nw-blue-600);\n  --nw-color-action-text: var(--nw-white);\n}\n\n/* Tier 3: component tokens, declared on the component */\n.nw-button {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  padding: var(--nw-space-2) var(--nw-space-4);\n  border: 0;\n  border-radius: 6px;\n  font: inherit;\n}\n.promo { margin-top: 16px; }\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "still-blue",
+      "test": "return style('#main', 'background-color') === 'rgb(31, 90, 224)' && style('#main', 'color') === 'rgb(255, 255, 255)';"
+    },
+    {
+      "id": "semantic",
+      "test": "const cs = getComputedStyle(document.documentElement); return cs.getPropertyValue('--nw-color-action-bg').trim() !== '' && cs.getPropertyValue('--nw-color-action-text').trim() !== '';"
+    },
+    {
+      "id": "component",
+      "test": "const b = $('#main'); b.style.setProperty('--nw-button-bg', 'rgb(4, 5, 6)'); const ok = style(b, 'background-color') === 'rgb(4, 5, 6)'; b.style.removeProperty('--nw-button-bg'); return ok;"
+    },
+    {
+      "id": "follows-semantic",
+      "test": "const p = $('.promo'); p.style.setProperty('--nw-color-action-bg', 'rgb(10, 130, 60)'); const ok = style('#promo', 'background-color') === 'rgb(10, 130, 60)' && style('#main', 'background-color') === 'rgb(31, 90, 224)'; p.style.removeProperty('--nw-color-action-bg'); return ok;"
+    },
+    {
+      "id": "no-primitives",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText); const btn = rules.filter((r) => r.selectorText.includes('nw-button')); return btn.length > 0 && btn.every((r) => !/--nw-(blue|white)/.test(r.style.cssText));"
+    }
+  ]
+}

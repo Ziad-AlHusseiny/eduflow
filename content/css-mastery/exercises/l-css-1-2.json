@@ -1,0 +1,19 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<main id=\"schedule\">\n  <article class=\"session\">\n    <h2>Keynote: The Platform Is the Framework</h2>\n    <p>Read the <a class=\"abstract-link\" href=\"#abstract\">full abstract</a>.</p>\n    <a class=\"btn\" href=\"#save\">Save to my schedule</a>\n  </article>\n</main>",
+    "css": "/* Base link style from the prototype */\n#schedule article a {\n  color: #1d4ed8;\n  text-decoration: underline;\n}\n\n/* Button component: leave this rule as it is */\n.btn {\n  display: inline-block;\n  padding: 0.4em 0.9em;\n  border-radius: 999px;\n  color: #ffffff;\n  background: #6d28d9;\n  text-decoration: none;\n}\n"
+  },
+  "solution": {
+    "html": "<main id=\"schedule\">\n  <article class=\"session\">\n    <h2>Keynote: The Platform Is the Framework</h2>\n    <p>Read the <a class=\"abstract-link\" href=\"#abstract\">full abstract</a>.</p>\n    <a class=\"btn\" href=\"#save\">Save to my schedule</a>\n  </article>\n</main>",
+    "css": "/* Base link style: same reach, zero-weight context */\n:where(#schedule article) a {\n  color: #1d4ed8;\n  text-decoration: underline;\n}\n\n/* Button component: leave this rule as it is */\n.btn {\n  display: inline-block;\n  padding: 0.4em 0.9em;\n  border-radius: 999px;\n  color: #ffffff;\n  background: #6d28d9;\n  text-decoration: none;\n}\n"
+  },
+  "checks": [
+    { "id": "btn-white", "test": "return style('.btn', 'color') === 'rgb(255, 255, 255)';" },
+    { "id": "btn-no-underline", "test": "return style('.btn', 'text-decoration-line') === 'none';" },
+    { "id": "link-still-blue", "test": "return style('.abstract-link', 'color') === 'rgb(29, 78, 216)' && style('.abstract-link', 'text-decoration-line') === 'underline';" },
+    { "id": "no-important", "test": "return ![...document.querySelectorAll('style')].some((s) => s.textContent.includes('!important'));" },
+    { "id": "markup-intact", "test": "return exists('#schedule article .btn') && exists('#schedule article .abstract-link');" }
+  ]
+}

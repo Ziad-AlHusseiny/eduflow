@@ -1,0 +1,18 @@
+{
+  "title": "Make the schedule cheap to render",
+  "prompt": "Three performance fixes, all in CSS:\n\n1. Rewrite the `toast-in` keyframes so the toast slides in from the left using only **compositor-friendly** properties (`translate` or `transform`, plus `opacity` if you like). Keep the name `toast-in`, and make sure the toast ends at `left: 16px`.\n2. Let the browser skip rendering off-screen `.day` sections, with an **intrinsic size estimate** that uses `auto` and a length.\n3. Make the `.photo` frame **square** before any image loads, so it reserves its space.",
+  "hints": [
+    "The toast's `left: 16px` can stay as is; animate how far it's translated from that spot instead.",
+    "`content-visibility: auto` pairs with `contain-intrinsic-size: auto <length>`.",
+    "`@keyframes toast-in { from { translate: -336px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }`, `.photo { aspect-ratio: 1; }`."
+  ],
+  "explanation": "Animating `left` changes geometry, so every frame re-ran layout and paint. `translate` and `opacity` only change how the toast's already-painted layer is composited, so the browser can run the animation without layout or paint, often off the main thread. `content-visibility: auto` lets the browser skip off-screen day sections entirely, and `contain-intrinsic-size: auto 1200px` stands in for their height until they've been rendered once, so the scrollbar stays stable. `aspect-ratio: 1` gives the photo frame a height from its width, so nothing shifts when the image arrives.",
+  "checks": {
+    "toast-keyframes-cheap": "toast-in animates only translate/transform and opacity",
+    "toast-still-animates": "The toast still runs the toast-in animation",
+    "toast-final-position": "The toast ends at its normal position",
+    "skip-offscreen": "Day sections use content-visibility: auto",
+    "intrinsic-size": "Day sections have an intrinsic size estimate with auto",
+    "photo-reserves-space": "The photo frame is square before the image loads"
+  }
+}

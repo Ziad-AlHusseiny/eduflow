@@ -1,0 +1,18 @@
+{
+  "title": "اجعل رسم الجدول رخيصًا",
+  "prompt": "ثلاثة إصلاحات للأداء، كلها في CSS:\n\n1. أعد كتابة الـ keyframes `toast-in` لينزلق الإشعار من اليسار باستخدام خصائص **ملائمة للـ compositor** فقط (`translate` أو `transform`، إضافةً إلى `opacity` إن شئت). أبقِ الاسم `toast-in`، وتأكّد من أن الإشعار ينتهي عند `left: 16px`.\n2. دع المتصفّح يتخطّى رسم أقسام `.day` الواقعة خارج الشاشة، مع **تقدير للحجم الذاتي** يستخدم `auto` وطولًا.\n3. اجعل إطار `.photo` **مربّعًا** قبل تحميل أيّ صورة، ليحجز مساحته.",
+  "hints": [
+    "يمكن أن تبقى `left: 16px` في الإشعار كما هي؛ حرّك بدلًا من ذلك مقدار إزاحته عن ذلك الموضع.",
+    "`content-visibility: auto` تقترن بـ `contain-intrinsic-size: auto <length>`.",
+    "`@keyframes toast-in { from { translate: -336px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }` و`.photo { aspect-ratio: 1; }`."
+  ],
+  "explanation": "تحريك `left` يغيّر الأبعاد، فكان كل إطار يعيد تشغيل التخطيط والرسم. أما `translate` و`opacity` فلا تغيّران إلا طريقة تركيب طبقة الإشعار المرسومة أصلًا، فيستطيع المتصفّح تشغيل الحركة دون تخطيط أو رسم، وكثيرًا ما يكون ذلك خارج الـ main thread. و`content-visibility: auto` تتيح للمتصفّح تخطّي أقسام الأيام الواقعة خارج الشاشة كليًا، و`contain-intrinsic-size: auto 1200px` تنوب عن ارتفاعها حتى تُرسم مرة، فيبقى شريط التمرير مستقرًا. و`aspect-ratio: 1` تعطي إطار الصورة ارتفاعًا مستمدًّا من عرضه، فلا يتزحزح شيء حين تصل الصورة.",
+  "checks": {
+    "toast-keyframes-cheap": "toast-in لا تحرّك إلا translate/transform وopacity",
+    "toast-still-animates": "الإشعار ما زال يشغّل حركة toast-in",
+    "toast-final-position": "الإشعار ينتهي في موضعه الطبيعي",
+    "skip-offscreen": "أقسام الأيام تستخدم content-visibility: auto",
+    "intrinsic-size": "لأقسام الأيام تقدير للحجم الذاتي مع auto",
+    "photo-reserves-space": "إطار الصورة مربّع قبل تحميل الصورة"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Label Julia's urgent tickets",
+  "prompt": "Julia wants every **urgent** ticket with a `state` label, checked in this order:\n\n1. `'open'` when the ticket has no `closed_at`\n2. `'unrated'` when it's closed but has no `satisfaction` score\n3. `'unhappy'` when the score is 1 or 2\n4. `'happy'` otherwise\n\nReturn `ticket_id` and `state`, sorted by `ticket_id`. Order matters. The starter labels almost everything 'happy'. Find out why and fix it.",
+  "hints": [
+    "What does `closed_at = NULL` evaluate to, for any row?",
+    "A CASE branch is taken only when its condition is TRUE. NULL (unknown) isn't TRUE, so the row falls through to ELSE.",
+    "Use `IS NULL` in the first two WHEN branches."
+  ],
+  "explanation": "`closed_at = NULL` is NULL for every row, so the first two branches never fire, and an open, unrated ticket falls past `satisfaction <= 2` (also NULL) into ELSE: 'happy'. With `IS NULL`, open tickets are caught first. The branch order also matters: elsewhere in the table a few open tickets already carry a score, and because 'open' is checked first they're labelled open, which is what Julia's rules say.",
+  "checks": {}
+}

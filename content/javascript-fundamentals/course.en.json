@@ -1,0 +1,49 @@
+{
+  "title": "JavaScript Fundamentals",
+  "tagline": "Learn to program from zero by building a real expense tracker in the browser.",
+  "description": [
+    "You have never written a line of code, and you want to understand what the computer is actually doing when it runs one. This course starts at the very beginning, with values, variables and the console, and explains each idea by showing what JavaScript does with it, step by step, before asking you to use it.",
+    "Every lesson adds a piece to Pocket, an expense tracker that begins as a short script and ends as a small browser app with a form, a filterable list, running totals and saved data. Almost every lesson ends with an exercise you solve in the browser and check instantly, so you write real code every evening."
+  ],
+  "audience": "Career switchers and complete beginners who have never programmed and want a solid, honest foundation in JavaScript.",
+  "prerequisites": "None. You need a computer with a modern browser; knowing a little HTML helps in section 4.",
+  "learnItems": [
+    "Read and write JavaScript values, variables, conditions and loops",
+    "Write functions and understand scope and closures",
+    "Transform lists of data with map, filter, reduce and sort",
+    "Build interactive pages with the DOM, events and forms",
+    "Handle asynchronous code with promises, async/await and fetch",
+    "Organise a small app with modules and classes, and debug it"
+  ],
+  "sections": {
+    "s-js-1": "First Steps",
+    "s-js-2": "Logic and Functions",
+    "s-js-3": "Working with Data",
+    "s-js-4": "JavaScript in the Browser",
+    "s-js-5": "Writing Real Programs"
+  },
+  "lessons": {
+    "l-js-1-1": "What JavaScript Is and Where It Runs",
+    "l-js-1-2": "Values, Types and Variables",
+    "l-js-1-3": "Numbers, Operators and Comparisons",
+    "l-js-1-4": "Strings and Template Literals",
+    "l-js-2-1": "Making Decisions: if, else and Truthiness",
+    "l-js-2-2": "Loops: for, for…of and while",
+    "l-js-2-3": "Functions: Declarations, Arrows and Defaults",
+    "l-js-2-4": "Scope and Closures",
+    "l-js-3-1": "Arrays and Their Everyday Methods",
+    "l-js-3-2": "Objects, Destructuring and Spread",
+    "l-js-3-3": "Summing and Sorting: reduce and sort",
+    "l-js-3-4": "Missing Values, Map and Set",
+    "l-js-4-1": "The DOM: Select, Create, Update",
+    "l-js-4-2": "Events and Event Delegation",
+    "l-js-4-3": "Forms and Validation",
+    "l-js-4-4": "Saving Data: JSON and localStorage",
+    "l-js-4-5": "Async JavaScript: Promises, async/await and fetch",
+    "l-js-5-1": "Modules: import and export",
+    "l-js-5-2": "Classes",
+    "l-js-5-3": "Errors and Debugging with DevTools",
+    "l-js-5-4": "Building Pocket",
+    "l-js-5-5": "Where to Go Next"
+  }
+}

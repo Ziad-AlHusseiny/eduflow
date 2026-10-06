@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Orders per day over the Black Friday weekend (Fri 28 Nov to Mon 1 Dec 2025)\nSELECT\n  date(order_date) AS day,\n  COUNT(*) AS orders\nFROM orders\nWHERE order_date BETWEEN '2025-11-28' AND '2025-12-01'\nGROUP BY day\nORDER BY day;",
+  "solution": "SELECT\n  date(order_date) AS day,\n  COUNT(*) AS orders\nFROM orders\nWHERE order_date >= '2025-11-28'\n  AND order_date < '2025-12-02'\nGROUP BY day\nORDER BY day;",
+  "orderMatters": true
+}

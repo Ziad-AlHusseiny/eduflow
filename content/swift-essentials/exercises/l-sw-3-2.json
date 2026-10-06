@@ -1,0 +1,8 @@
+{
+  "kind": "spot-bug",
+  "language": "swift",
+  "code": "import SwiftUI\n\nstruct ExpenseCard: View {\n    let expense: Expense\n    var isExpanded = false\n\n    var body: some View {\n        VStack(alignment: .leading, spacing: 8) {\n            Text(expense.title)\n                .font(.headline)\n            if isExpanded {\n                Text(expense.date, format: .dateTime.weekday().day().month())\n                Text(expense.category.title)\n            }\n            Button(isExpanded ? \"Less\" : \"More\") {\n                isExpanded.toggle()\n            }\n        }\n    }\n}",
+  "bugLines": [
+    5
+  ]
+}

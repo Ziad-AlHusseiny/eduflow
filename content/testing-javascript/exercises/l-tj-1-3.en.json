@@ -1,0 +1,16 @@
+{
+  "title": "AAA tests for withTip",
+  "prompt": "`withTip(subtotalCents, percent)` returns `{ tipCents, totalCents }`. The tip is rounded to the nearest cent (a half cent rounds **up**), a 0% tip is valid, and a negative percent throws a `RangeError`.\n\nThe starter test checks a 15% tip on $20.00. Add tests in Arrange, Act, Assert shape until your suite passes on the real code and catches three hidden bugs: one floors the tip instead of rounding it, one forgets to reject negative percents, and one wrongly rejects a zero tip.",
+  "hints": [
+    "A 15% tip on 2000 is exactly 300, so rounding never matters there. You need an input where the exact tip ends in .5 or more.",
+    "1980 cents at 12.5% is 247.5 cents, which must round to 248. Compare the whole object with `toEqual`.",
+    "For the error, wrap the call: `expect(() => withTip(2000, -5)).toThrow(RangeError)`. For zero, assert the result, not just that it doesn't throw."
+  ],
+  "explanation": "Each added test pins one rule from the spec with an input that separates right from wrong. A tip that lands on a half cent tells `Math.round` from `Math.floor`. The zero tip catches the classic boundary slip (`<=` instead of `<`), which would make Splitwise-lite refuse a perfectly normal bill. The negative case needs the arrow function so `expect` can catch the throw. Asserting the full `{ tipCents, totalCents }` object with `toEqual` also guards the total, so one assertion covers both fields.",
+  "checks": {
+    "passes": "All your tests pass against the real withTip",
+    "catches-floors-tip": "Catches the version that floors the tip",
+    "catches-allows-negative": "Catches the version that accepts a negative percent",
+    "catches-rejects-zero": "Catches the version that rejects a zero tip"
+  }
+}

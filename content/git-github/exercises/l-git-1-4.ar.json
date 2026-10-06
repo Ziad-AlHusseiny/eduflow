@@ -1,0 +1,29 @@
+{
+  "title": "اقرأ الرسم البياني",
+  "prompt": "هذا سجلّ الموقع الشخصي مرسومًا كرسم بياني للـ commits، وهو الشكل نفسه الذي يرسمه `git log --oneline --graph --all` نصًّا في الطرفية. الأسهم تتّجه من كل commit إلى أبيه.\n\n:::figure رسم الـ commits في الموقع الشخصي\n<svg viewBox=\"0 0 640 230\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">خمسة commits. الـ commitان 1a2b و 3c4d متتاليان. من 3c4d يخرج خط إلى 5e6f وآخر إلى 7a8b. الـ merge commit ذو المعرّف 9c0d أبواه 5e6f و 7a8b. الاسم main والـ HEAD يشيران إلى 9c0d؛ والاسم hero يشير إلى 7a8b.</title>\n  <circle class=\"d-box\" cx=\"50\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"50\" y=\"115\" text-anchor=\"middle\">1a2b</text>\n  <circle class=\"d-box\" cx=\"170\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"170\" y=\"115\" text-anchor=\"middle\">3c4d</text>\n  <circle class=\"d-box\" cx=\"300\" cy=\"55\" r=\"26\"/>\n  <text class=\"d-code\" x=\"300\" y=\"60\" text-anchor=\"middle\">5e6f</text>\n  <circle class=\"d-box\" cx=\"300\" cy=\"165\" r=\"26\"/>\n  <text class=\"d-code\" x=\"300\" y=\"170\" text-anchor=\"middle\">7a8b</text>\n  <circle class=\"d-box-primary\" cx=\"440\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"440\" y=\"115\" text-anchor=\"middle\">9c0d</text>\n  <path class=\"d-arrow\" d=\"M144 110 L80 110\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M275 64 L198 100\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M275 156 L198 120\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M415 100 L330 62\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M415 120 L330 160\" marker-end=\"url(#arrow)\"/>\n  <rect class=\"d-box-accent\" x=\"510\" y=\"93\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"560\" y=\"115\" text-anchor=\"middle\">main</text>\n  <rect class=\"d-box-warn\" x=\"510\" y=\"40\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"560\" y=\"62\" text-anchor=\"middle\">HEAD</text>\n  <path class=\"d-line\" d=\"M560 74 L560 93\"/>\n  <rect class=\"d-box-accent\" x=\"370\" y=\"185\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"420\" y=\"207\" text-anchor=\"middle\">hero</text>\n  <path class=\"d-line\" d=\"M370 195 L328 172\"/>\n</svg>\n:::\n\nأنت على `main`. ما الـ commits التي يسردها `git log --oneline hero`؟",
+  "hints": [
+    "`git log <name>` يبدأ من الـ commit الذي يشير إليه ذلك الاسم.",
+    "من هناك يتتبّع أسهم الآباء فقط. ولا يمشي أبدًا إلى الأمام نحو الأبناء.",
+    "ابدأ من الـ commit الذي يحمل الاسم `hero` وتتبّع الأسهم حتى تنتهي."
+  ],
+  "explanation": "`git log hero` يبدأ من `7a8b`، الـ commit الذي يشير إليه فرع `hero`، ويتتبّع الآباء: `7a8b` ← `3c4d` ← `1a2b`. الـ merge commit ذو المعرّف `9c0d` *ابن* لـ `7a8b`، و Git لا يمشي أبدًا من الأب إلى الابن، فلا يظهر في القائمة. و `5e6f` على الجهة الأخرى من التفرّع، وليس من أسلاف `hero` أيضًا.",
+  "options": {
+    "a": {
+      "text": "الـ commits الخمسة كلها، لأن `hero` دُمج في `main`.",
+      "why": "الدمج جعل commits الفرع `hero` قابلة للوصول من `main`، لا العكس. و `git log hero` يبدأ من `hero` ويمشي إلى الخلف فقط."
+    },
+    "b": {
+      "text": "`7a8b` فقط، الـ commit الذي يشير إليه `hero`.",
+      "why": "`git log` يسرد الـ commit الذي يبدأ منه وكل أسلافه، لا commitًا واحدًا. أما `git show hero` فسيطبع `7a8b` وحده."
+    },
+    "c": {
+      "text": "`7a8b` و `3c4d` و `1a2b`.",
+      "why": "صحيح. ابدأ من `7a8b` وتتبّع الآباء: `3c4d`، ثم الـ root commit ذو المعرّف `1a2b`."
+    },
+    "d": {
+      "text": "`9c0d` و `7a8b` و `3c4d` و `1a2b`.",
+      "why": "`9c0d` ابن لـ `7a8b`. والـ commits لا تعرف أبناءها، لذا لا يستطيع `git log` الوصول إليه انطلاقًا من `hero`."
+    }
+  },
+  "checks": {}
+}

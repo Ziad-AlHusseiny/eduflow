@@ -1,0 +1,14 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "fetch-in-render",
+    "effect-no-deps",
+    "effect-ignore-flag",
+    "tanstack-query"
+  ],
+  "correct": [
+    "effect-ignore-flag",
+    "tanstack-query"
+  ]
+}

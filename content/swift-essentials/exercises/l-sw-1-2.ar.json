@@ -1,0 +1,10 @@
+{
+  "title": "اعثر على سبب العطل",
+  "prompt": "هذه النسخة المبكرة من منطق إضافة مصروف في Pocket Budget تعمل في كل عرض تجريبي، ثم تتعطّل عند مستخدم حقيقي. اختر السطر الذي يسبّب العطل.",
+  "hints": [
+    "نفّذ الاستدعاء الثاني في ذهنك: ماذا تعيد `Decimal(string: \"\")`؟",
+    "ابحث عن الحرف الوحيد الذي يقول «أعدك أن هذه القيمة ليست nil أبدًا».",
+    "ستكون رسالة العطل \"Unexpectedly found nil while unwrapping an Optional value\"."
+  ],
+  "explanation": "السطر 4 يفكّ نتيجة `Decimal(string:)` فكًّا قسريًا. مع نص فارغ تكون النتيجة `nil`، فيُسقط `!` التطبيق. اجعل الدالة تعترف بأنها قد تفشل، واترك القرار لمن يستدعيها:\n\n```swift\nfunc addExpense(_ amountText: String, to total: Decimal) -> Decimal? {\n    guard let amount = Decimal(string: amountText) else {\n        return nil\n    }\n    return total + amount\n}\n```\n\nصار على من يستدعي الدالة أن يفكّ النتيجة، وهذا بالضبط المكان الذي تعرض فيه للمستخدم \"Enter an amount\" بدل أن يتعطّل التطبيق."
+}

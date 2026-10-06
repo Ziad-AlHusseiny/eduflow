@@ -1,0 +1,18 @@
+{
+  "title": "حرّك الفلتر بـ view transition",
+  "prompt": "النقر على **Hide sold-out** يخفي بطاقتين فورًا. اجعل التغيير متحرّكًا:\n\n1. أعطِ كل `.session-card` قيمة `view-transition-name` **فريدة** (في CSS أو JS أو كليهما).\n2. شغّل تحديث الفلتر داخل `document.startViewTransition()`، وارجع إلى تحديث عادي حين لا تكون الدالة موجودة.\n3. اجعل كل حركة `::view-transition-group` تستغرق **250ms**.\n4. أوقف حركات الـ view transition للمستخدمين الذين يفضّلون تقليل الحركة.\n\nتراقب الفحوصات `document.startViewTransition` بـ spy وتحذفها أيضًا لتختبر بديلك الاحتياطي.",
+  "hints": [
+    "قاعدة CSS واحدة تستطيع قراءة custom property خاصة بكل بطاقة: `view-transition-name: var(--vt-name);`. اضبط `--vt-name` لكل بطاقة من الـ id الخاص بها في JS.",
+    "في معالج النقر: `if (!document.startViewTransition) { applyFilter(); return; }` ثم `document.startViewTransition(() => applyFilter());`.",
+    "`::view-transition-group(*) { animation-duration: 250ms; }`، وداخل `@media (prefers-reduced-motion: reduce)` اضبط `animation: none !important` على الـ pseudo-elements الخاصة بالمجموعة والقديم والجديد."
+  ],
+  "explanation": "لكل بطاقة الآن اسم فريد (`card-s1` و`card-s2`…)، فيطابق المتصفّح صورتيها القديمة والجديدة، ويُزلق البطاقات الباقية إلى الفراغات بينما تتلاشى المخفية. والاسم المشترك كان سيجعل المتصفّح يتخطّى الانتقال. وتغليف `applyFilter()` في `startViewTransition()` يعطي المتصفّح حالتي ما قبل وما بعد؛ وفحص الميزة يُبقي الزر عاملًا في المتصفّحات التي لا تملك الـ API. وحركات المجموعات حركات CSS عادية، فتضبط `animation-duration` توقيتها، و`animation: none` داخل استعلام تقليل الحركة تحوّلها إلى تغيّر فوري.",
+  "checks": {
+    "unique-names": "لكل بطاقة view-transition-name فريد",
+    "uses-view-transition": "النقر يشغّل التحديث داخل startViewTransition()",
+    "filter-works": "تُخفى البطاقات الممتلئة وتتحدّث حالة الزر",
+    "fallback-works": "الزر يظل يعمل دون View Transition API",
+    "group-duration": "مجموعات الـ view transition تستغرق 250ms",
+    "reduced-motion": "تُزال الحركة عند تفضيل تقليل الحركة"
+  }
+}

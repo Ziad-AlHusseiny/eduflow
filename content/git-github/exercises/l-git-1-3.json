@@ -1,0 +1,10 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "git status\ngit add {{0}} index.html     # stage only the typo-fix hunk\ngit diff {{1}}               # check what the next commit contains\ngit commit -m \"Fix spelling of name in header\"\n\ngit add index.html styles.css\ngit restore {{2}} styles.css   # oops: unstage it, keep the edits\ngit commit -m \"Add navigation bar\"",
+  "blanks": [
+    { "answers": ["-p", "--patch"] },
+    { "answers": ["--staged", "--cached"] },
+    { "answers": ["--staged", "-S"] }
+  ]
+}

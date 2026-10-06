@@ -1,0 +1,16 @@
+{
+  "title": "Tell the tree what the eye sees",
+  "prompt": "Ticketly's Friday price (`#fri-price`) is struck through and greyed out because the date is sold out, but a screen reader only hears \"SAR 180\". Meanwhile every decorative SVG icon can be announced as an unlabeled graphic.\n\n1. Add the words **sold out** to `#fri-price` so they reach the accessibility tree. You can show them, or hide them visually with a `.visually-hidden` class (not `display: none`).\n2. Hide all four decorative `<svg>` icons from assistive technology.\n3. Leave Saturday (`#sat-price`) available.",
+  "hints": [
+    "Text that is display: none or visibility: hidden is removed from the accessibility tree too, so it won't be announced.",
+    "A visually-hidden class clips the element to 1px with position: absolute, overflow: hidden and clip-path: inset(50%).",
+    "Decorative icons get aria-hidden=\"true\" on the <svg> element itself."
+  ],
+  "explanation": "The strike-through is purely visual, so the meaning needs text. A `<span class=\"visually-hidden\">(sold out)</span>` keeps the words in the accessibility tree while the design stays as it was; plain visible text would be just as valid, and arguably better for sighted users who miss the strike-through. The icons add nothing the text doesn't already say, so `aria-hidden=\"true\"` removes them from the tree and keeps the announcement short: \"Friday, heading level 3. 12 June, 8 pm. SAR 180 (sold out)\".",
+  "checks": {
+    "sold-out-text": "The Friday price contains the words \"sold out\"",
+    "sold-out-in-tree": "The \"sold out\" text is not hidden from assistive technology",
+    "icons-hidden": "All four decorative icons are hidden with aria-hidden=\"true\"",
+    "saturday-available": "Saturday still shows SAR 180 and is not marked sold out"
+  }
+}

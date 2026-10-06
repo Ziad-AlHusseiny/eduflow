@@ -1,0 +1,11 @@
+{
+  "title": "Branch for the footer",
+  "prompt": "Fill in the blanks: create a `footer` branch and switch to it in one command, commit the footer, go back to `main` to confirm it hasn't changed, then rename the branch to `site-footer`.",
+  "hints": [
+    "`git switch` takes a flag that creates the branch first. It's short for create.",
+    "You can name the branch you want to go back to, or use the shortcut for the previous branch.",
+    "`git branch -m <old> <new>` renames a branch."
+  ],
+  "explanation": "`git switch -c footer` creates `footer` at the current commit and attaches HEAD to it, so the commit moves `footer` and leaves `main` alone. `git switch main` (or `git switch -`, which means the previous branch) rewrites the working tree to `main`'s snapshot. `git branch -m footer site-footer` renames the pointer; the commits don't change at all.",
+  "checks": {}
+}

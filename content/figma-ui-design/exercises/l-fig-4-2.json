@@ -1,0 +1,39 @@
+{
+  "kind": "fill",
+  "language": "text",
+  "template": "Steady accessibility checklist, New habit sheet\n\nTargets\n  WCAG 2.2 AA minimum target size        {{0}} CSS px (each side)\n  Apple recommendation (iOS build)       {{1}} pt (each side)\n  Material recommendation (Android)      {{2}} dp (each side)\n\nContrast\n  \"Habit name\" label, 15 px              {{3}}:1\n  Focus ring against the sheet           {{4}}:1\n\nMeaning\n  Missed state = red circle + x icon + the word \"Missed\"\n  (never {{5}} alone)",
+  "blanks": [
+    {
+      "answers": [
+        "24"
+      ]
+    },
+    {
+      "answers": [
+        "44"
+      ]
+    },
+    {
+      "answers": [
+        "48"
+      ]
+    },
+    {
+      "answers": [
+        "4.5"
+      ]
+    },
+    {
+      "answers": [
+        "3",
+        "3.0"
+      ]
+    },
+    {
+      "answers": [
+        "color",
+        "colour"
+      ]
+    }
+  ]
+}

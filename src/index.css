@@ -1,0 +1,837 @@
+@import "tailwindcss";
+
+/* ── Fonts ────────────────────────────────────────────────────────────────
+   Self-hosted (no third-party requests; cached offline by the service
+   worker). Latin: Sora (headings, stats, prices, buttons) and Inter (body),
+   as DESIGN-SYSTEM §3 specifies. Arabic falls through the same stacks to
+   Readex Pro (headings — geometric, like Sora) and IBM Plex Sans Arabic
+   (body — built for long reading, pairs with Inter's proportions). They
+   only download when Arabic is on the page (unicode-range) and use
+   font-display: optional, so a slow connection keeps the system Arabic
+   font rather than reflowing a lesson mid-read. Code uses the system
+   monospace stack (zero bytes). */
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("./assets/fonts/sora-latin-wght-normal.woff2") format("woff2-variations"), url("./assets/fonts/sora-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./assets/fonts/inter-latin-wght-normal.woff2") format("woff2-variations"), url("./assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Readex Pro";
+  font-style: normal;
+  font-weight: 160 700;
+  font-display: optional;
+  src: url("./assets/fonts/readex-pro-arabic-wght-normal.woff2") format("woff2-variations"), url("./assets/fonts/readex-pro-arabic-wght-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: "IBM Plex Sans Arabic";
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url("./assets/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: "IBM Plex Sans Arabic";
+  font-style: normal;
+  font-weight: 600;
+  font-display: optional;
+  src: url("./assets/fonts/ibm-plex-sans-arabic-arabic-600-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+/* Metric-matched fallbacks: the swap to the web fonts doesn't move layout. */
+@font-face {
+  font-family: "Sora Fallback";
+  src: local("Arial"), local("Helvetica");
+  size-adjust: 109%;
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica");
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22.4%;
+  line-gap-override: 0%;
+}
+
+/* ── Tokens (DESIGN-SYSTEM.md §2–§5) ──────────────────────────────────────
+   Light values are the approved palette verbatim. The dark theme (BUILD-LOG:
+   reverses D9) re-points the same names, and keeps their meaning: violet is
+   the brand and "where you are", green is progress, yellow is reward. */
+@theme {
+  --font-display: "Sora", "Readex Pro", "Sora Fallback", system-ui, sans-serif;
+  --font-sans: "Inter", "IBM Plex Sans Arabic", "Inter Fallback", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-bg: #fafaff;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f2fb;
+  --color-border: #e7e5f2;
+  --color-ink: #1b1830;
+  --color-ink-muted: #4f4b66;
+  --color-ink-faint: #8a8699;
+
+  --color-primary: #7c3aed;
+  --color-primary-deep: #6d28d9;
+  --color-primary-ink: #5b21b6;
+  --color-primary-soft: #ede9fe;
+  --color-on-primary: #ffffff;
+
+  --color-accent: #3b82f6;
+  --color-accent-soft: #dbeafe;
+  --color-accent-ink: #1e40af;
+
+  --color-star: #fbbf24;
+  --color-star-soft: #fef3c7;
+  --color-star-ink: #78350f;
+
+  --color-success: #10b981;
+  --color-success-deep: #047857;
+  --color-success-soft: #d1fae5;
+  --color-success-ink: #065f46;
+
+  --color-danger: #dc2626;
+  --color-danger-ink: #b91c1c;
+  --color-danger-soft: #fef2f2;
+
+  --color-code-bg: #ffffff;
+  --color-backdrop: rgb(27 24 48 / 0.5);
+  --color-scrim: rgb(27 24 48 / 0.72);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-card: 0 1px 2px rgb(27 24 48 / 0.04), 0 4px 12px rgb(27 24 48 / 0.06);
+  --shadow-lift: 0 2px 6px rgb(27 24 48 / 0.05), 0 8px 24px rgb(124 58 237 / 0.12);
+  --shadow-modal: 0 24px 64px rgb(27 24 48 / 0.24);
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --duration-progress: 800ms;
+
+  --breakpoint-xs: 375px;
+
+  --animate-bob: bob 6s ease-in-out infinite;
+  --animate-sheen: sheen 5s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes sheen {
+  0%, 70% { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(220%) skewX(-18deg); }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0) rotate(-12deg); }
+  60% { opacity: 1; transform: scale(1.08) rotate(2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+@keyframes drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #110e1c;
+  --color-surface: #1a1628;
+  --color-surface-muted: #241f37;
+  --color-border: #332c4b;
+  --color-ink: #efecfb;
+  --color-ink-muted: #b8b2cf;
+  --color-ink-faint: #8e88a8;
+
+  /* Fills keep the light theme's violet (white text stays ≥ 5.7:1); violet text uses primary-ink. */
+  --color-primary: #7c3aed;
+  --color-primary-deep: #6d28d9;
+  --color-primary-ink: #c4b5fd;
+  --color-primary-soft: #2a2148;
+
+  --color-accent: #60a5fa;
+  --color-accent-soft: #172554;
+  --color-accent-ink: #bfdbfe;
+
+  --color-star: #fbbf24;
+  --color-star-soft: #3a2c0d;
+  --color-star-ink: #fcd34d;
+
+  --color-success: #34d399;
+  --color-success-deep: #34d399;
+  --color-success-soft: #0f3a2d;
+  --color-success-ink: #a7f3d0;
+
+  --color-danger: #f87171;
+  --color-danger-ink: #fca5a5;
+  --color-danger-soft: #3b1418;
+
+  --color-code-bg: #15121f;
+  --color-backdrop: rgb(5 3 12 / 0.7);
+  --color-scrim: rgb(5 3 12 / 0.75);
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.3), 0 8px 24px rgb(139 92 246 / 0.22);
+  --shadow-modal: 0 24px 64px rgb(0 0 0 / 0.6);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+    scroll-padding-top: 84px;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  :lang(ar) body,
+  :lang(ar) {
+    line-height: 1.75;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* Universal focus ring (DESIGN-SYSTEM §6.1): 2px violet, offset 2px. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  code, kbd, pre, samp {
+    font-family: var(--font-mono);
+  }
+  /* Code is always left to right, even inside Arabic text. */
+  code, kbd, pre {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  input, select, textarea, button {
+    font: inherit;
+  }
+  dialog::backdrop {
+    background: var(--color-backdrop);
+  }
+}
+
+/* ── Type scale (DESIGN-SYSTEM §3.1) ─────────────────────────────────── */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.25rem, 5vw + 1rem, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.875rem, 2vw + 1.25rem, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 1.2vw + 1.1rem, 1.875rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 0.5vw + 1.1rem, 1.375rem);
+  line-height: 1.3;
+}
+@utility type-h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.0625rem, 0.3vw + 1rem, 1.125rem);
+  line-height: 1.4;
+}
+@utility type-stat {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.5vw + 1.2rem, 2.25rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+@utility type-body-lg {
+  font-size: clamp(1.0625rem, 0.3vw + 1rem, 1.125rem);
+  line-height: 1.6;
+}
+@utility type-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+:lang(ar) .type-eyebrow {
+  letter-spacing: 0;
+  font-size: 0.875rem;
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (width >= 768px) {
+    padding-inline: 24px;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 32px;
+  }
+}
+
+/* ── Components ───────────────────────────────────────────────────────── */
+@layer components {
+  .skip-link {
+    position: absolute;
+    inset-inline-start: 16px;
+    top: -100px;
+    z-index: 100;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    padding: 10px 18px;
+    font-weight: 600;
+  }
+  .skip-link:focus {
+    top: 12px;
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-card);
+  }
+  .lift {
+    transition: transform var(--duration-fast) ease-out, box-shadow var(--duration-fast) ease-out;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lift:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+    .lift:hover .lift-zoom {
+      transform: scale(1.04);
+    }
+  }
+  .lift-zoom {
+    transition: transform 400ms var(--ease-out-soft);
+  }
+
+  .kbd {
+    display: inline-grid;
+    min-width: 1.6em;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--color-surface-muted);
+    padding: 0 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+
+  /* Native <dialog> modal: rises in, fades out. */
+  dialog.modal[open] {
+    animation: rise-in var(--duration-base) var(--ease-out-soft);
+  }
+  dialog.modal.closing {
+    animation: fade-in var(--duration-fast) reverse forwards;
+  }
+  dialog.modal[open]::backdrop {
+    animation: fade-in var(--duration-base) ease-out;
+  }
+  @media (width < 768px) {
+    dialog.modal.sheet[open] {
+      animation: sheet-up 320ms var(--ease-out-soft);
+    }
+  }
+}
+
+/* ── Scroll reveals (index.html adds .reveal-on when motion is allowed) ── */
+.reveal-on [data-reveal]:not([data-in]) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal-on [data-reveal] {
+  transition: opacity var(--duration-slow) var(--ease-out-soft), transform var(--duration-slow) var(--ease-out-soft);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.hero-in > * {
+  animation: rise-in var(--duration-slow) var(--ease-out-soft) both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* ── Lesson prose (HTML compiled at build time: scripts/content/build.mjs) ── */
+.prose {
+  --scale: 1;
+  font-size: calc(1.0625rem * var(--scale));
+  line-height: 1.75;
+  color: var(--color-ink);
+  overflow-wrap: break-word;
+}
+:lang(ar) .prose {
+  line-height: 1.95;
+}
+.prose > * + * {
+  margin-top: 1.1em;
+}
+.prose h2 {
+  font-size: calc(1.5rem * var(--scale));
+  line-height: 1.25;
+  font-weight: 700;
+  margin-top: 2.2em;
+  scroll-margin-top: 96px;
+}
+.prose h3 {
+  font-size: calc(1.2rem * var(--scale));
+  line-height: 1.35;
+  font-weight: 600;
+  margin-top: 1.8em;
+  scroll-margin-top: 96px;
+}
+.prose h2:focus, .prose h3:focus {
+  outline: none;
+}
+.prose a {
+  color: var(--color-primary-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose ul, .prose ol {
+  padding-inline-start: 1.4em;
+}
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose li::marker {
+  color: var(--color-primary);
+}
+.prose blockquote {
+  border-inline-start: 3px solid var(--color-primary);
+  padding-inline-start: 1em;
+  color: var(--color-ink-muted);
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin-block: 2em;
+}
+.prose :not(pre) > code {
+  border-radius: 6px;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  padding: 0.1em 0.35em;
+  font-size: 0.88em;
+  color: var(--color-ink);
+  white-space: break-spaces;
+}
+
+.code-block {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-bg);
+  overflow: hidden;
+  text-align: left;
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  border-bottom: 1px solid var(--color-border);
+  padding: 4px 6px 4px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+}
+.code-title {
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.code-actions {
+  display: flex;
+  gap: 4px;
+}
+.code-btn {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-full);
+  padding: 0 10px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: background var(--duration-fast) ease-out, color var(--duration-fast) ease-out;
+}
+.code-btn:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+}
+.code-btn .icon {
+  width: 15px;
+  height: 15px;
+}
+.code-run {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.code-run:hover {
+  background: var(--color-primary-deep);
+  color: var(--color-on-primary);
+}
+.code-block pre {
+  margin: 0;
+  overflow-x: auto;
+  padding: 14px 16px;
+  font-size: calc(0.875rem * var(--scale, 1));
+  line-height: 1.65;
+  tab-size: 2;
+  background: transparent !important;
+}
+.code-block pre:focus-visible {
+  outline-offset: -2px;
+}
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark) !important;
+}
+.run-output {
+  border-top: 1px dashed var(--color-border);
+  padding: 10px 16px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  white-space: pre-wrap;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.callout {
+  border: 1px solid var(--color-border);
+  border-inline-start-width: 4px;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  background: var(--color-surface);
+}
+.callout > * + * {
+  margin-top: 0.6em;
+}
+.callout-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+.callout-title .icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin-top: 0.2em;
+}
+.callout-kind {
+  font-family: var(--font-display);
+}
+.callout-tip { border-inline-start-color: var(--color-success); background: color-mix(in oklab, var(--color-success-soft) 45%, var(--color-surface)); }
+.callout-tip .callout-title { color: var(--color-success-ink); }
+.callout-mistake { border-inline-start-color: var(--color-danger); background: color-mix(in oklab, var(--color-danger-soft) 70%, var(--color-surface)); }
+.callout-mistake .callout-title { color: var(--color-danger-ink); }
+.callout-why { border-inline-start-color: var(--color-primary); background: color-mix(in oklab, var(--color-primary-soft) 55%, var(--color-surface)); }
+.callout-why .callout-title { color: var(--color-primary-ink); }
+.callout-note { border-inline-start-color: var(--color-accent); background: color-mix(in oklab, var(--color-accent-soft) 45%, var(--color-surface)); }
+.callout-note .callout-title { color: var(--color-accent-ink); }
+
+.diagram {
+  margin-block: 1.6em;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  padding: 16px;
+}
+.diagram-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  font-family: var(--font-sans);
+}
+.diagram figcaption {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-ink-muted);
+}
+.d-box { fill: var(--color-surface); stroke: var(--color-border); stroke-width: 1.5; }
+.d-box-primary { fill: var(--color-primary-soft); stroke: var(--color-primary); stroke-width: 1.5; }
+.d-box-accent { fill: var(--color-accent-soft); stroke: var(--color-accent); stroke-width: 1.5; }
+.d-box-success { fill: var(--color-success-soft); stroke: var(--color-success); stroke-width: 1.5; }
+.d-box-warn { fill: var(--color-star-soft); stroke: var(--color-star); stroke-width: 1.5; }
+.d-label { fill: var(--color-ink); font-size: 15px; }
+.d-label-muted { fill: var(--color-ink-muted); font-size: 13px; }
+.d-label-strong { fill: var(--color-ink); font-size: 15px; font-weight: 700; font-family: var(--font-display); }
+.d-code { fill: var(--color-ink); font-family: var(--font-mono); font-size: 13px; }
+.d-line { stroke: var(--color-ink-faint); stroke-width: 1.5; fill: none; }
+.d-arrow { stroke: var(--color-primary); stroke-width: 2; fill: none; }
+.d-arrowhead { fill: var(--color-primary); }
+.d-dashed { stroke: var(--color-ink-faint); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+.d-dot { fill: var(--color-primary); }
+/* Diagrams keep their LTR geometry in Arabic (anchors stay put); Arabic labels still shape and order correctly. */
+[dir="rtl"] .diagram-svg { direction: ltr; }
+[dir="rtl"] .diagram-svg text { unicode-bidi: plaintext; }
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375em;
+}
+.table-wrap th, .table-wrap td {
+  padding: 10px 14px;
+  text-align: start;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+.table-wrap th {
+  background: var(--color-surface-muted);
+  font-weight: 600;
+}
+.table-wrap tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Quiz and exercise prose (smaller) */
+.prose-sm {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.prose-sm > * + * { margin-top: 0.7em; }
+.prose-sm :not(pre) > code {
+  border-radius: 5px;
+  background: var(--color-surface-muted);
+  padding: 0.05em 0.3em;
+  font-size: 0.9em;
+}
+.prose-sm pre {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-border);
+  padding: 10px 12px;
+  font-size: 0.8125rem;
+}
+.prose-sm ul { list-style: disc; padding-inline-start: 1.2em; }
+.prose-sm ol { list-style: decimal; padding-inline-start: 1.2em; }
+.prose-sm a { color: var(--color-primary-ink); text-decoration: underline; }
+
+/* Focus mode: just the lesson. */
+.focus-mode [data-chrome] {
+  display: none !important;
+}
+
+/* ── Reduced motion: no transforms, loops or counts (DESIGN-SYSTEM §5.4). ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Print: a lesson on paper. ── */
+@media print {
+  [data-chrome], .no-print, .code-actions, .skip-link {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .prose {
+    font-size: 11pt;
+  }
+  .code-block, .callout, .diagram {
+    break-inside: avoid;
+  }
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #444;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+.print-only {
+  display: none;
+}
+
+/* Mobile menu drawer: slides in from the inline end. */
+dialog.drawer[open] {
+  animation: drawer-in 320ms var(--ease-out-soft);
+}
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+}
+[dir="rtl"] dialog.drawer[open] {
+  animation-name: drawer-in-rtl;
+}
+@keyframes drawer-in-rtl {
+  from { transform: translateX(-100%); }
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+/* Stat count-up (PRD §3.1) in pure CSS: the number animates from 0 the
+   first time it's painted, with no JavaScript and no flash; reduced motion
+   shows the final value at once. Screen readers get the real text. */
+@property --n {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+.count-up {
+  counter-reset: n var(--n);
+  animation: count-up 1.2s ease-out both;
+  animation-delay: 0.4s;
+}
+.count-up::after {
+  content: counter(n);
+}
+@keyframes count-up {
+  from { --n: 0; }
+  to { --n: var(--to); }
+}
+
+/* Accordion panels open and close by height (grid 0fr → 1fr), no JS measuring. */
+.disclosure {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-base) var(--ease-out-soft);
+}
+.disclosure[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.disclosure > * {
+  overflow: hidden;
+  min-height: 0;
+}
+.disclosure[data-open="false"] > * {
+  visibility: hidden;
+  transition: visibility 0s var(--duration-base);
+}
+
+/* Editor syntax colors (CodeMirror), matched to the Shiki themes. */
+:root {
+  --cm-keyword: #cf222e;
+  --cm-string: #0a3069;
+  --cm-number: #0550ae;
+  --cm-comment: #6e7781;
+  --cm-function: #8250df;
+  --cm-type: #116329;
+  --cm-property: #0550ae;
+  --cm-def: #953800;
+}
+[data-theme="dark"] {
+  --cm-keyword: #ff7b72;
+  --cm-string: #a5d6ff;
+  --cm-number: #79c0ff;
+  --cm-comment: #8b949e;
+  --cm-function: #d2a8ff;
+  --cm-type: #7ee787;
+  --cm-property: #79c0ff;
+  --cm-def: #ffa657;
+}
+/* Someone with saved progress: hide the "start here" empty state before hydration swaps in their data. */
+.has-learning [data-empty-learning] {
+  visibility: hidden;
+}
+@media print {
+  .certificate svg {
+    box-shadow: none;
+    border-radius: 0;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+}

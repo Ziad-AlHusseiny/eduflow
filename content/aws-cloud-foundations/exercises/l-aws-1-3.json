@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["ec2-os", "disk-swap", "sg-port", "lambda-runtime", "bucket-policy", "rds-engine-hw"], "correct": ["ec2-os", "sg-port", "bucket-policy"] }

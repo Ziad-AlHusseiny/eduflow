@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"slot\">\n  <article class=\"session-card\">\n    <h3>Fluid Type Without Breakpoints</h3>\n    <p>One clamp() instead of three media queries.</p>\n  </article>\n</div>",
+    "css": ".slot {\n  container-type: inline-size;\n  width: 480px; /* the checks change this width */\n}\n.session-card {\n  padding: 16px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card h3 {\n  margin: 0 0 8px;\n  line-height: 1.2;\n  font-size: 5cqi;\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"slot\">\n  <article class=\"session-card\">\n    <h3>Fluid Type Without Breakpoints</h3>\n    <p>One clamp() instead of three media queries.</p>\n  </article>\n</div>",
+    "css": ".slot {\n  container-type: inline-size;\n  width: 480px; /* the checks change this width */\n}\n.session-card {\n  padding: 16px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card h3 {\n  margin: 0 0 8px;\n  line-height: 1.2;\n  font-size: clamp(1rem, 0.5rem + 2.5cqi, 1.75rem);\n}\n"
+  },
+  "checks": [
+    {
+      "id": "min-at-320",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const fs = () => parseFloat(style('.session-card h3', 'font-size')); const at = async (w) => { await setW(w); const v = fs(); await setW(480); return v; }; return Math.abs((await at(320)) - 16) < 0.3;"
+    },
+    {
+      "id": "max-at-800",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const fs = () => parseFloat(style('.session-card h3', 'font-size')); const at = async (w) => { await setW(w); const v = fs(); await setW(480); return v; }; return Math.abs((await at(800)) - 28) < 0.3;"
+    },
+    {
+      "id": "linear-between",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const fs = () => parseFloat(style('.session-card h3', 'font-size')); const at = async (w) => { await setW(w); const v = fs(); await setW(480); return v; }; return Math.abs((await at(560)) - 22) < 0.3;"
+    },
+    {
+      "id": "clamped-outside",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const fs = () => parseFloat(style('.session-card h3', 'font-size')); const at = async (w) => { await setW(w); const v = fs(); await setW(480); return v; }; const small = await at(200); const big = await at(1200); return Math.abs(small - 16) < 0.3 && Math.abs(big - 28) < 0.3;"
+    },
+    {
+      "id": "respects-user-size",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const fs = () => parseFloat(style('.session-card h3', 'font-size')); const at = async (w) => { await setW(w); const v = fs(); await setW(480); return v; }; const root = document.documentElement; root.style.fontSize = '20px'; await tick(16); const small = await at(200); const big = await at(1200); root.style.fontSize = ''; await tick(16); return Math.abs(small - 20) < 0.3 && Math.abs(big - 35) < 0.3;"
+    }
+  ]
+}

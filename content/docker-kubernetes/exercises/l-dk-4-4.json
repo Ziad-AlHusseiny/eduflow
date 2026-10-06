@@ -1,0 +1,12 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# Create the namespace and make it the default for this context\nkubectl create {{0}} notes\nkubectl config set-context --current --{{1}}=notes\n\n# Store the database password as a Secret\nkubectl create secret {{2}} notes-db --from-literal=POSTGRES_PASSWORD=dev-only-change-me\n\n# Read it back (and see that it isn't encrypted)\nkubectl get secret notes-db -o jsonpath='{.data.POSTGRES_PASSWORD}' | base64 {{3}}\n\n# Pick up changed environment variables in running Pods\nkubectl rollout {{4}} deployment/notes-api",
+  "blanks": [
+    { "answers": ["namespace", "ns"] },
+    { "answers": ["namespace"] },
+    { "answers": ["generic"] },
+    { "answers": ["-d", "--decode", "-D"] },
+    { "answers": ["restart"] }
+  ]
+}

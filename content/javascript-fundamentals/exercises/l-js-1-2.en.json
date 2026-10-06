@@ -1,0 +1,16 @@
+{
+  "title": "Track what you have spent",
+  "prompt": "Pocket has a `monthlyBudget` of 2000. Declare a variable `spent` that starts at `0`, then reassign it twice to add an expense of `45` and one of `120`. Declare `remaining` as `monthlyBudget` minus `spent`, and log the **type** of `remaining`. Keep `monthlyBudget` a `const`.\n",
+  "hints": [
+    "`spent` has to change, so it cannot be a `const`.",
+    "To add to a variable, compute the new value from the old one: `spent = spent + 45;`.",
+    "`typeof` goes in front of the value: `console.log(typeof remaining);`."
+  ],
+  "explanation": "`spent` is declared with `let` because it is pointed at a new number twice: `0`, then `45`, then `165`. Each time, the right side is evaluated using the current value before the name moves. `remaining` never changes after it is computed, so `const` is the right choice, and `typeof remaining` is `\"number\"` because subtracting two numbers gives a number. Trying to reassign `monthlyBudget` throws a `TypeError`, which is exactly the protection `const` is for.\n",
+  "checks": {
+    "spent-total": "`spent` ends at 165",
+    "remaining-value": "`remaining` is 1835",
+    "logs-type": "Logs the type of `remaining` (number)",
+    "budget-const": "`monthlyBudget` is still a `const` that cannot be reassigned"
+  }
+}

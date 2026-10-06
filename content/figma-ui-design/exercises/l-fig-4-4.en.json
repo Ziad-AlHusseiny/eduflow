@@ -1,0 +1,36 @@
+{
+  "title": "Pick the feedback worth giving",
+  "prompt": "In Steady's design critique, the presenter shares Habit detail and says: \"Goal: someone sees at a glance how consistent they have been. I want feedback on the calendar and the overall hierarchy.\"\n\n:::figure Habit detail, version 2\n<svg viewBox=\"0 0 360 420\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">A Habit detail screen: a back arrow and the title Read 20 pages, a large 12-day streak number, a calendar grid of past check-ins with done days filled and missed days the same shape in a different tint, two stat cards, and an Edit habit button at the bottom.</title>\n  <rect class=\"d-box\" x=\"40\" y=\"10\" width=\"280\" height=\"400\" rx=\"24\"/>\n  <text class=\"d-label\" x=\"60\" y=\"48\">‹</text>\n  <text class=\"d-label-strong\" x=\"80\" y=\"48\">Read 20 pages</text>\n  <text class=\"d-label-strong\" x=\"180\" y=\"100\" text-anchor=\"middle\" style=\"font-size:34px\">12</text>\n  <text class=\"d-label-muted\" x=\"180\" y=\"122\" text-anchor=\"middle\">day streak</text>\n  <rect class=\"d-box-primary\" x=\"64\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"100\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-warn\" x=\"136\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"172\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"208\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-warn\" x=\"244\" y=\"140\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"64\" y=\"176\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"100\" y=\"176\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-primary\" x=\"136\" y=\"176\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box\" x=\"172\" y=\"176\" width=\"28\" height=\"28\" rx=\"6\"/>\n  <rect class=\"d-box-accent\" x=\"64\" y=\"226\" width=\"100\" height=\"70\" rx=\"10\"/>\n  <text class=\"d-label\" x=\"114\" y=\"266\" text-anchor=\"middle\">Best: 30</text>\n  <rect class=\"d-box-accent\" x=\"176\" y=\"226\" width=\"120\" height=\"70\" rx=\"10\"/>\n  <text class=\"d-label\" x=\"236\" y=\"266\" text-anchor=\"middle\">Rate: 86%</text>\n  <rect class=\"d-box-primary\" x=\"64\" y=\"340\" width=\"232\" height=\"44\" rx=\"12\"/>\n  <text class=\"d-label-strong\" x=\"180\" y=\"367\" text-anchor=\"middle\">Edit habit</text>\n</svg>\n:::\n\nSelect **every** comment that is useful critique for this goal.",
+  "hints": [
+    "Useful critique has an observation, an effect on the user or goal, and a question or suggestion.",
+    "Check each comment against the presenter's stated goal and requested feedback.",
+    "Three comments tie a specific observation to the goal. Three are taste, a pattern without a reason, or praise without content."
+  ],
+  "explanation": "The useful comments each pair an **observation** with an **effect** and a **question**. Missed days differ from done days only by tint, which fails people with color vision deficiencies and undermines the \"at a glance\" goal (Lesson 4.2). The two stat cards have different widths and do not line up with the calendar, adding edges the eye has to process (Lesson 1.2). The full-width primary Edit habit button carries the screen's strongest accent, competing with the streak and calendar for a rare action. \"I prefer purple\" is taste, \"another app has a chart\" names a pattern without a problem, and \"looks good\" gives the designer nothing to act on.",
+  "options": {
+    "color-only-calendar": {
+      "text": "Missed days differ from done days only by tint, so I could not tell them apart at a glance. Could missed days get an x or an outline?",
+      "why": "Correct. A concrete observation, a clear effect on the stated goal, and a suggestion that also fixes a color-only problem."
+    },
+    "edges-stats": {
+      "text": "The two stat cards are different widths and do not line up with the calendar edges, so my eye jumps. Could they span two columns each?",
+      "why": "Correct. It ties alignment to how the screen reads and proposes a fix the designer can evaluate."
+    },
+    "edit-weight": {
+      "text": "The Edit habit button is the strongest thing on screen, but editing is rare here. Would a secondary or ghost button let the streak lead?",
+      "why": "Correct. It questions the hierarchy against the goal of seeing consistency first."
+    },
+    "like-purple": {
+      "text": "I would personally prefer purple for the calendar squares.",
+      "why": "A preference without a link to the goal. It starts a taste debate rather than improving the design."
+    },
+    "competitor": {
+      "text": "Another habit app shows a line chart here instead.",
+      "why": "It names a pattern but not the problem it would solve for this goal, so the designer cannot judge it."
+    },
+    "looks-good": {
+      "text": "This looks really clean. Nice work.",
+      "why": "Kind, but a critique is for improving the work. Praise is more useful when it says what works and why."
+    }
+  }
+}

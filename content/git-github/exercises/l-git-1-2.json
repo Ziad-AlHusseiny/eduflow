@@ -1,0 +1,10 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "git config --global user.email \"maya.okafor@example.com\"\ngit config --global {{0}} main\n\nmkdir portfolio && cd portfolio\ngit {{1}}\ngit add index.html\ngit commit {{2}} \"Add home page\"",
+  "blanks": [
+    { "answers": ["init.defaultBranch", "init.defaultbranch"] },
+    { "answers": ["init"] },
+    { "answers": ["-m", "--message"] }
+  ]
+}

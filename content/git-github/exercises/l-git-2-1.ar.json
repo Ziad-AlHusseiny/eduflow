@@ -1,0 +1,11 @@
+{
+  "title": "فرع للـ footer",
+  "prompt": "املأ الفراغات: أنشئ فرع `footer` وانتقل إليه بأمر واحد، وسجّل الـ footer في commit، وعُد إلى `main` لتتأكّد أنه لم يتغيّر، ثم أعد تسمية الفرع إلى `site-footer`.",
+  "hints": [
+    "يقبل `git switch` خيارًا ينشئ الفرع أولًا. وهو اختصار لكلمة create.",
+    "تستطيع تسمية الفرع الذي تريد العودة إليه، أو استخدام الاختصار الذي يعني الفرع السابق.",
+    "`git branch -m <old> <new>` يعيد تسمية الفرع."
+  ],
+  "explanation": "`git switch -c footer` ينشئ `footer` عند الـ commit الحالي ويربط الـ HEAD به، فيحرّك الـ commit فرع `footer` ويترك `main` على حاله. و `git switch main` (أو `git switch -` الذي يعني الفرع السابق) يعيد كتابة الـ working tree على لقطة `main`. و `git branch -m footer site-footer` يعيد تسمية المؤشّر؛ أما الـ commits فلا تتغيّر إطلاقًا.",
+  "checks": {}
+}

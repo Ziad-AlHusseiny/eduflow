@@ -1,0 +1,17 @@
+{
+  "title": "Name every button on the event page",
+  "prompt": "A screen reader lists Ticketly's buttons as \"times, button, Book now, Book now, Book now, newsletter-cta\". Fix the names without changing what sighted users see:\n\n1. The `.close` \"×\" button needs a name containing \"Close\" (or \"Dismiss\"); the \"×\" itself shouldn't be read.\n2. The icon-only `.search` button needs the name \"Search\".\n3. Each `.book` button needs a unique name that **starts with \"Book now\"** and includes its pass (Friday, Saturday or Weekend).\n4. The `.subscribe` button's name must contain its visible word \"Subscribe\".",
+  "hints": [
+    "Hide the × with <span aria-hidden=\"true\">, then add visually hidden text or an aria-label on the button.",
+    "Give each heading and each Book now button an id, then aria-labelledby=\"button-id heading-id\" on the button.",
+    "For Subscribe, the simplest fix is deleting the aria-label so the button's content becomes its name."
+  ],
+  "explanation": "The close button's name now comes from visually hidden text (or an aria-label), and the × is hidden so it isn't read as \"times\". The search button gets its name from aria-label because it has no text content, and its decorative SVG is hidden. Each Book now button uses aria-labelledby to reference itself and its card's heading, producing \"Book now Friday pass\": unique in a list of buttons, and still starting with the visible words, so voice control users can say \"click Book now\" (2.5.3 Label in Name). The Subscribe button was the easiest: removing a wrong aria-label let the visible text become the name again.",
+  "checks": {
+    "close-named": "The close button is named Close (or Dismiss) and the × isn't read",
+    "search-named": "The search button is named Search",
+    "book-unique": "The three Book now buttons have unique names that include their pass",
+    "label-in-name": "Every name contains its visible text, and Book now names start with it",
+    "subscribe": "The Subscribe button's name contains \"Subscribe\""
+  }
+}

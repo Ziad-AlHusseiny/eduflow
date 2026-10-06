@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "apiVersion: v1\nkind: Service\nmetadata:\n  name: notes-api\nspec:\n  selector:\n    app.kubernetes.io/name: notes-api\n  ports:\n    - port: 80\n      targetPort: 80\n---\n# excerpt from the Deployment's Pod template\ncontainers:\n  - name: api\n    image: ghcr.io/skylane/notes-api:1.4.0\n    ports:\n      - containerPort: 3000",
+  "bugLines": [10]
+}

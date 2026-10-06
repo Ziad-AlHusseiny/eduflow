@@ -1,0 +1,13 @@
+{
+  "kind": "order",
+  "items": [
+    "set-identity",
+    "configure",
+    "preview",
+    "production-build",
+    "submit",
+    "store-test",
+    "review",
+    "release"
+  ]
+}

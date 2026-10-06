@@ -1,0 +1,28 @@
+{
+  "title": "تتبّع الأخطاء",
+  "prompt": "يستخدم هذا المقطع `CategoryBudget` و`BudgetError` من الدرس: ترمي `record` الخطأ `.emptyTitle` للعنوان الفارغ، و`.nonPositiveAmount` للمبلغ الذي يساوي صفرًا أو أقل، و`.overLimit(by:)` حين يتجاوز المجموع الجديد الحدّ. توقّع كل ما تطبعه الحلقة.\n\n```swift\nvar food = CategoryBudget(limit: 50)\nlet attempts: [(String, Decimal)] = [(\"Lunch\", 12), (\"\", 5), (\"Dinner\", 45)]\n\nfor (title, amount) in attempts {\n    do {\n        try food.record(title: title, amount: amount)\n        print(\"Saved \\(title)\")\n    } catch BudgetError.overLimit(let by) {\n        print(\"Over by \\(by)\")\n    } catch {\n        print(\"Rejected: \\(error)\")\n    }\n}\nprint(food.spent)\n```",
+  "hints": [
+    "تتبّع قيمة `spent` بعد كل محاولة. هل تغيّرها المحاولة الفاشلة؟",
+    "المحاولة الثانية تفشل حتى قبل فحص المبلغ. أيّ guard تأتي أولًا؟",
+    "في المحاولة الثالثة، سيكون المجموع الجديد 12 + 45. بكم يتجاوز ذلك 50؟"
+  ],
+  "explanation": "يجتاز Lunch كل الـ guards، فتصبح `spent` مساوية لـ 12 ويُطبع \"Saved Lunch\". العنوان الفارغ يفشل في أول guard؛ و`.emptyTitle` لا يطابق نمط `overLimit`، فتطبع `catch` المجرّدة \"Rejected: emptyTitle\". أما Dinner فسيرفع المجموع إلى 57، فترمي `record` الخطأ `.overLimit(by: 7)` وتطبع أول catch العبارة \"Over by 7\".\n\nولأن `record` ترمي الخطأ قبل أن تُسند `spent`، فالمحاولات الفاشلة لا تغيّر شيئًا، ويطبع السطر الأخير 12. كتابة كل الفحوصات أولًا والتعديل في النهاية هي ما يجعل استدعاء الدالة مرة أخرى بعد الفشل آمنًا.",
+  "options": {
+    "a": {
+      "text": "Saved Lunch / Saved / Saved Dinner / 62",
+      "why": "هذا يتجاهل فحصَي guard كليهما. العنوان الفارغ والمجموع 57 مقابل حدّ 50 كلاهما يرمي خطأً."
+    },
+    "b": {
+      "text": "Saved Lunch / Rejected: emptyTitle / Over by 7 / 57",
+      "why": "محاولة التجاوز ترمي الخطأ قبل تنفيذ `spent = newTotal`، فلا يصل المجموع أبدًا إلى 57."
+    },
+    "c": {
+      "text": "Saved Lunch / Over by 7 / 12",
+      "why": "العنوان الفارغ ما زال ينتج مخرجات. تلتقطه `catch` الأخيرة المجرّدة، فتطبع \"Rejected: emptyTitle\"."
+    },
+    "d": {
+      "text": "Saved Lunch / Rejected: emptyTitle / Over by 7 / 12",
+      "why": "صحيح. كل فشل تلتقطه أول جملة مطابقة، والمحاولات الفاشلة تترك `spent` دون تغيير."
+    }
+  }
+}

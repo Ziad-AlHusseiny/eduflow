@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "dockerfile",
+  "code": "# syntax=docker/dockerfile:1\n# (build and deps stages as in the previous lesson)\nFROM node:24-slim AS runtime\nENV NODE_ENV=production\nWORKDIR /app\nCOPY package.json ./\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY --from=build /app/dist ./dist\nUSER node\n# temporary: fixes EACCES writing /app/tmp\nUSER root\nEXPOSE 3000\nCMD [\"node\", \"dist/server.js\"]",
+  "bugLines": [11]
+}

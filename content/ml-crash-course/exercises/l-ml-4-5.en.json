@@ -1,0 +1,17 @@
+{
+  "title": "Give the tree a rate to split on",
+  "prompt": "Help a single decision tree with two engineered features.\n\n1. Complete `add_features(df)` so it returns a **copy** of `df` with `orders_per_month` (`orders / (tenure_days / 30.4)`) and `tickets_per_order` (`support_tickets / orders`) added. Don't modify the DataFrame passed in.\n2. `pipe`: `FunctionTransformer(add_features)` followed by `tree`.\n3. `plain_auc` and `engineered_auc`: mean cross-validated ROC AUC on the training data (with the provided `cv`) for `tree` alone and for `pipe`.",
+  "hints": [
+    "Start the function with `df = df.copy()` so the caller's data is untouched.",
+    "`make_pipeline(FunctionTransformer(add_features), tree)`",
+    "`cross_val_score(model, X_train, y_train, cv=cv, scoring=\"roc_auc\").mean()` for each."
+  ],
+  "explanation": "The plain tree averages about 0.72; with the two rates it climbs by several points, mostly thanks to `orders_per_month`, which becomes the tree's first question. Because the features live in the pipeline, cross-validation and any later prediction compute them the same way, and since each value depends only on its own row, nothing leaks between folds. Run the same comparison with logistic regression and you'd see almost no change: different models need different help.",
+  "checks": {
+    "new-columns": "add_features adds both new columns",
+    "values": "The new columns hold the right values",
+    "no-mutation": "X_train itself is not modified",
+    "pipeline": "pipe is FunctionTransformer → DecisionTreeClassifier",
+    "scores": "Both CV scores are computed, and the engineered tree beats the plain one"
+  }
+}

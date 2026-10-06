@@ -1,0 +1,18 @@
+{
+  "title": "Measure a GPS track",
+  "prompt": "Fix `trackDistanceKm(points, maxAccuracyM = 25)` so Trailhead shows the real length of a recorded hike. Each point has `latitude`, `longitude` (degrees) and `accuracy` (meters, or `null` when unknown).\n\n- Ignore points whose `accuracy` is **greater than** `maxAccuracyM`. Keep points with `null` accuracy.\n- Add up the great-circle distance between each remaining point and the next, using the haversine formula with an Earth radius of **6371 km**.\n- Return kilometers rounded to **2 decimals**. Fewer than two usable points means `0`.\n\nThe starter treats degrees as flat coordinates, which is wrong everywhere and badly wrong far from the equator.",
+  "hints": [
+    "Filter first: `points.filter((p) => p.accuracy == null || p.accuracy <= maxAccuracyM)`.",
+    "Haversine: convert the latitude and longitude differences to radians, then `h = sin\u00b2(dLat/2) + cos(lat1)\u00b7cos(lat2)\u00b7sin\u00b2(dLon/2)` and `distance = 2 \u00b7 6371 \u00b7 asin(\u221ah)`.",
+    "Round once at the end with `Math.round(total * 100) / 100`, not after each step, or the rounding errors add up."
+  ],
+  "explanation": "Degrees aren't a flat grid: one degree of longitude shrinks from about 111 km at the equator to zero at the poles, so the starter's Pythagoras on raw degrees gave nonsense. The haversine formula measures along the Earth's surface, which is accurate to well within a GPS reading's own error for hiking distances. Filtering by `accuracy` before summing removes the zigzags that otherwise add fake kilometers under trees. The function is pure, so the tracking screen can call it on every new point, or you can compute it once when the hike is saved.",
+  "checks": {
+    "one-step": "One step of 0.01\u00b0 latitude is about 1.11 km",
+    "sums-route": "Distances along a route are added up",
+    "drops-inaccurate": "Points with poor accuracy are ignored",
+    "custom-threshold": "The accuracy threshold can be changed",
+    "short-input": "Fewer than two usable points gives 0",
+    "null-accuracy": "Points with unknown (null) accuracy are kept"
+  }
+}

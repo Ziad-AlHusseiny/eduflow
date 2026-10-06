@@ -1,0 +1,20 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "page-snapshot",
+    "negative-format",
+    "usestate",
+    "settle-e2e",
+    "constant",
+    "private-spy",
+    "regression",
+    "network-404"
+  ],
+  "correct": [
+    "page-snapshot",
+    "usestate",
+    "constant",
+    "private-spy"
+  ]
+}

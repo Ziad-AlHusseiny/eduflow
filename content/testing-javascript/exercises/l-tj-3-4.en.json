@@ -1,0 +1,17 @@
+{
+  "title": "Fake the network at its edge",
+  "prompt": "`loadGroup(groupId, fetchImpl)` requests `https://api.splitwise-lite.test/groups/<id>`, converts the API's JSON (dollars, snake_case) into Splitwise-lite's shape (cents, camelCase), and rejects with `Could not load group <id> (HTTP <status>)` when the response isn't ok. The exact shapes are in the subject's comment.\n\nThe starter gives you `jsonResponse(body, status)`, which builds a real `Response`, and an `apiGroup` sample. Pass a `vi.fn().mockResolvedValue(jsonResponse(...))` as `fetchImpl` and add tests until your suite catches four hidden bugs: one **ignores** the HTTP status, one requests the **wrong URL**, one forgets to convert dollars to **cents**, and one reads `paidBy` from the wrong field.",
+  "hints": [
+    "Check the request: `expect(fetchMock).toHaveBeenCalledWith('https://api.splitwise-lite.test/groups/lisbon')`.",
+    "Compare the whole result with `toEqual`; the expected object is spelled out in the subject comment (45.5 dollars is 4550 cents).",
+    "For the error path, use `jsonResponse({ error: 'Not found' }, 404)` and assert the message, not just that it rejects: the buggy version rejects too, with a TypeError."
+  ],
+  "explanation": "Because only the transport is faked, every line of `loadGroup` runs in the test. `toHaveBeenCalledWith` on the fetch mock catches the wrong URL, which no assertion on the result could see, since a fake answers any URL. One `toEqual` on the converted group catches both shaping bugs: dollars left as 45.5 and `paidBy` coming back `undefined`. The 404 test is the subtle one: without the `ok` check, the code still rejects, with `Cannot read properties of undefined`, so only matching the message `HTTP 404` proves the status was handled on purpose. This is the same discipline MSW gives you, without the library.",
+  "checks": {
+    "passes": "All your tests pass against the real loadGroup",
+    "catches-ignores-status": "Catches the version that ignores the HTTP status",
+    "catches-wrong-url": "Catches the version that requests the wrong URL",
+    "catches-no-cents": "Catches the version that keeps dollars instead of cents",
+    "catches-snake-case-leak": "Catches the version that reads paidBy from the wrong field"
+  }
+}

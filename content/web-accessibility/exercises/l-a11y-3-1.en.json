@@ -1,0 +1,16 @@
+{
+  "title": "Make Ticketly keyboard friendly",
+  "prompt": "Three keyboard problems on one small page:\n\n1. The pass buttons use positive `tabindex` values, so focus order jumps around. Remove them; the DOM order is already right.\n2. A 2019 rule hides every focus indicator. Replace it with a visible `:focus-visible` outline at least 2px wide.\n3. There is no way to bypass the header. Add a skip link as the **first focusable element**, with text containing \"Skip\" and `href=\"#main\"`. It may be hidden off-screen, but it must be visible while focused (don't use `display: none`).",
+  "hints": [
+    "Delete the tabindex attributes from the buttons entirely.",
+    "Replace *:focus { outline: none; } with :focus-visible { outline: 3px solid …; outline-offset: 2px; }",
+    "Put <a class=\"skip-link\" href=\"#main\">Skip to main content</a> before the header, move it up with transform: translateY(-150%), and reset the transform in .skip-link:focus."
+  ],
+  "explanation": "Without positive tabindex values, Tab follows the markup: skip link, logo, menu, then the three passes in the order they appear. The focus rule now adds an indicator instead of removing one, and `:focus-visible` keeps it from flashing on mouse clicks. The skip link is the first Tab stop; it stays reachable because it is moved off-screen rather than removed, and it slides into view on focus so sighted keyboard users see it too. Pressing Enter on it moves focus to `#main`, past the header.",
+  "checks": {
+    "no-positive": "No element has a positive tabindex",
+    "skip-first": "The first focusable element is a skip link pointing to #main",
+    "skip-visible": "The skip link is visible on screen while it has focus",
+    "focus-ring": "Links and buttons show an outline at least 2px wide when focused"
+  }
+}

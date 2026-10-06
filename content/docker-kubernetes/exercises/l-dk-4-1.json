@@ -1,0 +1,4 @@
+{
+  "kind": "order",
+  "items": ["send", "store", "rs", "pods", "schedule", "start", "report"]
+}

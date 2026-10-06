@@ -1,0 +1,17 @@
+{
+  "title": "Build the sales table",
+  "prompt": "Build `sales`: every row of `items`, plus its order's columns from `orders`, the product's `name` renamed to `product`, and the customer's `country`. Use left merges with `validate=\"many_to_one\"`, then remove the lines of cancelled orders. Then set `revenue_by_country` to total revenue per country as a Series, sorted from highest to lowest.",
+  "hints": [
+    "Chain merges: `items.merge(orders, on=\"order_id\", how=\"left\", validate=\"many_to_one\")`, then products on `product_id`, then customers on `customer_id`.",
+    "Select only the columns you need from the lookup tables, e.g. `products[[\"product_id\", \"name\"]].rename(columns={\"name\": \"product\"})`, so you don't import clashing names like `unit_price`.",
+    "Filter with `sales[sales[\"status\"] != \"cancelled\"]`, then `groupby(\"country\")[\"revenue\"].sum().sort_values(ascending=False)`."
+  ],
+  "explanation": "Each merge adds columns without changing the number of rows, because every item has exactly one order, one product and one customer, which `validate=\"many_to_one\"` guarantees. Selecting only the lookup columns you need keeps the table tidy and avoids `_x`/`_y` suffixes. After removing cancelled orders the revenue is 446,666.32 dollars, the course's revenue definition. The UAE leads with 74,531.80 dollars, just ahead of the UK, even though the US has more customers: a first sign that revenue per customer differs by country.",
+  "checks": {
+    "columns": "`sales` has revenue, order, product and country columns",
+    "no-cancelled": "No cancelled orders remain",
+    "row-count": "Every non-cancelled item line is present exactly once",
+    "revenue-total": "Total revenue is 446,666.32",
+    "by-country": "`revenue_by_country` is sorted, with the UAE first at 74,531.80"
+  }
+}

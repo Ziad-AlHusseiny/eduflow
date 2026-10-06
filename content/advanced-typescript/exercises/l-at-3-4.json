@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\ntype PaymentOutcome = 'captured' | 'failed';\ntype Feature = 'express-shipping' | 'gift-wrap';\n\ntype CheckoutEvent = string;\ntype FlagEnvVar = string;\ntype PathParams<P extends string> = string;\n\nfunction buildPath<P extends string>(pattern: P, params: Record<PathParams<P>, string | number>): string {\n  return pattern;\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<CheckoutEvent,\n  | 'order.processing' | 'order.shipped' | 'order.delivered' | 'order.cancelled' | 'order.returned'\n  | 'payment.captured' | 'payment.failed'>>;\ntype T2 = Expect<Equal<FlagEnvVar, 'CHECKOUT_EXPRESS-SHIPPING' | 'CHECKOUT_GIFT-WRAP'>>;\ntype T3 = Expect<Equal<PathParams<'/orders/:orderId/lines/:lineId'>, 'orderId' | 'lineId'>>;\ntype T4 = Expect<Equal<PathParams<'/customers/:customerId'>, 'customerId'>>;\ntype T5 = Expect<Equal<PathParams<'/orders'>, never>>;\n\n// @ts-expect-error: 'order.shiped' is a typo\nconst typo: CheckoutEvent = 'order.shiped';\n\n// @ts-expect-error: lineId is missing\nbuildPath('/orders/:orderId/lines/:lineId', { orderId: 1042 });\n\nconsole.log(buildPath('/orders/:orderId/lines/:lineId', { orderId: 1042, lineId: 3 }));\n"
+  },
+  "solution": {
+    "ts": "type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\ntype PaymentOutcome = 'captured' | 'failed';\ntype Feature = 'express-shipping' | 'gift-wrap';\n\ntype CheckoutEvent = `order.${OrderStatus}` | `payment.${PaymentOutcome}`;\ntype FlagEnvVar = `CHECKOUT_${Uppercase<Feature>}`;\ntype PathParams<P extends string> =\n  P extends `${string}:${infer Param}/${infer Rest}`\n    ? Param | PathParams<Rest>\n    : P extends `${string}:${infer Param}`\n      ? Param\n      : never;\n\nfunction buildPath<P extends string>(pattern: P, params: Record<PathParams<P>, string | number>): string {\n  // Every :param in the pattern has a key in params, by construction.\n  const values = params as Record<string, string | number>;\n  return pattern.replace(/:(\\w+)/g, (_, name: string) => encodeURIComponent(String(values[name])));\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<CheckoutEvent,\n  | 'order.processing' | 'order.shipped' | 'order.delivered' | 'order.cancelled' | 'order.returned'\n  | 'payment.captured' | 'payment.failed'>>;\ntype T2 = Expect<Equal<FlagEnvVar, 'CHECKOUT_EXPRESS-SHIPPING' | 'CHECKOUT_GIFT-WRAP'>>;\ntype T3 = Expect<Equal<PathParams<'/orders/:orderId/lines/:lineId'>, 'orderId' | 'lineId'>>;\ntype T4 = Expect<Equal<PathParams<'/customers/:customerId'>, 'customerId'>>;\ntype T5 = Expect<Equal<PathParams<'/orders'>, never>>;\n\n// @ts-expect-error: 'order.shiped' is a typo\nconst typo: CheckoutEvent = 'order.shiped';\n\n// @ts-expect-error: lineId is missing\nbuildPath('/orders/:orderId/lines/:lineId', { orderId: 1042 });\n\nconsole.log(buildPath('/orders/:orderId/lines/:lineId', { orderId: 1042, lineId: 3 }));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "builds",
+      "test": "return buildPath('/orders/:orderId/lines/:lineId', { orderId: 1042, lineId: 3 }) === '/orders/1042/lines/3' && buildPath('/orders', {}) === '/orders';"
+    },
+    {
+      "id": "encodes",
+      "test": "return buildPath('/search/:q', { q: 'tent & tarp' }) === '/search/tent%20%26%20tarp';"
+    }
+  ]
+}

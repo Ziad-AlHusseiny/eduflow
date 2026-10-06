@@ -1,0 +1,15 @@
+{
+  "title": "Keys that keep notes in place",
+  "prompt": "Each movie row has a note input. Two problems:\n\n1. The list should show movies **newest first** (by `year`). Sort a copy during render; don't change the `movies` state.\n2. Type a note next to Arrival, then click **Add Dune: Part Two**. The note jumps to the wrong movie. Fix the key so each note stays with its movie.\n\nKeep the markup the same: one `<li>` per movie with a `<span>` (title and year) and an `<input>`.",
+  "hints": [
+    "`movies.toSorted((a, b) => b.year - a.year)` returns a new, sorted array and leaves `movies` alone.",
+    "Map over the sorted copy, not over `movies`.",
+    "Each movie already has a stable `id`. Use `key={movie.id}` instead of the index."
+  ],
+  "explanation": "With `key={index}`, React matches rows by position. Adding a movie shifts everything down, so the row that used to be Arrival's (key 0 in the starter) is reused for whichever movie now sits at that position, with the note still in its input. With `key={movie.id}`, React knows the Arrival row is the same item as before and moves it, input value and all. Sorting a copy during render keeps `movies` as the single source of truth; the newest-first order is derived from it every time.",
+  "checks": {
+    "sorted": "Movies appear newest first: Past Lives, then Arrival",
+    "note-follows-movie": "After adding Dune, Arrival's note is still next to Arrival",
+    "sorted-after-add": "Dune: Part Two (2024) appears first after it is added"
+  }
+}

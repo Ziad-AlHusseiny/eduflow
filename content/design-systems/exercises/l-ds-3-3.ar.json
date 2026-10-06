@@ -1,0 +1,17 @@
+{
+  "title": "ابنِ حالات التركيز والتبديل والتعطيل في المكوّن",
+  "prompt": "شريط الأدوات هذا يخفي تركيز لوحة المفاتيح ويتجاهل حالاته. أصلحه في CSS وJS:\n\n1. احذف القاعدة `:focus { outline: none }` وأضف حلقة `:focus-visible`: ‏outline صلبًا يستخدم `--nw-focus-ring-width` و`--nw-focus-ring-color` مع `outline-offset` بقيمة `--nw-focus-ring-offset`.\n2. اجعل **Show only late** زر تبديل حقيقيًا: كل نقرة تقلب `aria-pressed` بين `\"true\"` و`\"false\"`. وحين يكون مضغوطًا تكون خلفيته `--nw-color-action-bg-subtle` وحدّه `--nw-color-action-bg`.\n3. الزر **Save route** يحمل `aria-disabled=\"true\"`: يجب ألّا يحفظ عند النقر، ويستخدم نصّه `--nw-color-text-disabled`، ويكون المؤشر فوقه `not-allowed`.",
+  "hints": [
+    "نسّق الحالات بسماتها: `.nw-button[aria-pressed=\"true\"]` و`.nw-button[aria-disabled=\"true\"]`. وخصّص الـ component tokens داخلها.",
+    "في معالج النقر لزر التبديل، اقرأ `aria-pressed` ثم اجعله عكس قيمته بـ `setAttribute('aria-pressed', String(!pressed))`.",
+    "في أول معالج الحفظ، استخدم `return` مبكرًا حين يكون `save.getAttribute('aria-disabled') === 'true'`."
+  ],
+  "explanation": "صارت الحلقة تظهر مع تركيز لوحة المفاتيح عبر `:focus-visible`، وهي مأخوذة من tokens، فيستطيع كل مكوّن وكل theme مشاركتها. وشكل زر التبديل تقوده `aria-pressed`، فلا يمكن أن تختلف الحالة المرئية عن الحالة المُعلَنة أبدًا. و`aria-disabled` تُبقي زر الحفظ قابلًا للتركيز حتى يمكن الوصول إلى شرحه عبر `aria-describedby`، ولهذا يجب أن يحرس معالج النقر الإجراء بنفسه. في النظام الحقيقي يفعل مكوّن Button كل هذا داخليًا، وتحصل عليه الفرق افتراضيًا.",
+  "checks": {
+    "focus-visible-rule": "تنسيق التركيز يستخدم `:focus-visible`، ولا توجد قاعدة `:focus` تحذف الـ outline",
+    "ring": "تركيز لوحة المفاتيح يُظهر حلقة صلبة بعرض 2px بلون التركيز مع إزاحة 2px",
+    "toggle": "النقر على **Show only late** يقلب `aria-pressed` ونمط الضغط معه",
+    "blocked": "النقر على زر Save المعلَّم بـ `aria-disabled` لا يحفظ",
+    "disabled-look": "يستخدم زر Save لون النص المعطّل ومؤشر `not-allowed`"
+  }
+}

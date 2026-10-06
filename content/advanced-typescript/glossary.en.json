@@ -1,0 +1,182 @@
+[
+  {
+    "id": "structural-typing",
+    "term": "Structural typing",
+    "definition": "TypeScript's rule that a value is compatible with a type when it has the required shape, whatever the type is called. Two differently named types with the same properties are interchangeable.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "assignability",
+    "term": "Assignability",
+    "definition": "Whether a value of one type can be used where another type is expected. It works like the subset relation: a narrower set of values fits into a wider one.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "excess-property-check",
+    "term": "Excess property check",
+    "definition": "A check that flags unknown properties in a fresh object literal written directly where a type is expected. It catches typos, but values passed through a variable skip it.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "control-flow-analysis",
+    "term": "Control-flow analysis",
+    "definition": "How TypeScript tracks the type of a variable through branches, returns and assignments, so the same name can have a narrower type after a check than before it.",
+    "lesson": "l-at-1-3"
+  },
+  {
+    "id": "narrowing",
+    "term": "Narrowing",
+    "definition": "Refining a wide type to a more specific one with a runtime check such as `typeof`, `===`, `in`, `instanceof` or a type predicate.",
+    "lesson": "l-at-1-3"
+  },
+  {
+    "id": "discriminated-union",
+    "term": "Discriminated union",
+    "definition": "A union of object types that share a property with a different literal value in each member, such as `status`. Checking that property narrows the whole object to one member.",
+    "lesson": "l-at-1-4"
+  },
+  {
+    "id": "const-assertion",
+    "term": "as const",
+    "definition": "A const assertion that infers the narrowest type for a value: literals stay literal, arrays become readonly tuples and properties become readonly.",
+    "lesson": "l-at-1-5"
+  },
+  {
+    "id": "satisfies",
+    "term": "satisfies",
+    "definition": "An operator that checks a value against a type without replacing the value's inferred type, so you get validation and keep precise keys and literals.",
+    "lesson": "l-at-1-5"
+  },
+  {
+    "id": "type-parameter",
+    "term": "Type parameter",
+    "definition": "A placeholder type in a generic function or type, such as `T`, that links inputs to outputs. It should appear at least twice to add real type safety.",
+    "lesson": "l-at-2-1"
+  },
+  {
+    "id": "generic-constraint",
+    "term": "Generic constraint",
+    "definition": "An `extends` clause on a type parameter that limits which types it accepts, such as `T extends { id: number }`, which also makes those properties usable inside the function.",
+    "lesson": "l-at-2-1"
+  },
+  {
+    "id": "inference-site",
+    "term": "Inference site",
+    "definition": "A position in a parameter type where a type parameter appears. At a call, TypeScript collects a candidate from each site to decide what the type parameter is.",
+    "lesson": "l-at-2-2"
+  },
+  {
+    "id": "const-type-parameter",
+    "term": "const type parameter",
+    "definition": "A type parameter declared with `const` (TypeScript 5.0+), which infers arguments as if the caller had written `as const`, keeping literals and readonly tuples.",
+    "lesson": "l-at-2-2"
+  },
+  {
+    "id": "noinfer",
+    "term": "NoInfer",
+    "definition": "A built-in type (TypeScript 5.4+) that marks a position as check-only, so it is validated against a type parameter but never contributes an inference candidate.",
+    "lesson": "l-at-2-3"
+  },
+  {
+    "id": "indexed-access-type",
+    "term": "Indexed access type",
+    "definition": "A type such as `Order['status']` or `T[number]` that looks up the type of a property, or of an array's elements, using bracket syntax.",
+    "lesson": "l-at-3-1"
+  },
+  {
+    "id": "mapped-type",
+    "term": "Mapped type",
+    "definition": "A type that loops over a union of keys and builds one property per key, as in `{ [K in keyof T]?: T[K] }`, the definition of `Partial`.",
+    "lesson": "l-at-3-2"
+  },
+  {
+    "id": "key-remapping",
+    "term": "Key remapping",
+    "definition": "An `as` clause in a mapped type that renames each key, often with a template literal. Mapping a key to `never` removes it, which is how `Omit` works.",
+    "lesson": "l-at-3-2"
+  },
+  {
+    "id": "conditional-type",
+    "term": "Conditional type",
+    "definition": "A type of the form `T extends U ? X : Y` that chooses between two types depending on whether `T` is assignable to `U`.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "distributive-conditional-type",
+    "term": "Distributive conditional type",
+    "definition": "A conditional type whose checked type is a naked type parameter. Given a union, it runs once per member and joins the results; wrapping both sides in brackets turns this off.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "infer",
+    "term": "infer",
+    "definition": "A keyword used inside the `extends` clause of a conditional type to capture part of a matched type, as in `ReturnType`, which captures a function's return type.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "template-literal-type",
+    "term": "Template literal type",
+    "definition": "A string type built with backtick syntax from other types, such as `` `order.${OrderStatus}` ``. Unions inside it expand into every combination.",
+    "lesson": "l-at-3-4"
+  },
+  {
+    "id": "branded-type",
+    "term": "Branded type",
+    "definition": "A primitive intersected with a type-only property, such as `number & { readonly [brand]: 'OrderId' }`, so values with the same runtime type stop being interchangeable.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "smart-constructor",
+    "term": "Smart constructor",
+    "definition": "A function that validates a raw value and returns it as a branded type. It is the only place a cast to the brand should appear.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "exhaustiveness-check",
+    "term": "Exhaustiveness check",
+    "definition": "A compile-time guarantee that every member of a union is handled, usually by passing the leftover value to a parameter of type `never` in a `default` branch.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "result-type",
+    "term": "Result type",
+    "definition": "A discriminated union such as `{ ok: true; value: T } | { ok: false; error: E }` that returns expected failures as values, so callers must handle them.",
+    "lesson": "l-at-4-2"
+  },
+  {
+    "id": "type-predicate",
+    "term": "Type predicate",
+    "definition": "A function return type of the form `value is T`. When the function returns true, the argument is narrowed to `T` at the call site; the body itself is not verified.",
+    "lesson": "l-at-4-3"
+  },
+  {
+    "id": "assertion-function",
+    "term": "Assertion function",
+    "definition": "A function whose return type is `asserts value is T`. It throws when the check fails and narrows the value for the rest of the scope when it returns.",
+    "lesson": "l-at-4-3"
+  },
+  {
+    "id": "using-declaration",
+    "term": "using declaration",
+    "definition": "A declaration that calls the value's `[Symbol.dispose]()` method when its block exits, by return or by throw, disposing several resources in reverse order.",
+    "lesson": "l-at-5-2"
+  },
+  {
+    "id": "declaration-merging",
+    "term": "Declaration merging",
+    "definition": "The rule that several declarations with the same name, such as two interfaces, combine into one. It is how you extend lib types and library interfaces.",
+    "lesson": "l-at-5-3"
+  },
+  {
+    "id": "module-augmentation",
+    "term": "Module augmentation",
+    "definition": "Adding to the types inside a module with `declare module 'name' { … }` from a file that is itself a module, for example to extend a library's interface.",
+    "lesson": "l-at-5-3"
+  },
+  {
+    "id": "project-references",
+    "term": "Project references",
+    "definition": "A tsconfig feature that splits a codebase into separately built projects (`composite: true`, built with `tsc -b`), so unchanged parts are not re-checked.",
+    "lesson": "l-at-5-4"
+  }
+]

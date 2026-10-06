@@ -1,0 +1,17 @@
+{
+  "title": "Fix the docs behind a misuse",
+  "prompt": "Dispatchers complain that the app keeps interrupting them: six teams now open a blocking Dialog that says \"Route saved!\" after every save. You check the Dialog docs page. It opens with a live demo of exactly that success dialog, followed by a complete props table. There is no guidance on when to use Dialog versus Toast. Which changes would you make? Select all that apply.",
+  "hints": [
+    "Remember which part of a page gets copied the most.",
+    "Good fixes act at the moment someone decides which component to use, inside the docs page itself."
+  ],
+  "explanation": "The first example is the most-copied code on the page, so it was teaching the misuse; replacing it with a real blocking decision, like \"Delete route?\", changes what gets copied. A \"when not to use\" line and a do-and-don't pair name the exact mistake and point to Toast at the moment of decision. More props detail, a principles link, or answering teams one by one in Slack leave the page itself unchanged, so the next team repeats the mistake.",
+  "options": {
+    "when-not": { "text": "Add \"When not to use: confirmations that don't need a decision. Use Toast instead.\" near the top of the page.", "why": "Correct. It names the misuse and the alternative where people decide." },
+    "props-detail": { "text": "Expand the props table with more detail on the `open` and `onOpenChange` props.", "why": "The props work fine; the teams chose the wrong component, which the props table can't address." },
+    "first-example": { "text": "Replace the first example with a blocking decision such as \"Delete route?\" with Cancel and Delete actions.", "why": "Correct. The first example is what gets copied, so it must model the right use." },
+    "principles": { "text": "Add a link to the design principles page at the top of the Dialog page.", "why": "Principles are general; nobody follows a link to find out whether a save message should block the screen." },
+    "do-dont": { "text": "Add a do-and-don't pair: Dialog for \"Delete route?\", Toast for \"Route saved\".", "why": "Correct. Side-by-side examples make the boundary between the two components obvious at a glance." },
+    "slack": { "text": "Reply to each of the six teams in Slack explaining the problem.", "why": "It helps those six teams once, but the page still teaches the next team the same mistake." }
+  }
+}

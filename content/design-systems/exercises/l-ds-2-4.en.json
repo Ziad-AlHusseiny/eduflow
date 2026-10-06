@@ -1,0 +1,11 @@
+{
+  "title": "Find what the pipeline will reject",
+  "prompt": "Northwind's CI validates every token file against the DTCG 2025.10 format before building. This file fails. Select **every line** that a conforming tool would reject. Assume the rest of the file, including the color values, is correct.",
+  "hints": [
+    "Check every name for characters the reference syntax reserves.",
+    "Check every reference: does it point at a token (an object with `$value`) or at a group?",
+    "Check every token's type: is it declared on the token or a parent group, and does the value have every required field?"
+  ],
+  "explanation": "Four lines break the format:\n\n- **Line 11**: `bg.hover` contains a period, which is reserved for reference paths. Rename it `bg-hover`.\n- **Line 13**: `{color.blue}` points at a group, not a token. It needs a specific step, such as `{color.blue.700}`.\n- **Line 18**: a `dimension` value must include a `unit` (`px` or `rem`), even when the meaning seems obvious: `{ \"value\": 16, \"unit\": \"px\" }`.\n- **Line 22**: `radius.control` has no `$type`, and neither does the `radius` group, so the token is invalid. Add `\"$type\": \"dimension\"` to the `radius` group.",
+  "checks": {}
+}

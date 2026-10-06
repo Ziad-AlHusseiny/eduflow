@@ -1,0 +1,50 @@
+{
+  "title": "Machine Learning Crash Course",
+  "tagline": "Build, test and ship honest machine learning models with scikit-learn.",
+  "description": [
+    "Most machine learning tutorials stop at a high accuracy score. This course starts where real projects start: a business question, a messy table and a baseline that any model has to beat. You predict which customers of Cartwheel, an online store, will stop ordering, and you learn regression, classification, trees, ensembles and neural networks by building them in scikit-learn.",
+    "Every idea comes with a picture, a few lines of code you run in the browser and a check on what the numbers really mean. You learn the habits that separate a demo from a model people can trust: cross-validation, pipelines, leakage hunting, threshold choices, fairness checks and monitoring after launch. The maths is shown with code and diagrams, not pages of notation."
+  ],
+  "audience": "Analysts and developers who know some Python and pandas and want to build machine learning models they can defend.",
+  "prerequisites": "Basic Python and pandas: loading a CSV, selecting columns and filtering rows. No maths beyond school algebra.",
+  "learnItems": [
+    "Frame a business question as a supervised learning problem",
+    "Train and compare models with fit, predict and score",
+    "Choose metrics that match the cost of each kind of mistake",
+    "Build leak-free pipelines with ColumnTransformer and cross-validation",
+    "Tune hyperparameters and engineer features that move the score",
+    "Check a model for bias, monitor drift and ship it behind an API"
+  ],
+  "sections": {
+    "s-ml-1": "What Machine Learning Is",
+    "s-ml-2": "Regression",
+    "s-ml-3": "Classification",
+    "s-ml-4": "Doing It Right",
+    "s-ml-5": "Beyond the Basics"
+  },
+  "lessons": {
+    "l-ml-1-1": "Learning from Examples",
+    "l-ml-1-2": "The Workflow and the Train/Test Split",
+    "l-ml-1-3": "Models in scikit-learn: fit, predict, score",
+    "l-ml-1-4": "Baselines: The Model to Beat",
+    "l-ml-2-1": "Linear Regression and Its Metrics",
+    "l-ml-2-2": "How Models Learn: Loss and Gradient Descent",
+    "l-ml-2-3": "Polynomial Features and Overfitting",
+    "l-ml-2-4": "Regularisation with Ridge and Lasso",
+    "l-ml-3-1": "Logistic Regression: Predicting Probabilities",
+    "l-ml-3-2": "Decision Trees",
+    "l-ml-3-3": "Random Forests and Gradient Boosting",
+    "l-ml-3-4": "Classification Metrics Beyond Accuracy",
+    "l-ml-3-5": "Thresholds and Class Imbalance",
+    "l-ml-4-1": "Cross-Validation",
+    "l-ml-4-2": "Pipelines and ColumnTransformer",
+    "l-ml-4-3": "Hyperparameter Search",
+    "l-ml-4-4": "Data Leakage",
+    "l-ml-4-5": "Feature Engineering for Churn",
+    "l-ml-5-1": "Clustering and PCA",
+    "l-ml-5-2": "Neural Networks and Deep Learning",
+    "l-ml-5-3": "Where LLMs and Embeddings Fit",
+    "l-ml-5-4": "Responsible ML: Bias, Fairness and Drift",
+    "l-ml-5-5": "Shipping a Model"
+  }
+}

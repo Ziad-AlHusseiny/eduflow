@@ -1,0 +1,6 @@
+{
+  "title": "The Expo commands you'll type every week",
+  "prompt": "Fill in the blanks so this terminal session creates Trailhead, starts the dev server, adds `expo-location` safely, runs the health check, and then builds a development build for the iOS Simulator.",
+  "hints": ["The project generator's package name is the thing you'd search npm for to create an Expo app.", "Adding a native library uses the same verb as npm, but through `npx expo`.", "Building locally for a platform uses `run:` followed by the platform name."],
+  "explanation": "`npx create-expo-app@latest` scaffolds the project, `npx expo start` runs Metro, and `npx expo install` picks the library version that matches your SDK. `npx expo-doctor` checks for mismatches. `npx expo run:ios` compiles your own app binary (a development build) and installs it on the simulator, which you need once Expo Go doesn't have a native module you use."
+}

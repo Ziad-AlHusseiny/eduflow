@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Returns the transfers that settle a group: [{ from, to, amountCents }].\n// balances: { name: cents }, positive = is owed, negative = owes.\n// Throws if the balances don't add up to zero.\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (sum !== 0) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: -cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.min(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: debtors[d].name, to: creditors[c].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n",
+  "mutants": [
+    {
+      "id": "min-to-max",
+      "code": "// Returns the transfers that settle a group: [{ from, to, amountCents }].\n// balances: { name: cents }, positive = is owed, negative = owes.\n// Throws if the balances don't add up to zero.\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (sum !== 0) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: -cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.max(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: debtors[d].name, to: creditors[c].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n"
+    },
+    {
+      "id": "no-balance-check",
+      "code": "// Returns the transfers that settle a group: [{ from, to, amountCents }].\n// balances: { name: cents }, positive = is owed, negative = owes.\n// Throws if the balances don't add up to zero.\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (false) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: -cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.min(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: debtors[d].name, to: creditors[c].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n"
+    },
+    {
+      "id": "unary-sign",
+      "code": "// Returns the transfers that settle a group: [{ from, to, amountCents }].\n// balances: { name: cents }, positive = is owed, negative = owes.\n// Throws if the balances don't add up to zero.\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (sum !== 0) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: +cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.min(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: debtors[d].name, to: creditors[c].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n"
+    },
+    {
+      "id": "swapped-direction",
+      "code": "// Returns the transfers that settle a group: [{ from, to, amountCents }].\n// balances: { name: cents }, positive = is owed, negative = owes.\n// Throws if the balances don't add up to zero.\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (sum !== 0) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: -cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.min(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: creditors[c].name, to: debtors[d].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "// Stryker's report on this suite:\n//   [Survived] MethodExpression       Math.min(...) -> Math.max(...)\n//   [Survived] ConditionalExpression  if (sum !== 0) -> if (false)\n//   [Survived] UnaryOperator          cents: -cents -> cents: +cents\n// and a bug from last month's code review:\n//   [Survived] from/to swapped in each transfer\ndescribe('settleUp', () => {\n  test('returns no transfers when everyone is settled', () => {\n    expect(settleUp({ Ana: 0, Ben: 0 })).toEqual([]);\n  });\n\n  test('returns one transfer for two people', () => {\n    expect(settleUp({ Ana: 500, Ben: -500 })).toHaveLength(1);\n  });\n});\n"
+  },
+  "solution": {
+    "js": "const sum = (xs) => xs.reduce((a, b) => a + b, 0);\n\ndescribe('settleUp', () => {\n  test('returns no transfers when everyone is settled', () => {\n    expect(settleUp({ Ana: 0, Ben: 0 })).toEqual([]);\n  });\n\n  test('the debtor pays the creditor the full amount', () => {\n    expect(settleUp({ Ana: 500, Ben: -500 })).toEqual([\n      { from: 'Ben', to: 'Ana', amountCents: 500 },\n    ]);\n  });\n\n  test('one debtor pays two creditors exactly what each is owed', () => {\n    const transfers = settleUp({ Ana: -1000, Ben: 600, Cai: 400 });\n\n    expect(transfers).toEqual([\n      { from: 'Ana', to: 'Ben', amountCents: 600 },\n      { from: 'Ana', to: 'Cai', amountCents: 400 },\n    ]);\n    expect(sum(transfers.map((t) => t.amountCents))).toBe(1000);\n  });\n\n  test('refuses balances that do not add up to zero', () => {\n    expect(() => settleUp({ Ana: 500, Ben: -400 })).toThrow('add up to zero');\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-min-to-max",
+      "suite": "min-to-max"
+    },
+    {
+      "id": "catches-no-balance-check",
+      "suite": "no-balance-check"
+    },
+    {
+      "id": "catches-unary-sign",
+      "suite": "unary-sign"
+    },
+    {
+      "id": "catches-swapped-direction",
+      "suite": "swapped-direction"
+    }
+  ]
+}

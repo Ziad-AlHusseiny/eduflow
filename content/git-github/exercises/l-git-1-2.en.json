@@ -1,0 +1,11 @@
+{
+  "title": "Set up and commit the portfolio",
+  "prompt": "Fill in the blanks so that every new repository starts on `main`, the `portfolio` folder becomes a repository, and the home page is committed with the message on the command line (no editor).",
+  "hints": [
+    "The default branch name is a setting in the `init` group of the configuration.",
+    "The command that creates the `.git` folder has the same name as that setting group.",
+    "The flag that passes the commit message inline is a single letter, short for message."
+  ],
+  "explanation": "`git config --global init.defaultBranch main` makes `git init` name its first branch `main`. `git init` creates the `.git` folder that holds the repository. `git commit -m \"Add home page\"` records the staged snapshot with the message inline; leave out `-m` and Git opens `core.editor` to ask for one.",
+  "checks": {}
+}

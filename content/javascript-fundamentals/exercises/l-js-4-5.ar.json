@@ -1,0 +1,17 @@
+{
+  "title": "حمّل البيانات بشكل غير متزامن",
+  "prompt": "البيئة المعزولة لا شبكة فيها، لذلك يعطيك كود البداية `fakeFetch(url)`، التي تتصرّف مثل `fetch`: تُرجع promise لاستجابة فيها `ok` و`status` ودالة `json()` غير متزامنة. اكتب أربع دوال `async`:\n\n- `getJson(url)` تُرجع جسم الاستجابة بعد تحليله، و**ترمي** `Error` تتضمّن رسالته رمز الحالة (مثل `404`) حين تكون `response.ok` تساوي false.\n- `loadCategoryNames()` تُرجع `[\"food\", \"travel\", \"fun\"]`، أي الخاصية `name` لكل عنصر من `/api/categories`.\n- `toEuroCents(cents)` تُرجع المبلغ محوّلًا بسعر `EUR` من `/api/rates`، مقرّبًا إلى سنتات صحيحة.\n- `safeGetJson(url, fallback)` تُرجع الـ JSON من `url`، أو `fallback` إن فشل التحميل.\n",
+  "hints": [
+    "كود البداية ينسى `await`: `fakeFetch(url)` تعطي promise، والـ promise ليست له دالة `json`. اكتب `const response = await fakeFetch(url);`.",
+    "بعد الانتظار، افحص `` if (!response.ok) { throw new Error(`HTTP ${response.status}`); } `` قبل إرجاع `response.json()`.",
+    "تحتاج `safeGetJson` إلى `try { return await getJson(url); } catch { return fallback; }`. والـ `await` داخل `try` مهمة: دونها يفلت الرفض من الـ `catch`."
+  ],
+  "explanation": "كل دالة تنتظر شيئًا هي `async` وتستخدم `await`، فيُقرأ الكود من الأعلى إلى الأسفل مع أن كل خطوة تنتهي لاحقًا. تحوّل `getJson` خطأ HTTP إلى `Error` مرميّ، لأن `fetch` (وهذه النسخة المزيّفة) تُنجَز بنجاح مع الـ 404؛ وبعد ذلك لا يحتاج المُستدعون إلا إلى التعامل مع نوع واحد من الفشل. وتقرّب `toEuroCents` بعد التحويل، محافظةً على قاعدة Pocket في السنتات الصحيحة: 450 × 0.86 تساوي 387.0، و1000 × 0.86 تساوي 860. وفي `safeGetJson`، فإن `return await` داخل `try` مقصودة: فالانتظار هناك يجعل الرفض يُرمى داخل `try`، حيث تستطيع `catch` تحويله إلى القيمة البديلة.\n",
+  "checks": {
+    "get-json": "`getJson` تُرجع الجسم بعد تحليله",
+    "get-json-error": "`getJson` ترمي Error تذكر 404 مع الرابط المفقود",
+    "names": "`loadCategoryNames` تُرجع أسماء الفئات",
+    "euros": "`toEuroCents` تحوّل بسعر EUR وتقرّب",
+    "safe": "`safeGetJson` تُرجع القيمة البديلة حين يفشل التحميل"
+  }
+}

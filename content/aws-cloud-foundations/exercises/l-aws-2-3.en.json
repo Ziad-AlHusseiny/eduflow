@@ -1,0 +1,20 @@
+{
+  "title": "Retire the nightly job's access key",
+  "prompt": "Lantern's nightly export job runs on an EC2 instance and reads an access key from `/etc/lantern/.env`. The key has **not** leaked; you are replacing it with a role during a quiet week, without breaking the job. Put the steps in a safe order.",
+  "hints": [
+    "The role must exist, with the right permissions, before anything can use it.",
+    "Prove the job is running as the role before you touch the old key.",
+    "Removing access is done in two stages: one reversible, one permanent."
+  ],
+  "explanation": "You build the replacement first: a least-privilege policy, a role whose trust policy allows `ec2.amazonaws.com`, and an instance profile that puts the role on the instance. Then you remove the key from the instance so the SDK falls through to the role's credentials, and you prove it with `aws sts get-caller-identity` on the instance, which should show an `assumed-role` ARN. Only then do you look at the old key: `get-access-key-last-used` confirms nothing has used it since the switch. Deactivating is reversible if something you forgot breaks; deleting is final, so it comes last. If the key had leaked, you would deactivate it first, immediately, and accept the breakage.",
+  "items": {
+    "write-policy": "Write a least-privilege permissions policy for exactly what the export job does.",
+    "create-role": "Create a role with a trust policy for `ec2.amazonaws.com` and attach the permissions policy.",
+    "attach-profile": "Attach the role to the EC2 instance through an instance profile.",
+    "remove-keys": "Remove the access key from `/etc/lantern/.env` and restart the job.",
+    "verify-identity": "On the instance, run `aws sts get-caller-identity` and confirm the ARN is an `assumed-role` session.",
+    "check-last-used": "Run `aws iam get-access-key-last-used` after the next nightly run to confirm the old key is idle.",
+    "deactivate": "Deactivate the old access key and watch the next few runs.",
+    "delete": "Delete the old access key."
+  }
+}

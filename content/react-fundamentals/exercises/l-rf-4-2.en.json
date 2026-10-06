@@ -1,0 +1,10 @@
+{
+  "title": "Wire up Tailwind v4",
+  "prompt": "Fill in the blanks to add Tailwind CSS v4 to the Watchlist's Vite project, then style the active filter button using the attribute it already has.",
+  "hints": [
+    "Two packages: the framework itself and its official Vite plugin.",
+    "The plugin is a function you call inside the `plugins` array, next to `react()`.",
+    "Tailwind has variants named after ARIA attributes. The button sets `aria-pressed`."
+  ],
+  "explanation": "`npm install tailwindcss @tailwindcss/vite` adds the framework and its Vite plugin. The plugin is imported from `@tailwindcss/vite` and called as `tailwindcss()` in `plugins`, and `@import \"tailwindcss\";` in your main CSS file pulls in the generated styles. No `tailwind.config.js` is needed in v4. The `aria-pressed:` variant applies `bg-indigo-600` only when the button's `aria-pressed` is true, so the visual state follows the same attribute assistive technology reads."
+}

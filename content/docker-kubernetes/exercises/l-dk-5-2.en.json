@@ -1,0 +1,10 @@
+{
+  "title": "The autoscaler that never scales",
+  "prompt": "`kubectl get hpa notes-api` shows `cpu: <unknown>/70%` even though metrics-server is running, and on busy days the replica count drops to 3 every time CI deploys. Select the **two** lines responsible.",
+  "hints": [
+    "CPU utilization is measured as a percentage of something. Is that something defined for this container?",
+    "Which field do both the HPA and every `kubectl apply` write to?"
+  ],
+  "explanation": "Line 14: the container sets only a memory limit, so there's no CPU request, and the HPA can't compute utilization as a percentage of it. Add requests:\n\n```yaml\n          resources:\n            requests:\n              cpu: 250m\n              memory: 256Mi\n            limits:\n              memory: 512Mi\n```\nLine 6: `replicas: 3` in the manifest means every `kubectl apply` resets the count, fighting the HPA. Remove the field once an HPA manages the Deployment; `minReplicas` now holds the floor.",
+  "checks": {}
+}

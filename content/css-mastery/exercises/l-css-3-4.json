@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"hero\">\n  <h1>Waypoint Conf 2026</h1>\n  <article class=\"session-card\" id=\"keynote\">Keynote · The Platform Is the Framework</article>\n</section>\n<main class=\"schedule\">\n  <article class=\"session-card\" id=\"regular\">Shipping View Transitions</article>\n</main>",
+    "css": ":root {\n  --surface: #ffffff;\n  --text: #1f2937;\n  --card: #f8fafc;\n}\n@media (prefers-color-scheme: dark) {\n  :root {\n    --surface: #0f172a;\n    --text: #e5e7eb;\n    --card: #1e293b;\n  }\n}\n\nbody {\n  background: var(--surface);\n  color: var(--text);\n}\n.hero {\n  padding: 16px;\n  background: var(--surface);\n  color: var(--text);\n}\n.hero h1 { margin: 0 0 12px; font-size: 1.4rem; }\n.session-card {\n  margin-block: 8px;\n  padding: 12px;\n  border-radius: 12px;\n  background: var(--card);\n}\n"
+  },
+  "solution": {
+    "html": "<section class=\"hero\">\n  <h1>Waypoint Conf 2026</h1>\n  <article class=\"session-card\" id=\"keynote\">Keynote · The Platform Is the Framework</article>\n</section>\n<main class=\"schedule\">\n  <article class=\"session-card\" id=\"regular\">Shipping View Transitions</article>\n</main>",
+    "css": ":root {\n  color-scheme: light dark;\n  --surface: light-dark(#ffffff, #0f172a);\n  --text: light-dark(#1f2937, #e5e7eb);\n  --card: light-dark(#f8fafc, #1e293b);\n}\n:root[data-theme=\"light\"] { color-scheme: light; }\n:root[data-theme=\"dark\"] { color-scheme: dark; }\n\nbody {\n  background: var(--surface);\n  color: var(--text);\n}\n.hero {\n  color-scheme: dark;\n  padding: 16px;\n  background: var(--surface);\n  color: var(--text);\n}\n.hero h1 { margin: 0 0 12px; font-size: 1.4rem; }\n.session-card {\n  margin-block: 8px;\n  padding: 12px;\n  border-radius: 12px;\n  background: var(--card);\n}\n"
+  },
+  "checks": [
+    {
+      "id": "forced-dark",
+      "test": "const root = document.documentElement; const set = async (v) => { if (v) root.dataset.theme = v; else delete root.dataset.theme; await tick(16); }; await set(\"dark\"); let ok = false; try { ok = (style('body', 'background-color') === 'rgb(15, 23, 42)' && style('body', 'color') === 'rgb(229, 231, 235)' && style('#regular', 'background-color') === 'rgb(30, 41, 59)'); } finally { await set(null); } return ok;"
+    },
+    {
+      "id": "forced-light",
+      "test": "const root = document.documentElement; const set = async (v) => { if (v) root.dataset.theme = v; else delete root.dataset.theme; await tick(16); }; await set(\"light\"); let ok = false; try { ok = (style('body', 'background-color') === 'rgb(255, 255, 255)' && style('body', 'color') === 'rgb(31, 41, 55)' && style('#regular', 'background-color') === 'rgb(248, 250, 252)'); } finally { await set(null); } return ok;"
+    },
+    {
+      "id": "scheme-follows-toggle",
+      "test": "const root = document.documentElement; const set = async (v) => { if (v) root.dataset.theme = v; else delete root.dataset.theme; await tick(16); }; await set(\"dark\"); let ok = false; try { ok = (style(root, 'color-scheme') === 'dark'); } finally { await set(null); } return ok;"
+    },
+    {
+      "id": "system-default",
+      "test": "const root = document.documentElement; const set = async (v) => { if (v) root.dataset.theme = v; else delete root.dataset.theme; await tick(16); }; await set(null); return style(root, 'color-scheme') === 'light dark';"
+    },
+    {
+      "id": "hero-always-dark",
+      "test": "const root = document.documentElement; const set = async (v) => { if (v) root.dataset.theme = v; else delete root.dataset.theme; await tick(16); }; await set(\"light\"); let ok = false; try { ok = (style('.hero', 'color-scheme') === 'dark' && style('.hero', 'background-color') === 'rgb(15, 23, 42)' && style('#keynote', 'background-color') === 'rgb(30, 41, 59)' && style('#regular', 'background-color') === 'rgb(248, 250, 252)'); } finally { await set(null); } return ok;"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": false, "options": ["grow-core", "hybrid", "dissolve", "freeze"], "correct": ["hybrid"] }

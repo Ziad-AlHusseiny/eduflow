@@ -1,0 +1,10 @@
+{
+  "title": "The multi-stage build that ships everything",
+  "prompt": "This two-stage Dockerfile was meant to keep TypeScript and dev dependencies out of production. The image is barely smaller than before and the scanner still reports CVEs in test tooling. Select the line that defeats the purpose of the second stage.",
+  "hints": [
+    "Look at what the runtime stage copies from the build stage.",
+    "The build stage's `/app` contains `src/`, `dist/` and a `node_modules` with every dev dependency."
+  ],
+  "explanation": "Line 12 copies the build stage's entire `/app` into the runtime image, so `src/`, dev dependencies and anything else the context contained all ship. Add a production-only dependency stage and copy named paths:\n\n```dockerfile\nFROM node:24-slim AS deps\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci --omit=dev\n\nFROM node:24-slim AS runtime\nENV NODE_ENV=production\nWORKDIR /app\nCOPY package.json ./\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY --from=build /app/dist ./dist\n```",
+  "checks": {}
+}

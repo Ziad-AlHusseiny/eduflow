@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "items": [
+    "add-tsconfig",
+    "check-boundaries",
+    "convert-leaves",
+    "convert-inward",
+    "drop-allowjs",
+    "ratchet-flags"
+  ]
+}

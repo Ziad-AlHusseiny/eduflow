@@ -1,0 +1,1 @@
+{ "kind": "order", "items": ["write-policy", "create-role", "attach-profile", "remove-keys", "verify-identity", "check-last-used", "deactivate", "delete"] }

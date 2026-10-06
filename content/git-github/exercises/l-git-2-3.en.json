@@ -1,0 +1,20 @@
+{
+  "title": "Resolve the tagline conflict",
+  "prompt": "You're on `main` and want the `tagline` branch merged in. Put the steps in the order you'd run them to get from the conflict to a finished merge commit.",
+  "hints": [
+    "Git must report the conflict before there's anything to fix, and `git status` tells you which files need you.",
+    "You fix the file before you check it, and you check it before you tell Git it's resolved.",
+    "The merge commit is always the very last step."
+  ],
+  "explanation": "The merge stops at the conflict; `git status` lists the unmerged files. You open each one, edit it into the final text and delete every marker, then check the result (`git diff --check`, view the page, run the tests). Only then does `git add` mark it resolved, and `git commit` (or `git merge --continue`) records the merge commit. If anything goes wrong before that last step, `git merge --abort` returns you to where you started.",
+  "items": {
+    "merge": "Run `git merge tagline` and see `CONFLICT (content): Merge conflict in index.html`.",
+    "status": "Run `git status` to list the unmerged paths.",
+    "open": "Open `index.html` and find the `<<<<<<<` block.",
+    "edit": "Write the final tagline and delete the three marker lines.",
+    "check": "Run `git diff --check` and view the page in a browser.",
+    "add": "Run `git add index.html` to mark the conflict resolved.",
+    "commit": "Run `git commit` to record the merge commit."
+  },
+  "checks": {}
+}

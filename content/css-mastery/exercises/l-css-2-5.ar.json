@@ -1,0 +1,17 @@
+{
+  "title": "دع البطاقة تقيس خانتها",
+  "prompt": "تنتقل البطاقة إلى عمودين باستخدام **media query**، فتقيس الشاشة بدل خانتها. تضبط الفحوصات عرض `.slot` بين 300px و500px.\n\n1. اجعل `.slot` حاوية حجم اسمها `session` تتتبّع حجمها الأفقي (inline size).\n2. استبدل الـ media query بـ container query: حين تكون حاوية `session` بعرض **400px أو أكثر**، تصبح البطاقة شبكة من عمودين؛ وتحت ذلك تبقى متراصّة.\n3. أضف استعلام نمط: حين تكون `--variant` بقيمة `featured`، يصبح حدّ البطاقة في جهة البداية (inline-start) بلون `#6d28d9`.",
+  "hints": [
+    "`container: name / type` تضبط الاسم والنوع معًا في تصريح واحد.",
+    "يمكن نقل قواعد الـ grid كما هي إلى `@container session (width >= 400px) { … }`.",
+    "للشكل المميّز: `@container style(--variant: featured) { .session-card { border-inline-start-color: #6d28d9; } }`."
+  ],
+  "explanation": "`container: session / inline-size` تجعل الخانة حاوية حجم مسمّاة، فتقارن `@container session (width >= 400px)` عرض *الخانة* بـ 400px أيًّا كان الـ viewport. ولا يمكن أن تكون البطاقة نفسها هي الحاوية، لأن الاستعلام لا ينسّق إلا العناصر داخل الحاوية التي يقيسها. واستعلام النمط لا يحتاج إلى نوع حاوية: كل عنصر حاوية نمط، والبطاقة تلتقط قيمة `--variant` من خانتها الأب. وفي المتصفّحات التي لا تدعم استعلامات النمط، تحتفظ البطاقة ببساطة بحدّها الرمادي الافتراضي.",
+  "checks": {
+    "named-container": "الخانة حاوية inline-size اسمها session",
+    "wide-side-by-side": "عند 500px يقع الوقت بجوار المحتوى",
+    "narrow-stacked": "عند 300px تتراصّ البطاقة",
+    "threshold": "يحدث التبديل عند 400px بالضبط",
+    "featured-variant": "--variant: featured تجعل الحدّ بنفسجيًا"
+  }
+}

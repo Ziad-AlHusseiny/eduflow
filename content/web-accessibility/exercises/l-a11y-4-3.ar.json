@@ -1,0 +1,17 @@
+{
+  "title": "سمِّ كل زر في صفحة الفعالية",
+  "prompt": "يعرض قارئ الشاشة أزرار Ticketly هكذا: \"times, button, Book now, Book now, Book now, newsletter-cta\". أصلح الأسماء دون تغيير ما يراه المبصرون:\n\n1. زر الإغلاق `.close` ‏\"×\" يحتاج إلى اسم يحتوي \"Close\" (أو \"Dismiss\")؛ ولا ينبغي أن يُقرأ الرمز \"×\" نفسه.\n2. زر البحث `.search` الذي لا يحتوي إلا أيقونة يحتاج إلى الاسم \"Search\".\n3. كل زر `.book` يحتاج إلى اسم فريد **يبدأ بـ \"Book now\"** ويتضمّن تذكرته (Friday أو Saturday أو Weekend).\n4. اسم زر `.subscribe` يجب أن يحتوي كلمته المرئية \"Subscribe\".",
+  "hints": [
+    "أخفِ الرمز × بـ <span aria-hidden=\"true\">، ثم أضِف نصًا مخفيًا بصريًا أو aria-label على الزر.",
+    "أعطِ كل عنوان وكل زر Book now ‏id، ثم ضع aria-labelledby=\"button-id heading-id\" على الزر.",
+    "لزر Subscribe، أبسط إصلاح هو حذف الـ aria-label ليصبح محتوى الزر اسمه."
+  ],
+  "explanation": "صار اسم زر الإغلاق يأتي من نص مخفي بصريًا (أو من aria-label)، والرمز × مخفي فلا يُقرأ \"times\". ويحصل زر البحث على اسمه من aria-label لأنه بلا محتوى نصي، وأيقونة الـ SVG الزخرفية فيه مخفية. ويستخدم كل زر Book now خاصية aria-labelledby ليشير إلى نفسه وإلى عنوان بطاقته، فينتج \"Book now Friday pass\": اسم فريد في قائمة الأزرار، وما زال يبدأ بالكلمات المرئية، فيستطيع مستخدمو التحكّم الصوتي قول \"click Book now\" (2.5.3 Label in Name). وكان زر Subscribe الأسهل: حذف aria-label خاطئة سمح للنص المرئي بأن يعود ليكون الاسم.",
+  "checks": {
+    "close-named": "زر الإغلاق اسمه Close (أو Dismiss) والرمز × لا يُقرأ",
+    "search-named": "زر البحث اسمه Search",
+    "book-unique": "لأزرار Book now الثلاثة أسماء فريدة تتضمّن تذكرة كلٍّ منها",
+    "label-in-name": "كل اسم يحتوي نصه المرئي، وأسماء Book now تبدأ به",
+    "subscribe": "اسم زر Subscribe يحتوي \"Subscribe\""
+  }
+}

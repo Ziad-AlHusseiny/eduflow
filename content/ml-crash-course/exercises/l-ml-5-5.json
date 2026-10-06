@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import io\n\nimport joblib\nimport pandas as pd\nimport sklearn\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nchampion = make_pipeline(StandardScaler(), LogisticRegression()).fit(churn[features], churn[\"churned\"])\n\ngood = {\"tenure_days\": 400, \"orders\": 2, \"total_spent\": 180.0, \"avg_order_value\": 90.0,\n        \"days_since_last_order\": 150, \"used_coupon\": 0, \"support_tickets\": 1, \"mobile_share\": 0.5}\n\n# 1. A bundle with the fitted pipeline, the feature list, a version string and sklearn's version\nbundle = {\"model\": champion}\n\n# 2. Save it with joblib to an in-memory buffer, then load it back into `reloaded`\nbuffer = io.BytesIO()\nreloaded = None\n\n# 3. Validate, then predict. Raise ValueError if any feature is missing,\n#    or if orders < 1, or if mobile_share is outside 0..1.\ndef predict_churn(record, bundle):\n    row = pd.DataFrame([record])\n    return bundle[\"model\"].predict_proba(row)[0, 1]\n",
+  "solution": "import io\n\nimport joblib\nimport pandas as pd\nimport sklearn\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nchampion = make_pipeline(StandardScaler(), LogisticRegression()).fit(churn[features], churn[\"churned\"])\n\ngood = {\"tenure_days\": 400, \"orders\": 2, \"total_spent\": 180.0, \"avg_order_value\": 90.0,\n        \"days_since_last_order\": 150, \"used_coupon\": 0, \"support_tickets\": 1, \"mobile_share\": 0.5}\n\nbundle = {\"model\": champion, \"features\": features,\n          \"version\": \"churn-2025-09-30.1\", \"sklearn_version\": sklearn.__version__}\n\nbuffer = io.BytesIO()\njoblib.dump(bundle, buffer)\nbuffer.seek(0)\nreloaded = joblib.load(buffer)\n\ndef predict_churn(record, bundle):\n    missing = [f for f in bundle[\"features\"] if f not in record]\n    if missing:\n        raise ValueError(f\"missing fields: {missing}\")\n    if record[\"orders\"] < 1:\n        raise ValueError(\"orders must be at least 1\")\n    if not 0 <= record[\"mobile_share\"] <= 1:\n        raise ValueError(\"mobile_share must be between 0 and 1\")\n    row = pd.DataFrame([record])[bundle[\"features\"]]\n    return float(bundle[\"model\"].predict_proba(row)[0, 1])\n\nprint(round(predict_churn(good, reloaded), 3))\n",
+  "checks": [
+    {
+      "id": "bundle",
+      "test": "set(bundle) >= {'model', 'features', 'version', 'sklearn_version'} and list(bundle['features']) == features and bundle['sklearn_version'] == sklearn.__version__"
+    },
+    {
+      "id": "reloaded",
+      "test": "reloaded is not None and (reloaded['model'].predict_proba(churn[features]) == champion.predict_proba(churn[features])).all()"
+    },
+    {
+      "id": "predicts",
+      "test": "isinstance(predict_churn(good, reloaded), float) and abs(predict_churn(good, reloaded) - float(champion.predict_proba(pd.DataFrame([good])[features])[0, 1])) < 1e-12 and abs(predict_churn(dict(reversed(list(good.items()))), reloaded) - predict_churn(good, reloaded)) < 1e-12"
+    },
+    {
+      "id": "missing",
+      "test": "exec('try:\\n    predict_churn({k: v for k, v in good.items() if k != \"orders\"}, reloaded)\\n    _raised = False\\nexcept ValueError:\\n    _raised = True', globals()) or _raised"
+    },
+    {
+      "id": "ranges",
+      "test": "exec('try:\\n    predict_churn({**good, \"mobile_share\": 7}, reloaded)\\n    _raised = False\\nexcept ValueError:\\n    _raised = True', globals()) or _raised and exec('try:\\n    predict_churn({**good, \"orders\": 0}, reloaded)\\n    _raised = False\\nexcept ValueError:\\n    _raised = True', globals()) or _raised"
+    }
+  ]
+}

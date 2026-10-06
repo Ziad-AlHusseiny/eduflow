@@ -1,0 +1,18 @@
+{
+  "title": "Build a money parser",
+  "prompt": "Complete `parse_money(values)` so it takes a Series of text such as `\" $1,234.50\"`, `\"$65.00\"` or `\"18.00\"` and returns a Series of floats, turning anything unparseable (like `\"N/A\"`) into `NaN` instead of raising an error. Then replace `messy[\"total\"]` with the parsed values, set `total_sum` to their sum rounded to 2 decimals, and set `over_200` to the number of rows with a total above 200.",
+  "hints": [
+    "Inside the function: strip spaces, remove `$` and `,` with `.str.replace(..., regex=False)`, then convert.",
+    "`pd.to_numeric(cleaned, errors=\"coerce\")` converts what it can and returns `NaN` for the rest.",
+    "Assign back with `messy[\"total\"] = parse_money(messy[\"total\"])`; count with `(messy[\"total\"] > 200).sum()`."
+  ],
+  "explanation": "The function removes the two symbols as plain text and lets `to_numeric` do the conversion, with `errors=\"coerce\"` so a stray `N/A` becomes `NaN` rather than crashing the whole column. In this export every value parses (no new `NaN`s), which is what the `column-numeric` check confirms. `astype(\"string\")` at the start is optional here but makes the function safe on a column pandas already read as numbers. The sum, 23,500.67, still double-counts nine duplicate rows; you fix that in Lesson 3.5.",
+  "checks": {
+    "parse-basic": "`parse_money` handles `$`, plain numbers and stray spaces",
+    "parse-thousands": "`parse_money` removes thousands separators",
+    "parse-bad": "`parse_money` turns `\"N/A\"` into `NaN` instead of raising",
+    "column-numeric": "`messy[\"total\"]` is a float column with no failed conversions",
+    "sum": "`total_sum` is 23,500.67",
+    "over-200": "31 rows have a total above 200"
+  }
+}

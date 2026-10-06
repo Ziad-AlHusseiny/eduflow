@@ -1,0 +1,35 @@
+{
+  "kind": "fill",
+  "language": "text",
+  "template": "Steady contrast checklist (WCAG 2.2, level AA)\n\nHabit name, 17 px semibold, on white      needs at least {{0}}:1\nLarge title, 34 px bold, on white          needs at least {{1}}:1\nCheckbox outline against the row surface   needs at least {{2}}:1\nLong-form help text if we aim for AAA      needs at least {{3}}:1\n\nLarge text starts at {{4}} px regular (18 pt).",
+  "blanks": [
+    {
+      "answers": [
+        "4.5"
+      ]
+    },
+    {
+      "answers": [
+        "3",
+        "3.0"
+      ]
+    },
+    {
+      "answers": [
+        "3",
+        "3.0"
+      ]
+    },
+    {
+      "answers": [
+        "7",
+        "7.0"
+      ]
+    },
+    {
+      "answers": [
+        "24"
+      ]
+    }
+  ]
+}

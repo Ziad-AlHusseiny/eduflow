@@ -1,0 +1,381 @@
+checkpoints:
+  s-rf-1:
+    - q: "A teammate clones the Watchlist repository and runs `npm run dev`. The terminal says `vite: command not found`. What should they do?"
+      options:
+        - text: Install Vite globally with `npm install -g vite`.
+          why: A global install hides the real problem and can run a different Vite version than the project expects.
+        - text: Delete `package-lock.json` and try again.
+          why: The lockfile is what makes installs reproducible. Deleting it changes nothing about the missing folder.
+        - text: Run `npm install` first, because `node_modules` is not stored in Git.
+          why: Correct. `npm install` reads package.json and the lockfile and installs Vite locally, which is what `npm run dev` uses.
+        - text: Rename `index.html` so Vite can find it.
+          why: Vite finds index.html at the project root already. The command itself is missing, not the entry file.
+      answer: 2
+    - q: |-
+        Vite shows "Adjacent JSX elements must be wrapped in an enclosing tag" for this component. Which fix is correct?
+        ```jsx
+        export default function App() {
+          return (
+            <h1>Watchlist</h1>
+            <p>3 to watch</p>
+          );
+        }
+        ```
+      options:
+        - text: Wrap both elements in a fragment `<>…</>` or in a meaningful element such as `<header>`.
+          why: Correct. A component returns one root. A fragment groups siblings without adding a DOM node.
+        - text: Remove the parentheses around the JSX.
+          why: The parentheses only protect the multi-line return. Without them the function returns nothing useful.
+        - text: Put a comma between the two elements.
+          why: A comma would create a JavaScript comma expression that returns only the last element, which still is not what you want.
+        - text: Split the return into two `return` statements.
+          why: A function stops at its first `return`, so the second element would never be rendered.
+      answer: 0
+    - q: "`count` is 0 and `watched` is `true`. What text does `<p>{count} {watched}</p>` show?"
+      options:
+        - text: '"0 true"'
+          why: React does not render booleans as text. `true` produces nothing.
+        - text: Nothing at all, because both values are skipped.
+          why: Booleans are skipped, but numbers are always rendered, including 0.
+        - text: An error, because booleans are not valid children.
+          why: Booleans are valid children; they just render nothing, which is what makes `&&` work.
+        - text: '"0" (with a trailing space), because numbers render and booleans render nothing.'
+          why: Correct. 0 is a number and appears as text; `true` is ignored.
+      answer: 3
+    - q: "`src/components/MovieCard.jsx` contains `export function MovieCard() { … }` and nothing else. Which import works in App.jsx?"
+      options:
+        - text: '`import MovieCard from "./components/MovieCard.jsx";`'
+          why: Without braces you ask for the default export, and this file has none, so the value is undefined.
+        - text: '`import { MovieCard } from "./components/MovieCard.jsx";`'
+          why: Correct. A named export is imported by name inside curly braces.
+        - text: '`import { MovieCard } from "MovieCard";`'
+          why: A bare specifier like "MovieCard" is looked up in node_modules. Your own files need a relative path.
+        - text: '`import * from "./components/MovieCard.jsx";`'
+          why: "That is not valid syntax. A namespace import needs a name: `import * as Cards from …`."
+      answer: 1
+    - q: A colleague removes `<StrictMode>` from main.jsx because logs print twice in development. What is the best response?
+      options:
+        - text: Agree, because StrictMode makes the production app twice as slow.
+          why: StrictMode has no effect in production builds at all.
+        - text: Agree, because StrictMode is deprecated in React 19.
+          why: StrictMode is current and recommended in React 19.
+        - text: "Keep it: the double run only happens in development and exists to expose impure rendering and missing cleanups early."
+          why: Correct. The extra logs are the cost of a check that catches real bugs before users do.
+        - text: Keep it, but wrap each component in its own StrictMode as well.
+          why: One StrictMode at the root already covers the whole tree. Nesting more adds nothing.
+      answer: 2
+  s-rf-2:
+    - q: '`<MovieCard title="Arrival" watched="false" />` shows the "Watched" badge, and the component uses `{watched && <Badge />}`. Why?'
+      options:
+        - text: Quotes pass the string "false", and any non-empty string is truthy. Pass `watched={false}` instead.
+          why: Correct. Only strings can be passed in quotes; booleans, numbers and objects need braces.
+        - text: Boolean props must always be written as a bare attribute.
+          why: A bare attribute means `true`. To pass false you write `watched={false}` or leave the prop out.
+        - text: "`&&` does not work with props."
+          why: "`&&` works with any value. The problem is the type of the value that was passed."
+        - text: The default value in the component overrides the prop.
+          why: Defaults only apply when the prop is undefined. Here the prop is the string "false".
+      answer: 0
+    - q: |-
+        The list renders, but the console warns "Each child in a list should have a unique key prop". Where is the mistake?
+        ```jsx
+        function MovieItem({ movie }) {
+          return <li key={movie.id}>{movie.title}</li>;
+        }
+
+        {movies.map((movie) => <MovieItem movie={movie} />)}
+        ```
+      options:
+        - text: "`movie.id` is not unique enough; use the index."
+          why: The ids are fine. The key is simply in the wrong place, and the index would make reordering bugs worse.
+        - text: The `<ul>` around the list needs a key.
+          why: The `<ul>` is a single element. The items returned from `map` are the siblings React must tell apart.
+        - text: Keys only work on HTML elements, not components.
+          why: Keys work on components too; that is exactly where this one belongs.
+        - text: The key must be on `<MovieItem key={movie.id} … />` in the `map`, not on the `<li>` inside the component.
+          why: Correct. React reads keys from the elements in the array, which here are the MovieItem elements.
+      answer: 3
+    - q: You are building a `Dialog` with a title, any body content, and buttons that differ per use. Which API keeps Dialog simple and flexible?
+      options:
+        - text: A `buttons` prop with an array of label strings, and Dialog creates the buttons and their click handlers.
+          why: Dialog would need to know every action in the app. The API grows with each new use.
+        - text: "`title` as a prop, the body as `children`, and a `footer` prop that takes JSX such as `footer={<button onClick={close}>Close</button>}`."
+          why: Correct. Dialog owns the frame and positions the slots; callers decide what goes in them.
+        - text: One Dialog component per use, copied and edited each time.
+          why: Copies drift apart and every style fix must be repeated in each one.
+        - text: Pass the whole dialog markup as an HTML string.
+          why: HTML strings skip React components and escaping, and are unsafe with any user data.
+      answer: 1
+    - q: 'A movie has `genres: ["drama", "sci-fi"]`, and genres never repeat within a movie. What is a good key when rendering them?'
+      options:
+        - text: "`Math.random()`, so keys are always unique."
+          why: A new key every render forces React to recreate each element on every render.
+        - text: The index, because the list is short.
+          why: Short lists can still reorder. When a stable unique value exists, prefer it.
+        - text: The genre string itself, because it is unique within the list and stable.
+          why: Correct. Keys only need to be unique among siblings and stable over time, and the string is both.
+        - text: No key, because strings do not need keys.
+          why: Every element returned from `map` needs a key, whatever data it came from.
+      answer: 2
+    - q: A `MovieTitle` component should display its `title` prop in uppercase. Which version is correct?
+      options:
+        - text: "`const upper = title.toUpperCase(); return <h2>{upper}</h2>;`"
+          why: Correct. Derive a new value from the prop during render and leave the prop itself alone.
+        - text: "`props.title = props.title.toUpperCase(); return <h2>{props.title}</h2>;`"
+          why: That writes to props, which belong to the parent. React freezes props in development, so it throws.
+        - text: "`const [upper] = useState(title.toUpperCase());` then render `upper`."
+          why: State only reads its initial value once, so the heading would ignore later title changes.
+        - text: "`useEffect(() => setUpper(title.toUpperCase()), [title]);` then render `upper`."
+          why: An Effect plus state for a derived value adds an extra render with stale text. Compute it during render.
+      answer: 0
+  s-rf-3:
+    - q: A "+1 later" button runs `setTimeout(() => setCount(count + 1), 1000)`. You click it three times within a second. `count` was 0. What is it after the timers fire?
+      options:
+        - text: 3, because three timers ran.
+          why: Each timer closed over the `count` from the render it was created in, which was 0 each time.
+        - text: 0, because state cannot be set from a timer.
+          why: Setting state from a timer is fine; it does update.
+        - text: An error about setting state outside an event handler.
+          why: React allows state updates from timers, promises and handlers alike.
+        - text: 1, because every timer computed 0 + 1. Use `setCount((c) => c + 1)` to get 3.
+          why: Correct. The updater receives the latest value instead of a stale snapshot.
+      answer: 3
+    - q: "`handleRemove` does `const i = movies.findIndex((m) => m.id === id); movies.splice(i, 1); setMovies(movies);`. The movie does not disappear. Why?"
+      options:
+        - text: "`findIndex` returns -1 for every movie."
+          why: It finds the index correctly. The problem comes after.
+        - text: "`splice` changed the existing array in place and the same array was passed back, so React saw no change."
+          why: "Correct. React compares with Object.is. Create a new array: `setMovies(movies.filter((m) => m.id !== id))`."
+        - text: You must call `setMovies` before changing the array.
+          why: Order does not help. Any mutation of the existing array leaves React with the same reference.
+        - text: Arrays cannot be stored in state.
+          why: Arrays are a normal kind of state; they just have to be replaced, not mutated.
+      answer: 1
+    - q: You click Add, the new movie appears for a moment, then the page reloads and it is gone. What is missing?
+      options:
+        - text: A `key` on the new list item.
+          why: A missing key causes a console warning, not a page reload.
+        - text: "`useEffect` to save the movie."
+          why: Persistence would help after a reload, but the real bug is that the page reloads at all.
+        - text: "`e.preventDefault()` at the start of the form's submit handler."
+          why: Correct. Without it, the browser performs a normal form submission and reloads the page.
+        - text: '`type="button"` on the Add button.'
+          why: That stops the button from submitting the form at all, so Enter and the submit handler would no longer work.
+      answer: 2
+    - q: |-
+        This timer counts up by 2 every second in development. What is the fix?
+        ```jsx
+        useEffect(() => {
+          setInterval(() => setSeconds((s) => s + 1), 1000);
+        }, []);
+        ```
+      options:
+        - text: "Return a cleanup: `const id = setInterval(…); return () => clearInterval(id);`"
+          why: Correct. StrictMode mounts, cleans up and mounts again; without a cleanup the first interval keeps running beside the second.
+        - text: Remove StrictMode so the Effect runs once.
+          why: That hides the bug in development, but the missing cleanup still leaks an interval whenever the component unmounts.
+        - text: Add `seconds` to the dependency array.
+          why: That would restart the Effect every second and, still without a cleanup, pile up even more intervals.
+        - text: Use `setSeconds(seconds + 1)` instead of the updater.
+          why: The updater is correct here. The doubled speed comes from two intervals running at once.
+      answer: 0
+    - q: "`SearchBox` keeps `query` in its own state. `MovieList`, its sibling, must show only movies whose title contains the query. What do you do?"
+      options:
+        - text: Have SearchBox write the query to localStorage and MovieList read it every render.
+          why: MovieList would not re-render when the query changes, and storage is the wrong tool for sharing state.
+        - text: Give MovieList its own `query` state and copy it from SearchBox with an Effect.
+          why: Two copies synced by an Effect are slower and can disagree. One owner is simpler.
+        - text: Render MovieList inside SearchBox so it can read the state.
+          why: That bends the UI structure around the data and breaks the layout.
+        - text: Move `query` to their common parent, pass it to both, and pass a change handler to SearchBox.
+          why: Correct. Lifting state gives it one owner, and both siblings read the same value.
+      answer: 3
+  s-rf-4:
+    - q: After your first Vercel deploy, the site is blank and the console shows a 404 for `/src/main.jsx`. What went wrong?
+      options:
+        - text: Vercel served the source `index.html` instead of the build. Check the framework preset is Vite and the output directory is `dist`.
+          why: Correct. The root index.html only works through the Vite dev server. The built files in dist/ are what should be served.
+        - text: React 19 is not supported on Vercel yet.
+          why: Vercel serves static files; it does not care which React version built them.
+        - text: "`main.jsx` must be renamed to `main.js` for production."
+          why: The file extension is not the issue. In a correct build, main.jsx is compiled into a bundle and is never requested.
+        - text: The app needs a `vercel.json` rewrite to `/src/main.jsx`.
+          why: Pointing to source files would still fail; browsers cannot run JSX.
+      answer: 0
+    - q: A button should be indigo when `active` is true. Which className works reliably with Tailwind?
+      options:
+        - text: '`` `bg-${active ? "indigo" : "slate"}-600` ``'
+          why: Tailwind never sees the full class names, so neither background is generated.
+        - text: '`active ? "bg-indigo-600 text-white" : "bg-slate-100"`'
+          why: Correct. Both complete class names appear in the source, so Tailwind generates them.
+        - text: '`"bg-" + color + "-600"` with `color` from props'
+          why: "Building names from pieces has the same problem: the full classes never appear in the source."
+        - text: '`style={{ className: "bg-indigo-600" }}`'
+          why: "`className` is not a CSS property, so this sets nothing."
+      answer: 1
+    - q: In the finished Watchlist, which value should not be stored in `useState`?
+      options:
+        - text: The array of movies.
+          why: Movies change when the user adds, toggles or removes them, so they are real state.
+        - text: The selected filter.
+          why: The filter changes when the user clicks a filter button and cannot be computed from anything else.
+        - text: The number of unwatched movies.
+          why: Correct. It is derived from the movies during render, so storing it only creates a copy that can go stale.
+        - text: The text typed in the add form, inside AddMovieForm.
+          why: The draft text changes as the user types and lives in the form. It is real state.
+      answer: 2
+    - q: You want to send a pull request with a restyled filter bar and let a friend check it on their phone before it goes live. What does Vercel give you?
+      options:
+        - text: Nothing until you merge, because only main is built.
+          why: With the Git integration, every pushed branch is built.
+        - text: A production deploy of the branch, replacing the live site.
+          why: Production only changes from the production branch.
+        - text: A ZIP file of the build to send to your friend.
+          why: Vercel deploys builds to URLs; sharing files is not part of the flow.
+        - text: A preview deployment with its own URL, posted on the pull request.
+          why: Correct. Preview URLs let anyone check a change without touching production.
+      answer: 3
+    - q: Which piece of Watchlist code belongs in an Effect?
+      options:
+        - text: Writing the movies to localStorage whenever they change.
+          why: Correct. Keeping an outside system in sync with state is exactly what Effects are for.
+        - text: Computing the list of visible movies from the filter.
+          why: That is derived data. Calculate it during render.
+        - text: Clearing the title input after the user submits the form.
+          why: That is caused by a specific action, so it belongs in the submit handler.
+        - text: Adding a movie when the form is submitted.
+          why: User actions are handled in event handlers, not Effects.
+      answer: 0
+final:
+  - q: A component increments a module-level `renderCount` variable in its body and shows it. The number is different in development and production. Why?
+    options:
+      - text: Vite caches modules differently in production.
+        why: Module caching does not change how many times React calls your component.
+      - text: "The component is impure: StrictMode renders it twice in development, so the side effect runs twice."
+        why: Correct. Rendering must not change anything outside the component. Move side effects to handlers or Effects.
+      - text: Production builds remove module-level variables.
+        why: Module variables still exist in production; only the number of renders differs.
+      - text: React 19 renders every component twice in production.
+        why: Production renders once. The double render is a development-only check.
+    answer: 1
+  - q: Which expression shows the text "Watched" only when `movie.watched` is true, and nothing otherwise?
+    options:
+      - text: '`{movie.watched ? "Watched"}`'
+        why: A ternary needs both branches; this is a syntax error.
+      - text: '`{if (movie.watched) "Watched"}`'
+        why: "`if` is a statement and cannot go inside JSX braces."
+      - text: '`{movie.watched && "Watched"}`'
+        why: Correct. When `watched` is false the expression is false, and React renders nothing for false.
+      - text: '`{movie.watched || "Watched"}`'
+        why: '`||` returns "Watched" when watched is false, the opposite of what you want, and renders nothing visible when it is true.'
+    answer: 2
+  - q: You type in a list row's input, and it loses focus after every keystroke. The list uses `key={Math.random()}`. What is happening?
+    options:
+      - text: Every render produces new keys, so React treats each row as new, destroys it and creates a fresh input.
+        why: Correct. Keys must be stable. Use an id stored with each item.
+      - text: Inputs inside lists cannot be controlled.
+        why: Controlled inputs work in lists. The changing key is what remounts the row.
+      - text: "`Math.random()` can produce duplicate keys."
+        why: Duplicates are possible but rare. The real problem is that the keys change on every render.
+      - text: React limits how often a list can re-render.
+        why: There is no such limit. The rows are being recreated because their identity changes.
+    answer: 0
+  - q: Inside a click handler you call `setFilter("watched")` and then `console.log(visible.length)`, where `visible` is derived from `filter` during render. What is logged?
+    options:
+      - text: The number of watched movies.
+        why: The new filter applies in the next render. This handler still sees the old `visible`.
+      - text: 0, because state is reset while updating.
+        why: State is never reset by an update; the old snapshot stays intact until the next render.
+      - text: An error, because derived values cannot be read in handlers.
+        why: Handlers can read anything from their render. They just read that render's values.
+      - text: The length from the current render, based on the old filter.
+        why: Correct. Each render is a snapshot; the new value appears in the next render.
+    answer: 3
+  - q: The Watchlist stores `visibleMovies` in state and updates it when the filter changes. Newly added movies do not appear until the filter is clicked again. What is the best fix?
+    options:
+      - text: Also update `visibleMovies` in the add handler.
+        why: That patches one case. Toggle and remove would still need the same fix, and the next feature will forget it.
+      - text: Remove the `visibleMovies` state and compute it during render from `movies` and `filter`.
+        why: Correct. A derived value computed on every render is always in sync with its sources.
+      - text: Sync it with an Effect that depends on `movies` and `filter`.
+        why: It works after an extra render with stale data, and keeps the unnecessary duplicate state.
+      - text: Store the filter inside each movie object.
+        why: The filter is a property of the view, not of each movie. This makes updates harder.
+    answer: 1
+  - q: As soon as the page loads, React reports "Too many re-renders". The list items contain `<button onClick={handleRemove(movie.id)}>Remove</button>`. What is the fix?
+    options:
+      - text: Wrap `handleRemove` in `useEffect`.
+        why: Event handling is not an Effect. The problem is that the handler is called during render.
+      - text: Change it to `onClick={handleRemove}` and read the id from the event.
+        why: React would pass the click event, not the id, so the handler would remove nothing.
+      - text: "Pass a function: `onClick={() => handleRemove(movie.id)}`."
+        why: Correct. The arrow function runs only on click, and then calls the handler with the right id.
+      - text: Use `onMouseUp` instead of `onClick`.
+        why: Any event prop has the same problem when given the result of a call instead of a function.
+    answer: 2
+  - q: A "Watched" checkbox is written as `<input type="checkbox" value={watched} onChange={(e) => setWatched(e.target.value)} />`. Clicking it never shows a check mark. What is wrong?
+    options:
+      - text: Checkboxes cannot be controlled in React.
+        why: They can; they just use a different attribute.
+      - text: The handler needs `e.preventDefault()`.
+        why: Preventing the default would stop the checkbox from toggling at all.
+      - text: "`watched` must be a string."
+        why: A boolean is the right type for a checkbox. The issue is which property is read and set.
+      - text: Checkboxes use `checked` and `e.target.checked`, not `value`.
+        why: Correct. `value` is the string submitted with a form; `checked` is the on/off state.
+    answer: 3
+  - q: The Watchlist loads saved movies in `useEffect(() => setMovies(load()), [])` and saves them in another Effect on `[movies]`. Users report their list is sometimes wiped on reload. What is the better design?
+    options:
+      - text: Load in the state initializer, `useState(load)`, so the first render already has the saved movies.
+        why: Correct. With an Effect, the first render saves the empty initial array before the load runs.
+      - text: Combine both Effects into one with no dependency array.
+        why: That runs after every render and still saves before loading on the first one.
+      - text: Remove StrictMode so the Effects run once.
+        why: The ordering problem exists in production too; StrictMode only makes it more visible.
+      - text: Save with `setTimeout` to give the load time to finish.
+        why: Timing hacks hide the problem and fail on slow devices. Load before the first render instead.
+    answer: 0
+  - q: '`AddMovieForm` keeps the typed title in its own state; `App` owns the movies. Where should the "clear the field after adding" logic live?'
+    options:
+      - text: In App, by passing a `clear` prop down to the form.
+        why: App does not own the draft text, so it should not manage it.
+      - text: In an Effect in the form that watches the movies list.
+        why: The list also changes on toggle and remove, so the field would clear at the wrong times.
+      - text: In the form's submit handler, right after calling `onAdd`.
+        why: Correct. The form owns the draft and the user action that should clear it.
+      - text: In MovieList, after it renders the new item.
+        why: MovieList knows nothing about the form and should not reach into its state.
+    answer: 2
+  - q: You want the active filter button styled differently, and you already set `aria-pressed={value === key}` on each one. Which Tailwind approach fits best?
+    options:
+      - text: Add `aria-pressed:bg-indigo-600 aria-pressed:text-white` to the button's classes.
+        why: Correct. The variant reads the same attribute screen readers announce, so the visuals and semantics stay in sync.
+      - text: Build the class with a template literal from the filter name.
+        why: Tailwind cannot detect classes built from pieces, so they would not be generated.
+      - text: Add a `useEffect` that sets the button's style through the DOM.
+        why: Reaching into the DOM for styling bypasses React and adds an Effect where none is needed.
+      - text: Create a `tailwind.config.js` with an `active` color.
+        why: v4 needs no config file, and a color alone does not say when to apply it.
+    answer: 0
+  - q: Your app calls a paid movie API with `import.meta.env.VITE_MOVIE_API_SECRET`. Why is this a problem?
+    options:
+      - text: Vite does not support environment variables in production.
+        why: Vite does support them; that is exactly how the value gets into the bundle.
+      - text: Vercel strips `VITE_` variables from builds.
+        why: Vercel passes them to the build, and Vite inlines them.
+      - text: The variable name is too long.
+        why: Name length is irrelevant. Exposure is the problem.
+      - text: "`VITE_` values are inlined into the public JavaScript bundle, so anyone can read the secret."
+        why: Correct. Keep secrets on a server, such as a serverless function, and call that from the client.
+    answer: 3
+  - q: You extract a `Card` component that renders a border, padding and `{children}`, and use it for movie items and the empty state. What is the main benefit?
+    options:
+      - text: Cards render faster than divs.
+        why: A component adds no rendering speed; it renders the same elements.
+      - text: The frame is defined once, so style changes happen in one place and each use only supplies its content.
+        why: Correct. Composition with children separates the shared frame from the varying content.
+      - text: React requires every list item to be wrapped in a component.
+        why: Plain elements work fine in lists. Extraction is a choice for reuse and clarity.
+      - text: It lets the empty state share state with the movie items.
+        why: Components never share state just by using the same wrapper; each instance is independent.
+    answer: 1

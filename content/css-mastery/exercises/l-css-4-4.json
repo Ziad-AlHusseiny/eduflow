@@ -1,0 +1,42 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<main id=\"schedule\" class=\"schedule\">\n  <div class=\"theme-sponsor\">\n    <article class=\"session-card\" id=\"sponsored\">\n      <h3>Sponsor Talk: Shipping at Scale</h3>\n      <span class=\"badge u-hidden\">Draft</span>\n    </article>\n  </div>\n  <article class=\"session-card\" id=\"regular\">\n    <h3>CSS Architecture at Scale</h3>\n    <span class=\"badge\">Platform</span>\n  </article>\n</main>",
+    "css": "h3 { margin: 0 0 8px; }\n\n#schedule .session-card {\n  padding: 12px;\n  margin-bottom: 16px;\n  border-left: 6px solid #6d28d9;\n  border-radius: 10px;\n  background: #f8fafc;\n}\n#schedule .session-card .badge {\n  display: inline-block;\n  padding: 0.1em 0.6em;\n  border-radius: 999px;\n  background: #ede9fe;\n}\n.theme-sponsor .session-card {\n  border-left-color: #0e7490 !important;\n}\n.u-hidden { display: none !important; }\n"
+  },
+  "solution": {
+    "html": "<main id=\"schedule\" class=\"schedule\">\n  <div class=\"theme-sponsor\">\n    <article class=\"session-card\" id=\"sponsored\">\n      <h3>Sponsor Talk: Shipping at Scale</h3>\n      <span class=\"badge u-hidden\">Draft</span>\n    </article>\n  </div>\n  <article class=\"session-card\" id=\"regular\">\n    <h3>CSS Architecture at Scale</h3>\n    <span class=\"badge\">Platform</span>\n  </article>\n</main>",
+    "css": "@layer reset, tokens, layouts, components, utilities;\n\n@layer reset {\n  h3 { margin: 0 0 8px; }\n}\n\n@layer tokens {\n  :root {\n    --color-brand: #6d28d9;\n    --card-accent: var(--color-brand);\n  }\n  .theme-sponsor {\n    --card-accent: #0e7490;\n  }\n}\n\n@layer layouts {\n  .schedule {\n    display: grid;\n    gap: 16px;\n  }\n}\n\n@layer components {\n  .session-card {\n    padding: 12px;\n    border-inline-start: 6px solid var(--card-accent);\n    border-radius: 10px;\n    background: #f8fafc;\n\n    .badge {\n      display: inline-block;\n      padding: 0.1em 0.6em;\n      border-radius: 999px;\n      background: #ede9fe;\n    }\n  }\n}\n\n@layer utilities {\n  .u-hidden { display: none; }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "layer-order",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const stmt = all.find((r) => r instanceof CSSLayerStatementRule); if (!stmt) return false; const names = [...stmt.nameList]; const want = ['reset', 'tokens', 'components', 'utilities']; const idx = want.map((n) => names.indexOf(n)); return idx.every((i) => i >= 0) && idx.every((v, i) => i === 0 || v > idx[i - 1]);"
+    },
+    {
+      "id": "no-ids-or-important",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join(''); return !src.includes('!important') && !all.some((r) => r.selectorText && r.selectorText.includes('#'));"
+    },
+    {
+      "id": "accent-token",
+      "test": "return style('#regular', 'border-left-color') === 'rgb(109, 40, 217)' && style('#regular', '--card-accent').trim() !== '';"
+    },
+    {
+      "id": "sponsor-theme",
+      "test": "return style('#sponsored', 'border-left-color') === 'rgb(14, 116, 144)' && style('.theme-sponsor', '--card-accent').trim() !== '';"
+    },
+    {
+      "id": "token-drives-card",
+      "test": "const w = $('.theme-sponsor'); w.style.setProperty('--card-accent', 'rgb(1, 2, 3)'); await tick(16); const c = style('#sponsored', 'border-left-color'); w.style.removeProperty('--card-accent'); await tick(16); return c === 'rgb(1, 2, 3)';"
+    },
+    {
+      "id": "utility-wins",
+      "test": "return style('#sponsored .badge', 'display') === 'none' && style('#regular .badge', 'display') === 'inline-block';"
+    },
+    {
+      "id": "layout-owns-spacing",
+      "test": "const a = $('#sponsored').getBoundingClientRect(); const b = $('#regular').getBoundingClientRect(); return parseFloat(style('#regular', 'margin-bottom')) === 0 && parseFloat(style('#sponsored', 'margin-bottom')) === 0 && Math.abs(b.top - a.bottom - 16) < 1;"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!--app-head-->
+    <meta name="theme-color" content="#fafaff" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EduFlow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="EduFlow" />
+    <script>
+      // Before first paint (no flash): language from the address, a saved
+      // language choice, the light/dark theme, focus mode and text size.
+      // A page without /ar redirects to its /ar twin for someone who chose
+      // Arabic; "?lang=en" switches back.
+      (function () {
+        var d = document.documentElement, ls = null, p = location.pathname;
+        try { ls = window.localStorage; } catch (e) {}
+        function get(k) { try { var v = ls && ls.getItem('eduflow-' + k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+        function set(k, v) { try { ls && ls.setItem('eduflow-' + k, JSON.stringify(v)); } catch (e) {} }
+        var ar = p === '/ar' || p.indexOf('/ar/') === 0;
+        if (ar) set('locale', 'ar');
+        else if (/[?&]lang=en\b/.test(location.search)) { set('locale', 'en'); history.replaceState(null, '', p + location.search.replace(/[?&]lang=en\b/, '').replace(/^&/, '?') + location.hash); }
+        else if (get('locale') === 'ar') { location.replace('/ar' + (p === '/' ? '' : p) + location.search + location.hash); return; }
+        // PRD §7.5: a lesson of a course you're not enrolled in opens the
+        // course page instead — decided here, before anything paints.
+        var lm = p.match(/^(?:\/ar)?\/lesson\/([^/]+)\/[^/]+\/?$/);
+        if (lm) {
+          var en = get('enrollments');
+          if (!(en && en.version === 1 && en.enrollments && en.enrollments[lm[1]])) { location.replace((ar ? '/ar' : '') + '/courses/' + lm[1]); return; }
+        }
+        d.lang = ar ? 'ar' : 'en';
+        d.dir = ar ? 'rtl' : 'ltr';
+        var theme = get('theme');
+        var dark = theme === 'dark' || (theme !== 'light' && !!window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+        d.setAttribute('data-theme', dark ? 'dark' : 'light');
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', dark ? '#110e1c' : '#fafaff');
+        var s = get('settings');
+        if (s && s.textScale) d.style.setProperty('--lesson-scale', s.textScale);
+        if (get('enrollments')) d.classList.add('has-learning');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <script>
+      // Scroll reveals: content rises in once as it enters the viewport.
+      // Runs from the static HTML; skipped under reduced motion.
+      (function () {
+        if (!('IntersectionObserver' in window) || !window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.documentElement.classList.add('reveal-on');
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.setAttribute('data-in', ''); io.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -60px 0px' });
+        function scan(node) {
+          if (node.matches && node.matches('[data-reveal]:not([data-in])')) io.observe(node);
+          var els = node.querySelectorAll ? node.querySelectorAll('[data-reveal]:not([data-in])') : [];
+          for (var i = 0; i < els.length; i++) io.observe(els[i]);
+        }
+        var root = document.getElementById('root');
+        scan(root);
+        new MutationObserver(function (records) {
+          records.forEach(function (r) { r.addedNodes.forEach(function (n) { if (n.nodeType === 1) scan(n); }); });
+        }).observe(root, { childList: true, subtree: true });
+      })();
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Urgent tickets with a readable state\nSELECT\n  ticket_id,\n  CASE\n    WHEN closed_at = NULL THEN 'open'\n    WHEN satisfaction = NULL THEN 'unrated'\n    WHEN satisfaction <= 2 THEN 'unhappy'\n    ELSE 'happy'\n  END AS state\nFROM support_tickets\nWHERE priority = 'urgent'\nORDER BY ticket_id;",
+  "solution": "SELECT\n  ticket_id,\n  CASE\n    WHEN closed_at IS NULL THEN 'open'\n    WHEN satisfaction IS NULL THEN 'unrated'\n    WHEN satisfaction <= 2 THEN 'unhappy'\n    ELSE 'happy'\n  END AS state\nFROM support_tickets\nWHERE priority = 'urgent'\nORDER BY ticket_id;",
+  "orderMatters": true
+}

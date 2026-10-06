@@ -1,0 +1,4 @@
+{
+  "kind": "order",
+  "items": ["build", "test", "push", "digest", "manifest", "apply", "verify"]
+}

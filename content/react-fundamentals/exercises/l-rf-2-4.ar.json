@@ -1,0 +1,17 @@
+{
+  "title": "الشارات وحالة القائمة الفارغة",
+  "prompt": "في `MovieList` ثلاثة أخطاء. أصلحها بحيث:\n\n1. تظهر شارة **Watched** (`<span className=\"badge\">Watched</span>`) فقط على الأفلام التي قيمة `watched` فيها `true`.\n2. حين تكون `movies` فارغة، تعرض القائمة الرسالة **Nothing to watch yet.** بدلًا من قائمة.\n3. لا تُظهر الحالة الفارغة أبدًا **0** شاردًا.\n\nيرسم `App` القائمة مرتين، مرة بثلاثة أفلام ومرة بلا أفلام. لا تغيّر `App`.",
+  "hints": [
+    "انظر إلى قيمة `movies.length && …` حين يكون الطول 0.",
+    "عالج الحالة الفارغة أولًا بـ return مبكر: `if (movies.length === 0) return <p>…</p>;`",
+    "للشارة، استخدم `{movie.watched && <span className=\"badge\">Watched</span>}`."
+  ],
+  "explanation": "يعالج الـ return المبكر القائمة الفارغة بالكامل، فيزيل التعبير `movies.length && …` وصفره الشارد بخطوة واحدة. أمّا في الشارة، فالتعبير `movie.watched && <span>…</span>` آمن لأن `watched` قيمة منطقية: حين تكون `false` لا تعرض React شيئًا. احتفظ بـ `&&` للقيم المنطقية؛ وحين يكون الطرف الأيسر رقمًا، قارنه صراحةً (`length > 0`).",
+  "checks": {
+    "full-list": "ما زالت القائمة الكاملة تعرض ثلاثة أفلام",
+    "badge-watched": "يعرض Arrival (المُشاهَد) شارة Watched",
+    "badge-hidden": "لا يعرض Past Lives وPaddington 2 أي شارة",
+    "empty-message": "تعرض القائمة الفارغة \"Nothing to watch yet.\" ولا تحتوي على <ul>",
+    "no-zero": "لا يظهر 0 شارد في القائمة الفارغة"
+  }
+}

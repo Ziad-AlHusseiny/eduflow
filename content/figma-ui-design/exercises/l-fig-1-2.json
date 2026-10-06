@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "title-rank",
+    "regroup-streaks",
+    "one-edge",
+    "boxes-dividers",
+    "center-names",
+    "accent-streaks"
+  ],
+  "correct": [
+    "title-rank",
+    "regroup-streaks",
+    "one-edge"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "اربط الشاشة الرئيسية",
+  "prompt": "أكمل الشاشة الرئيسية في Pocket Budget. يجب أن يدفع النقر على صف الشاشة `ExpenseDetail` لذلك المصروف باستخدام التنقّل المبني على القيم، ويجب أن يعرض زر + الشاشة `AddExpenseView` بشكل منبثق ما دامت `isAdding` صحيحة.",
+  "hints": [
+    "الرابط المبني على القيم يسمّي القيمة التي يحملها عبر تسمية وسيط.",
+    "الـ modifier الذي يربط نوع قيمة بشاشة وجهة في اسمه كلمة \"navigation\" ويأخذ `for:`.",
+    "الـ modifier الذي يعرض بطاقة منبثقة فوق الشاشة الحالية اسمه كلمة واحدة."
+  ],
+  "explanation": "`NavigationLink(value: expense)` يسجّل فقط أيّ مصروف نُقر عليه. و`.navigationDestination(for: Expense.self)` يخبر الـ `NavigationStack` المحيط بما يعرضه لأي قيمة `Expense`، فيعمل الاثنان معًا كزوج؛ وبدون الوجهة لا يفعل النقر شيئًا. أما `.sheet(isPresented: $isAdding)` فيعرض النموذج كلما أصبحت `isAdding` مساوية لـ `true`، ويعيدها إلى `false` حين تُغلق الـ sheet.\n\n```swift\nNavigationLink(value: expense) { … }\n.navigationDestination(for: Expense.self) { … }\n.sheet(isPresented: $isAdding) { … }\n```"
+}

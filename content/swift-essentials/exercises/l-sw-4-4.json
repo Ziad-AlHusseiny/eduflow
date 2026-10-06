@@ -1,0 +1,27 @@
+{
+  "kind": "fill",
+  "language": "swift",
+  "template": "import Testing\n@testable import PocketBudget\n\nstruct ParsingTests {\n    @{{0}} func parsesValidAmount() throws {\n        let amount = try {{1}}(parseAmount(\"12.50\"))\n        {{2}}(amount == 12.5)\n    }\n\n    @Test({{3}}: [\"\", \"abc\", \"0\", \"-3\"])\n    func rejectsInvalidAmounts(text: String) {\n        #expect(parseAmount(text) == nil)\n    }\n}",
+  "blanks": [
+    {
+      "answers": [
+        "Test"
+      ]
+    },
+    {
+      "answers": [
+        "#require"
+      ]
+    },
+    {
+      "answers": [
+        "#expect"
+      ]
+    },
+    {
+      "answers": [
+        "arguments"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "kind": "spot-bug",
+  "language": "json",
+  "code": "{\n  \"color\": {\n    \"$type\": \"color\",\n    \"blue\": {\n      \"600\": { \"$value\": { \"colorSpace\": \"srgb\", \"components\": [0.122, 0.353, 0.878], \"hex\": \"#1f5ae0\" } },\n      \"700\": { \"$value\": { \"colorSpace\": \"srgb\", \"components\": [0.094, 0.282, 0.722], \"hex\": \"#1848b8\" } }\n    },\n    \"white\": { \"$value\": { \"colorSpace\": \"srgb\", \"components\": [1, 1, 1], \"hex\": \"#ffffff\" } },\n    \"action\": {\n      \"bg\": { \"$value\": \"{color.blue.600}\" },\n      \"bg.hover\": { \"$value\": \"{color.blue.700}\" },\n      \"text\": { \"$value\": \"{color.white}\" },\n      \"border\": { \"$value\": \"{color.blue}\" }\n    }\n  },\n  \"space\": {\n    \"$type\": \"dimension\",\n    \"inset-md\": { \"$value\": { \"value\": 16 } },\n    \"inset-lg\": { \"$value\": { \"value\": 24, \"unit\": \"px\" } }\n  },\n  \"radius\": {\n    \"control\": { \"$value\": { \"value\": 6, \"unit\": \"px\" } }\n  }\n}",
+  "bugLines": [
+    11,
+    13,
+    18,
+    22
+  ]
+}

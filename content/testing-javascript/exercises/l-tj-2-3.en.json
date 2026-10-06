@@ -1,0 +1,17 @@
+{
+  "title": "Test every branch of saveExpense",
+  "prompt": "`saveExpense(expense, api)` validates the expense, calls `api.post`, retries **once** on errors marked `retryable: true`, and passes every other error on. Its rules are in the subject's comment.\n\nThe starter gives you a `stubApi(...steps)` helper: each call to `post` uses the next step, resolving with an object or rejecting with an `Error`, and `api.calls` counts the calls. There is also a `retryable(message)` helper.\n\nAdd tests until your suite catches four hidden bugs: a missing `await`, a `catch` that returns `null` instead of rejecting, a version that never retries, and a version that retries **every** error. Remember to `await` every `resolves` and `rejects`.",
+  "hints": [
+    "Start with the happy path: `stubApi({ id: 'e1' })` and `await expect(saveExpense(dinner, api)).resolves.toBe('e1')`. That alone catches the missing await.",
+    "For the retry: `stubApi(retryable('Timed out'), { id: 'e2' })` must resolve with `'e2'` after two calls.",
+    "For a non-retryable error: `stubApi(new Error('Amount too large'), { id: 'e3' })` must reject with that message **and** `api.calls` must be 1. The call count states the \"don't retry\" rule directly, whatever the stub's second step does."
+  ],
+  "explanation": "The four tests mirror the four branches. The happy path catches the missing `await`: destructuring a pending promise gives `id === undefined`. The retry test catches the version that never retries. The non-retryable test does double duty: `rejects.toThrow` catches the `catch` that swallows errors (it resolves with `null`), and `expect(api.calls).toBe(1)` catches the version that retries everything. If the stub failed on every call, that last bug would be invisible to the rejection assertion, because its retry would fail too; in a real app it is the one that charges a card twice. Here the stub's *second* step is a success, so the buggy version also resolves with `'e3'` and fails the `rejects` assertion; the call count is what pins the rule no matter how the stub is set up.",
+  "checks": {
+    "passes": "All your tests pass against the real saveExpense",
+    "catches-missing-await": "Catches the version with a missing await",
+    "catches-swallows-error": "Catches the version that swallows API errors",
+    "catches-no-retry": "Catches the version that never retries",
+    "catches-retries-everything": "Catches the version that retries non-retryable errors"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "From 100% coverage to real confidence",
+  "prompt": "The starter test runs every line of `computeBalances` (and `splitEvenly`), so a coverage report would show 100%. Yet it checks only that three names come back.\n\nStrengthen the suite until it catches three hidden bugs that the 100% suite misses: one **debits** the payer instead of crediting them, one **floors** each share so leftover cents disappear (balances no longer add up to zero), and one **overwrites** the payer's balance instead of adding to it when they pay twice. The rules are in the subject's comment.",
+  "hints": [
+    "Replace the key-count assertion with the exact result: Ana pays 3000 split three ways, so `{ Ana: 2000, Ben: -1000, Cai: -1000 }`.",
+    "Use a bill that does not divide evenly, such as 1000 between three people, and assert that the balances add up to 0.",
+    "Give the same payer two expenses and check that both are counted."
+  ],
+  "explanation": "Coverage stayed at 100% the whole time: your new tests ran no line the old one didn't. What changed is **what the tests check**. The exact `toEqual` on the first expense catches the sign error. A bill of 1000 cents between three people leaves a cent over, so floored shares make the balances add up to +1 instead of 0; the sum invariant from section 2 catches it. Two expenses from the same payer exercise accumulation, which a single expense never can, even though the accumulating line was already 'covered'. That's the gap between execution and verification, and it's what mutation testing measures directly.",
+  "checks": {
+    "passes": "All your tests pass against the real computeBalances",
+    "catches-payer-debited": "Catches the version that debits the payer",
+    "catches-floored-shares": "Catches the version that loses leftover cents",
+    "catches-overwrites-payer": "Catches the version that overwrites the payer's balance"
+  }
+}

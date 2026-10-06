@@ -1,0 +1,16 @@
+{
+  "title": "Handle missing data safely",
+  "prompt": "Some of Pocket's data is incomplete. Fill in four functions:\n\n- `receiptLabel(expense)` returns the receipt's `url`, or `\"No receipt\"` when `receipt` is missing or `null`.\n- `dailyLimit(settings)` returns `settings.dailyLimit`, or `5000` when there is no limit. `settings` itself may be `undefined`, and a saved limit of `0` must be kept.\n- `countByCategory(expenses)` returns a **Map** from category to the number of expenses in it. Expenses without a category count as `\"other\"`.\n- `uniqueCategories(expenses)` returns an array with each category once, in the order first seen (missing ones as `\"other\"`).\n",
+  "hints": [
+    "Put `?.` right after the part that may be missing, and `??` after that for the fallback: `expense.receipt?.url ?? \"No receipt\"`.",
+    "`||` loses the 0. `settings?.dailyLimit ?? 5000` keeps it and also survives `settings` being undefined.",
+    "Count with `counts.set(category, (counts.get(category) ?? 0) + 1)`. For unique values, build a Set from the mapped categories and spread it back into an array."
+  ],
+  "explanation": "`?.` stops reading as soon as it meets `null` or `undefined` and produces `undefined`, which `??` then replaces with the fallback. Because `??` only reacts to `null` and `undefined`, a limit of `0` passes through untouched, which `||` would have discarded. The Map counts each category with `get` and `set`, and `?? 0` handles a category's first appearance. `new Set(...)` drops repeated categories while keeping first-seen order, and spreading it with `[...set]` turns it back into an array.\n",
+  "checks": {
+    "receipt": "`receiptLabel` returns the url or \"No receipt\"",
+    "limit": "`dailyLimit` keeps 0, defaults to 5000, and survives missing settings",
+    "counts-map": "`countByCategory` returns a Map of counts, with \"other\" for missing categories",
+    "unique": "`uniqueCategories` lists each category once, in first-seen order"
+  }
+}

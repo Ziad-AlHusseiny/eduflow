@@ -1,0 +1,37 @@
+{
+  "kind": "fill",
+  "language": "ts",
+  "template": "import { test as base, expect } from '@playwright/test';\n\ntype Group = { id: string; name: string };\n\nexport const test = base.{{0}}<{ group: Group }>({\n  group: async ({ {{1}} }, use) => {\n    const response = await request.post('/api/groups', {\n      data: { name: `Trip ${crypto.randomUUID().slice(0, 8)}` },\n    });\n    const group: Group = await response.json();\n\n    await {{2}}(group);\n\n    await request.{{3}}(`/api/groups/${group.id}`);\n  },\n});\n\ntest('a new group starts settled up', async ({ page, {{4}} }) => {\n  await page.goto(`/groups/${group.id}`);\n  await {{5}}(page.getByRole('status')).toHaveText('Everyone is settled up');\n});",
+  "blanks": [
+    {
+      "answers": [
+        "extend"
+      ]
+    },
+    {
+      "answers": [
+        "request"
+      ]
+    },
+    {
+      "answers": [
+        "use"
+      ]
+    },
+    {
+      "answers": [
+        "delete"
+      ]
+    },
+    {
+      "answers": [
+        "group"
+      ]
+    },
+    {
+      "answers": [
+        "expect"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useState } from 'react';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival' },\n  { id: 'p2', title: 'Past Lives' },\n  { id: 'd3', title: 'Dune: Part Two' },\n];\n\nfunction MovieItem({ movie, onSelect, onRemove }) {\n  return (\n    <li>\n      <button className=\"title\" onClick={() => onSelect(movie.id)}>\n        {movie.title}\n      </button>\n      <button className=\"remove\" onClick={onRemove}>\n        Remove\n      </button>\n    </li>\n  );\n}\n\nexport default function App() {\n  const [movies, setMovies] = useState(INITIAL);\n  const [selectedId, setSelectedId] = useState(null);\n  const selected = movies.find((m) => m.id === selectedId);\n\n  function handleRemove(id) {\n    setMovies(movies.filter((m) => m.id !== id));\n  }\n\n  // Clear the selection when Escape is pressed anywhere inside <main>\n\n  return (\n    <main>\n      <p id=\"selected\">Selected: {selected ? selected.title : 'none'}</p>\n      <ul>\n        {movies.map((movie) => (\n          <MovieItem\n            key={movie.id}\n            movie={movie}\n            onSelect={setSelectedId}\n            onRemove={handleRemove}\n          />\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useState } from 'react';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival' },\n  { id: 'p2', title: 'Past Lives' },\n  { id: 'd3', title: 'Dune: Part Two' },\n];\n\nfunction MovieItem({ movie, onSelect, onRemove }) {\n  return (\n    <li>\n      <button className=\"title\" onClick={() => onSelect(movie.id)}>\n        {movie.title}\n      </button>\n      <button className=\"remove\" onClick={() => onRemove(movie.id)}>\n        Remove\n      </button>\n    </li>\n  );\n}\n\nexport default function App() {\n  const [movies, setMovies] = useState(INITIAL);\n  const [selectedId, setSelectedId] = useState(null);\n  const selected = movies.find((m) => m.id === selectedId);\n\n  function handleRemove(id) {\n    setMovies(movies.filter((m) => m.id !== id));\n  }\n\n  function handleKeyDown(e) {\n    if (e.key === 'Escape') {\n      setSelectedId(null);\n    }\n  }\n\n  return (\n    <main onKeyDown={handleKeyDown}>\n      <p id=\"selected\">Selected: {selected ? selected.title : 'none'}</p>\n      <ul>\n        {movies.map((movie) => (\n          <MovieItem\n            key={movie.id}\n            movie={movie}\n            onSelect={setSelectedId}\n            onRemove={handleRemove}\n          />\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "select",
+      "test": "const row = (t) => $$('li').find((li) => text(li.querySelector('.title')) === t); await click(row('Past Lives').querySelector('.title')); return text('#selected') === 'Selected: Past Lives';"
+    },
+    {
+      "id": "remove",
+      "test": "const row = (t) => $$('li').find((li) => text(li.querySelector('.title')) === t); await click(row('Arrival').querySelector('.remove')); return $$('li').length === 2 && !row('Arrival') && text('#selected') === 'Selected: Past Lives';"
+    },
+    {
+      "id": "remove-selected",
+      "test": "const row = (t) => $$('li').find((li) => text(li.querySelector('.title')) === t); await click(row('Past Lives').querySelector('.remove')); return $$('li').length === 1 && text('#selected') === 'Selected: none';"
+    },
+    {
+      "id": "escape",
+      "test": "const row = (t) => $$('li').find((li) => text(li.querySelector('.title')) === t); await click(row('Dune: Part Two').querySelector('.title')); if (text('#selected') !== 'Selected: Dune: Part Two') return false; await press(row('Dune: Part Two').querySelector('.title'), 'Escape'); return text('#selected') === 'Selected: none';"
+    }
+  ]
+}

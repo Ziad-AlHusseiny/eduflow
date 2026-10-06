@@ -1,0 +1,182 @@
+[
+  {
+    "id": "version-control",
+    "term": "Version control",
+    "definition": "A system that records snapshots of a project over time, so you can see what changed, when and why, return to earlier versions, and combine work from several people.",
+    "lesson": "l-git-1-1"
+  },
+  {
+    "id": "repository",
+    "term": "Repository",
+    "definition": "A project's complete history and settings, stored in the hidden .git folder; it holds every commit, branch and tag, and is created with git init or git clone.",
+    "lesson": "l-git-1-2"
+  },
+  {
+    "id": "commit",
+    "term": "Commit",
+    "definition": "A recorded snapshot of every tracked file, with an author, date, message and a pointer to its parent commit. Its ID is a hash of all of that, so it never changes.",
+    "lesson": "l-git-1-1"
+  },
+  {
+    "id": "working-tree",
+    "term": "Working tree",
+    "definition": "The project files on disk that you open and edit. Git compares them with the index and the last commit to report what has changed.",
+    "lesson": "l-git-1-3"
+  },
+  {
+    "id": "index",
+    "term": "Index (staging area)",
+    "definition": "The next commit being assembled. git add copies a file's current content into it, git commit turns it into a commit, and git restore --staged takes content back out.",
+    "lesson": "l-git-1-3"
+  },
+  {
+    "id": "untracked-file",
+    "term": "Untracked file",
+    "definition": "A file in the working tree that Git has never recorded and that isn't staged. It stays out of commits until you git add it, and .gitignore can hide it.",
+    "lesson": "l-git-1-2"
+  },
+  {
+    "id": "dag",
+    "term": "Commit graph (DAG)",
+    "definition": "Git history as a directed acyclic graph: each commit points to its parent or parents, and following those links backwards from any commit gives its history.",
+    "lesson": "l-git-1-4"
+  },
+  {
+    "id": "merge-commit",
+    "term": "Merge commit",
+    "definition": "A commit with two parents, created when Git combines two branches that have both moved on. Its snapshot contains the work from both lines of history.",
+    "lesson": "l-git-1-4"
+  },
+  {
+    "id": "branch",
+    "term": "Branch",
+    "definition": "A named, movable pointer to one commit. Committing while on a branch moves it forward to the new commit; creating one copies no files.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "head",
+    "term": "HEAD",
+    "definition": "Git's pointer to where you are. It usually names the current branch, which names a commit; HEAD~1 means the commit before the one you're on.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "detached-head",
+    "term": "Detached HEAD",
+    "definition": "The state where HEAD points straight at a commit instead of a branch. New commits made there belong to no branch until you create one with git switch -c.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "fast-forward",
+    "term": "Fast-forward",
+    "definition": "A merge where the current branch hasn't moved since the other branch started, so Git simply slides the pointer forward and creates no merge commit.",
+    "lesson": "l-git-2-2"
+  },
+  {
+    "id": "merge-base",
+    "term": "Merge base",
+    "definition": "The most recent commit two branches share. Git compares each branch tip with it during a three-way merge to decide which changes to take.",
+    "lesson": "l-git-2-2"
+  },
+  {
+    "id": "merge-conflict",
+    "term": "Merge conflict",
+    "definition": "What happens when both branches changed the same lines since their merge base. Git writes both versions between markers and waits for you to edit, git add and continue.",
+    "lesson": "l-git-2-3"
+  },
+  {
+    "id": "rebase",
+    "term": "Rebase",
+    "definition": "Replaying a branch's commits on top of another commit, producing new commits with new IDs and a linear history. Safe only for commits nobody else has built on.",
+    "lesson": "l-git-2-4"
+  },
+  {
+    "id": "force-with-lease",
+    "term": "git push --force-with-lease",
+    "definition": "A force-push that only overwrites the remote branch if it still points where you last saw it, so you won't silently erase commits someone else pushed since your last fetch.",
+    "lesson": "l-git-2-4"
+  },
+  {
+    "id": "remote",
+    "term": "Remote",
+    "definition": "A named URL for another copy of the repository, usually on GitHub. origin is the conventional name for the one you cloned from or push to.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "remote-tracking-branch",
+    "term": "Remote-tracking branch",
+    "definition": "A local, read-only record such as origin/main of where a branch was on a remote at your last fetch, pull or push. It moves only when you talk to the remote.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "upstream-branch",
+    "term": "Upstream branch",
+    "definition": "The remote branch a local branch tracks, set with git push -u. It lets plain git push and git pull work and lets git status report ahead and behind counts.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "ssh-key",
+    "term": "SSH key pair",
+    "definition": "Two linked keys used to prove who you are to GitHub: the private key stays on your machine, and the .pub public key is added to your GitHub account.",
+    "lesson": "l-git-3-2"
+  },
+  {
+    "id": "pull-request",
+    "term": "Pull request",
+    "definition": "A GitHub proposal to merge one branch into another, where reviewers comment, automated checks run, and the change is finally merged. New pushes to the branch update it.",
+    "lesson": "l-git-3-3"
+  },
+  {
+    "id": "fork",
+    "term": "Fork",
+    "definition": "Your own copy of someone else's repository on GitHub. You push branches to it and open pull requests back to the original, conventionally called upstream.",
+    "lesson": "l-git-3-4"
+  },
+  {
+    "id": "revert",
+    "term": "git revert",
+    "definition": "A command that creates a new commit applying the exact opposite of an earlier commit. It undoes changes without rewriting history, so it's safe on shared branches.",
+    "lesson": "l-git-4-1"
+  },
+  {
+    "id": "reflog",
+    "term": "Reflog",
+    "definition": "A local log of every position HEAD has had, such as commits, resets, rebases and switches. It lets you find and restore commits that no branch points to any more.",
+    "lesson": "l-git-4-1"
+  },
+  {
+    "id": "stash",
+    "term": "Stash",
+    "definition": "A place to park uncommitted changes and get a clean working tree. git stash push saves them, git stash pop brings them back; add -u to include untracked files.",
+    "lesson": "l-git-4-2"
+  },
+  {
+    "id": "gitignore",
+    "term": ".gitignore",
+    "definition": "A file listing patterns of untracked files Git should never track, such as node_modules/, build output and .env. It doesn't affect files that are already tracked.",
+    "lesson": "l-git-4-2"
+  },
+  {
+    "id": "conventional-commits",
+    "term": "Conventional Commits",
+    "definition": "A commit message format, type(optional scope): description, using types like feat, fix and docs, so tools can generate changelogs and semantic version numbers.",
+    "lesson": "l-git-4-3"
+  },
+  {
+    "id": "annotated-tag",
+    "term": "Annotated tag",
+    "definition": "A permanent, named marker on a commit that also stores the tagger, date and a message. Created with git tag -a, it's the usual way to mark a release.",
+    "lesson": "l-git-4-3"
+  },
+  {
+    "id": "github-actions-workflow",
+    "term": "GitHub Actions workflow",
+    "definition": "A YAML file in .github/workflows/ that runs jobs on GitHub's machines when events like pull_request happen. Each job reports a status check on the pull request.",
+    "lesson": "l-git-4-4"
+  },
+  {
+    "id": "ruleset",
+    "term": "Ruleset",
+    "definition": "A named set of GitHub rules for branches or tags, such as requiring a pull request, requiring status checks to pass and blocking force pushes on main.",
+    "lesson": "l-git-4-4"
+  }
+]

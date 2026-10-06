@@ -1,0 +1,40 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Make the tests (the checks) pass, one at a time.\n// balances: { name: cents }. Positive = is owed money, negative = owes.\n// Return transfers: [{ from, to, amountCents }].\nfunction settleUp(balances) {\n  return [];\n}\n\nconsole.log(settleUp({ Ana: 500, Ben: -500 }));\n"
+  },
+  "solution": {
+    "js": "// Make the tests (the checks) pass, one at a time.\n// balances: { name: cents }. Positive = is owed money, negative = owes.\n// Return transfers: [{ from, to, amountCents }].\nfunction settleUp(balances) {\n  const entries = Object.entries(balances);\n  const sum = entries.reduce((total, [, cents]) => total + cents, 0);\n  if (sum !== 0) throw new Error('Balances must add up to zero');\n\n  const debtors = [];\n  const creditors = [];\n  for (const [name, cents] of entries) {\n    if (cents < 0) debtors.push({ name, cents: -cents });\n    else if (cents > 0) creditors.push({ name, cents });\n  }\n  const largestFirst = (a, b) => b.cents - a.cents || a.name.localeCompare(b.name);\n  debtors.sort(largestFirst);\n  creditors.sort(largestFirst);\n\n  const transfers = [];\n  let d = 0;\n  let c = 0;\n  while (d < debtors.length && c < creditors.length) {\n    const amountCents = Math.min(debtors[d].cents, creditors[c].cents);\n    transfers.push({ from: debtors[d].name, to: creditors[c].name, amountCents });\n    debtors[d].cents -= amountCents;\n    creditors[c].cents -= amountCents;\n    if (debtors[d].cents === 0) d += 1;\n    if (creditors[c].cents === 0) c += 1;\n  }\n  return transfers;\n}\n\nconsole.log(settleUp({ Ana: 500, Ben: -500 }));\nconsole.log(settleUp({ Ana: 1500, Ben: -1000, Cai: -500 }));\n"
+  },
+  "checks": [
+    {
+      "id": "settled",
+      "test": "const t = settleUp({ Ana: 0, Ben: 0 }); return Array.isArray(t) && t.length === 0 && Array.isArray(settleUp({})) && settleUp({}).length === 0;"
+    },
+    {
+      "id": "two-people",
+      "test": "const t = settleUp({ Ana: 500, Ben: -500 }); return Array.isArray(t) && t.length === 1 && t[0].from === 'Ben' && t[0].to === 'Ana' && t[0].amountCents === 500;"
+    },
+    {
+      "id": "settles-everyone",
+      "test": "const cases = [\n  { Ana: 500, Ben: -500 },\n  { Ana: 1500, Ben: -1000, Cai: -500 },\n  { Ana: -700, Ben: 300, Cai: 400, Dee: 0 },\n  { Ana: 2500, Ben: -1000, Cai: -1000, Dee: -1000, Eve: 500 },\n  { Ana: -1, Ben: -1, Cai: 2 },\n];\nfor (const b of cases) {\n  const left = { ...b };\n  const t = settleUp({ ...b });\n  if (!Array.isArray(t) || (t.length === 0)) return false;\n  for (const x of t) {\n    if (!Number.isInteger(x.amountCents) || x.amountCents <= 0) return false;\n    if (!(x.from in left) || !(x.to in left)) return false;\n    left[x.from] += x.amountCents;\n    left[x.to] -= x.amountCents;\n  }\n  if (Object.values(left).some((v) => v !== 0)) return false;\n}\nreturn true;"
+    },
+    {
+      "id": "few-transfers",
+      "test": "const cases = [\n  { Ana: 500, Ben: -500 },\n  { Ana: 1500, Ben: -1000, Cai: -500 },\n  { Ana: -700, Ben: 300, Cai: 400, Dee: 0 },\n  { Ana: 2500, Ben: -1000, Cai: -1000, Dee: -1000, Eve: 500 },\n  { Ana: -1, Ben: -1, Cai: 2 },\n];\nreturn cases.every((b) => {\n  const people = Object.values(b).filter((v) => v !== 0).length;\n  const t = settleUp({ ...b });\n  return Array.isArray(t) && t.length >= 1 && t.length <= people - 1;\n});"
+    },
+    {
+      "id": "ignores-settled",
+      "test": "const t = settleUp({ Ana: -700, Ben: 300, Cai: 400, Dee: 0 }); return Array.isArray(t) && t.length > 0 && t.every((x) => x.from !== 'Dee' && x.to !== 'Dee');"
+    },
+    {
+      "id": "rejects-unbalanced",
+      "test": "try { settleUp({ Ana: 500, Ben: -400 }); return false; } catch (e) { return e instanceof Error; }"
+    },
+    {
+      "id": "no-mutation",
+      "test": "const b = { Ana: 1500, Ben: -1000, Cai: -500 }; settleUp(b); return b.Ana === 1500 && b.Ben === -1000 && b.Cai === -500 && Object.keys(b).length === 3;"
+    }
+  ]
+}

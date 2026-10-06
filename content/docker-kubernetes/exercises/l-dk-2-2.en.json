@@ -1,0 +1,10 @@
+{
+  "title": "The temporary fix that shipped",
+  "prompt": "A security review flags this image: \"container process runs as UID 0\". The author insists they switched to the `node` user. Select the line that makes the container run as root, and think about what the right fix for the original error would be.",
+  "hints": [
+    "The last `USER` instruction before `CMD` decides who the container runs as.",
+    "The real need was one writable directory, not root for the whole process."
+  ],
+  "explanation": "Line 11 switches back to root after `USER node`, so the process starts as UID 0. The original `EACCES` came from `/app` being owned by root. Create the one directory the app writes to, hand it to the app user, and stay non-root:\n\n```dockerfile\nRUN mkdir -p /app/tmp && chown node:node /app/tmp\nUSER node\nEXPOSE 3000\nCMD [\"node\", \"dist/server.js\"]\n```\nEven better, have the app write to `/tmp`, which is writable by every user and can be a `tmpfs` mount when the root filesystem is read-only.",
+  "checks": {}
+}

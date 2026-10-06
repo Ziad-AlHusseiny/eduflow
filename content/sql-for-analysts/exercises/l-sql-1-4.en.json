@@ -1,0 +1,11 @@
+{
+  "title": "November resolution times",
+  "prompt": "Mark wants every ticket **opened in November 2025** with its resolution time in **hours**.\n\nReturn `ticket_id`, `priority` and `hours_to_close` (rounded to 1 decimal; leave it NULL for tickets that are still open), sorted by `ticket_id`. Order matters.\n\nThe starter has two bugs: one drops tickets, the other gets the unit wrong.",
+  "hints": [
+    "Compare the starter's row count with a count using `opened_at < '2025-12-01'`. Which day goes missing?",
+    "Replace BETWEEN with a half-open range: `>= '2025-11-01' AND < '2025-12-01'`.",
+    "`julianday()` differences are in days. Multiply the difference by 24 before rounding."
+  ],
+  "explanation": "With BETWEEN, the upper bound '2025-11-30' sorts before any time on 30 November, so tickets opened that day vanish: 112 rows instead of 116. The half-open range keeps them. `julianday(closed_at) - julianday(opened_at)` is a fraction of a day, so multiplying by 24 gives hours. Open tickets have a NULL `closed_at`, and the arithmetic passes that NULL through, which is the honest answer for an unfinished ticket.",
+  "checks": {}
+}

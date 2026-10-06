@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// 1. An error type for problems the user can fix\nclass ValidationError extends Error {\n  constructor(field, message) {\n    super(message);\n    // set name and field here\n  }\n}\n\n// 2. Return whole cents, or throw a ValidationError for the \"amount\" field\nfunction parseAmount(text) {\n  return Math.round(Number(text) * 100);\n}\n\n// 3. Return { ok: true, list } with the new expense added, or\n//    { ok: false, field, message } for a ValidationError.\n//    Any other error must NOT be swallowed.\nfunction tryAdd(list, label, amountText) {\n  try {\n    const expense = { label: label.trim(), amount: parseAmount(amountText) };\n    return { ok: true, list: [...list, expense] };\n  } catch (error) {\n    return { ok: false };\n  }\n}\n\nconsole.log(tryAdd([], \"Tea\", \"abc\"));\n"
+  },
+  "solution": {
+    "js": "class ValidationError extends Error {\n  constructor(field, message) {\n    super(message);\n    this.name = \"ValidationError\";\n    this.field = field;\n  }\n}\n\nfunction parseAmount(text) {\n  const dollars = Number(text);\n  if (text.trim() === \"\" || !Number.isFinite(dollars) || dollars <= 0) {\n    throw new ValidationError(\"amount\", \"Enter an amount greater than zero.\");\n  }\n  return Math.round(dollars * 100);\n}\n\nfunction tryAdd(list, label, amountText) {\n  try {\n    if (label.trim() === \"\") {\n      throw new ValidationError(\"label\", \"Enter what you spent money on.\");\n    }\n    const expense = { label: label.trim(), amount: parseAmount(amountText) };\n    return { ok: true, list: [...list, expense] };\n  } catch (error) {\n    if (error instanceof ValidationError) {\n      return { ok: false, field: error.field, message: error.message };\n    }\n    throw error;\n  }\n}\n\nconsole.log(tryAdd([], \"Tea\", \"abc\"));\n"
+  },
+  "checks": [
+    {
+      "id": "error-class",
+      "test": "const e = new ValidationError('amount', 'Bad');\nreturn e instanceof Error && e.name === 'ValidationError' && e.field === 'amount' && e.message === 'Bad';\n"
+    },
+    {
+      "id": "parse-ok",
+      "test": "return parseAmount('4.10') === 410 && parseAmount(' 12 ') === 1200;\n"
+    },
+    {
+      "id": "parse-throws",
+      "test": "const bad = ['', '   ', 'abc', '0', '-5', 'Infinity'];\nreturn bad.every((t) => { try { parseAmount(t); return false; } catch (e) { return e instanceof ValidationError && e.field === 'amount'; } });\n"
+    },
+    {
+      "id": "try-add-ok",
+      "test": "const r = tryAdd([{ label: 'Bus', amount: 270 }], '  Tea ', '3');\nreturn r.ok === true && r.list.length === 2 && r.list[1].label === 'Tea' && r.list[1].amount === 300;\n"
+    },
+    {
+      "id": "try-add-invalid",
+      "test": "const a = tryAdd([], 'Tea', 'abc');\nconst b = tryAdd([], '  ', '3');\nreturn a.ok === false && a.field === 'amount' && typeof a.message === 'string' && a.message.length > 0 && b.ok === false && b.field === 'label';\n"
+    },
+    {
+      "id": "rethrows",
+      "test": "try { tryAdd(null, 'Tea', '3'); return false; } catch (e) { return e instanceof TypeError; }\n"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "orders_messy.csv"
+  ],
+  "starter": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\n# 1. customer: remove leading/trailing spaces\n\n# 2. country: remove spaces and use title case (\"UNITED KINGDOM\" -> \"United Kingdom\")\n\n# 3. channel: \"mobile app\" -> \"mobile_app\", and missing -> \"unknown\"\n\n# 4. New column first_name: the first word of the cleaned customer name\n\n# 5. Number of rows whose product name mentions \"desk\" (any capitalisation)\ndesk_lines = None\n",
+  "solution": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\nmessy[\"customer\"] = messy[\"customer\"].str.strip()\nmessy[\"country\"] = messy[\"country\"].str.strip().str.title()\nmessy[\"channel\"] = messy[\"channel\"].str.replace(\" \", \"_\").fillna(\"unknown\")\nmessy[\"first_name\"] = messy[\"customer\"].str.split(\" \").str[0]\n\ndesk_lines = messy[\"product\"].str.contains(\"desk\", case=False).sum()\nprint(messy[\"country\"].value_counts())\n",
+  "checks": [
+    {
+      "id": "customer",
+      "test": "(messy['customer'] == messy['customer'].str.strip()).all() and messy['customer'].nunique() == 122"
+    },
+    {
+      "id": "country",
+      "test": "set(messy['country']) == {'Egypt', 'United Arab Emirates', 'Saudi Arabia', 'Jordan', 'United Kingdom', 'Germany', 'United States', 'Canada'}"
+    },
+    {
+      "id": "channel",
+      "test": "set(messy['channel']) == {'web', 'mobile_app', 'marketplace', 'unknown'} and (messy['channel'] == 'unknown').sum() == 7"
+    },
+    {
+      "id": "first-name",
+      "test": "'first_name' in messy.columns and messy['first_name'].iloc[0] == 'Daniel' and not messy['first_name'].str.contains(' ').any()"
+    },
+    {
+      "id": "desk",
+      "test": "int(desk_lines) == 15"
+    }
+  ]
+}

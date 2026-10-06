@@ -1,0 +1,18 @@
+{
+  "title": "Plan the token rename end to end",
+  "prompt": "Northwind is replacing the token `--nw-color-text-light` with `--nw-color-text-subtle`. About 300 uses exist across 40 repositories, and the current version is 4.6.0. Put the steps of the deprecation path in order.",
+  "hints": [
+    "People can only migrate to something that already exists.",
+    "Removal is a breaking change, so it waits for a major release and for usage data.",
+    "One step happens after the removal ships."
+  ],
+  "explanation": "The new token ships first (a minor release), so there is something to move to. In the same release the old name becomes an alias marked `$deprecated`, with docs and changelog naming the replacement and the removal version. Codemods and migration pull requests do the bulk of the work, usage tracking shows when the remaining uses are near zero, and only then does the next major remove the alias. Patching 4.x for a stated window afterwards protects teams that need more time.",
+  "items": {
+    "replacement": "Ship `--nw-color-text-subtle` in 4.7.0",
+    "deprecate": "Keep `--nw-color-text-light` as an alias marked `$deprecated`, and announce the removal version in the docs and changelog",
+    "codemod": "Publish a codemod and open migration pull requests for the largest consumers",
+    "measure": "Track remaining uses across repositories until they are near zero",
+    "remove": "Remove the old token in 5.0.0, batched with other planned removals",
+    "support": "Keep shipping bug fixes on 4.x for six months"
+  }
+}

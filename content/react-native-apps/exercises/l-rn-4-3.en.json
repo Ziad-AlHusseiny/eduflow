@@ -1,0 +1,17 @@
+{
+  "title": "Turn a permission response into a screen",
+  "prompt": "Trailhead's tracking screen calls `permissionAction(response)` to decide what to render. `response` is the object from `getForegroundPermissionsAsync()`, or `null` while it's still loading. Return:\n\n- `'wait'` while the response is `null` or `undefined` (show a spinner),\n- `'proceed'` when access is granted (show the map),\n- `'ask'` when a system prompt can still appear: never asked, or denied with `canAskAgain: true` (show the explanation and a Continue button),\n- `'open-settings'` when it's denied and `canAskAgain` is `false` (show an Open Settings button).",
+  "hints": [
+    "Handle the loading case first, before you read any property of `response`.",
+    "`granted` is already a boolean, so you don't need to compare `status` for that case.",
+    "For a denial, the only thing that matters is `canAskAgain`."
+  ],
+  "explanation": "The starter crashed on `null` (reading `.status` of nothing) and sent permanently denied users to a request that silently does nothing. The fixed function covers every state in a fixed order: loading, granted, then the two kinds of not-yet-granted. Because it's pure, you can test all four branches in milliseconds, and the screen becomes a simple switch over four strings.",
+  "checks": {
+    "loading": "A missing response means wait",
+    "granted": "A granted permission proceeds",
+    "undetermined": "A permission never asked for leads to asking",
+    "denied-can-ask": "A denial that can be asked again leads to asking",
+    "denied-final": "A permanent denial leads to Settings"
+  }
+}

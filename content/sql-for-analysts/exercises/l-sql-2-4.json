@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Business customers who have never referred anyone\nSELECT customer_id, email, segment\nFROM customers\nWHERE segment IN ('enterprise', 'small_business')\n  AND customer_id NOT IN (SELECT referred_by FROM customers);",
+  "solution": "SELECT c.customer_id, c.email, c.segment\nFROM customers AS c\nWHERE c.segment IN ('enterprise', 'small_business')\n  AND NOT EXISTS (\n    SELECT 1\n    FROM customers AS r\n    WHERE r.referred_by = c.customer_id\n  );",
+  "orderMatters": false
+}

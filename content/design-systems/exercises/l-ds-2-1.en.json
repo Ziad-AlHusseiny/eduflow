@@ -1,0 +1,17 @@
+{
+  "title": "Give the button three tiers",
+  "prompt": "The primitives are done, but `.nw-button` reaches straight for `--nw-blue-600`, so no theme can ever change it. Add the two missing tiers:\n\n1. On `:root`, declare the semantic tokens `--nw-color-action-bg` and `--nw-color-action-text`, pointing at the right primitives.\n2. On `.nw-button`, declare the component tokens `--nw-button-bg` and `--nw-button-text`, pointing at the semantic tokens, and use them for `background` and `color`.\n\nThe button must look exactly as it does now, and no `.nw-button` rule may mention a `--nw-blue-…` or `--nw-white` primitive.",
+  "hints": [
+    "Semantic tokens look like `--nw-color-action-bg: var(--nw-blue-600);` inside `:root`.",
+    "Component tokens go inside the `.nw-button { … }` rule, not on `:root`, so they resolve on each button.",
+    "Then change `background: var(--nw-blue-600)` to `background: var(--nw-button-bg)`, and the same for `color`."
+  ],
+  "explanation": "The button now resolves `--nw-button-bg` → `--nw-color-action-bg` → `--nw-blue-600`. Because the component tokens are declared on `.nw-button`, each button looks up the semantic token from its own ancestors, so setting `--nw-color-action-bg` on `.promo` re-colors only the promo button. Had you declared `--nw-button-bg` on `:root`, the value would be computed once at the root and the promo override would do nothing.",
+  "checks": {
+    "still-blue": "The button still renders blue with white text",
+    "semantic": "`:root` defines `--nw-color-action-bg` and `--nw-color-action-text`",
+    "component": "The button's background comes from `--nw-button-bg`",
+    "follows-semantic": "Overriding `--nw-color-action-bg` on `.promo` re-colors only the promo button",
+    "no-primitives": "No `.nw-button` rule references a primitive token"
+  }
+}

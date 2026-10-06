@@ -1,0 +1,17 @@
+{
+  "title": "Group hikes into SectionList sections",
+  "prompt": "Write `groupHikesByMonth(hikes)` so Trailhead's `SectionList` can render the log grouped by month. Return an array of sections shaped `{ title, data }` where:\n\n- `title` is the month name and year, like `\"October 2026\"` (use the `MONTHS` array),\n- sections are ordered **newest month first**, and October 2026 and October 2025 are different sections,\n- hikes inside each section are ordered **newest first**,\n- the input array is not modified.\n\nDates are `YYYY-MM-DD` strings. The starter has several bugs; run it and compare its output with what the list needs.",
+  "hints": [
+    "`MONTHS` is zero-based, but the month in `'2026-10-04'` is 10. And the title needs the year too.",
+    "If you sort a copy of the hikes newest first (`[...hikes].sort((a, b) => b.date.localeCompare(a.date))`), ISO date strings compare correctly as text.",
+    "After sorting, walk the hikes once: if the hike's title matches the last section's title, push into it; otherwise start a new section. The order of sections then falls out of the sort."
+  ],
+  "explanation": "The starter used the wrong month index (off by one), dropped the year so October 2025 merged into October 2026, and relied on object key order, which follows insertion rather than date. Sorting a copy first, then grouping consecutive hikes, solves ordering for both sections and items in one pass and leaves the caller's array untouched. ISO `YYYY-MM-DD` strings sort chronologically as plain text, which avoids time-zone surprises from `new Date()`. Compute this when the data changes (for example in `useMemo`), not inside `renderItem`.",
+  "checks": {
+    "titles": "Section titles include the year and are ordered newest month first",
+    "items-newest-first": "Hikes inside each section are ordered newest first",
+    "january-december": "January and December get the right month names",
+    "no-mutation": "The original hikes array keeps its order",
+    "empty": "An empty log gives an empty sections array"
+  }
+}

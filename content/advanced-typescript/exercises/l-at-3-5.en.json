@@ -1,0 +1,14 @@
+{
+  "title": "Go deep, carefully",
+  "prompt": "Implement three recursive types (do not use the built-in `Awaited`):\n\n- `MyAwaited<T>`: unwrap nested promises until the type is not a promise.\n- `DeepReadonly<T>`: make every property at every level `readonly`, turn arrays into readonly arrays of deeply readonly elements, and leave functions untouched (still callable).\n- `DeepPartial<T>`: make every property at every level optional, but keep arrays as they are (a fixture replaces a whole array).\n\n`checkoutFixture` already merges overrides at runtime; once `DeepPartial` is right, the nested override in the example compiles.",
+  "hints": [
+    "Each type is a conditional that calls itself in the branch that goes one level deeper.",
+    "Order the cases: functions first (return `T`), then objects (map and recurse), then everything else (return `T`). Arrays are objects, and a homomorphic mapped type keeps them arrays.",
+    "For `DeepPartial`, add a first case `T extends readonly unknown[] ? T : …` so arrays are not made partial."
+  ],
+  "explanation": "`MyAwaited` recurses in tail position, peeling one promise per step. `DeepReadonly` needs a function branch because a mapped type keeps properties but drops call signatures, so `onSubmit` would otherwise stop being callable; arrays need no extra case because mapping over an array type yields a readonly array. `DeepPartial` deliberately stops at arrays, which matches how `mergeDeep` treats them: an override replaces the whole array. The casts in `checkoutFixture` are local and commented: the merge works on untyped records, and the fixture's type is restored once at the boundary.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "fixture": "`checkoutFixture` merges nested overrides into the defaults"
+  }
+}

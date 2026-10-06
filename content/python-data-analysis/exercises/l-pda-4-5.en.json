@@ -1,0 +1,16 @@
+{
+  "title": "Segment Cartwheel's customers",
+  "prompt": "Build `cust`, one row per `customer_id`, with `orders` (number of orders) and `spend` (total revenue). Add `rank` (1 for the highest spender, ties sharing the lowest rank), and `band`, made with `pd.cut` using the edges 0, 250, 500, 1000, 2000 and infinity and the labels `\"<250\"`, `\"250-500\"`, `\"500-1k\"`, `\"1k-2k\"`, `\"2k+\"`. Finally set `top10_share` to the share of all revenue that comes from the 50 highest-spending customers (about the top 10%), rounded to 3 decimals.",
+  "hints": [
+    "`orders.groupby(\"customer_id\").agg(orders=(\"order_id\", \"count\"), spend=(\"revenue\", \"sum\"))`.",
+    "`cust[\"spend\"].rank(ascending=False, method=\"min\")`; for the bands, `pd.cut(cust[\"spend\"], bins=[0, 250, 500, 1000, 2000, np.inf], labels=[...])`.",
+    "`cust.nlargest(50, \"spend\")[\"spend\"].sum()` divided by the total spend, then `round(..., 3)`."
+  ],
+  "explanation": "The customer table is a groupby over the order-level table, so cancelled orders are already excluded. `method=\"min\"` matters only for ties, and `ascending=False` makes the biggest spender rank 1 (customer 36, with 5,370 dollars). Ending the bins at `np.inf` leaves no customer unlabelled, which the check confirms. The top 50 customers, a tenth of the base, account for 35.5% of revenue. Concentration figures like this belong in any report about customers: they tell you whether to worry about the many or the few.",
+  "checks": {
+    "cust": "`cust` has 503 customers with orders and spend",
+    "rank": "`rank` starts at 1, and customer 331 ranks 2nd",
+    "band": "`band` has no gaps and the expected counts per band",
+    "top10": "`top10_share` is the top 50 customers' share of revenue"
+  }
+}

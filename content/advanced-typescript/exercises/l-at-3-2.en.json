@@ -1,0 +1,14 @@
+{
+  "title": "Re-implement the utility types",
+  "prompt": "Using mapped types only (no built-in `Partial`, `Required`, `Pick`, `Omit` or `Record`), implement:\n\n- `MyPartial<T>`, `MyRequired<T>`, `MyPick<T, K>` and `MyOmit<T, K>`, behaving like the built-ins.\n- `FieldState<T>`: for every property, `{ value: T[K]; error: string | null; touched: boolean }`.\n- `Setters<T>`: for every property `name`, a property `setName` that is a function taking that property's type and returning `void`.\n\nThen make `initialState` compile with its new return type.",
+  "hints": [
+    "The basic loop is `{ [K in keyof T]: … }`. Add `?` after the key for optional, `-?` to remove optionality.",
+    "For `MyOmit`, rename keys with `as` and send the omitted ones to `never`: `as Exclude<P, K>`. Built-in `Exclude` is allowed.",
+    "For `Setters`, rename with a template literal: ``as `set${Capitalize<K & string>}` ``. In `initialState`, `Object.fromEntries` returns `{ [k: string]: … }`, so cast its result once to `FieldState<T>`."
+  ],
+  "explanation": "Each utility type is a loop over keys. Mapping over `keyof T` copies modifiers, so `MyPartial` adds `?`, `MyRequired` removes it with `-?` (which also drops the implicit `undefined`), and `MyPick` keeps the original modifiers because `K` is constrained to `keyof T`. `MyOmit` works because a key remapped to `never` disappears. `Setters` shows the other use of `as`: renaming each key with a template literal, where `K & string` filters out number and symbol keys that `Capitalize` cannot handle. `Object.fromEntries` cannot know your keys, so one documented cast inside `initialState` gives callers a precise type.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "runtime": "`initialState` builds an untouched, error-free state for each field"
+  }
+}

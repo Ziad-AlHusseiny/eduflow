@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type Currency = 'EGP' | 'AED' | 'SAR' | 'JOD' | 'GBP' | 'EUR' | 'USD' | 'CAD';\ntype Coupon = { kind: 'percent'; percentOff: number } | { kind: 'free-shipping' };\n\nconst COUNTRIES = ['EG', 'AE', 'SA', 'JO', 'GB', 'DE', 'US', 'CA'];\ntype Country = string; // derive this from COUNTRIES\n\nconst currencyByCountry: Record<string, Currency> = {\n  EG: 'EGP',\n  AE: 'AED',\n  SA: 'SAR',\n  JO: 'JOD',\n  GB: 'GBP',\n  DE: 'EUR',\n  US: 'USD',\n  CA: 'CAD',\n};\n\nconst coupons: Record<string, Coupon> = {\n  WELCOME10: { kind: 'percent', percentOff: 10 },\n  SPRING15: { kind: 'percent', percentOff: 15 },\n  FREESHIP: { kind: 'free-shipping' },\n};\n\nfunction isCountry(value: string): value is Country {\n  return COUNTRIES.includes(value);\n}\n\nfunction currencyFor(country: Country): Currency {\n  return currencyByCountry[country];\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Country, 'EG' | 'AE' | 'SA' | 'JO' | 'GB' | 'DE' | 'US' | 'CA'>>;\ntype T2 = Expect<Equal<(typeof currencyByCountry)['DE'], 'EUR'>>;\ntype T3 = Expect<Equal<keyof typeof coupons, 'WELCOME10' | 'SPRING15' | 'FREESHIP'>>;\ntype T4 = Expect<Equal<(typeof coupons)['SPRING15']['percentOff'], number>>;\n\n// @ts-expect-error: France is not a Cartwheel country\ncurrencyByCountry.FR;\n\n// @ts-expect-error: typo in the coupon code\ncoupons.SPRNG15;\n\nconsole.log(currencyFor('DE'), isCountry('EG'), isCountry('FR'));\n"
+  },
+  "solution": {
+    "ts": "type Currency = 'EGP' | 'AED' | 'SAR' | 'JOD' | 'GBP' | 'EUR' | 'USD' | 'CAD';\ntype Coupon = { kind: 'percent'; percentOff: number } | { kind: 'free-shipping' };\n\nconst COUNTRIES = ['EG', 'AE', 'SA', 'JO', 'GB', 'DE', 'US', 'CA'] as const;\ntype Country = (typeof COUNTRIES)[number];\n\nconst currencyByCountry = {\n  EG: 'EGP',\n  AE: 'AED',\n  SA: 'SAR',\n  JO: 'JOD',\n  GB: 'GBP',\n  DE: 'EUR',\n  US: 'USD',\n  CA: 'CAD',\n} as const satisfies Record<Country, Currency>;\n\nconst coupons = {\n  WELCOME10: { kind: 'percent', percentOff: 10 },\n  SPRING15: { kind: 'percent', percentOff: 15 },\n  FREESHIP: { kind: 'free-shipping' },\n} satisfies Record<string, Coupon>;\n\nfunction isCountry(value: string): value is Country {\n  return (COUNTRIES as readonly string[]).includes(value);\n}\n\nfunction currencyFor(country: Country): Currency {\n  return currencyByCountry[country];\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Country, 'EG' | 'AE' | 'SA' | 'JO' | 'GB' | 'DE' | 'US' | 'CA'>>;\ntype T2 = Expect<Equal<(typeof currencyByCountry)['DE'], 'EUR'>>;\ntype T3 = Expect<Equal<keyof typeof coupons, 'WELCOME10' | 'SPRING15' | 'FREESHIP'>>;\ntype T4 = Expect<Equal<(typeof coupons)['SPRING15']['percentOff'], number>>;\n\n// @ts-expect-error: France is not a Cartwheel country\ncurrencyByCountry.FR;\n\n// @ts-expect-error: typo in the coupon code\ncoupons.SPRNG15;\n\nconsole.log(currencyFor('DE'), isCountry('EG'), isCountry('FR'));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "is-country",
+      "test": "return isCountry('EG') === true && isCountry('CA') === true && isCountry('FR') === false;"
+    },
+    {
+      "id": "currency",
+      "test": "return currencyFor('DE') === 'EUR' && currencyFor('JO') === 'JOD';"
+    }
+  ]
+}

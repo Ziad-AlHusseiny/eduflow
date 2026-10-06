@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"compare\">\n  <section data-brand=\"northwind\" id=\"nw\">\n    <h2 class=\"nw-heading\">Northwind Dispatch</h2>\n    <button class=\"nw-button\" type=\"button\">Start trial</button>\n  </section>\n  <section data-brand=\"tidewater\" id=\"tw\">\n    <h2 class=\"nw-heading\">Tidewater Freight</h2>\n    <button class=\"nw-button\" type=\"button\">Get a quote</button>\n  </section>\n</div>",
+    "css": ":root {\n  /* Primitives */\n  --nw-white: #ffffff;\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-700: #1848b8;\n  --nw-teal-600: #0d9488;\n  --nw-teal-700: #0f766e;\n  --nw-font-inter: Inter, system-ui, sans-serif;\n  --nw-font-georgia: Georgia, 'Times New Roman', serif;\n\n  /* Brand tier: Northwind is the default */\n  --nw-brand-600: var(--nw-blue-600);\n  --nw-brand-700: var(--nw-blue-700);\n  --nw-brand-font-heading: var(--nw-font-inter);\n  --nw-brand-radius-control: 6px;\n}\n\n/* Semantic tier */\n:root {\n  --nw-color-action-bg: var(--nw-brand-600);\n  --nw-color-action-text: var(--nw-white);\n  --nw-font-heading: var(--nw-brand-font-heading);\n  --nw-radius-control: var(--nw-brand-radius-control);\n}\n\n/* Add the Tidewater brand here */\n\n/* Components: brand-agnostic, don't change */\n.nw-heading { font-family: var(--nw-font-heading); margin: 0 0 12px; }\n.nw-button {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 0;\n  border-radius: var(--nw-radius-control);\n  padding: 8px 16px;\n  font: inherit;\n}\n.compare { display: grid; gap: 24px; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<div class=\"compare\">\n  <section data-brand=\"northwind\" id=\"nw\">\n    <h2 class=\"nw-heading\">Northwind Dispatch</h2>\n    <button class=\"nw-button\" type=\"button\">Start trial</button>\n  </section>\n  <section data-brand=\"tidewater\" id=\"tw\">\n    <h2 class=\"nw-heading\">Tidewater Freight</h2>\n    <button class=\"nw-button\" type=\"button\">Get a quote</button>\n  </section>\n</div>",
+    "css": ":root {\n  /* Primitives */\n  --nw-white: #ffffff;\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-700: #1848b8;\n  --nw-teal-600: #0d9488;\n  --nw-teal-700: #0f766e;\n  --nw-font-inter: Inter, system-ui, sans-serif;\n  --nw-font-georgia: Georgia, 'Times New Roman', serif;\n\n  /* Brand tier: Northwind is the default */\n  --nw-brand-600: var(--nw-blue-600);\n  --nw-brand-700: var(--nw-blue-700);\n  --nw-brand-font-heading: var(--nw-font-inter);\n  --nw-brand-radius-control: 6px;\n}\n\n/* Semantic tier, re-declared in every brand scope */\n:root,\n[data-brand] {\n  --nw-color-action-bg: var(--nw-brand-600);\n  --nw-color-action-text: var(--nw-white);\n  --nw-font-heading: var(--nw-brand-font-heading);\n  --nw-radius-control: var(--nw-brand-radius-control);\n}\n\n[data-brand=\"tidewater\"] {\n  --nw-brand-600: var(--nw-teal-600);\n  --nw-brand-700: var(--nw-teal-700);\n  --nw-brand-font-heading: var(--nw-font-georgia);\n  --nw-brand-radius-control: 999px;\n  /* teal-600 fails 4.5:1 with white text */\n  --nw-color-action-bg: var(--nw-brand-700);\n}\n\n/* Components: brand-agnostic, don't change */\n.nw-heading { font-family: var(--nw-font-heading); margin: 0 0 12px; }\n.nw-button {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 0;\n  border-radius: var(--nw-radius-control);\n  padding: 8px 16px;\n  font: inherit;\n}\n.compare { display: grid; gap: 24px; }\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "northwind-intact",
+      "test": "const b = $('#nw .nw-button'); return style(b, 'background-color') === 'rgb(31, 90, 224)' && style(b, 'border-top-left-radius') === '6px' && style('#nw .nw-heading', 'font-family').startsWith('Inter');"
+    },
+    {
+      "id": "tidewater-font",
+      "test": "return style('#tw .nw-heading', 'font-family').startsWith('Georgia');"
+    },
+    {
+      "id": "tidewater-shape",
+      "test": "return style('#tw .nw-button', 'border-top-left-radius') === '999px';"
+    },
+    {
+      "id": "tidewater-contrast",
+      "test": "const b = $('#tw .nw-button'); return style(b, 'background-color') === 'rgb(15, 118, 110)' && style(b, 'color') === 'rgb(255, 255, 255)';"
+    },
+    {
+      "id": "no-brand-in-components",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText); return rules.every((r) => !(/tidewater|data-brand/.test(r.selectorText) && /nw-(button|heading)/.test(r.selectorText)));"
+    }
+  ]
+}

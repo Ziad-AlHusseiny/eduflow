@@ -1,0 +1,17 @@
+{
+  "title": "Allowed or denied?",
+  "prompt": "All of this happens in Lantern's single AWS account.\n\n- The **Developers** group (Sam is a member) has an identity-based policy that allows `s3:GetObject` and `s3:DeleteObject` on `arn:aws:s3:::lantern-posters/*`.\n- The **lantern-posters** bucket policy explicitly denies `s3:DeleteObject` to every principal, and allows `s3:GetObject` to the role `lantern-thumbnailer`.\n- The role **lantern-thumbnailer** has no identity-based policies at all.\n\nSelect every request that AWS **allows**.",
+  "hints": [
+    "Run each request through the order: explicit deny anywhere? then any allow? then default deny.",
+    "Inside one account, an allow in either an identity-based or a resource-based policy is enough, as long as nothing denies.",
+    "Two requests are allowed. One is allowed by the bucket policy alone."
+  ],
+  "explanation": "Sam's `GetObject` matches the group's allow and nothing denies it, so it succeeds. Sam's `DeleteObject` is also allowed by the group policy, but the bucket policy's explicit deny wins. Sam's DynamoDB scan matches no allow anywhere, so the default deny stands. The thumbnailer role has no identity policies, but the bucket policy names it as a principal and allows `GetObject`; within one account that resource-based allow is enough. Finally, groups are not principals, so a bucket policy cannot name the Developers group at all; you would grant the group through its identity-based policy instead.",
+  "options": {
+    "sam-get": { "text": "Sam downloads `s3://lantern-posters/2026/street-food-festival.jpg` with `aws s3 cp`.", "why": "Allowed. The group policy allows `s3:GetObject` on objects in the bucket and no policy denies it." },
+    "sam-delete": { "text": "Sam deletes an old poster with `aws s3 rm`.", "why": "Denied. The group allows it, but the bucket policy's explicit deny applies to every principal and an explicit deny always wins." },
+    "sam-scan": { "text": "Sam scans the `lantern-rsvps` DynamoDB table.", "why": "Denied. Nothing allows any DynamoDB action for Sam, so this is an implicit deny." },
+    "role-get": { "text": "A Lambda function running as `lantern-thumbnailer` reads a poster.", "why": "Allowed. The bucket policy is a resource-based policy that names the role and allows the read; within one account that is enough." },
+    "group-principal": { "text": "The bucket policy is edited to allow `s3:PutObject` with the Developers group as the principal, and Sam then uploads a poster.", "why": "Denied, and the policy edit itself fails validation. Groups are not principals, so a resource-based policy cannot name one." }
+  }
+}

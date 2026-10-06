@@ -1,0 +1,10 @@
+{
+  "title": "اربط Tailwind v4",
+  "prompt": "املأ الفراغات لإضافة Tailwind CSS v4 إلى مشروع Vite الخاص بـ Watchlist، ثم نسّق زر الفلترة النشط باستخدام الخاصية الموجودة عليه أصلًا.",
+  "hints": [
+    "حزمتان: إطار العمل نفسه والـ plugin الرسمي الخاص به لـ Vite.",
+    "الـ plugin دالة تستدعيها داخل مصفوفة `plugins`، بجانب `react()`.",
+    "لدى Tailwind variants مسمّاة بأسماء خصائص ARIA. والزر يضبط `aria-pressed`."
+  ],
+  "explanation": "يضيف `npm install tailwindcss @tailwindcss/vite` إطار العمل والـ plugin الخاص به لـ Vite. يُستورد الـ plugin من `@tailwindcss/vite` ويُستدعى بالشكل `tailwindcss()` داخل `plugins`، والسطر `@import \"tailwindcss\";` في ملف CSS الرئيسي يجلب الأنماط المولَّدة. لا حاجة إلى `tailwind.config.js` في v4. ويطبّق الـ variant المسمّى `aria-pressed:` الـ class `bg-indigo-600` فقط حين تكون `aria-pressed` في الزر true، فتتبع الحالة المرئية الخاصية نفسها التي تقرؤها التقنيات المساعدة."
+}

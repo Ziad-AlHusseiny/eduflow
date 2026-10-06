@@ -1,0 +1,20 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type Address = { line1: string; city: string; country: string; postcode?: string };\n\n// Re-implement these with mapped types (do not use the built-in utility types).\ntype MyPartial<T> = T;\ntype MyRequired<T> = T;\ntype MyPick<T, K extends keyof T> = T;\ntype MyOmit<T, K extends PropertyKey> = T;\n\n// For each property: its value, a validation error and whether it was touched.\ntype FieldState<T> = any;\n\n// For each property `name`, a `setName(value)` function.\ntype Setters<T> = any;\n\nfunction initialState<T extends object>(values: T): FieldState<T> {\n  return Object.fromEntries(\n    Object.entries(values).map(([key, value]) => [key, { value, error: null, touched: false }]),\n  );\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<MyPartial<Address>, { line1?: string; city?: string; country?: string; postcode?: string }>>;\ntype T2 = Expect<Equal<MyRequired<Address>, { line1: string; city: string; country: string; postcode: string }>>;\ntype T3 = Expect<Equal<MyPick<Address, 'city' | 'postcode'>, { city: string; postcode?: string }>>;\ntype T4 = Expect<Equal<MyOmit<Address, 'postcode' | 'country'>, { line1: string; city: string }>>;\ntype T5 = Expect<Equal<FieldState<{ city: string; floor: number }>, {\n  city: { value: string; error: string | null; touched: boolean };\n  floor: { value: number; error: string | null; touched: boolean };\n}>>;\ntype T6 = Expect<Equal<Setters<{ city: string; floor: number }>, {\n  setCity: (value: string) => void;\n  setFloor: (value: number) => void;\n}>>;\n\nconst form = initialState({ line1: '12 Nile St', city: 'Cairo', country: 'EG' });\nconsole.log(form.city);\n"
+  },
+  "solution": {
+    "ts": "type Address = { line1: string; city: string; country: string; postcode?: string };\n\ntype MyPartial<T> = { [K in keyof T]?: T[K] };\ntype MyRequired<T> = { [K in keyof T]-?: T[K] };\ntype MyPick<T, K extends keyof T> = { [P in K]: T[P] };\ntype MyOmit<T, K extends PropertyKey> = { [P in keyof T as Exclude<P, K>]: T[P] };\n\ntype FieldState<T> = {\n  [K in keyof T]: { value: T[K]; error: string | null; touched: boolean };\n};\n\ntype Setters<T> = {\n  [K in keyof T as `set${Capitalize<K & string>}`]: (value: T[K]) => void;\n};\n\nfunction initialState<T extends object>(values: T): FieldState<T> {\n  // Object.fromEntries cannot know the keys, so we cast once here.\n  return Object.fromEntries(\n    Object.entries(values).map(([key, value]) => [key, { value, error: null, touched: false }]),\n  ) as FieldState<T>;\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<MyPartial<Address>, { line1?: string; city?: string; country?: string; postcode?: string }>>;\ntype T2 = Expect<Equal<MyRequired<Address>, { line1: string; city: string; country: string; postcode: string }>>;\ntype T3 = Expect<Equal<MyPick<Address, 'city' | 'postcode'>, { city: string; postcode?: string }>>;\ntype T4 = Expect<Equal<MyOmit<Address, 'postcode' | 'country'>, { line1: string; city: string }>>;\ntype T5 = Expect<Equal<FieldState<{ city: string; floor: number }>, {\n  city: { value: string; error: string | null; touched: boolean };\n  floor: { value: number; error: string | null; touched: boolean };\n}>>;\ntype T6 = Expect<Equal<Setters<{ city: string; floor: number }>, {\n  setCity: (value: string) => void;\n  setFloor: (value: number) => void;\n}>>;\n\nconst form = initialState({ line1: '12 Nile St', city: 'Cairo', country: 'EG' });\nconsole.log(form.city);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "runtime",
+      "test": "const f = initialState({ city: 'Amman', floor: 3 }); return f.city.value === 'Amman' && f.floor.touched === false && f.floor.error === null;"
+    }
+  ]
+}

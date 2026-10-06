@@ -1,0 +1,16 @@
+{
+  "title": "Header and movie cards",
+  "prompt": "Build the first slice of the Watchlist screen.\n\n1. Make `Header` return a `<header>` containing an `<h1>` with the text **My Watchlist** and a `<p>` tagline of your choice.\n2. Make `MovieCard` return an `<article>` with an `<h2>` reading **Arrival** and a `<p>` reading **2016**.\n3. In `App`, render `Header` once and `MovieCard` twice inside the `<main>`.",
+  "hints": [
+    "A component returns JSX, for example `return (<header>…</header>);`. Keep the parentheses so the return isn't cut short.",
+    "Use components as tags with a capital letter: `<Header />`, `<MovieCard />`.",
+    "App should contain `<Header />`, `<MovieCard />` and `<MovieCard />` inside `<main>`."
+  ],
+  "explanation": "Each component is a top-level function that returns one root element. `App` composes them as tags, and React calls `Header` once and `MovieCard` twice, producing two identical `<article>`s. The duplication is deliberate: in Section 2 you'll pass each card its own movie with props.",
+  "checks": {
+    "header-heading": "The <header> contains an <h1> reading \"My Watchlist\"",
+    "header-tagline": "The <header> has a <p> tagline",
+    "two-cards": "<main> contains exactly two <article> cards",
+    "card-content": "Each card has an <h2> with \"Arrival\" and a <p> with \"2016\""
+  }
+}

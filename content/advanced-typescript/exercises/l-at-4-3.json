@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };\nconst ok = <T>(value: T): { ok: true; value: T } => ({ ok: true, value });\nconst err = <E>(error: E): { ok: false; error: E } => ({ ok: false, error });\n\nconst STATUSES = ['processing', 'shipped', 'delivered', 'cancelled', 'returned'] as const;\ntype OrderStatus = (typeof STATUSES)[number];\ntype Order = { id: number; status: OrderStatus; totalCents: number; couponCode: string | null };\n\nfunction isRecord(value: unknown): boolean {\n  return typeof value === 'object' && value !== null && !Array.isArray(value);\n}\n\nfunction isOrderStatus(value: unknown): boolean {\n  return typeof value === 'string' && (STATUSES as readonly string[]).includes(value);\n}\n\n// This \"parser\" trusts whatever the server sends.\nfunction parseOrder(input: unknown): Result<Order, string> {\n  return ok(input as Order);\n}\n\nfunction assertIsOrder(input: unknown): void {\n  const parsed = parseOrder(input);\n  if (!parsed.ok) throw new Error(`Invalid order: ${parsed.error}`);\n}\n\n// ---- Type tests (do not edit) ----\nfunction typeTests(x: unknown, y: unknown) {\n  if (isRecord(x)) {\n    type T1 = Expect<Equal<typeof x, Record<string, unknown>>>;\n  }\n  if (isOrderStatus(x)) {\n    type T2 = Expect<Equal<typeof x, OrderStatus>>;\n  }\n  assertIsOrder(y);\n  type T3 = Expect<Equal<typeof y, Order>>;\n}\n\nconst fromServer: unknown = JSON.parse('{\"id\":1042,\"status\":\"refunded\",\"totalCents\":18900,\"couponCode\":null}');\nconst parsed = parseOrder(fromServer);\nconsole.log(parsed.ok ? parsed.value : parsed.error);\n"
+  },
+  "solution": {
+    "ts": "type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };\nconst ok = <T>(value: T): { ok: true; value: T } => ({ ok: true, value });\nconst err = <E>(error: E): { ok: false; error: E } => ({ ok: false, error });\n\nconst STATUSES = ['processing', 'shipped', 'delivered', 'cancelled', 'returned'] as const;\ntype OrderStatus = (typeof STATUSES)[number];\ntype Order = { id: number; status: OrderStatus; totalCents: number; couponCode: string | null };\n\nfunction isRecord(value: unknown): value is Record<string, unknown> {\n  return typeof value === 'object' && value !== null && !Array.isArray(value);\n}\n\nfunction isOrderStatus(value: unknown): value is OrderStatus {\n  return typeof value === 'string' && (STATUSES as readonly string[]).includes(value);\n}\n\nfunction parseOrder(input: unknown): Result<Order, string> {\n  if (!isRecord(input)) return err('order: expected an object');\n  const { id, status, totalCents, couponCode } = input;\n  if (typeof id !== 'number' || !Number.isInteger(id)) return err('id: expected an integer');\n  if (!isOrderStatus(status)) return err(`status: unknown value ${JSON.stringify(status)}`);\n  if (typeof totalCents !== 'number' || !Number.isInteger(totalCents)) return err('totalCents: expected whole cents');\n  if (couponCode !== null && typeof couponCode !== 'string') return err('couponCode: expected a string or null');\n  return ok({ id, status, totalCents, couponCode });\n}\n\nfunction assertIsOrder(input: unknown): asserts input is Order {\n  const parsed = parseOrder(input);\n  if (!parsed.ok) throw new Error(`Invalid order: ${parsed.error}`);\n}\n\n// ---- Type tests (do not edit) ----\nfunction typeTests(x: unknown, y: unknown) {\n  if (isRecord(x)) {\n    type T1 = Expect<Equal<typeof x, Record<string, unknown>>>;\n  }\n  if (isOrderStatus(x)) {\n    type T2 = Expect<Equal<typeof x, OrderStatus>>;\n  }\n  assertIsOrder(y);\n  type T3 = Expect<Equal<typeof y, Order>>;\n}\n\nconst fromServer: unknown = JSON.parse('{\"id\":1042,\"status\":\"refunded\",\"totalCents\":18900,\"couponCode\":null}');\nconst parsed = parseOrder(fromServer);\nconsole.log(parsed.ok ? parsed.value : parsed.error);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "accepts-valid",
+      "test": "const r = parseOrder({ id: 1042, status: 'shipped', totalCents: 18900, couponCode: 'LOYAL5' }); return r.ok === true && r.value.status === 'shipped' && r.value.couponCode === 'LOYAL5';"
+    },
+    {
+      "id": "rejects-status",
+      "test": "const r = parseOrder({ id: 1042, status: 'refunded', totalCents: 18900, couponCode: null }); return r.ok === false && r.error.includes('status');"
+    },
+    {
+      "id": "rejects-types",
+      "test": "const a = parseOrder({ id: 1042, status: 'shipped', totalCents: '189.00', couponCode: null }); const b = parseOrder({ id: 1042, status: 'shipped', totalCents: 1, couponCode: 5 }); const c = parseOrder([1, 2]); const d = parseOrder(null); return !a.ok && a.error.includes('totalCents') && !b.ok && b.error.includes('couponCode') && !c.ok && !d.ok;"
+    },
+    {
+      "id": "only-known-fields",
+      "test": "const r = parseOrder({ id: 1042, status: 'shipped', totalCents: 1, couponCode: null, cardNumber: '4242' }); return r.ok === true && !('cardNumber' in r.value);"
+    },
+    {
+      "id": "asserts",
+      "test": "try { assertIsOrder({ id: 'x' }); return false; } catch (e) { return String(e.message).includes('Invalid order'); }"
+    }
+  ]
+}

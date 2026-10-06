@@ -1,0 +1,41 @@
+{
+  "title": "Swift Essentials for iOS",
+  "tagline": "Learn Swift 6 and SwiftUI by building a real expense tracker, from your first constant to TestFlight.",
+  "description": [
+    "Swift rewards you for being precise. Its type system, optionals and Swift 6 concurrency checks stop whole classes of crashes before your app ever runs, but only if you understand what the compiler is telling you. This course teaches the language the way working iOS engineers use it: values first, safety always, and no magic you can't explain.",
+    "You build Pocket Budget, a small expense tracker, one lesson at a time. You model expenses with structs and enums, build screens with SwiftUI and the Observation framework, fetch exchange rates with async/await, store data with SwiftData, write tests with Swift Testing, and send a build to testers through TestFlight."
+  ],
+  "audience": "Career switchers and web developers who want to build native iPhone apps with modern Swift and SwiftUI.",
+  "prerequisites": "Basic programming in any language (variables, functions, loops) and a Mac with Xcode installed.",
+  "learnItems": [
+    "Write safe Swift with optionals, guard and exhaustive switch",
+    "Choose between structs, classes and enums for your data",
+    "Build SwiftUI screens with state, lists, navigation and forms",
+    "Fetch and decode JSON with async/await and Codable",
+    "Persist data with SwiftData and test it with Swift Testing",
+    "Read Swift 6 concurrency errors and fix data races"
+  ],
+  "sections": {
+    "s-sw-1": "Swift the Language",
+    "s-sw-2": "Modelling with Types",
+    "s-sw-3": "Building Screens with SwiftUI",
+    "s-sw-4": "Shipping a Real App"
+  },
+  "lessons": {
+    "l-sw-1-1": "Constants, Variables and Types",
+    "l-sw-1-2": "Optionals Without Crashes",
+    "l-sw-1-3": "Collections and Control Flow",
+    "l-sw-1-4": "Functions and Closures",
+    "l-sw-2-1": "Structs, Classes and Value Semantics",
+    "l-sw-2-2": "Enums with Associated Values",
+    "l-sw-2-3": "Protocols and Extensions",
+    "l-sw-2-4": "Error Handling and Typed Throws",
+    "l-sw-3-1": "Views and Modifiers",
+    "l-sw-3-2": "State, Bindings and @Observable",
+    "l-sw-3-3": "Lists, Navigation and Forms",
+    "l-sw-4-1": "async/await and Swift 6 Concurrency",
+    "l-sw-4-2": "Networking with URLSession and Codable",
+    "l-sw-4-3": "Saving Data with SwiftData",
+    "l-sw-4-4": "Testing and TestFlight"
+  }
+}

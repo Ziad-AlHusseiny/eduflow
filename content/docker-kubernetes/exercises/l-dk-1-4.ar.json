@@ -1,0 +1,11 @@
+{
+  "title": "أوامر الـ containers اليومية",
+  "prompt": "املأ الفراغات لتشغيل notes-api في الخلفية على المنفذ **8080** في المضيف، ومتابعة سجلاته، وفتح shell داخله، وإيقافه مع مهلة سماح مدّتها 30 ثانية.",
+  "hints": [
+    "خيار واحد يشغّل الـ container منفصلًا (detached)؛ ومنفذ المضيف هو الجهة اليسرى من `-p`.",
+    "الأوامر الفرعية هي التي تستخدمها لقراءة المخرجات ولتشغيل عملية إضافية داخل container يعمل.",
+    "يأخذ `docker stop` خيارًا لعدد الثواني التي ينتظرها قبل SIGKILL."
+  ],
+  "explanation": "```bash\ndocker run -d --name notes -p 8080:3000 notes-api:dev\ndocker logs -f notes\ndocker exec -it notes sh\ndocker stop -t 30 notes\n```\nالخيار `-d` يشغّل الـ container منفصلًا عن الطرفية. وفي `-p 8080:3000` تأتي جهة المضيف أولًا. والأمر `logs -f` يتابع stdout وstderr. و`exec -it` يشغّل عملية تفاعلية داخل الـ container الذي يعمل. أما `stop -t 30` (صيغته الطويلة `--timeout`) فينتظر 30 ثانية بعد SIGTERM قبل إرسال SIGKILL، وهذا يعطي التطبيق الذي يفرّغ طلباته وقتًا لإنهاء ما هو جارٍ.",
+  "checks": {}
+}

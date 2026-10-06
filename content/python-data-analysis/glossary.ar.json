@@ -1,0 +1,182 @@
+[
+  {
+    "id": "variable",
+    "term": "المتغيّر (variable)",
+    "definition": "اسم يُربط بقيمة باستخدام `=`، مثل `unit_price = 39`، كي يمكن استخدام القيمة لاحقًا؛ يُحسب الطرف الأيمن أولًا، ثم يشير الاسم إلى النتيجة.",
+    "lesson": "l-pda-1-2"
+  },
+  {
+    "id": "dtype",
+    "term": "dtype",
+    "definition": "نوع البيانات المشترك بين كل القيم في عمود pandas، مثل `int64` أو `float64` أو `object` (نص) أو `bool` أو `datetime64`؛ والنوع الخاطئ وراء كثير من أخطاء البيانات.",
+    "lesson": "l-pda-2-1"
+  },
+  {
+    "id": "dictionary",
+    "term": "القاموس (dictionary)",
+    "definition": "حاوية في Python من أزواج المفتاح والقيمة، مثل اسم منتج مربوط بسعره؛ تبحث عن القيم بالمفتاح باستخدام `d[key]` أو `d.get(key, default)`.",
+    "lesson": "l-pda-1-3"
+  },
+  {
+    "id": "list-comprehension",
+    "term": "List comprehension",
+    "definition": "طريقة لبناء قائمة في سطر واحد، `[expr for x in items if condition]`، تطبّق تعبيرًا على كل عنصر، وتصفّي اختياريًا العناصر التي يُحتفظ بها.",
+    "lesson": "l-pda-1-4"
+  },
+  {
+    "id": "f-string",
+    "term": "f-string",
+    "definition": "نص يسبقه الحرف `f` ويضع القيم بين أقواس معقوفة مع تنسيق اختياري، مثل `f\"{revenue:,.2f}\"` لتعطي 1,234.50 أو `f\"{share:.1%}\"` لتعطي 12.5%.",
+    "lesson": "l-pda-1-5"
+  },
+  {
+    "id": "traceback",
+    "term": "Traceback",
+    "definition": "التقرير الذي تطبعه Python حين يوقف استثناءٌ البرنامج؛ اقرأه من الأسفل، حيث يسمّي السطر الأخير نوع الخطأ ورسالته، ثم اصعد إلى السطر الذي فشل.",
+    "lesson": "l-pda-1-5"
+  },
+  {
+    "id": "series",
+    "term": "Series",
+    "definition": "مصفوفة أحادية البعد من القيم في pandas مع فهرس من التسميات؛ والعمود الواحد في الـ DataFrame هو Series.",
+    "lesson": "l-pda-2-1"
+  },
+  {
+    "id": "dataframe",
+    "term": "DataFrame",
+    "definition": "جدول pandas: أعمدة من نوع Series تتشارك فهرس صفوف واحدًا، مع methods لتحميل البيانات واختيارها وتصفيتها وتجميعها ودمجها وإعادة تشكيلها.",
+    "lesson": "l-pda-2-1"
+  },
+  {
+    "id": "index-alignment",
+    "term": "محاذاة الفهرس (index alignment)",
+    "definition": "قاعدة pandas التي تجعل العمليات بين Series أو DataFrame وآخر تطابق القيم بحسب تسمية الفهرس لا بحسب الموقع؛ والتسميات الموجودة في طرف واحد فقط تنتج NaN.",
+    "lesson": "l-pda-2-1"
+  },
+  {
+    "id": "loc-iloc",
+    "term": "loc و iloc",
+    "definition": "أداتا الاختيار الدقيقتان في pandas: `.loc[rows, columns]` تختار بالتسمية وتشمل نهاية الشريحة، بينما `.iloc` تختار بالموقع العددي وتستبعدها.",
+    "lesson": "l-pda-2-3"
+  },
+  {
+    "id": "boolean-mask",
+    "term": "القناع المنطقي (boolean mask)",
+    "definition": "Series من قيم True و False، تأتي عادةً من مقارنة، وتُستخدم لاختيار الصفوف بـ `df[mask]`؛ مجموعها يعدّ المطابقات ومتوسطها يعطي حصتها.",
+    "lesson": "l-pda-2-4"
+  },
+  {
+    "id": "chained-assignment",
+    "term": "الإسناد المتسلسل (chained assignment)",
+    "definition": "الإسناد عبر عمليتي اختيار، مثل `df[\"col\"][mask] = value`؛ قد يغيّر نسخة مؤقتة بدلًا من الـ DataFrame، فاستخدم بدلًا منه استدعاءً واحدًا لـ `.loc`.",
+    "lesson": "l-pda-2-5"
+  },
+  {
+    "id": "copy-on-write",
+    "term": "Copy-on-Write",
+    "definition": "سلوك في pandas، افتراضي منذ الإصدار 3.0 واختياري في 2.x، تتصرّف فيه كل عملية اختيار كنسخة، فتكون الطريقة الوحيدة لتغيير DataFrame هي الإسناد إليه مباشرة.",
+    "lesson": "l-pda-2-5"
+  },
+  {
+    "id": "nan",
+    "term": "NaN",
+    "definition": "اختصار لعبارة \"ليس رقمًا\" (not a number): العلامة الكلاسيكية في pandas للقيمة المفقودة في الأعمدة العشرية؛ لا تساوي أي شيء، فافحص وجودها بـ `isna()`.",
+    "lesson": "l-pda-3-1"
+  },
+  {
+    "id": "nullable-dtype",
+    "term": "النوع القابل للقيم المفقودة (nullable dtype)",
+    "definition": "نوع في pandas مثل `Int64` أو `Float64` أو `boolean` أو `string` يخزّن القيم المفقودة على هيئة `pd.NA`، فتبقى الأعمدة الصحيحة أعدادًا صحيحة حتى مع وجود فجوات.",
+    "lesson": "l-pda-3-1"
+  },
+  {
+    "id": "str-accessor",
+    "term": "الـ accessor المسمّى str",
+    "definition": "الخاصية `.str` في Series نصية، وتطبّق methods النصوص مثل `strip` و`title` و`replace` و`split` و`contains` على كل القيم دفعة واحدة.",
+    "lesson": "l-pda-3-2"
+  },
+  {
+    "id": "regular-expression",
+    "term": "التعبير النمطي (regular expression)",
+    "definition": "لغة أنماط للنصوص تحمل فيها حروف مثل `$` و`.` معاني خاصة؛ مرّر `regex=False` لمعاملتها كحروف عادية.",
+    "lesson": "l-pda-3-3"
+  },
+  {
+    "id": "ambiguous-date",
+    "term": "التاريخ الملتبس (ambiguous date)",
+    "definition": "نص تاريخ مثل 05/08/2025 يكون صالحًا وفق قراءة اليوم أولًا وقراءة الشهر أولًا معًا؛ ووحدها المعلومات الخارجية تحسم أيّهما الصحيح.",
+    "lesson": "l-pda-3-4"
+  },
+  {
+    "id": "assertion",
+    "term": "Assertion",
+    "definition": "جملة `assert condition, message` لا تفعل شيئًا حين يتحقّق الشرط، وتوقف البرنامج بالرسالة حين يفشل؛ تُستخدم لتحديد ما يجب أن تبدو عليه البيانات النظيفة.",
+    "lesson": "l-pda-3-5"
+  },
+  {
+    "id": "groupby",
+    "term": "التجميع (groupby)",
+    "definition": "عملية pandas التي تقسم الصفوف إلى مجموعات بحسب مفتاح، وتطبّق حسابًا على كل مجموعة، وتضمّ النتائج في جدول واحد (split-apply-combine).",
+    "lesson": "l-pda-4-1"
+  },
+  {
+    "id": "named-aggregation",
+    "term": "الحسابات التجميعية المسمّاة (named aggregation)",
+    "definition": "صيغة من `agg` تسمّي فيها كل كلمة مفتاحية عمودًا ناتجًا، وقيمتها زوج (عمود، دالة)، مثل `revenue=(\"revenue\", \"sum\")`.",
+    "lesson": "l-pda-4-1"
+  },
+  {
+    "id": "merge",
+    "term": "الدمج (merge)",
+    "definition": "method في pandas تدمج جدولين جنبًا إلى جنب بمطابقة قيم المفتاح؛ و`how` تحدّد نوع الربط، و`validate` تتحقّق من علاقة المفاتيح المتوقّعة.",
+    "lesson": "l-pda-4-2"
+  },
+  {
+    "id": "join-type",
+    "term": "نوع الربط (join type)",
+    "definition": "القاعدة الخاصة بالمفاتيح غير المطابقة في عملية الدمج: inner يحتفظ بالمفاتيح الموجودة في الطرفين، و left بكل صف أيسر، و right بكل صف أيمن، و outer بكل المفاتيح.",
+    "lesson": "l-pda-4-2"
+  },
+  {
+    "id": "long-wide",
+    "term": "البيانات الطويلة والعريضة (long and wide)",
+    "definition": "شكلان للبيانات نفسها: الطويلة فيها صف لكل ملاحظة، والعريضة تنشر متغيّرًا واحدًا عبر الأعمدة؛ تنقل `pivot_table` من الطويل إلى العريض، وتعيد `melt` العكس.",
+    "lesson": "l-pda-4-3"
+  },
+  {
+    "id": "resample",
+    "term": "resample",
+    "definition": "method في pandas تجمّع الصفوف ذات فهرس التواريخ في فترات منتظمة مثل الأيام أو الأسابيع (`W`) أو نهايات الأشهر (`ME`) أو نهايات الأرباع (`QE`)، بما في ذلك الفترات الفارغة.",
+    "lesson": "l-pda-4-4"
+  },
+  {
+    "id": "year-over-year",
+    "term": "النمو السنوي (year-over-year)",
+    "definition": "التغيّر مقارنةً بالفترة نفسها قبل سنة، مثل `pct_change(4)` على البيانات الفصلية؛ وهو يزيل الأنماط الموسمية من المقارنة.",
+    "lesson": "l-pda-4-4"
+  },
+  {
+    "id": "qcut",
+    "term": "qcut",
+    "definition": "دالة في pandas تقسم القيم إلى مجموعات متساوية الحجم تقريبًا عند المئينات، مثل الرُّبيعات، بخلاف `cut` التي تستخدم حدودًا تختارها أنت.",
+    "lesson": "l-pda-4-5"
+  },
+  {
+    "id": "median",
+    "term": "الوسيط (median)",
+    "definition": "القيمة الوسطى في عمود مرتّب، ونصف القيم أقل منها؛ وفي البيانات الملتوية مثل قيم الطلبات تصف القيمة النموذجية أفضل من المتوسط.",
+    "lesson": "l-pda-5-1"
+  },
+  {
+    "id": "correlation",
+    "term": "الارتباط (correlation)",
+    "definition": "رقم بين ‎-1 و1 يقيس مدى قوة تحرّك عمودين رقميين معًا في نمط خطي؛ وهو يدلّ على علاقة مصاحبة، لا على سبب.",
+    "lesson": "l-pda-5-1"
+  },
+  {
+    "id": "reproducible-analysis",
+    "term": "التحليل القابل لإعادة الإنتاج (reproducible analysis)",
+    "definition": "تحليل يستطيع أيّ شخص إعادة تشغيله من الملفات الخام، من الأعلى إلى الأسفل، دون خطوات يدوية، ويحصل على النتائج نفسها، باستخدام المُعامِلات والدوال والـ assertions.",
+    "lesson": "l-pda-5-4"
+  }
+]

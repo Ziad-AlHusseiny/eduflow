@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.inspection import permutation_importance\nfrom sklearn.model_selection import train_test_split\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\",\n            \"avg_satisfaction\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\n# 1. Gradient boosting on all nine features (missing values included):\n#    max_depth=3, learning_rate=0.05, max_iter=200, random_state=42\nbooster = HistGradientBoostingClassifier(random_state=42)\nbooster.fit(X_train.drop(columns=\"avg_satisfaction\"), y_train)\n\n# 2. Test accuracy\ntest_acc = None\n\n# 3. Permutation importance on the TEST set (n_repeats=5, random_state=0),\n#    then the feature names sorted from most to least important\nranking = []\n",
+  "solution": "import pandas as pd\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.inspection import permutation_importance\nfrom sklearn.model_selection import train_test_split\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\",\n            \"avg_satisfaction\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\nbooster = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.05, max_iter=200,\n                                         random_state=42)\nbooster.fit(X_train, y_train)\n\ntest_acc = booster.score(X_test, y_test)\n\nresult = permutation_importance(booster, X_test, y_test, n_repeats=5, random_state=0)\nranking = pd.Series(result.importances_mean, index=features).sort_values(ascending=False).index.tolist()\nprint(test_acc, ranking[:3])\n",
+  "checks": [
+    {
+      "id": "nine-features",
+      "test": "booster.n_features_in_ == 9"
+    },
+    {
+      "id": "settings",
+      "test": "booster.max_depth == 3 and booster.learning_rate == 0.05 and booster.max_iter == 200"
+    },
+    {
+      "id": "accuracy",
+      "test": "test_acc is not None and 0.74 <= float(test_acc) <= 0.82 and abs(float(test_acc) - booster.score(X_test, y_test)) < 1e-9"
+    },
+    {
+      "id": "ranking",
+      "test": "len(ranking) == 9 and set(ranking) == set(features) and ranking[0] == 'days_since_last_order'"
+    }
+  ]
+}

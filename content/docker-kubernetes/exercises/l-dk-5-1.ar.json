@@ -1,0 +1,28 @@
+{
+  "title": "حلقة إعادة التشغيل مع قواعد البيانات الكبيرة",
+  "prompt": "بعد أن كبرت قاعدة بيانات أحد العملاء، صار تسخين الـ cache عند بدء notes-api يستغرق حتى 90 ثانية. الـ liveness probe على `/healthz` يستخدم القيم الافتراضية (`periodSeconds: 10` و`failureThreshold: 3`)، فتُقتل الـ Pods عند نحو 30 ثانية ولا تنتهي من البدء أبدًا. معالج `/healthz` لا يُسجَّل إلا بعد اكتمال التسخين. أي تغيير هو الحل الأفضل؟",
+  "hints": [
+    "تريد صبرًا سخيًّا أثناء البدء واكتشافًا سريعًا للتعليق بعده. أي probe يفصل بين هاتين المرحلتين؟",
+    "احسب: كم يجب أن يكون `periodSeconds × failureThreshold`؟"
+  ],
+  "explanation": "الـ startup probe يؤجّل الـ liveness والـ readiness حتى ينجح مرة واحدة. مع `periodSeconds: 5` و`failureThreshold: 24` يحصل notes-api على ما يصل إلى 120 ثانية للتسخين، ويُكتشف أنه بدأ خلال 5 ثوانٍ من انتهائه، ومن بعدها يعمل الـ liveness بوتيرته العادية كل 10 ثوانٍ:\n\n```yaml\nstartupProbe:\n  httpGet:\n    path: /healthz\n    port: http\n  periodSeconds: 5\n  failureThreshold: 24\n```\nأما `initialDelaySeconds` فسيعمل اليوم، لكنه يؤخّر كل بدء بمقدار أسوأ حالة وينكسر مجددًا حين يصل التسخين إلى 95 ثانية.",
+  "options": {
+    "startup": {
+      "text": "أضف `startupProbe` على `/healthz` مع `periodSeconds: 5` و`failureThreshold: 24`.",
+      "why": "صحيح. ما يصل إلى 120 ثانية للبدء، مع فحص كل 5 ثوانٍ، ثم يتولّى الـ liveness دون تغيير."
+    },
+    "initial-delay": {
+      "text": "اضبط `initialDelaySeconds: 90` على الـ liveness probe.",
+      "why": "يؤخّر الـ liveness بـ 90 ثانية في كل بدء، حتى السريع منها، ويفشل مجددًا حالما يتجاوز التسخين 90 ثانية."
+    },
+    "no-liveness": {
+      "text": "احذف الـ liveness probe؛ الـ readiness يكفي.",
+      "why": "الـ readiness لا يعيد تشغيل أي شيء أبدًا، فستبقى العملية العالقة في deadlock مكانها إلى الأبد، خارج التناوب لكن دون إصلاح."
+    },
+    "liveness-readyz": {
+      "text": "وجّه الـ liveness probe إلى `/readyz` بدلًا من ذلك.",
+      "why": "هذا لا يضيف وقتًا للبدء، ويربط إعادات التشغيل بصحة قاعدة البيانات، فيحوّل الأعطال العابرة في قاعدة البيانات إلى انقطاعات."
+    }
+  },
+  "checks": {}
+}

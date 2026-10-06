@@ -1,0 +1,16 @@
+{
+  "title": "ارفع الفلتر",
+  "prompt": "يظهر زر الفلترة النشط مميّزًا بشكل صحيح، لكن القائمة لا تتغيّر أبدًا، لأن `FilterBar` يحتفظ بالفلتر لنفسه.\n\nارفع state الفلتر إلى `App`. مرّر القيمة الحالية وطريقة لتغييرها إلى `FilterBar` (يجب ألّا يكون له state خاص به)، وأعطِ `MovieList` الأفلام المطابقة فقط:\n\n- **All**: كل الأفلام\n- **To watch**: قيمة `watched` هي `false`\n- **Watched**: قيمة `watched` هي `true`\n\nأبقِ `aria-pressed` على الأزرار تعمل.",
+  "hints": [
+    "انقل `const [filter, setFilter] = useState('all')` من FilterBar إلى App.",
+    "امنح FilterBar اثنين من الـ props، مثل `value` و`onChange`، واستخدمهما مكان الـ state القديم.",
+    "في App، اشتقّ القائمة: `MOVIES.filter((m) => filter === 'all' ? true : filter === 'watched' ? m.watched : !m.watched)`."
+  ],
+  "explanation": "الـ state خاص بالـ component الذي يعلن عنه، فلا يستطيع أخوه قراءته أبدًا. نقل `filter` إلى `App`، أقرب أب مشترك، يمنحه مالكًا واحدًا. ويصبح `FilterBar` component متحكَّمًا به يعرض `value` ويبلّغ عن النقرات عبر `onChange`، ويشتقّ `App` الأفلام الظاهرة من `MOVIES` و`filter` في كل render بدل تخزين نسخة مصفّاة.",
+  "checks": {
+    "starts-all": "يبدأ على All ويعرض الأفلام الثلاثة",
+    "to-watch": "يعرض To watch الفيلمين Past Lives وDune: Part Two، ويكون مضغوطًا",
+    "watched": "يعرض Watched فيلم Arrival وحده، ويكون مضغوطًا",
+    "back-to-all": "يعرض All كل الأفلام مجددًا"
+  }
+}

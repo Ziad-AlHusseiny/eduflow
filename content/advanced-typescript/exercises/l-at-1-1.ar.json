@@ -1,0 +1,15 @@
+{
+  "title": "ضيّق نوع حالة الطلب",
+  "prompt": "لطلبات Cartwheel خمس حالات بالضبط: `processing` و`shipped` و`delivered` و`cancelled` و`returned`. استبدل `string` في `OrderStatus` بـ union من هذه القيم الحرفية الخمس حتى تنجح اختبارات الأنواع. وحين يضيق النوع، يشير الـ compiler إلى فجوة في `statusLabels`: املأها حتى تُعيد `statusLabel('returned')` القيمة `'Returned'`.",
+  "hints": [
+    "الـ union من القيم النصية الحرفية يبدو هكذا: `'a' | 'b' | 'c'`.",
+    "بعد تغيير `OrderStatus`، اقرأ الخطأ الجديد على `statusLabels`: صار `Record<OrderStatus, string>` يتطلّب مفتاحًا لكل حالة.",
+    "أضف `returned: 'Returned'` إلى الكائن."
+  ],
+  "explanation": "حين يكون `OrderStatus` من نوع `string`، يعني `Record<OrderStatus, string>` \"أي مفاتيح نصية\"، فتكون الحالة الناقصة غير مرئية، والخطأ الإملائي `'canceled'` وسيطًا صالحًا. أما حين يصير union من خمس قيم حرفية، فيجب أن يحتوي الـ record هذه المفاتيح الخمسة بالضبط، وتُرفض `canCancel('canceled')`، وهذا ما يؤكّده سطر `@ts-expect-error`. لم يتغيّر شيء وقت التشغيل سوى التسمية المضافة: الأنواع وحدها وجدت المشكلتين.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ (بما فيها اختبارات الأنواع)",
+    "returned-label": "`statusLabel('returned')` تُعيد `'Returned'`",
+    "can-cancel": "`canCancel` ما زالت لا تسمح بإلغاء إلا الطلبات في حالة `processing`"
+  }
+}

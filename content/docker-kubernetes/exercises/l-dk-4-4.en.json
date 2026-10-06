@@ -1,0 +1,11 @@
+{
+  "title": "Namespace, Secret, restart",
+  "prompt": "Fill in the blanks to create the `notes` namespace and make it your default, store the database password in a Secret, decode it to prove it's only base64, and restart notes-api so it picks up changed environment variables.",
+  "hints": [
+    "The kind of object you're creating first is also the name of the `set-context` flag.",
+    "The Secret type for arbitrary key-value pairs is the opposite of \"specific\".",
+    "`base64` decodes with a short flag; `kubectl rollout` has a subcommand that replaces Pods without changing the template by hand."
+  ],
+  "explanation": "```bash\nkubectl create namespace notes\nkubectl config set-context --current --namespace=notes\nkubectl create secret generic notes-db --from-literal=POSTGRES_PASSWORD=dev-only-change-me\nkubectl get secret notes-db -o jsonpath='{.data.POSTGRES_PASSWORD}' | base64 -d\nkubectl rollout restart deployment/notes-api\n```\n`generic` is the Secret type for arbitrary keys (others include `tls` and `docker-registry`). The decode step shows why Secret manifests must never be committed. `rollout restart` replaces Pods gradually, and the new ones read the current ConfigMap and Secret values at start.",
+  "checks": {}
+}

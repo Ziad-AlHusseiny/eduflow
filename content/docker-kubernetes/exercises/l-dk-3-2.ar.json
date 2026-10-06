@@ -1,0 +1,33 @@
+{
+  "title": "اختر الـ mount المناسب",
+  "prompt": "تراجع خيارات التخزين في بيئة Compose الخاصة بـ notes-api. اختر **كل** ربط صحيح بين الحاجة ونوع الـ mount.",
+  "hints": [
+    "اسأل سؤالين عن كل واحد: هل يجب أن تبقى البيانات بعد الـ container، وهل تأتي من مستودعك؟",
+    "الـ named volume لا يعكس أبدًا التعديلات التي تجريها في محرّرك؛ والـ tmpfs لا يصمد أبدًا بعد الإيقاف.",
+    "ثلاثة من الروابط صحيحة."
+  ],
+  "explanation": "بيانات Postgres مكانها named volume: فهو يصمد بعد `down` ويتجنّب مشاكل الصلاحيات والأداء على المضيف. سكربتات البيانات الأولية تعيش في المستودع، لذا فإن bind mount للقراءة فقط إلى `/docker-entrypoint-initdb.d` هو الصحيح. والمساحة المؤقتة التي يُتخلَّص منها هي بالضبط ما وُجد الـ tmpfs من أجله. أما named volume لـ `src/` فسيجمّد نسخة من كودك لا ترى تعديلاتك أبدًا، والـ tmpfs لبيانات تريد الاحتفاظ بها يضيّعها مع كل إيقاف.",
+  "options": {
+    "pg-named": {
+      "text": "بيانات Postgres التي يجب أن تصمد بعد إعادة التشغيل ← named volume ‏`pgdata:/var/lib/postgresql/data`",
+      "why": "صحيح. الـ named volumes تعيش أطول من الـ containers ويديرها Docker."
+    },
+    "init-bind": {
+      "text": "سكربتات مخطّط SQL من المستودع ← bind mount ‏`./db/init:/docker-entrypoint-initdb.d:ro`",
+      "why": "صحيح. الملفات تعيش في مستودعك، والـ container يحتاج إلى قراءتها فقط."
+    },
+    "src-volume": {
+      "text": "تعديل `src/` مباشرة أثناء التطوير ← named volume ‏`src:/app/src`",
+      "why": "الـ named volume يُملأ مرة واحدة ثم يصبح مستقلًا عن مجلدك على المضيف، فلا تصل التعديلات إلى الـ container أبدًا. استخدم Compose watch أو bind mount."
+    },
+    "pg-tmpfs": {
+      "text": "بيانات Postgres التي تريد الاحتفاظ بها بين أيام العمل ← `tmpfs: /var/lib/postgresql/data`",
+      "why": "الـ tmpfs يعيش في الذاكرة؛ وإيقاف الـ container يمحوه."
+    },
+    "tmpfs-scratch": {
+      "text": "ملفات مؤقتة لتشغيل اختبار يجب أن تختفي بعده ← `tmpfs: /tmp/scratch`",
+      "why": "صحيح. سريع، ولا يُكتب على القرص أبدًا، ويختفي حين يتوقّف الـ container."
+    }
+  },
+  "checks": {}
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useState } from 'react';\n\nexport default function App() {\n  let watched = false;\n  const [rating, setRating] = useState(0);\n\n  function toggleWatched() {\n    watched = !watched;\n  }\n\n  function addOne() {\n    setRating(rating + 1);\n  }\n\n  function addTwo() {\n    setRating(rating + 1);\n    setRating(rating + 1);\n  }\n\n  return (\n    <article>\n      <h2>Arrival</h2>\n      <button id=\"toggle\" aria-pressed={watched} onClick={toggleWatched}>\n        {watched ? 'Watched' : 'Mark as watched'}\n      </button>\n      <p id=\"rating\">Rating: {rating}/5</p>\n      <button id=\"plus\" onClick={addOne}>+1</button>\n      <button id=\"plus-two\" onClick={addTwo}>+2</button>\n    </article>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useState } from 'react';\n\nexport default function App() {\n  const [watched, setWatched] = useState(false);\n  const [rating, setRating] = useState(0);\n\n  function toggleWatched() {\n    setWatched(!watched);\n  }\n\n  function addOne() {\n    setRating((r) => Math.min(r + 1, 5));\n  }\n\n  function addTwo() {\n    addOne();\n    addOne();\n  }\n\n  return (\n    <article>\n      <h2>Arrival</h2>\n      <button id=\"toggle\" aria-pressed={watched} onClick={toggleWatched}>\n        {watched ? 'Watched' : 'Mark as watched'}\n      </button>\n      <p id=\"rating\">Rating: {rating}/5</p>\n      <button id=\"plus\" onClick={addOne}>+1</button>\n      <button id=\"plus-two\" onClick={addTwo}>+2</button>\n    </article>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "toggle-on",
+      "test": "await click('#toggle'); return text('#toggle') === 'Watched' && $('#toggle').getAttribute('aria-pressed') === 'true';"
+    },
+    {
+      "id": "toggle-off",
+      "test": "await click('#toggle'); return text('#toggle') === 'Mark as watched' && $('#toggle').getAttribute('aria-pressed') === 'false';"
+    },
+    {
+      "id": "plus-two",
+      "test": "await click('#plus-two'); return text('#rating') === 'Rating: 2/5';"
+    },
+    {
+      "id": "max-five",
+      "test": "for (let i = 0; i < 5; i++) await click('#plus'); return text('#rating') === 'Rating: 5/5';"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Make the New habit sheet survive any screen",
+  "prompt": "QA filed three bugs against the New habit sheet: on a 320 px phone the chips run off the edge (below), the Reminder toggle hugs its label instead of sitting at the right edge, and on an iPad the Save habit button stretches to 900 px wide.\n\n:::figure The New habit sheet on a 320 px phone\n<svg viewBox=\"0 0 420 380\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">A narrow bottom sheet. The name field fits. The four frequency chips run past the right edge of the sheet. The Reminder label is followed immediately by its toggle instead of the toggle sitting at the right edge. The Save habit button fits.</title>\n  <rect class=\"d-box\" x=\"20\" y=\"20\" width=\"300\" height=\"340\" rx=\"20\"/>\n  <text class=\"d-label-strong\" x=\"40\" y=\"56\">New habit</text>\n  <rect class=\"d-box\" x=\"40\" y=\"76\" width=\"260\" height=\"40\" rx=\"8\"/>\n  <text class=\"d-label-muted\" x=\"52\" y=\"101\">Habit name</text>\n  <rect class=\"d-box-accent\" x=\"40\" y=\"136\" width=\"64\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"72\" y=\"156\" text-anchor=\"middle\">Daily</text>\n  <rect class=\"d-box-accent\" x=\"112\" y=\"136\" width=\"96\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"160\" y=\"156\" text-anchor=\"middle\">Weekdays</text>\n  <rect class=\"d-box-accent\" x=\"216\" y=\"136\" width=\"96\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"264\" y=\"156\" text-anchor=\"middle\">Weekends</text>\n  <rect class=\"d-box-warn\" x=\"320\" y=\"136\" width=\"84\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"362\" y=\"156\" text-anchor=\"middle\">Custom</text>\n  <text class=\"d-label\" x=\"40\" y=\"210\">Reminder</text>\n  <rect class=\"d-box-primary\" x=\"120\" y=\"194\" width=\"44\" height=\"24\" rx=\"12\"/>\n  <rect class=\"d-box-primary\" x=\"40\" y=\"290\" width=\"260\" height=\"48\" rx=\"12\"/>\n  <text class=\"d-label-strong\" x=\"170\" y=\"320\" text-anchor=\"middle\">Save habit</text>\n</svg>\n:::\n\nThe sheet is a vertical auto layout frame set to Fill container width. Select **every** change that fixes one of these bugs properly.",
+  "hints": [
+    "Match each bug to one sizing tool: wrap, min/max, or Fill container.",
+    "For the toggle, the leftover space has to go somewhere. Which child should absorb it?",
+    "Wrap the chips row, cap the button with a max width, and make the label fill."
+  ],
+  "explanation": "Turning on **wrap** for the chips row lets \"Custom\" flow onto a second line instead of overflowing. A **max width** on the Save habit button (Steady uses 480) keeps Fill container from producing a 900 px bar on tablets. Setting the **Reminder label to Fill container** makes it absorb the leftover width, which pushes the toggle to the row's right padding on every screen. Making the sheet hug its contents would shrink it to its widest child instead of filling the screen; filling every chip stretches them into uneven pills; and nudging the toggle out of the flow with Ignore auto layout fixes one width and breaks the rest.",
+  "options": {
+    "wrap-chips": {
+      "text": "Turn on wrap for the frequency chips row.",
+      "why": "Correct. Chips that do not fit flow onto a new line, which is exactly what wrap is for."
+    },
+    "max-button": {
+      "text": "Give the Save habit button a max width, such as 480.",
+      "why": "Correct. The button keeps Fill container on phones but stops growing on large screens."
+    },
+    "fill-label": {
+      "text": "Set the Reminder label's width to Fill container.",
+      "why": "Correct. The label takes the spare width, so the toggle lands at the right edge at every size."
+    },
+    "hug-sheet": {
+      "text": "Set the sheet's width to Hug contents.",
+      "why": "A hugging sheet sizes to its widest child, so it would no longer span the screen and the bugs would move rather than disappear."
+    },
+    "fill-chips": {
+      "text": "Set every chip to Fill container.",
+      "why": "The chips would stretch to share the row width equally and still not fit on a 320 px screen. Chips should hug their labels."
+    },
+    "ignore-toggle": {
+      "text": "Turn on Ignore auto layout for the toggle and drag it to the right edge.",
+      "why": "You could pin it with constraints, but taking it out of the flow means the label can now run under it. Fill on the label is simpler and robust."
+    }
+  }
+}

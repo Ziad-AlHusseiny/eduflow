@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "// ---- Vendor snippet (do not edit) ----\n// In the real app this arrives in a <script> tag; here we simulate it.\nconst vendorQueue: string[] = [];\n(globalThis as Record<string, unknown>).cartwheelAnalytics = {\n  sent: vendorQueue,\n  track(event: string, props: Record<string, string | number> = {}) {\n    vendorQueue.push(`${event} ${JSON.stringify(props)}`);\n  },\n};\n// ---------------------------------------\n\ntype AnalyticsEvent = 'checkout_started' | 'order_placed' | 'payment_failed';\n\n// \"Library\" config interface (pretend it lives in a package you cannot edit).\ninterface CheckoutConfig {\n  currency: string;\n}\n\n// Your declarations go here.\n\ntype Order = { id: number; status: 'processing' | 'shipped' | 'delivered'; totalCents: number };\n\nconst orders: Order[] = [\n  { id: 1041, status: 'shipped', totalCents: 4500 },\n  { id: 1042, status: 'shipped', totalCents: 18900 },\n  { id: 1043, status: 'processing', totalCents: 1200 },\n];\n\nfunction latestShipped(list: Order[]): Order | undefined {\n  return list.findLast((o) => o.status === 'shipped');\n}\n\nfunction placeOrder(order: Order): void {\n  cartwheelAnalytics.track('order_placed', { orderId: order.id, totalCents: order.totalCents });\n}\n\nconst config: CheckoutConfig = { currency: 'EGP', giftWrap: true };\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<keyof CheckoutConfig, 'currency' | 'giftWrap'>>;\ntype T2 = Expect<Equal<ReturnType<typeof latestShipped>, Order | undefined>>;\n\nfunction typeTests() {\n  // @ts-expect-error: not a known analytics event\n  cartwheelAnalytics.track('ordr_placed');\n  // @ts-expect-error: property values must be strings or numbers\n  cartwheelAnalytics.track('checkout_started', { express: true });\n}\n\nplaceOrder(latestShipped(orders)!);\nconsole.log(latestShipped(orders)?.id, cartwheelAnalytics.sent, config);\n"
+  },
+  "solution": {
+    "ts": "// ---- Vendor snippet (do not edit) ----\n// In the real app this arrives in a <script> tag; here we simulate it.\nconst vendorQueue: string[] = [];\n(globalThis as Record<string, unknown>).cartwheelAnalytics = {\n  sent: vendorQueue,\n  track(event: string, props: Record<string, string | number> = {}) {\n    vendorQueue.push(`${event} ${JSON.stringify(props)}`);\n  },\n};\n// ---------------------------------------\n\ntype AnalyticsEvent = 'checkout_started' | 'order_placed' | 'payment_failed';\n\n// \"Library\" config interface (pretend it lives in a package you cannot edit).\ninterface CheckoutConfig {\n  currency: string;\n}\n\n// The analytics snippet, as far as we use it (checked against snippet v3).\ndeclare var cartwheelAnalytics: {\n  readonly sent: readonly string[];\n  track(event: AnalyticsEvent, props?: Record<string, string | number>): void;\n};\n\n// ES2023 method, present in every current browser but missing from the ES2022 lib.\ninterface Array<T> {\n  findLast(predicate: (value: T, index: number, array: T[]) => unknown): T | undefined;\n}\n\n// Merges with the library's CheckoutConfig.\ninterface CheckoutConfig {\n  giftWrap: boolean;\n}\n\ntype Order = { id: number; status: 'processing' | 'shipped' | 'delivered'; totalCents: number };\n\nconst orders: Order[] = [\n  { id: 1041, status: 'shipped', totalCents: 4500 },\n  { id: 1042, status: 'shipped', totalCents: 18900 },\n  { id: 1043, status: 'processing', totalCents: 1200 },\n];\n\nfunction latestShipped(list: Order[]): Order | undefined {\n  return list.findLast((o) => o.status === 'shipped');\n}\n\nfunction placeOrder(order: Order): void {\n  cartwheelAnalytics.track('order_placed', { orderId: order.id, totalCents: order.totalCents });\n}\n\nconst config: CheckoutConfig = { currency: 'EGP', giftWrap: true };\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<keyof CheckoutConfig, 'currency' | 'giftWrap'>>;\ntype T2 = Expect<Equal<ReturnType<typeof latestShipped>, Order | undefined>>;\n\nfunction typeTests() {\n  // @ts-expect-error: not a known analytics event\n  cartwheelAnalytics.track('ordr_placed');\n  // @ts-expect-error: property values must be strings or numbers\n  cartwheelAnalytics.track('checkout_started', { express: true });\n}\n\nplaceOrder(latestShipped(orders)!);\nconsole.log(latestShipped(orders)?.id, cartwheelAnalytics.sent, config);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "latest",
+      "test": "return latestShipped(orders).id === 1042 && latestShipped([]) === undefined;"
+    },
+    {
+      "id": "tracks",
+      "test": "return cartwheelAnalytics.sent.some((s) => s.startsWith('order_placed') && s.includes('1042'));"
+    }
+  ]
+}

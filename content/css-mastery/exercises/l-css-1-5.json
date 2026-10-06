@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"schedule\">\n  <div class=\"filters\">\n    <label><input type=\"checkbox\" id=\"hide-full\"> Hide sold-out sessions</label>\n  </div>\n  <article class=\"session-card\" id=\"c1\">\n    <h2>Shipping View Transitions</h2>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n  <article class=\"session-card\" id=\"c2\">\n    <h2>Grid Layout Workshop</h2>\n    <span class=\"badge-full\">Sold out</span>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n  <article class=\"session-card\" id=\"c3\">\n    <h2>Color Spaces for Humans</h2>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n</section>",
+    "css": ".session-card {\n  margin-block-end: 12px;\n  padding: 12px 16px;\n  border: 2px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card h2 {\n  margin: 0 0 8px;\n  font-size: 1.05rem;\n}\n.session-card:hover {\n  background: #faf5ff;\n}\n.badge-full {\n  display: inline-block;\n  padding: 0.1em 0.6em;\n  border-radius: 999px;\n  background: #fee2e2;\n  color: #991b1b;\n}\n\n/* 1. Rewrite the three .session-card rules above as one nested rule. */\n/* 2. Hide sold-out cards when #hide-full is checked. */\n/* 3. Give a card a #6d28d9 border when its .save box is checked. */\n"
+  },
+  "solution": {
+    "html": "<section class=\"schedule\">\n  <div class=\"filters\">\n    <label><input type=\"checkbox\" id=\"hide-full\"> Hide sold-out sessions</label>\n  </div>\n  <article class=\"session-card\" id=\"c1\">\n    <h2>Shipping View Transitions</h2>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n  <article class=\"session-card\" id=\"c2\">\n    <h2>Grid Layout Workshop</h2>\n    <span class=\"badge-full\">Sold out</span>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n  <article class=\"session-card\" id=\"c3\">\n    <h2>Color Spaces for Humans</h2>\n    <label class=\"save-label\"><input type=\"checkbox\" class=\"save\"> Save</label>\n  </article>\n</section>",
+    "css": ".session-card {\n  margin-block-end: 12px;\n  padding: 12px 16px;\n  border: 2px solid #e5e7eb;\n  border-radius: 12px;\n\n  h2 {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n  }\n\n  &:hover {\n    background: #faf5ff;\n  }\n\n  &:has(.save:checked) {\n    border-color: #6d28d9;\n  }\n}\n\n.badge-full {\n  display: inline-block;\n  padding: 0.1em 0.6em;\n  border-radius: 999px;\n  background: #fee2e2;\n  color: #991b1b;\n}\n\n.schedule:has(#hide-full:checked) .session-card:has(.badge-full) {\n  display: none;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "uses-nesting",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); return all.some((r) => r instanceof CSSStyleRule && r.selectorText === '.session-card' && [...r.cssRules].some((c) => c instanceof CSSStyleRule));"
+    },
+    {
+      "id": "all-visible",
+      "test": "return $$('.session-card').every((c) => style(c, 'display') !== 'none');"
+    },
+    {
+      "id": "hides-sold-out",
+      "test": "const box = $('#hide-full'); if (!box.checked) await click(box); const ok = style('#c2', 'display') === 'none' && style('#c1', 'display') !== 'none' && style('#c3', 'display') !== 'none'; await click(box); return ok;"
+    },
+    {
+      "id": "shows-again",
+      "test": "return !$('#hide-full').checked && style('#c2', 'display') !== 'none';"
+    },
+    {
+      "id": "saved-highlight",
+      "test": "const save = $('#c1 .save'); if (!save.checked) await click(save); const ok = style('#c1', 'border-top-color') === 'rgb(109, 40, 217)' && style('#c3', 'border-top-color') === 'rgb(229, 231, 235)'; await click(save); return ok;"
+    }
+  ]
+}

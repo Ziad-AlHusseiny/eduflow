@@ -1,0 +1,42 @@
+{
+  "title": "SQL for Analysts",
+  "tagline": "Answer real business questions with SQL you can defend line by line.",
+  "description": [
+    "Most SQL courses teach syntax. This one teaches you to answer questions. You join the data team at Cartwheel, an online store selling in eight countries, and work through a queue of requests from its CEO, marketing, operations and finance leads. Every query runs in your browser against a real SQLite database with two years of orders, customers, returns, support tickets and web sessions.",
+    "You start with filtering, NULL logic and dates, then learn to aggregate and join without double counting, which is where most analyst mistakes hide. From there you move to CTEs, window functions, funnels and cohort retention, and finish with the habits that make results trustworthy: data-quality checks, query plans, readable style and the differences you will hit in PostgreSQL."
+  ],
+  "audience": "Analysts, career switchers and developers who know basic SELECT and want to answer business questions with SQL confidently.",
+  "prerequisites": "Basic spreadsheet skills and a first look at SELECT and FROM; no programming experience needed.",
+  "learnItems": [
+    "Filter, sort and bucket data with WHERE, CASE and NULL-safe logic",
+    "Aggregate at the right grain and join tables without double counting",
+    "Find what is missing with anti-joins and walk hierarchies with CTEs",
+    "Rank, compare and accumulate rows with window functions",
+    "Build funnels, monthly cohorts and retention tables from raw events",
+    "Check data quality, read query plans and write SQL others can review"
+  ],
+  "sections": {
+    "s-sql-1": "Querying with Intent",
+    "s-sql-2": "Aggregation and Joins",
+    "s-sql-3": "Analytical SQL",
+    "s-sql-4": "SQL in the Real World"
+  },
+  "lessons": {
+    "l-sql-1-1": "Questions Before Queries",
+    "l-sql-1-2": "Filtering and Sorting with Purpose",
+    "l-sql-1-3": "NULL Logic and CASE Expressions",
+    "l-sql-1-4": "Working with Dates in SQLite",
+    "l-sql-2-1": "GROUP BY, HAVING and the Grain of a Result",
+    "l-sql-2-2": "Inner and Left Joins",
+    "l-sql-2-3": "Fan-Out: When Joins Double-Count",
+    "l-sql-2-4": "Self-Joins and Anti-Joins",
+    "l-sql-3-1": "Subqueries, CTEs and Recursive CTEs",
+    "l-sql-3-2": "Window Functions for Ranking",
+    "l-sql-3-3": "Running Totals, LAG and Moving Averages",
+    "l-sql-3-4": "Funnels, Cohorts and Retention",
+    "l-sql-4-1": "Data-Quality Checks",
+    "l-sql-4-2": "Indexes and Query Plans",
+    "l-sql-4-3": "Readable SQL and Dialect Differences",
+    "l-sql-4-4": "Capstone: The Q4 Business Review"
+  }
+}

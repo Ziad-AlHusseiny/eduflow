@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const expenses = [\n  { label: \"Coffee\", amount: 450, category: \"food\" },\n  { label: \"Train\", amount: 1220, category: \"travel\", receipt: { url: \"/r/88.png\" } },\n  { label: \"Lunch\", amount: 1350, category: \"food\", receipt: null },\n  { label: \"Gift\", amount: 5000 },\n];\n\n// The receipt's url, or \"No receipt\" (receipt may be missing or null)\nfunction receiptLabel(expense) {\n  return expense.receipt.url;\n}\n\n// settings may be undefined; a saved limit of 0 is a real choice\nfunction dailyLimit(settings) {\n  return settings.dailyLimit || 5000;\n}\n\n// A Map from category to how many expenses have it;\n// expenses without a category count as \"other\"\nfunction countByCategory(expenses) {\n}\n\n// Each category once, in the order first seen (missing ones as \"other\")\nfunction uniqueCategories(expenses) {\n  return expenses.map((e) => e.category);\n}\n\nconsole.log(receiptLabel(expenses[1]), dailyLimit({ dailyLimit: 0 }));\n"
+  },
+  "solution": {
+    "js": "const expenses = [\n  { label: \"Coffee\", amount: 450, category: \"food\" },\n  { label: \"Train\", amount: 1220, category: \"travel\", receipt: { url: \"/r/88.png\" } },\n  { label: \"Lunch\", amount: 1350, category: \"food\", receipt: null },\n  { label: \"Gift\", amount: 5000 },\n];\n\nfunction receiptLabel(expense) {\n  return expense.receipt?.url ?? \"No receipt\";\n}\n\nfunction dailyLimit(settings) {\n  return settings?.dailyLimit ?? 5000;\n}\n\nfunction countByCategory(expenses) {\n  const counts = new Map();\n  for (const e of expenses) {\n    const category = e.category ?? \"other\";\n    counts.set(category, (counts.get(category) ?? 0) + 1);\n  }\n  return counts;\n}\n\nfunction uniqueCategories(expenses) {\n  return [...new Set(expenses.map((e) => e.category ?? \"other\"))];\n}\n\nconsole.log(receiptLabel(expenses[1]), dailyLimit({ dailyLimit: 0 }));\n"
+  },
+  "checks": [
+    {
+      "id": "receipt",
+      "test": "return receiptLabel(expenses[1]) === '/r/88.png' && receiptLabel(expenses[0]) === 'No receipt' && receiptLabel(expenses[2]) === 'No receipt';\n"
+    },
+    {
+      "id": "limit",
+      "test": "return dailyLimit({ dailyLimit: 0 }) === 0 && dailyLimit({ dailyLimit: 2500 }) === 2500 && dailyLimit({}) === 5000 && dailyLimit(undefined) === 5000;\n"
+    },
+    {
+      "id": "counts-map",
+      "test": "const m = countByCategory(expenses);\nreturn m instanceof Map && m.get('food') === 2 && m.get('travel') === 1 && m.get('other') === 1 && m.size === 3;\n"
+    },
+    {
+      "id": "unique",
+      "test": "const u = uniqueCategories(expenses);\nreturn Array.isArray(u) && u.join() === 'food,travel,other';\n"
+    }
+  ]
+}

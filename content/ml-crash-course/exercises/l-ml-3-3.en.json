@@ -1,0 +1,16 @@
+{
+  "title": "Boost with the gaps left in",
+  "prompt": "Fit a gradient boosting model on all nine features, including the half-empty `avg_satisfaction`, and find out what it relies on.\n\n1. `booster`: `HistGradientBoostingClassifier(max_depth=3, learning_rate=0.05, max_iter=200, random_state=42)` fitted on all of `X_train` (no columns dropped).\n2. `test_acc`: its test accuracy.\n3. `ranking`: a list of the nine feature names sorted by permutation importance on the test set (`n_repeats=5, random_state=0`), most important first.",
+  "hints": [
+    "No imputation is needed: `HistGradientBoostingClassifier` routes missing values itself.",
+    "`permutation_importance(booster, X_test, y_test, n_repeats=5, random_state=0)` returns an object with `importances_mean`.",
+    "Wrap the means in a `pd.Series` indexed by `features`, sort descending, and take `.index.tolist()`."
+  ],
+  "explanation": "Gentle boosting lands around 0.78 on the test set, a few points above logistic regression. Permutation importance puts `days_since_last_order` far ahead of everything else, and `avg_satisfaction` near zero or below: the model can use the column, but the survey as collected doesn't help. Computing importance on the test set measures what generalises, not what the trees memorised.",
+  "checks": {
+    "nine-features": "The model is trained on all nine features",
+    "settings": "The booster uses the gentle settings",
+    "accuracy": "test_acc is the test accuracy",
+    "ranking": "ranking lists all nine features by permutation importance, recency first"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Model categories and payment methods",
+  "prompt": "Complete Pocket Budget's two enums. `Category` must provide a list of all its cases so the picker can show them, and `label(for:)` must read the last four digits out of a card payment.",
+  "hints": [
+    "The protocol that generates a list of every case has \"Case\" in its name.",
+    "The generated list is a static property: `Category.____`.",
+    "Inside a `case` pattern, the keyword that binds an associated value to a new constant is the same one you use to declare constants."
+  ],
+  "explanation": "`CaseIterable` makes the compiler generate `Category.allCases`, an array of every case in declaration order, so `count` is 3. In the switch, `case .card(let lastFour)` matches card payments and binds the associated value to the constant `lastFour` for that branch.\n\nNotice the switch has no `default`. If you add `case transfer(bank: String)` later, this function stops compiling until you handle it, which is exactly what you want."
+}

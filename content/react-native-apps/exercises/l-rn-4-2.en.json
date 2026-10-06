@@ -1,0 +1,36 @@
+{
+  "title": "Put each piece of data in the right store",
+  "prompt": "A teammate drafted Trailhead's storage plan. Select **every** line of the plan that you would approve in code review.",
+  "hints": [
+    "Ask two questions about each piece of data: is it secret, and will you need to query or filter it?",
+    "SecureStore is for small secrets; photos are megabytes.",
+    "Three lines are right."
+  ],
+  "explanation": "Preferences are small and harmless, so AsyncStorage (one JSON blob under a versioned key) fits. The hike log is structured data you sort and filter, so it belongs in expo-sqlite with versioned migrations. The refresh token is a secret, so it belongs in expo-secure-store, encrypted by the Keychain or Keystore. Tokens in AsyncStorage sit in plain text; photos in SecureStore exceed the size it's designed for; and a 600-hike log in AsyncStorage means parsing everything for every query.",
+  "options": {
+    "units-async": {
+      "text": "Store the user's units preference (km or mi) and reminder setting as one JSON value in AsyncStorage under `trailhead.prefs.v1`.",
+      "why": "Approve. Small, non-secret preferences are what AsyncStorage is for, and the versioned key makes future changes easy."
+    },
+    "log-sqlite": {
+      "text": "Store the hike log in an expo-sqlite table, with schema changes handled by migrations keyed on `PRAGMA user_version`.",
+      "why": "Approve. Structured records you query belong in a database, and versioned migrations keep old users' data intact."
+    },
+    "token-async": {
+      "text": "Store the refresh token in AsyncStorage so it loads fast at startup.",
+      "why": "Reject. AsyncStorage is unencrypted. Startup speed doesn't justify keeping a credential in plain text."
+    },
+    "photo-secure": {
+      "text": "Store each trail photo as a base64 string in expo-secure-store so photos are private.",
+      "why": "Reject. SecureStore is designed for small values; multi-megabyte photos belong on the file system, with only their paths in SQLite."
+    },
+    "token-secure": {
+      "text": "Store the refresh token in expo-secure-store and delete it on sign-out.",
+      "why": "Approve. SecureStore encrypts it with the platform keystore, and deleting it on sign-out leaves nothing behind."
+    },
+    "log-async": {
+      "text": "Keep all 600 hikes as one JSON array in AsyncStorage and filter it in JavaScript.",
+      "why": "Reject. Every read parses the whole log, every write rewrites it, and there's no way to query without loading everything."
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Review the first dark-mode pass",
+  "prompt": "A teammate added a Dark mode to Steady's Semantic collection but only changed the surface and text values. Here is what the Today screen resolves to in Dark, measured against `surface/default` (#111827) unless noted:\n\n| Variable | Dark value | Result |\n|---|---|---|\n| `text/primary` | gray/50 | 16.98:1 |\n| `text/secondary` | gray/400 | 6.99:1 |\n| `action/primary` | teal/700 (unchanged) | 3.24:1, check icons and links look dull |\n| `on-action` | white (unchanged) | 5.47:1 on teal/700 |\n| `border/default` | gray/200 (unchanged) | 14.33:1, dividers glare |\n\nSelect **every** change that improves the dark mode without breaking anything else.",
+  "hints": [
+    "Links and small check icons are text-like. Is 3.24:1 enough for them?",
+    "If you lighten the accent, check what happens to the white label sitting on it.",
+    "Dividers are decoration; they should be visible but quiet. A near-white line on near-black is neither."
+  ],
+  "explanation": "Point `action/primary` at a **lighter teal** such as teal/400 (9.53:1 on gray/950), because links and small icons need text-level contrast. That makes white labels on the accent fail (1.86:1), so **flip `on-action` to a dark gray** such as gray/950 (9.53:1) in Dark. Point `border/default` at a **darker gray** so dividers separate rows without glaring; keep a separate control-outline token that still meets 3:1 for checkboxes. Making secondary text white erases the text hierarchy, recoloring a duplicate frame by hand defeats the whole point of modes, and primitives should stay single-mode facts that the semantic layer chooses between.",
+  "options": {
+    "lighter-accent": {
+      "text": "Point action/primary's Dark value at a lighter teal such as teal/400.",
+      "why": "Correct. Teal/700 is only 3.24:1 on the dark surface; teal/400 gives 9.53:1 and keeps the brand hue."
+    },
+    "flip-on-action": {
+      "text": "Point on-action's Dark value at gray/950 so labels on the lighter teal stay readable.",
+      "why": "Correct. White on teal/400 is 1.86:1. Dark text on it is 9.53:1, which is exactly why on-action is its own token."
+    },
+    "border-dark": {
+      "text": "Point border/default's Dark value at a darker gray so dividers are quiet.",
+      "why": "Correct. A decorative divider at 14:1 shouts. A subtle gray separates rows; control outlines that must meet 3:1 get their own token."
+    },
+    "secondary-white": {
+      "text": "Set text/secondary to white in Dark so all text has maximum contrast.",
+      "why": "Secondary text already passes at 6.99:1. Making it white flattens the hierarchy between names and streaks."
+    },
+    "duplicate-recolor": {
+      "text": "Duplicate the Today frame and recolor the copy by hand for dark mode.",
+      "why": "Hand-recolored copies drift from the real screen immediately. Modes exist so one screen serves both themes."
+    },
+    "mode-primitives": {
+      "text": "Add a Dark mode to the Primitives collection and lighten teal/700 there.",
+      "why": "Then teal/700 would no longer mean #0F766E, and every alias using it would change unpredictably. Modes belong on the semantic layer."
+    }
+  }
+}

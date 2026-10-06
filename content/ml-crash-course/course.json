@@ -1,0 +1,39 @@
+{
+  "id": "ml-crash-course",
+  "project": "Predicting which Cartwheel customers will churn (churn.csv): from a majority-class baseline to a tuned, leak-free scikit-learn pipeline that is checked for fairness and ready to ship, with scikit-learn's bundled datasets (diabetes, breast cancer, digits) for the ideas churn can't show.",
+  "sections": [
+    { "id": "s-ml-1", "lessons": [
+      { "id": "l-ml-1-1", "minutes": 14 },
+      { "id": "l-ml-1-2", "minutes": 18 },
+      { "id": "l-ml-1-3", "minutes": 18 },
+      { "id": "l-ml-1-4", "minutes": 17 }
+    ] },
+    { "id": "s-ml-2", "lessons": [
+      { "id": "l-ml-2-1", "minutes": 22 },
+      { "id": "l-ml-2-2", "minutes": 22 },
+      { "id": "l-ml-2-3", "minutes": 20 },
+      { "id": "l-ml-2-4", "minutes": 20 }
+    ] },
+    { "id": "s-ml-3", "lessons": [
+      { "id": "l-ml-3-1", "minutes": 20 },
+      { "id": "l-ml-3-2", "minutes": 18 },
+      { "id": "l-ml-3-3", "minutes": 20 },
+      { "id": "l-ml-3-4", "minutes": 22 },
+      { "id": "l-ml-3-5", "minutes": 20 }
+    ] },
+    { "id": "s-ml-4", "lessons": [
+      { "id": "l-ml-4-1", "minutes": 18 },
+      { "id": "l-ml-4-2", "minutes": 22 },
+      { "id": "l-ml-4-3", "minutes": 20 },
+      { "id": "l-ml-4-4", "minutes": 18 },
+      { "id": "l-ml-4-5", "minutes": 20 }
+    ] },
+    { "id": "s-ml-5", "lessons": [
+      { "id": "l-ml-5-1", "minutes": 21 },
+      { "id": "l-ml-5-2", "minutes": 20 },
+      { "id": "l-ml-5-3", "minutes": 17 },
+      { "id": "l-ml-5-4", "minutes": 20 },
+      { "id": "l-ml-5-5", "minutes": 18 }
+    ] }
+  ]
+}

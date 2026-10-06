@@ -1,0 +1,416 @@
+checkpoints:
+  s-sw-1:
+    - q: |-
+        What does this print?
+        ```swift
+        let input = "abc"
+        let amount = Int(input) ?? 0
+        print(amount + 5)
+        ```
+      options:
+        - text: Nothing; it doesn't compile because `Int(input)` is optional.
+          why: "`??` unwraps the optional with a default, so the expression is a plain `Int` and compiles."
+        - text: It crashes, because "abc" isn't a number.
+          why: "`Int(_:)` returns `nil` for bad input instead of crashing; only a force unwrap would crash."
+        - text: "`abc5`"
+          why: Swift never joins a `String` and an `Int` with `+`; both sides here are already `Int`.
+        - text: "`5`"
+          why: Correct. `Int("abc")` is `nil`, `?? 0` substitutes 0, and 0 + 5 is 5.
+      answer: 3
+    - q: "Given `func convert(_ amount: Decimal, to currency: String) -> Decimal`, which call compiles?"
+      options:
+        - text: '`convert(12, to: "EUR")`'
+          why: Correct. The first parameter's label is `_`, so it's omitted; the second uses the label `to`.
+        - text: '`convert(amount: 12, to: "EUR")`'
+          why: "`amount` is the parameter name used inside the function; `_` means callers write no label."
+        - text: '`convert(12, "EUR")`'
+          why: The second parameter has the argument label `to`, and Swift requires it at the call site.
+        - text: '`convert(12, currency: "EUR")`'
+          why: "`currency` is the internal name. Callers must use the external label `to`."
+      answer: 0
+    - q: "`func monthlyAverage(_ amounts: [Decimal]) -> Decimal?` must return `nil` for an empty array. Which first line is the idiomatic Swift way to handle that?"
+      options:
+        - text: "`let first = amounts[0]`"
+          why: Subscripting an empty array crashes with "Index out of range" before you can return anything.
+        - text: "`if amounts.isEmpty { amounts = [0] }`"
+          why: Function parameters are constants, so this doesn't compile; it would also hide the empty case.
+        - text: '`guard amounts.count > 0 else { print("empty") }`'
+          why: A `guard`'s `else` must leave the scope, so a bare `print` is a compile error.
+        - text: "`guard !amounts.isEmpty else { return nil }`"
+          why: Correct. The guard states the rule, exits early, and the rest of the function can assume data exists.
+      answer: 3
+    - q: "You loop over expenses and want to count how many fall in each category, starting from an empty `var counts: [String: Int] = [:]`. Which line goes inside the loop?"
+      options:
+        - text: "`counts[category] += 1`"
+          why: The subscript returns `Int?`, and you can't add 1 to an optional without unwrapping it.
+        - text: "`counts.append(category)`"
+          why: Dictionaries have no `append`; that's an array method.
+        - text: "`counts[category, default: 0] += 1`"
+          why: Correct. The `default:` subscript reads 0 for a new key, adds 1, and stores the result.
+        - text: "`counts.insert(category)`"
+          why: "`insert` is a `Set` method; it would record membership, not a count."
+      answer: 2
+    - q: |-
+        What is `result`?
+        ```swift
+        let values = [5, 12, 30]
+        let result = values.filter { $0 > 10 }.map { $0 * 2 }.reduce(0, +)
+        ```
+      options:
+        - text: "`84`"
+          why: Correct. `filter` keeps 12 and 30, `map` doubles them to 24 and 60, and `reduce` adds them.
+        - text: "`94`"
+          why: That includes the 5, doubled to 10. `filter` removed it before `map` ran.
+        - text: "`[24, 60]`"
+          why: That's the value after `map`. `reduce` then combines the array into a single number.
+        - text: "`42`"
+          why: That's 12 + 30 without doubling. The `map` step runs before `reduce`.
+      answer: 0
+  s-sw-2:
+    - q: |-
+        `Expense` is a struct with `var amount: Decimal`. What does this print?
+        ```swift
+        var list = [Expense(amount: 5)]
+        var first = list[0]
+        first.amount = 9
+        print(list[0].amount)
+        ```
+      options:
+        - text: "`5`"
+          why: Correct. Reading `list[0]` into `first` copies the struct; changing the copy leaves the array untouched.
+        - text: "`9`"
+          why: That's class behaviour. Structs are copied on assignment, so `first` is independent.
+        - text: It doesn't compile, because array elements are constants.
+          why: "`list` is a `var`, and so is `first`; nothing here is a constant."
+        - text: It crashes, because `first` is a dangling reference.
+          why: Structs have no references to dangle; `first` holds its own complete value.
+      answer: 0
+    - q: |-
+        What does this print?
+        ```swift
+        enum Sync {
+            case idle
+            case syncing(progress: Double)
+            case failed(String)
+        }
+        let state: Sync = .syncing(progress: 0.4)
+        switch state {
+        case .idle: print("Idle")
+        case .syncing(let p) where p > 0.5: print("Almost")
+        case .syncing: print("Working")
+        case .failed(let message): print(message)
+        }
+        ```
+      options:
+        - text: "`Almost`"
+          why: That case requires progress above 0.5, and 0.4 fails the `where` condition.
+        - text: "`Idle`"
+          why: The value is `.syncing`, so the `.idle` case can't match it.
+        - text: Nothing, because no case matches 0.4.
+          why: The plain `case .syncing:` matches any progress, so a case always matches.
+        - text: "`Working`"
+          why: Correct. The `where` clause fails, so matching moves on to the next `.syncing` case.
+      answer: 3
+    - q: "`protocol Exportable { func csvRow() -> String }` has five conforming types. Every one of them should also get `csvLine`, which is `csvRow()` plus a newline, without writing it five times. What do you add?"
+      options:
+        - text: "A `var csvLine: String { get }` requirement in the protocol."
+          why: A requirement makes every type implement it, which is the duplication you wanted to avoid.
+        - text: '`extension Exportable { var csvLine: String { csvRow() + "\n" } }`'
+          why: Correct. A protocol extension gives every conforming type the implementation for free.
+        - text: A base class `ExportableBase` that all five types inherit from.
+          why: Structs and enums can't inherit, and inheritance is heavier than this problem needs.
+        - text: "A global function `csvLine(_ item: Exportable)` in each file."
+          why: Writing it in each file is still duplication, and it doesn't read as a property of the type.
+      answer: 1
+    - q: "A `final class ReminderScheduler` stores `var onFire: (() -> Void)?` and sets `onFire = { self.notify() }`. Memory tools show schedulers are never freed. What's the fix?"
+      options:
+        - text: Change `onFire` from `var` to `let`.
+          why: Mutability isn't the issue; a `let` closure would capture `self` just as strongly.
+        - text: Set `onFire = nil` inside `deinit`.
+          why: "`deinit` never runs while the cycle exists, so that line would never execute."
+        - text: Make `ReminderScheduler` a subclass of `NSObject`.
+          why: Objective-C classes use reference counting too; the cycle stays.
+        - text: "Capture weakly: `onFire = { [weak self] in self?.notify() }`."
+          why: Correct. The closure no longer owns the scheduler, so the reference count can reach zero.
+      answer: 3
+    - q: |-
+        `load()` reads saved expenses and throws if the file is corrupted. What does the user see when that happens?
+        ```swift
+        let expenses = (try? load()) ?? []
+        ```
+      options:
+        - text: An empty list, with no hint that their data failed to load.
+          why: Correct. `try?` discarded the error and `?? []` filled in a value. Catch it and tell the user.
+        - text: An alert describing the corruption.
+          why: Nothing here shows an alert; `try?` threw the error away.
+        - text: A crash with the error's description.
+          why: That's `try!`. `try?` never crashes; it produces `nil`.
+        - text: The expenses that loaded before the corrupted part.
+          why: "`load()` either returns the whole array or throws; there's no partial result."
+      answer: 0
+  s-sw-3:
+    - q: "A child view `AmountField` declares `@State var amount: Decimal`, and its parent creates it with `AmountField(amount: budget.limit)`. Typing in the field never changes the parent's limit. Why?"
+      options:
+        - text: "`TextField` can't edit `Decimal` values."
+          why: With a `format:`, `TextField` edits `Decimal` happily; the type isn't the problem.
+        - text: The parent must call `objectWillChange.send()`.
+          why: That belongs to the older `ObservableObject` system and wouldn't connect the two values anyway.
+        - text: SwiftUI only updates parents when the child disappears.
+          why: SwiftUI updates as soon as a source of truth changes; there's no delay rule like this.
+        - text: "`@State` gave the child its own copy; it should be `@Binding`, with the parent passing a binding."
+          why: Correct. The child must borrow the parent's source of truth, not start a new one.
+      answer: 3
+    - q: Which code shows a spending total the way users in different countries expect to read money?
+      options:
+        - text: '`Text(total, format: .currency(code: "USD"))`'
+          why: Correct. The format style applies the user's locale for symbol position, separators and decimals.
+        - text: '`Text("$\(total)")`'
+          why: This hard-codes the symbol and ignores the user's separators, so "$1234.5" looks wrong almost everywhere.
+        - text: "`Text(String(describing: total))`"
+          why: That's a debugging representation with no currency and no locale rules.
+        - text: '`Text("\(total) USD")`'
+          why: "Better than nothing, but still unformatted: no grouping, no fixed decimals, no locale."
+      answer: 0
+    - q: "The list uses `NavigationLink(value: expense)` and `.navigationDestination(for: Expense.self)`. After saving a new expense, you want to open its detail screen from code. What do you add?"
+      options:
+        - text: A hidden `NavigationLink` with `isActive:` that you toggle.
+          why: That's an older, deprecated pattern; `NavigationStack` replaced it with paths.
+        - text: Call `navigationDestination` again with the new expense.
+          why: The destination modifier is declared once; it doesn't trigger navigation by itself.
+        - text: "`@State private var path: [Expense] = []`, `NavigationStack(path: $path)`, then `path.append(saved)`."
+          why: Correct. The path is state, so appending a value pushes its destination screen.
+        - text: Present the detail screen with `.sheet` instead.
+          why: That changes the interaction to a modal; it doesn't push onto the navigation stack.
+      answer: 2
+    - q: A `BudgetStore` marked `@Observable` is put into the environment at the app level. A deeply nested `LimitSettings` view needs a `TextField` bound to `store.monthlyLimit`. What does that view write?
+      options:
+        - text: "`@EnvironmentObject var store: BudgetStore`"
+          why: "`@EnvironmentObject` belongs to `ObservableObject`; it doesn't find objects added with `.environment(_:)`."
+        - text: "`@State private var store = BudgetStore()`"
+          why: That creates a brand-new store owned by this view, disconnected from the app's data.
+        - text: "`@Binding var store: BudgetStore`"
+          why: Bindings are passed in explicitly by a parent; they don't come from the environment.
+        - text: "`@Environment(BudgetStore.self) private var store`, then `@Bindable var store = store` in `body`."
+          why: Correct. The environment supplies the shared store, and `@Bindable` produces `$store.monthlyLimit`.
+      answer: 3
+    - q: "`AddExpenseView` is presented as a sheet and must close itself when the user taps Save. What's the standard way?"
+      options:
+        - text: Read `@Environment(\.dismiss) private var dismiss` and call `dismiss()` after saving.
+          why: Correct. `dismiss` closes whatever presentation is showing this view, sheet or pushed screen.
+        - text: Call `NavigationStack.pop()`.
+          why: There's no such API, and a sheet isn't part of the list's navigation stack.
+        - text: Set the view's own `isPresented` property to `false`.
+          why: The sheet's flag belongs to the parent; the child has no such property unless it's given a binding.
+        - text: Remove the view from its parent with `removeFromSuperview()`.
+          why: That's UIKit; SwiftUI views are descriptions, not objects you can remove.
+      answer: 0
+  s-sw-4:
+    - q: |-
+        Each fetch takes about a second. How do you make this take about one second in total?
+        ```swift
+        func loadAll() async throws -> (Decimal, Decimal) {
+            let eur = try await service.fetchRate(from: "USD", to: "EUR")
+            let gbp = try await service.fetchRate(from: "USD", to: "GBP")
+            return (eur, gbp)
+        }
+        ```
+      options:
+        - text: Wrap each call in `Task { }` and return right away.
+          why: The function would return before the results exist, and the unstructured tasks escape cancellation.
+        - text: Mark the function `@MainActor`.
+          why: Changing the actor doesn't make two sequential awaits overlap.
+        - text: Call `fetchRate` from a `DispatchQueue.main.async` block.
+          why: That mixes old GCD code with async/await and still doesn't run the requests in parallel.
+        - text: Use `async let eur = …` and `async let gbp = …`, then `try await (eur, gbp)`.
+          why: Correct. Both child tasks start immediately and run at the same time.
+      answer: 3
+    - q: A nonisolated helper function assigns to `model.state` on a `@MainActor` model, and Swift 6 reports "main actor-isolated property 'state' can not be mutated from a nonisolated context". What's a correct fix?
+      options:
+        - text: Mark the helper `@MainActor`, so it runs where the model's state lives.
+          why: Correct. Now the compiler can prove only main-actor code touches the state.
+        - text: Mark the model `@unchecked Sendable`.
+          why: That silences checks without making anything safe; the race is still there.
+        - text: Switch the target back to the Swift 5 language mode.
+          why: That hides the diagnostic instead of fixing the data race it describes.
+        - text: Copy the model into a local variable before assigning.
+          why: The model is a class, so the copy is the same object and the same race.
+      answer: 0
+    - q: The rates API returns HTTP 404 with an HTML page for an unknown currency. Your code decodes `data` right after `URLSession.shared.data(from:)`. What do users see?
+      options:
+        - text: A `URLError` saying the page wasn't found.
+          why: URLSession doesn't throw for HTTP status codes; a 404 is a successful response at the network level.
+        - text: A decoding error, such as "data couldn't be read because it isn't in the correct format".
+          why: Correct. The HTML reaches `JSONDecoder`. Check the status code first and throw a clearer error.
+        - text: An empty list of rates and no error.
+          why: Decoding HTML as `RatesResponse` fails loudly; it doesn't produce an empty value.
+        - text: The HTML page rendered in the app.
+          why: Nothing in the code displays the response body.
+      answer: 1
+    - q: "An edit screen binds fields straight to a SwiftData model with `@Bindable var expense: Expense`. Product wants a Cancel button that discards changes. What's the cleanest design?"
+      options:
+        - text: Keep binding directly, and call `context.insert(expense)` on Cancel.
+          why: Inserting an existing model doesn't undo edits; the changes are already on the object.
+        - text: Keep binding directly; edits only save when the screen closes.
+          why: Edits change the model immediately, and the main context autosaves them.
+        - text: Turn `Expense` into a struct so edits are copies.
+          why: "`@Model` requires a class; you can't make a SwiftData model a struct."
+        - text: Edit `@State` draft copies of the fields, and write them to the model only on Save.
+          why: "Correct. It's the same draft pattern as the add form: Cancel throws the drafts away."
+      answer: 3
+    - q: "Which test verifies that `record` throws `BudgetError.overLimit(by: 7)`?"
+      options:
+        - text: '`#expect(throws: BudgetError.overLimit(by: 7)) { try food.record(title: "Dinner", amount: 45) }`'
+          why: Correct. It passes only if that exact error is thrown, which works because `BudgetError` is `Equatable`.
+        - text: '`#expect(try food.record(title: "Dinner", amount: 45) == .overLimit(by: 7))`'
+          why: "`record` returns nothing; errors are thrown, not returned, so there's nothing to compare."
+        - text: '`do { try food.record(title: "Dinner", amount: 45) } catch { }`'
+          why: With no assertion, this passes whether or not anything is thrown.
+        - text: "`try #require(food.spent == 57)`"
+          why: That checks the wrong thing; after a correct failure `spent` should stay unchanged.
+      answer: 0
+final:
+  - q: |-
+      `expenses` is an empty array. What is `label`?
+      ```swift
+      let label = expenses.first?.title.uppercased() ?? "NONE"
+      ```
+    options:
+      - text: It crashes, because the array is empty.
+        why: "`first` returns an optional instead of crashing, and `?.` stops safely at `nil`."
+      - text: "`nil`"
+        why: The optional chain is `nil`, but `?? "NONE"` replaces it with the default.
+      - text: An empty string.
+        why: No title exists, so there's nothing to uppercase; the default is used instead.
+      - text: '`"NONE"`'
+        why: Correct. `first` is `nil`, the chain short-circuits, and `??` supplies the default.
+    answer: 3
+  - q: Pocket Budget needs a sort-order setting with exactly three choices (newest, oldest, largest) shown in a picker and saved to disk. Which type fits best?
+    options:
+      - text: "`enum SortOrder: String, CaseIterable { case newest, oldest, largest }`"
+        why: Correct. Only valid values exist, `allCases` feeds the picker, and the raw value saves cleanly.
+      - text: "`let sortOrder: String`"
+        why: Any string compiles, including typos, and the picker has no list of choices.
+      - text: "`struct SortOrder { var isNewest: Bool; var isLargest: Bool }`"
+        why: Booleans allow impossible combinations, such as both flags true at once.
+      - text: "`class SortOrder` with three subclasses."
+        why: Inheritance is far heavier than a fixed set of choices needs, and harder to save.
+    answer: 0
+  - q: Why does the add-expense form keep `title`, `amount` and `category` in its own `@State` properties instead of writing to the store on every keystroke?
+    options:
+      - text: Because `@Observable` stores can't be edited from forms.
+        why: Forms edit observable objects through `@Bindable` all the time; that's not the reason.
+      - text: Because `TextField` only works with `@State`.
+        why: "`TextField` accepts any binding, including one into an observable object."
+      - text: Because the store can only accept complete `Expense` values.
+        why: The store could accept partial updates; the real reason is about the user's intent.
+      - text: "So the form is a draft: Cancel discards it without touching saved data."
+        why: Correct. Value-type drafts make cancelling free and keep half-typed data out of the store.
+    answer: 3
+  - q: You add `case gifts` to `Category`. The project has three `switch` statements over `Category`, yet the build passes with no errors. What's the most likely explanation?
+    options:
+      - text: Swift doesn't check `switch` exhaustiveness for enums with raw values.
+        why: Raw values make no difference; every enum switch is checked for exhaustiveness.
+      - text: New enum cases are only checked when you run the app.
+        why: Exhaustiveness is a compile-time check, never a runtime one.
+      - text: Those switches use `default:`, which silently absorbs the new case.
+        why: Correct. That's why switches over your own enums should list cases explicitly.
+      - text: Xcode only checks switches in files you have open.
+        why: The compiler checks every file it builds, open or not.
+    answer: 2
+  - q: Several tasks fetch rates in parallel and must all update one shared cache. Which declaration keeps the cache free of data races?
+    options:
+      - text: "`actor RateCache { private var rates: [String: Decimal] = [:] }` with methods to read and save."
+        why: Correct. The actor runs one call at a time on its state, and callers must `await` it.
+      - text: "`final class RateCache { var rates: [String: Decimal] = [:] }`"
+        why: A plain class with mutable state isn't `Sendable`; Swift 6 won't let tasks share it.
+      - text: "`struct RateCache { var rates: [String: Decimal] }` passed to each task."
+        why: Each task gets its own copy, so their updates never reach a shared cache.
+      - text: "A global `var rates: [String: Decimal]`."
+        why: Global mutable state is exactly what Swift 6 flags as unsafe across tasks.
+    answer: 0
+  - q: "The JSON contains `\"total_spent\": 12.5` and your struct has `let totalSpent: Decimal`. Decoding throws `keyNotFound`. What's the cleanest fix?"
+    options:
+      - text: Rename the property to `total_spent`.
+        why: It works, but it brings the server's naming style into your Swift code.
+      - text: Change the type to `Double`.
+        why: The type isn't the problem; the key name doesn't match.
+      - text: Make the property optional.
+        why: The error disappears, but the value is always `nil` because the key still doesn't match.
+      - text: Set `decoder.keyDecodingStrategy = .convertFromSnakeCase`.
+        why: Correct. Every snake_case key maps to its camelCase property automatically.
+    answer: 3
+  - q: Users want to pull down on the rates list to refresh it. Which modifier adds that?
+    options:
+      - text: "`.task { await model.load() }`"
+        why: "`.task` runs when the view appears; it doesn't add a pull gesture."
+      - text: "`.refreshable { await model.load() }`"
+        why: Correct. It adds pull-to-refresh and shows the spinner until the async function returns.
+      - text: "`.onTapGesture { Task { await model.load() } }`"
+        why: That refreshes on a tap, not a pull, and shows no system refresh indicator.
+      - text: "`.sheet(isPresented:)`"
+        why: A sheet presents another screen; it has nothing to do with refreshing.
+    answer: 1
+  - q: In which situation is `try?` a good choice?
+    options:
+      - text: Deleting a temporary export file that may already be gone, where failure changes nothing.
+        why: Correct. The reason for failure truly doesn't matter, so discarding it is honest.
+      - text: Saving the user's new expense.
+        why: If saving fails, the user must be told; `try?` would hide it.
+      - text: Decoding the exchange-rate response.
+        why: A failed decode should become a visible error state, not a silent `nil`.
+      - text: Recording an expense against a budget limit.
+        why: The specific error, such as over limit, drives the message the user sees.
+    answer: 0
+  - q: Which declaration shows saved expenses newest first and updates on its own when another screen inserts one?
+    options:
+      - text: "`@State private var expenses: [Expense] = []`"
+        why: That's an in-memory array you'd have to fill and refresh by hand.
+      - text: "`let expenses = try? context.fetch(FetchDescriptor<Expense>())`"
+        why: A one-off fetch doesn't update when the data changes later.
+      - text: "`@Environment(\\.modelContext) private var expenses`"
+        why: That's the context used for writes, not a list of expenses.
+      - text: "`@Query(sort: \\Expense.date, order: .reverse) private var expenses: [Expense]`"
+        why: Correct. `@Query` fetches, sorts and keeps the result current as the store changes.
+    answer: 3
+  - q: "What does `some View` in `var body: some View` promise?"
+    options:
+      - text: That `body` can return a different view type each time it's called.
+        why: That's what `any View` would allow; `some` fixes one type.
+      - text: That the view is a class.
+        why: "`some` says nothing about classes; SwiftUI views are usually structs."
+      - text: That `body` returns one specific type conforming to `View`, which the compiler knows but you don't have to write.
+        why: Correct. It's an opaque type that hides a long generic name.
+      - text: That the view will be rendered on a background thread.
+        why: "`some` is about types, not threads; views render on the main actor."
+    answer: 2
+  - q: Uploading a new build to App Store Connect fails because that build number was already used for this version. What do you do?
+    options:
+      - text: Increase the Build number in the target settings, archive again and upload.
+        why: Correct. Each upload needs a new build number; the Version can stay the same.
+      - text: Delete the earlier build from TestFlight and retry.
+        why: Build numbers stay used even after you expire a build.
+      - text: Change the bundle identifier.
+        why: That creates a different app entirely, losing your App Store Connect record.
+      - text: Wait 90 days for the old build to expire.
+        why: Expiry ends testing; it doesn't free the build number.
+    answer: 0
+  - q: |-
+      Does this compile?
+      ```swift
+      @Observable
+      final class Settings {
+          var limit: Decimal = 100
+      }
+      let settings = Settings()
+      settings.limit = 200
+      ```
+    options:
+      - text: No, because `settings` is a `let` constant.
+        why: For a class, `let` fixes which object the name refers to, not the object's properties.
+      - text: No, because `@Observable` properties are read-only.
+        why: Observable properties are ordinary `var`s; the macro only adds tracking.
+      - text: Yes, but the change is lost because `settings` was copied.
+        why: Classes aren't copied on assignment; there's one object and it changed.
+      - text: Yes; the reference is constant, but the object's `var` property can still change.
+        why: "Correct. That's reference semantics: `let` freezes the reference only."
+    answer: 3

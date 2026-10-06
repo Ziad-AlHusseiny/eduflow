@@ -1,0 +1,22 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "git switch projects-grid\ngit {{0}} main                  # replay my commits on top of main\n# CONFLICT in projects.html: edit it, then\ngit add projects.html\ngit rebase {{1}}               # replay the remaining commits\n\n# this branch was already pushed for review, so update it safely\ngit push {{2}}",
+  "blanks": [
+    {
+      "answers": [
+        "rebase"
+      ]
+    },
+    {
+      "answers": [
+        "--continue"
+      ]
+    },
+    {
+      "answers": [
+        "--force-with-lease"
+      ]
+    }
+  ]
+}

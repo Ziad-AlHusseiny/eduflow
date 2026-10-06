@@ -1,0 +1,10 @@
+{
+  "title": "Wire up the main screen",
+  "prompt": "Complete Pocket Budget's main screen. Tapping a row must push `ExpenseDetail` for that expense using value-based navigation, and the plus button must present `AddExpenseView` modally while `isAdding` is true.",
+  "hints": [
+    "A value-based link names the value it carries with an argument label.",
+    "The modifier that maps a value type to a destination screen has \"navigation\" in its name and takes `for:`.",
+    "The modifier that presents a modal card over the current screen has a one-word name."
+  ],
+  "explanation": "`NavigationLink(value: expense)` only records which expense was tapped. `.navigationDestination(for: Expense.self)` tells the enclosing `NavigationStack` what to show for any `Expense` value, so the two work as a pair; without the destination, taps do nothing. `.sheet(isPresented: $isAdding)` presents the form whenever `isAdding` becomes `true`, and sets it back to `false` when the sheet is dismissed.\n\n```swift\nNavigationLink(value: expense) { … }\n.navigationDestination(for: Expense.self) { … }\n.sheet(isPresented: $isAdding) { … }\n```"
+}

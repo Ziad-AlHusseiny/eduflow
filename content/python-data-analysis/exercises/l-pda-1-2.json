@@ -1,0 +1,12 @@
+{
+  "kind": "python",
+  "files": [],
+  "starter": "# One row from Cartwheel's messy export, exactly as it arrived\nprice_text = \" $129.00\"\nquantity_text = \"2\"\ndiscount = 0.15\n\n# 1. Turn price_text into a float\nprice = None\n\n# 2. Turn quantity_text into an int\nquantity = None\n\n# 3. Line revenue = quantity * price * (1 - discount), rounded to 2 decimals\nline_revenue = None\n\n# 4. True when line_revenue is 200 or more\nis_large = None\n",
+  "solution": "price_text = \" $129.00\"\nquantity_text = \"2\"\ndiscount = 0.15\n\nprice = float(price_text.strip().replace(\"$\", \"\"))\nquantity = int(quantity_text)\nline_revenue = round(quantity * price * (1 - discount), 2)\nis_large = line_revenue >= 200\n",
+  "checks": [
+    { "id": "price-float", "test": "type(price) is float and price == 129.0" },
+    { "id": "quantity-int", "test": "type(quantity) is int and quantity == 2" },
+    { "id": "revenue", "test": "isinstance(line_revenue, float) and line_revenue == 219.3" },
+    { "id": "is-large", "test": "is_large is True" }
+  ]
+}

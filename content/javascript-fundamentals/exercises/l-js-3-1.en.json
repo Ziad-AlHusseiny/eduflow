@@ -1,0 +1,17 @@
+{
+  "title": "Ask questions about a list",
+  "prompt": "Fill in four functions using array methods instead of `for` loops. None of them may change the array they receive.\n\n- `spendingOnly(amounts)` returns a new array with only the positive amounts.\n- `formatAll(amounts)` returns every amount formatted with the provided `formatMoney`.\n- `firstBig(amounts)` returns the first amount of 10000 cents or more, or `undefined`.\n- `hasRefund(amounts)` returns `true` if any amount is negative.\n",
+  "hints": [
+    "Match each question to a method: keep some items is `filter`, transform each is `map`, first match is `find`, any match is `some`.",
+    "You can pass `formatMoney` straight to `map`, without parentheses: `amounts.map(formatMoney)`.",
+    "Each body is one line, for example `return amounts.filter((a) => a > 0);`."
+  ],
+  "explanation": "Each question maps onto one method. `filter` keeps items whose callback returns something truthy, `map` builds a same-length array from the callback's return values, `find` returns the first matching item itself (or `undefined`), and `some` returns `true` as soon as one item passes. None of these methods mutate, so the caller's array is exactly as it was. Passing `formatMoney` directly to `map` works because `map` calls it with each item as the first argument.\n",
+  "checks": {
+    "spending": "`spendingOnly` returns only positive amounts",
+    "format": "`formatAll` formats every amount",
+    "first-big": "`firstBig` returns the first amount of 10000 or more, or undefined",
+    "refund": "`hasRefund` detects negative amounts",
+    "no-mutation": "None of the functions change the input array"
+  }
+}

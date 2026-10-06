@@ -1,0 +1,16 @@
+{
+  "title": "Turn a tree into rules",
+  "prompt": "A tree is a stack of if/else statements. Prove it.\n\n1. Run the code to print the depth-2 tree. Complete `rule_predict(row)` so it returns exactly what the tree predicts (1 = churn, 0 = stay) for any customer row. The checks compare it with `tree.predict` on every training and test row.\n2. `leafy`: a `DecisionTreeClassifier(min_samples_leaf=20, random_state=42)` fitted on the training data.\n3. `top_feature`: the name of the feature with the largest `feature_importances_` value in `leafy`.",
+  "hints": [
+    "The printed tree has two levels. Each `|---` line is a condition; the `class:` lines are the return values.",
+    "Under `days_since_last_order <= 236.5` the tree asks about `orders`; under the other branch it asks about `tenure_days`.",
+    "`pd.Series(leafy.feature_importances_, index=features).idxmax()` returns the top feature's name."
+  ],
+  "explanation": "Four leaves become four `return` statements. The recent-customer branch depends on order count, and the long-silent branch is almost always churn except for the tiny group of three very long-tenured customers. That's the interaction the tree found on its own. Code like this could run in a SQL `CASE` expression, which is one reason shallow trees are easy to deploy. `days_since_last_order` dominates the importances of the bigger tree too.",
+  "checks": {
+    "rules-test": "rule_predict matches the tree on every test customer",
+    "rules-train": "rule_predict matches the tree on every training customer",
+    "leafy": "leafy is fitted with min_samples_leaf=20",
+    "top-feature": "top_feature names the most important feature"
+  }
+}

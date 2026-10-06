@@ -1,0 +1,31 @@
+{
+  "title": "Pick the locator that survives a redesign",
+  "prompt": "Splitwise-lite's expense list renders like this:\n\n```html\n<ul aria-label=\"Expenses\" class=\"mt-4 space-y-2\">\n  <li class=\"row\">Dinner: $45.50 <button class=\"btn btn-ghost\">Remove</button></li>\n  <li class=\"row\">Taxi: $18.00 <button class=\"btn btn-ghost\" data-testid=\"remove-e2\">Remove</button></li>\n  <li class=\"row\">Museum: $24.00 <button class=\"btn btn-ghost\">Remove</button></li>\n</ul>\n```\n\nNext sprint, a designer will switch the list to a card grid, change every class, and sort expenses by date instead of insertion order. Which locator for **the Remove button of the Taxi expense** is most likely to keep working, and to fail only if users really couldn't remove the taxi?",
+  "hints": [
+    "Rule out anything that depends on classes, DOM nesting or position: all three are about to change.",
+    "Prefer what a user perceives: the button's role and name, scoped to the row that mentions Taxi."
+  ],
+  "explanation": "`page.getByRole('listitem').filter({ hasText: 'Taxi' }).getByRole('button', { name: 'Remove' })` describes the target the way a person would: the Remove button in the taxi row. It doesn't care about classes, nesting or order, so the redesign leaves it intact, and it fails if the row stops being a list item with an accessible Remove button, which is a real regression for keyboard and screen reader users. If the redesign uses cards that aren't list items any more, the test fails loudly and points at a genuine accessibility change, which is worth a conversation. The CSS path and `nth(1)` break on the first class change or re-sort; the test id survives restyling but proves nothing about what users can see or reach, and only one row has it.",
+  "options": {
+    "css-path": {
+      "text": "`page.locator('ul.space-y-2 > li.row:nth-child(2) > button.btn-ghost')`",
+      "why": "It encodes classes, nesting and position, all of which the redesign changes, so it breaks even though removing the taxi still works."
+    },
+    "nth": {
+      "text": "`page.getByRole('button', { name: 'Remove' }).nth(1)`",
+      "why": "It relies on the taxi being second. After sorting by date it would silently click a different expense's Remove button, which is worse than failing."
+    },
+    "role-filter": {
+      "text": "`page.getByRole('listitem').filter({ hasText: 'Taxi' }).getByRole('button', { name: 'Remove' })`",
+      "why": "Correct. It finds the button by role and name inside the row that mentions Taxi, so classes, layout and order can change freely."
+    },
+    "text-only": {
+      "text": "`page.getByText('Remove')`",
+      "why": "It matches three buttons, so any action on it fails with a strict mode violation, and it says nothing about which expense you meant."
+    },
+    "test-id": {
+      "text": "`page.getByTestId('remove-e2')`",
+      "why": "It survives restyling, but test ids are invisible to users and the last resort: the button could lose its label or be hidden from assistive tech and this would still pass."
+    }
+  }
+}

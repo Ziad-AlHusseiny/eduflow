@@ -1,0 +1,16 @@
+{
+  "title": "Collapse seven greys into three tokens",
+  "prompt": "This shipment card is a slice of the Northwind audit: seven hard-coded greys that are really three decisions. Declare **at least three** grey custom properties on `:root` (for example `--nw-gray-900`, `--nw-gray-600`, `--nw-gray-200`), then rewrite every `.card` rule to use them with `var()`, with no hex, `rgb()` or `hsl()` values left in those rules. Keep the hierarchy: the title and status use the darkest grey, the meta and footer text a medium grey, and every border the lightest grey.",
+  "hints": [
+    "Group the seven values by job: dark text, secondary text, borders.",
+    "Pick one value per group, for example #1f2933, #616e7c and #d9dee3, and declare them in a `:root { … }` rule.",
+    "Replace each color in the `.card` rules with `var(--nw-gray-900)`, `var(--nw-gray-600)` or `var(--nw-gray-200)`."
+  ],
+  "explanation": "Seven values collapse into three because they only ever expressed three intentions: primary text, secondary text, and dividers. Declaring them once on `:root` turns them into primitives the rest of the system can reference. The next time someone needs a border grey, they pick a name instead of eyedropping a hex value, which is how the 64 greys appeared in the first place. In the next section you add a semantic layer on top of these primitives.",
+  "checks": {
+    "root-tokens": "`:root` declares at least three custom properties",
+    "no-raw-colors": "The `.card` rules contain no hard-coded hex, rgb() or hsl() colors",
+    "three-greys": "The card uses at most three distinct greys for text and borders",
+    "hierarchy": "Title is darker than meta and footer text, which are darker than the borders"
+  }
+}

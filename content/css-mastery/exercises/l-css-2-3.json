@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"sessions\">\n  <article class=\"session-card\">\n    <p class=\"time\">09:30</p>\n    <h3>Subgrid</h3>\n    <p class=\"abstract\">Aligning card content across a row without fixed heights.</p>\n    <p class=\"room\">Room A</p>\n  </article>\n  <article class=\"session-card\">\n    <p class=\"time\">10:15</p>\n    <h3>Container Queries in a Design System With Forty Components</h3>\n    <p class=\"abstract\">What changed when every component started measuring itself.</p>\n    <p class=\"room\">Room B</p>\n  </article>\n  <article class=\"session-card\">\n    <p class=\"time\">11:00</p>\n    <h3>Color Spaces for Humans Who Ship Interfaces Every Day of the Week</h3>\n    <p class=\"abstract\">oklch(), color-mix() and palettes that stay accessible.</p>\n    <p class=\"room\">Main hall</p>\n  </article>\n</section>",
+    "css": ".sessions {\n  width: 660px; /* fixed for this exercise */\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card > * { margin: 0; }\n.time { color: #6b7280; font-size: 0.85rem; }\nh3 { font-size: 1rem; }\n.room { font-weight: 600; color: #6d28d9; }\n\n/* Make each card a row subgrid here */\n"
+  },
+  "solution": {
+    "html": "<section class=\"sessions\">\n  <article class=\"session-card\">\n    <p class=\"time\">09:30</p>\n    <h3>Subgrid</h3>\n    <p class=\"abstract\">Aligning card content across a row without fixed heights.</p>\n    <p class=\"room\">Room A</p>\n  </article>\n  <article class=\"session-card\">\n    <p class=\"time\">10:15</p>\n    <h3>Container Queries in a Design System With Forty Components</h3>\n    <p class=\"abstract\">What changed when every component started measuring itself.</p>\n    <p class=\"room\">Room B</p>\n  </article>\n  <article class=\"session-card\">\n    <p class=\"time\">11:00</p>\n    <h3>Color Spaces for Humans Who Ship Interfaces Every Day of the Week</h3>\n    <p class=\"abstract\">oklch(), color-mix() and palettes that stay accessible.</p>\n    <p class=\"room\">Main hall</p>\n  </article>\n</section>",
+    "css": ".sessions {\n  width: 660px; /* fixed for this exercise */\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card > * { margin: 0; }\n.time { color: #6b7280; font-size: 0.85rem; }\nh3 { font-size: 1rem; }\n.room { font-weight: 600; color: #6d28d9; }\n\n.session-card {\n  display: grid;\n  grid-row: span 4;\n  grid-template-rows: subgrid;\n  row-gap: 8px;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "three-across",
+      "test": "return new Set($$('.session-card').map((el) => Math.round(el.getBoundingClientRect().top))).size === 1;"
+    },
+    {
+      "id": "uses-subgrid",
+      "test": "return $$('.session-card').every((el) => style(el, 'grid-template-rows').startsWith('subgrid'));"
+    },
+    {
+      "id": "abstracts-align",
+      "test": "const tops = (sel) => $$(sel).map((el) => el.getBoundingClientRect().top); const same = (arr) => Math.max(...arr) - Math.min(...arr) < 1; return same(tops('.abstract'));"
+    },
+    {
+      "id": "rooms-align",
+      "test": "const tops = (sel) => $$(sel).map((el) => el.getBoundingClientRect().top); const same = (arr) => Math.max(...arr) - Math.min(...arr) < 1; return same(tops('.room'));"
+    },
+    {
+      "id": "no-overlap",
+      "test": "return $$('.session-card').every((card) => { const kids = [...card.children].map((c) => c.getBoundingClientRect()); return kids.every((r, i) => i === 0 || r.top >= kids[i - 1].bottom - 0.5); });"
+    }
+  ]
+}

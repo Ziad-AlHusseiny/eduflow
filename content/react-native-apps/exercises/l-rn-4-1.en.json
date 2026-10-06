@@ -1,0 +1,18 @@
+{
+  "title": "Retry flaky requests with backoff",
+  "prompt": "Implement `withRetry(task, { retries, baseDelayMs, sleep })` for Trailhead's API calls on bad mountain signal.\n\n- Call `task(attempt)`, with `attempt` starting at 1, and resolve with its result.\n- If it rejects, retry up to `retries` more times. Before each retry, `await sleep(ms)` where the delays double: `baseDelayMs`, then `2 \u00d7 baseDelayMs`, then `4 \u00d7`\u2026 (for 100: 100, 200, 400).\n- Errors with a numeric `status` from 400 to 499 can't succeed by retrying: rethrow them **immediately**. The exceptions are `408` (timeout) and `429` (too many requests), which are retried.\n- Errors with no `status` (network failures) and 5xx errors are retried.\n- When every attempt fails, reject with the **last** error.\n\nAlways wait with the `sleep` you were given, so the checks can record the delays.",
+  "hints": [
+    "A `for (let attempt = 1; ; attempt++)` loop with `try { return await task(attempt); } catch (error) { \u2026 }` inside reads more simply than recursion.",
+    "In the `catch`, give up (`throw error`) when `attempt > retries` or the error isn't retryable; otherwise `await sleep(baseDelayMs * 2 ** (attempt - 1))`.",
+    "Write `isRetryable(error)` separately: no numeric status \u2192 true; 408 or 429 \u2192 true; otherwise retry only when `status >= 500`."
+  ],
+  "explanation": "Exponential backoff gives a brief signal drop time to recover without hammering a struggling server, and classifying errors keeps the app from retrying requests that will never work: a 404 or 401 fails the same way three times, just slower. Injecting `sleep` is a small design choice with a big payoff: production uses a real timer, and tests run instantly while still checking the exact delays. Libraries like TanStack Query apply the same policy for you.",
+  "checks": {
+    "returns-value": "A successful task resolves with its value, without waiting",
+    "retries-then-succeeds": "A task that fails twice then succeeds resolves",
+    "backoff": "Delays double between attempts (100, 200, 400)",
+    "gives-up": "After the last attempt, the last error is thrown",
+    "no-retry-4xx": "A 404 is thrown immediately without retrying",
+    "retry-429": "429 and 408 responses are retried"
+  }
+}

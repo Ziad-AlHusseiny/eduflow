@@ -1,0 +1,11 @@
+{
+  "title": "‏Namespace، ثم Secret، ثم إعادة تشغيل",
+  "prompt": "املأ الفراغات لإنشاء الـ namespace ‏`notes` وجعله الافتراضي، وتخزين كلمة مرور قاعدة البيانات في Secret، وفكّ ترميزها لإثبات أنها base64 فقط، وإعادة تشغيل notes-api حتى يلتقط متغيّرات البيئة المتغيّرة.",
+  "hints": [
+    "نوع الكائن الذي تنشئه أولًا هو أيضًا اسم الخيار في `set-context`.",
+    "نوع الـ Secret المخصّص لأي أزواج مفتاح-قيمة تختارها اسمه بالإنجليزية عكس «specific» (محدّد).",
+    "يفكّ `base64` الترميز بخيار قصير؛ و`kubectl rollout` له أمر فرعي يستبدل الـ Pods دون تغيير القالب يدويًا."
+  ],
+  "explanation": "```bash\nkubectl create namespace notes\nkubectl config set-context --current --namespace=notes\nkubectl create secret generic notes-db --from-literal=POSTGRES_PASSWORD=dev-only-change-me\nkubectl get secret notes-db -o jsonpath='{.data.POSTGRES_PASSWORD}' | base64 -d\nkubectl rollout restart deployment/notes-api\n```\n‏`generic` هو نوع الـ Secret للمفاتيح التي تختارها بنفسك (ومن الأنواع الأخرى `tls` و`docker-registry`). خطوة فكّ الترميز تُظهر لماذا يجب ألا تُحفظ ملفات الـ Secret في المستودع أبدًا. و`rollout restart` يستبدل الـ Pods تدريجيًا، والجديدة منها تقرأ القيم الحالية للـ ConfigMap والـ Secret عند البدء.",
+  "checks": {}
+}

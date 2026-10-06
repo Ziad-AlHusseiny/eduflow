@@ -1,0 +1,17 @@
+{
+  "title": "The add-movie form",
+  "prompt": "Build `AddMovieForm` so it adds movies to the list. Keep the `id`s `title` and `year` on the inputs.\n\n- Make both inputs **controlled** (`value` + `onChange`).\n- On submit, call `onAdd(title, year)` with the **trimmed** title and the year as a number, or `null` when the year field is empty. Don't let the page reload.\n- After adding, **clear both fields**.\n- The **Add** button is `disabled` while the trimmed title is empty.\n\n`App` already stores the movies and renders them as \"Title (Year)\", or just \"Title\" when there's no year.",
+  "hints": [
+    "Two pieces of state, both starting as `''`: `const [title, setTitle] = useState('')` and the same for `year`.",
+    "Put `onSubmit={handleSubmit}` on the `<form>` and start the handler with `e.preventDefault()`.",
+    "Derive `const trimmed = title.trim();` and use it for both `disabled={!trimmed}` and the value you pass to `onAdd`. Convert the year with `year === '' ? null : Number(year)`."
+  ],
+  "explanation": "With controlled inputs, the form's current values are ordinary state, which is what makes the rest easy. `disabled={!trimmed}` is recalculated on every keystroke, clearing the form is `setTitle('')` and `setYear('')`, and the handler reads the values straight from state. `e.preventDefault()` stops the browser's full-page submit, and converting the year in the handler keeps the raw string in state so an empty field stays empty instead of becoming 0.\n\n*Playground note: the checks submit the form by firing its `submit` event directly.*",
+  "checks": {
+    "disabled-empty": "Add is disabled when the title is empty or only spaces",
+    "enabled-with-title": "Add is enabled once a title is typed",
+    "adds-movie": "Submitting adds \"Dune (2021)\" to the list",
+    "clears-fields": "Both fields are cleared after adding",
+    "trims-title": "A padded title is trimmed, and an empty year shows the title alone"
+  }
+}

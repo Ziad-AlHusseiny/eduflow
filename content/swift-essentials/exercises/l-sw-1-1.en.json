@@ -1,0 +1,18 @@
+{
+  "title": "Which lines compile?",
+  "prompt": "Pocket Budget's first playground has a few lines that the Swift compiler will reject. Each option below is a complete snippet on its own. Select **every** snippet that compiles without errors.",
+  "hints": [
+    "Ask two questions of each snippet: is anything assigned twice with `let`, and does any operator mix two values whose types are already fixed?",
+    "Bare literals like `1200` and `4.5` have no type until Swift picks one for them, so they can adapt to each other.",
+    "An annotation such as `: Double` tells Swift how to read the literal that follows it."
+  ],
+  "explanation": "Three snippets compile. `var spent` can change, so `+=` is fine. `1200 + 4.5` is two untyped literals, so Swift makes both `Double`. `let fee: Double = 3` reads the integer literal as a `Double` because of the annotation.\n\nThe other three fail for the reasons you will meet every week: a `let` can't be reassigned, an `Int` value and a `Double` value can't be added without `Double(rent)`, and a `String` variable can never hold an `Int`.",
+  "options": {
+    "reassign-let": { "text": "`let budget = 500; budget = 450`", "why": "A `let` constant is assigned exactly once. Use `var` if the budget really changes." },
+    "increment-var": { "text": "`var spent = 0; spent += 12`", "why": "Compiles. `spent` is a variable of type `Int`, and adding an `Int` to it is allowed." },
+    "literal-sum": { "text": "`let total = 1200 + 4.5`", "why": "Compiles. Both operands are literals, so Swift chooses `Double` for both and `total` is `1204.5`." },
+    "mixed-sum": { "text": "`let rent = 1200; let coffee = 4.5; let sum = rent + coffee`", "why": "Fails. `rent` is already an `Int` and `coffee` a `Double`; write `Double(rent) + coffee`." },
+    "string-to-int": { "text": "`var label: String = \"Coffee\"; label = 42`", "why": "Fails. A variable keeps its type for life; `label` can only ever hold a `String`." },
+    "annotated-double": { "text": "`let fee: Double = 3`", "why": "Compiles. The annotation tells Swift to treat the integer literal `3` as a `Double`." }
+  }
+}

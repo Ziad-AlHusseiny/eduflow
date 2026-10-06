@@ -1,0 +1,20 @@
+{
+  "title": "من kubectl apply إلى container يعمل",
+  "prompt": "تشغّل `kubectl apply -f deployment.yaml` لـ notes-api مع 3 نسخ على cluster جديد. رتّب ما يحدث بعد ذلك.",
+  "hints": [
+    "لا شيء يحدث في أي مكان قبل أن يُخزَّن الكائن.",
+    "الـ Deployment لا ينشئ الـ Pods بنفسه؛ بل يدير شيئًا يفعل ذلك.",
+    "يجب أن يُسند الـ Pod إلى node قبل أن يتصرّف أي kubelet بشأنه."
+  ],
+  "explanation": "يرسل kubectl الكائن إلى الـ API server، الذي يتحقّق منه ويخزّنه في etcd. يرى الـ controller الخاص بالـ Deployments كائن Deployment جديدًا فينشئ ReplicaSet؛ وينشئ الـ controller الخاص بالـ ReplicaSet ثلاثة كائنات Pod. يُسند الـ scheduler كل Pod غير مُجدوَل إلى node. يسحب الـ kubelet على كل node مختار الـ image ويشغّل الـ containers، ثم يُبلغ عن حالة الـ Pod عبر الـ API server. كل خطوة مكوّن منفصل يتفاعل مع تغيير كان يراقبه.",
+  "items": {
+    "send": "يرسل kubectl الـ Deployment إلى الـ API server",
+    "store": "يتحقّق الـ API server منه ويخزّنه في etcd",
+    "rs": "ينشئ الـ controller الخاص بالـ Deployments كائن ReplicaSet",
+    "pods": "ينشئ الـ controller الخاص بالـ ReplicaSet ثلاثة كائنات Pod",
+    "schedule": "يُسند الـ scheduler كل Pod إلى node",
+    "start": "يسحب الـ kubelet في كل node الـ image ويشغّل الـ containers",
+    "report": "يُبلغ الـ kubelet عن حالة الـ Pod إلى الـ API server"
+  },
+  "checks": {}
+}

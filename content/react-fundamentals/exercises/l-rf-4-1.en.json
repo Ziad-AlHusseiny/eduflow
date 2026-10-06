@@ -1,0 +1,18 @@
+{
+  "title": "Assemble the Watchlist",
+  "prompt": "All the components are written; `App` isn't wired up. Make it work:\n\n- Keep the **movies** and the **filter** (`'all'`, `'to-watch'`, `'watched'`) in state, starting from `INITIAL` and `'all'`.\n- `#count` shows how many movies are unwatched, as **N to watch**.\n- Adding through the form appends a new, unwatched movie.\n- **Mark watched** toggles a movie, **Remove** deletes it, and the filter buttons change which movies `MovieList` receives.\n\nOnly change `App`. (Saving to localStorage is left out: the playground blocks storage. In your Vite project, use the `storage.js` module from the lesson.)",
+  "hints": [
+    "Two `useState` calls: `useState(INITIAL)` and `useState('all')`.",
+    "Derive `left` and `visible` from them during render; neither should be state.",
+    "Three handlers: add (`[...movies, { id: nextId++, title, watched: false }]`), toggle (`movies.map(…)` with a spread), remove (`movies.filter(…)`). Pass them and `setFilter` down."
+  ],
+  "explanation": "`App` owns exactly two pieces of state. The count and the visible list are derived on every render, so they can never disagree with the movies. Each handler replaces the array instead of mutating it (spread to add, `map` to toggle, `filter` to remove), and the children only call the functions they're given. Notice that the empty state, the `aria-pressed` buttons and the trimmed input all came for free from components you already wrote: the wiring is all that was left.",
+  "checks": {
+    "count": "Shows \"2 to watch\" at the start",
+    "add": "Adding \"Paddington 2\" appends it and updates the count",
+    "toggle": "Mark watched on Past Lives updates its button and the count",
+    "filter": "The Watched and To watch filters show the right movies",
+    "remove": "Remove deletes a movie and updates the count",
+    "empty": "Removing the last visible movie shows \"No movies here yet.\""
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"day\">\n  <h2>Day 1</h2>\n  <article class=\"speaker\">\n    <div class=\"photo\" role=\"img\" aria-label=\"Ana Ortiz\"></div>\n    <p>Ana Ortiz</p>\n  </article>\n</section>\n<section class=\"day\">\n  <h2>Day 2</h2>\n  <p>Twenty-eight sessions…</p>\n</section>\n<div class=\"toast\" role=\"status\">Saved to your schedule</div>",
+    "css": ".speaker { width: 160px; }\n.photo {\n  width: 100%;\n  background: #ede9fe;\n  border-radius: 12px;\n}\n.toast {\n  position: fixed;\n  left: 16px;\n  bottom: 16px;\n  padding: 8px 14px;\n  border-radius: 8px;\n  background: #1f2937;\n  color: white;\n  animation: toast-in 250ms ease-out;\n}\n\n@keyframes toast-in {\n  from { left: -320px; }\n  to { left: 16px; }\n}\n"
+  },
+  "solution": {
+    "html": "<section class=\"day\">\n  <h2>Day 1</h2>\n  <article class=\"speaker\">\n    <div class=\"photo\" role=\"img\" aria-label=\"Ana Ortiz\"></div>\n    <p>Ana Ortiz</p>\n  </article>\n</section>\n<section class=\"day\">\n  <h2>Day 2</h2>\n  <p>Twenty-eight sessions…</p>\n</section>\n<div class=\"toast\" role=\"status\">Saved to your schedule</div>",
+    "css": ".speaker { width: 160px; }\n.photo {\n  width: 100%;\n  background: #ede9fe;\n  border-radius: 12px;\n}\n.toast {\n  position: fixed;\n  left: 16px;\n  bottom: 16px;\n  padding: 8px 14px;\n  border-radius: 8px;\n  background: #1f2937;\n  color: white;\n  animation: toast-in 250ms ease-out;\n}\n.photo { aspect-ratio: 1; }\n\n.day {\n  content-visibility: auto;\n  contain-intrinsic-size: auto 1200px;\n}\n\n@keyframes toast-in {\n  from { translate: -336px 0; opacity: 0; }\n  to { translate: 0 0; opacity: 1; }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "toast-keyframes-cheap",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const kf = all.find((r) => r instanceof CSSKeyframesRule && r.name === 'toast-in'); if (!kf) return false; const props = [...kf.cssRules].flatMap((f) => [...f.style]); const cheap = ['translate', 'transform', 'opacity', 'scale']; return props.length > 0 && props.every((p) => cheap.includes(p)) && props.some((p) => p === 'translate' || p === 'transform');"
+    },
+    {
+      "id": "toast-still-animates",
+      "test": "return style('.toast', 'animation-name') === 'toast-in' && parseFloat(style('.toast', 'animation-duration')) > 0;"
+    },
+    {
+      "id": "toast-final-position",
+      "test": "await tick(400); const r = $('.toast').getBoundingClientRect(); return Math.abs(r.left - 16) < 1;"
+    },
+    {
+      "id": "skip-offscreen",
+      "test": "return $$('.day').every((d) => style(d, 'content-visibility') === 'auto');"
+    },
+    {
+      "id": "intrinsic-size",
+      "test": "return $$('.day').every((d) => { const v = style(d, 'contain-intrinsic-size'); return v.includes('auto') && /\\d/.test(v); });"
+    },
+    {
+      "id": "photo-reserves-space",
+      "test": "const r = $('.photo').getBoundingClientRect(); return r.width > 0 && Math.abs(r.height - r.width) < 1;"
+    }
+  ]
+}

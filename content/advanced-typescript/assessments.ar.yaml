@@ -1,0 +1,485 @@
+checkpoints:
+  s-at-1:
+    - q: |-
+        يخشى مراجع أن يصل رقم البطاقة إلى `saveAddress`. ما الصحيح؟
+        ```ts
+        type Address = { line1: string; city: string };
+        function saveAddress(a: Address) { /* sends a to the address service */ }
+        const form = { line1: '12 Nile St', city: 'Cairo', cardNumber: '4242 4242 4242 4242' };
+        saveAddress(form);
+        ```
+      options:
+        - text: يفشل في الترجمة، لأن `cardNumber` خاصية زائدة.
+          why: فحوص الخصائص الزائدة لا تنطبق إلا على الكائنات الحرفية الطازجة. و`form` متغيّر، فالحقل الإضافي مسموح.
+        - text: يُزيل TypeScript الحقل `cardNumber` قبل الاستدعاء، لأن `Address` لا يعلنه.
+          why: تُمحى الأنواع؛ لا تضيف خصائص ولا تُزيلها وقت التشغيل أبدًا.
+        - text: لا يمرّ في الترجمة إلا إذا كتبت `form as Address`.
+          why: لا حاجة إلى تأكيد. التنميط البنيوي يقبل `form` أصلًا، وهذا بالضبط مصدر الخطر.
+        - text: يمرّ في الترجمة، ويُمرَّر الكائن كله وقت التشغيل بما فيه رقم البطاقة؛ انسخ الحقول التي تحتاجها صراحة.
+          why: صحيح. التنميط البنيوي يسمح بالخصائص الإضافية، فالإصلاح الآمن الوحيد بناء كائن جديد فيه `line1` و`city`.
+      answer: 3
+    - q: |-
+        قيمة `quantityInStock` هي `null` أثناء فحص المخزون، و`0` حين ينفد المنتج. أيّ تغيير يجعل هذه التسمية صحيحة؟
+        ```ts
+        function stockLabel(quantityInStock: number | null): string {
+          if (!quantityInStock) return 'Checking stock…';
+          return quantityInStock === 0 ? 'Sold out' : `${quantityInStock} left`;
+        }
+        ```
+      options:
+        - text: استبدل `!quantityInStock` بـ `quantityInStock === null`.
+          why: صحيح. فحص الصدقية يلتقط `0` أيضًا، فلا يمكن الوصول إلى 'Sold out'. والمقارنة مع `null` تفصل بين المعنيين.
+        - text: أضف `if (typeof quantityInStock === 'number')` بعد السطر الأول.
+          why: بعد السطر الأول تكون `0` قد أعادت 'Checking stock…'؛ ولا يستطيع فحص لاحق إنقاذها.
+        - text: اكتب `quantityInStock!` في المقارنة.
+          why: تأكيد عدم الفراغ يغيّر النوع فقط، لا مسار التنفيذ. وتبقى `0` تأخذ الفرع الأول.
+        - text: "احذف نوع الإرجاع `: string` كي يستنتجه TypeScript."
+          why: نوع الإرجاع ليس المشكلة؛ فحص الصدقية هو المشكلة.
+      answer: 0
+    - q: يضيف Cartwheel المدفوعات. الدفعة المعلّقة ليس لها معرّف تحصيل؛ والمحصَّلة لها دائمًا `captureId`؛ والمستردّة لها دائمًا `captureId` و`refundedAt` و`refundCents`. أيّ نوع يجعل التركيبات المستحيلة تفشل في الترجمة؟
+      options:
+        - text: "`{ status: 'pending' | 'captured' | 'refunded'; captureId?: string; refundedAt?: string; refundCents?: number }`"
+          why: الحقول الاختيارية مستقلة عن `status`، فما زالت الدفعة المستردّة دون `refundCents` تمرّ في الترجمة.
+        - text: "`{ status: string; details: Record<string, unknown> }`"
+          why: هذا يقبل أي حالة وأي تفاصيل، فلا يمنع شيئًا ويفرض التحويلات في كل مكان.
+        - text: union من ثلاثة أنواع كائنات، لكلٍّ منها `status` حرفي والحقول التي تملكها تلك الحالة بالضبط، وكلها إلزامية.
+          why: صحيح. كل شكل يحمل بياناته الإلزامية، و`status` الحرفي يتيح للـ narrowing إيجاد الشكل الصحيح.
+        - text: "`Partial<{ status: string; captureId: string; refundedAt: string; refundCents: number }>`"
+          why: جعل كل حقل اختياريًا يسمح بحالات مستحيلة أكثر حتى من الأصل.
+      answer: 2
+    - q: |-
+        ما هو `ShippingMethod`؟
+        ```ts
+        const SHIPPING_FEES = { standard: 499, express: 1299 } satisfies Record<string, number>;
+        type ShippingMethod = keyof typeof SHIPPING_FEES;
+        ```
+      options:
+        - text: "`string`، لأن الكائن فُحص مقابل `Record<string, number>`"
+          why: هذا ما سيعطيك إياه التعليق النوعي. أما `satisfies` فتفحص الكائن وتحتفظ بنوعه المستنتَج.
+        - text: "`'standard' | 'express'`"
+          why: صحيح. النوع المستنتَج فيه المفتاحان المكتوبان بالضبط، فتعطي `keyof` اسميهما الحرفيين.
+        - text: "`number`، نوع القيم"
+          why: "`keyof` تعطي أسماء الخصائص لا القيم؛ أما القيم فستكون `(typeof SHIPPING_FEES)[ShippingMethod]`."
+        - text: "`'standard' | 'express' | string`"
+          why: لا يوجد index signature في النوع المستنتَج، فليس `string` جزءًا من union المفاتيح.
+      answer: 1
+    - q: في `switch (order.status)` حالة `case 'canceled':` بحرف L واحد، ولا تتطابق أبدًا. أيّ تغيير يحوّل هذا الخطأ الإملائي إلى خطأ ترجمة؟
+      options:
+        - text: أضف فرع `default:` يسجّل الحالات المجهولة.
+          why: هذا يساعد وقت التشغيل، لكن الـ compiler ما زال يقبل الحالة المكتوبة خطأً.
+        - text: علّق `order` بنوع `any` كي يفحص TypeScript كل حالة.
+          why: "`any` تُطفئ الفحص؛ ستُخفي الخطأ الإملائي أكثر."
+        - text: أعِد كتابة الـ `switch` كسلسلة `if`/`else`.
+          why: مع `status` من نوع `string`، تمرّ `=== 'canceled'` في الترجمة بالسرور نفسه الذي تمرّ به الـ `case`.
+        - text: حدّد نوع `status` كـ union من الحالات الحرفية الخمس بدل `string`.
+          why: صحيح. مقابل union حرفي، يُبلَّغ عن `case 'canceled':` بأنها غير قابلة للمقارنة مع `OrderStatus`.
+      answer: 3
+  s-at-2:
+    - q: أيّ توقيع يجعل `firstWhere(orders, (o) => o.status === 'shipped')` تُعيد `Order | undefined`، و`firstWhere(products, …)` تُعيد `Product | undefined`، مع تحديد نوع `o` في الـ callback؟
+      options:
+        - text: "`function firstWhere<T>(items: T[], predicate: (item: T) => boolean): T | undefined`"
+          why: صحيح. يُستنتج `T` من `items`، ثم يعطي الـ callback نوع معامله ويعطي النتيجة نوعها.
+        - text: "`function firstWhere(items: unknown[], predicate: (item: unknown) => boolean): unknown`"
+          why: دون معامل نوع، يكون `o` في الـ callback من نوع `unknown` وكذلك النتيجة؛ وسيضطر المستدعون إلى التحويل.
+        - text: "`function firstWhere<T>(items: unknown[], predicate: (item: T) => boolean): T | undefined`"
+          why: "لم يعد لـ `T` موقع استنتاج سوى الـ callback غير المعلَّق، فينتهي به الأمر `unknown`."
+        - text: "`function firstWhere(items: any[], predicate: (item: any) => boolean): any`"
+          why: هذا يمرّ في الترجمة في كل مكان ولا يفحص شيئًا؛ الأخطاء الإملائية في الـ callback تمرّ دون أن يلاحظها أحد.
+      answer: 0
+    - q: |-
+        ما نوع `t.value`؟
+        ```ts
+        function tag<T>(value: T) {
+          return { value };
+        }
+        const t = tag('shipped');
+        ```
+      options:
+        - text: "`'shipped'`"
+          why: كانت القيمة الحرفية ستنجو لو كان `T` مقيَّدًا بـ `string` أو معرَّفًا بـ `const`. هنا هي متداخلة في كائن فتتّسع.
+        - text: "`unknown`"
+          why: وجد TypeScript مرشّحًا، الوسيط النصي، فلا يلجأ إلى `unknown`.
+        - text: "`any`"
+          why: الـ inference لا ينتج `any` أبدًا من وسيط نصي حرفي.
+        - text: "`string`"
+          why: صحيح. `T` غير مقيَّد ويظهر داخل الكائن المُعاد، فيتّسع المرشّح الحرفي.
+      answer: 3
+    - q: "يجب أن تُرفض `setDefault(['standard', 'express'], 'overnight')` لأن `'overnight'` ليست أحد الخيارات. أيّ توقيع يفعل ذلك؟"
+      options:
+        - text: "`function setDefault<const T>(options: T[], fallback: T)`"
+          why: "ما زال `fallback` موقع استنتاج، فتُضاف `'overnight'` إلى `T` بدل أن تُفحص."
+        - text: "`function setDefault<T extends string>(options: T[], fallback: T)`"
+          why: القيد يحتفظ بالقيم الحرفية، لكن `fallback` ما زال يساهم بمرشّح، فيكبر `T` ليشمل `'overnight'`.
+        - text: "`function setDefault<T extends string>(options: T[], fallback: NoInfer<T>)`"
+          why: صحيح. القيد يُبقي الخيارات حرفية، و`NoInfer` تجعل `fallback` للفحص فقط.
+        - text: "`function setDefault<T>(options: T[], fallback: NoInfer<T>)`"
+          why: دون قيد أولي، تُستنتج المصفوفة على أنها `string[]`، فيجتاز أي نص الفحص.
+      answer: 2
+    - q: مستدعو عميل Cartwheel يكتبون `api.get<Order>('/orders/1042')` في كل مكان، وفي الأسبوع الماضي كتب أحدهم `api.get<Order[]>('/orders/1042')`. ما الإصلاح الأفضل؟
+      options:
+        - text: اجعل العميل مفهرسًا بنوع خريطة مسارات، فيُبحث عن نوع الاستجابة من المسار ولا يمرّر المستدعون أي وسيط نوع.
+          why: صحيح. يصبح المسار موقع الاستنتاج الوحيد، ولا يعود نوع الاستجابة الخاطئ شيئًا يستطيع المستدعي كتابته.
+        - text: أضف قاعدة ESLint تتطلّب وسيط نوع في كل استدعاء لـ `get`.
+          why: هذا يفرض كتابة وسيط نوع، لا كتابة الصحيح منه؛ والخطأ كان وسيط نوع خاطئًا.
+        - text: غيّر معامل النوع الافتراضي لـ `get` إلى `any`.
+          why: هذا يُزيل ما تبقّى من فحص ويجعل الاستخدام الخاطئ أكثر صمتًا.
+        - text: اجعل `get` تُعيد `unknown` ودع كل مستدعٍ يحوّل بـ `as`.
+          why: هذا ينقل الادّعاء غير المفحوص نفسه إلى `as` في كل موضع استدعاء؛ إنه أأمن من `any` لكنه ليس إصلاحًا.
+      answer: 0
+    - q: "تُستدعى `function useQuery<TData, TKey extends string>(key: TKey, fetcher: () => Promise<TData>)` هكذا `useQuery<Order>('order-1042', loadOrder)` فتفشل مع \"Expected 2 type arguments, but got 1\". ما الإصلاح الأفضل في موضع الاستدعاء؟"
+      options:
+        - text: اكتب `useQuery<Order, string>(…)` في كل مكان.
+          why: يمرّ في الترجمة، لكن المفتاح يفقد نوعه الحرفي ويصبح كل موضع استدعاء أكثر ضجيجًا.
+        - text: احذف `<Order>` ودع معاملَي النوع يُستنتجان، `TData` من نوع إرجاع `loadOrder`.
+          why: صحيح. وسائط النوع الصريحة إمّا كلها أو لا شيء؛ ودون أيٍّ منها يستنتج TypeScript الاثنين من الوسائط.
+        - text: غلّف المفتاح بـ `NoInfer`.
+          why: "`NoInfer` تتحكّم في مواقع الاستنتاج؛ لا تجعل وسائط النوع الصريحة جزئية."
+        - text: حوّل نتيجة الاستدعاء إلى `any`.
+          why: الخطأ يتعلّق بوسائط النوع في الاستدعاء، ولا يستطيع تحويل على النتيجة إصلاحه.
+      answer: 1
+  s-at-3:
+    - q: |-
+        ما هو `F`؟
+        ```ts
+        type Flags<T> = { [K in keyof T as T[K] extends boolean ? K : never]: T[K] };
+        type F = Flags<{ giftWrap: boolean; note: string; express: boolean }>;
+        ```
+      options:
+        - text: "`{ giftWrap: boolean; note: never; express: boolean }`"
+          why: تحويل مفتاح إلى `never` في جملة `as` يُزيله كليًا؛ لا يُبقيه بنوع `never`.
+        - text: "`'giftWrap' | 'express'`"
+          why: هذه ستكون نتيجة فهرسة الـ mapped type بـ `[keyof T]`. أما هذا النوع فيحتفظ بشكل الكائن.
+        - text: "`{ note: string }`"
+          why: الشرط يُبقي الخصائص من نوع boolean ويُسقط الباقي، لا العكس.
+        - text: "`{ giftWrap: boolean; express: boolean }`"
+          why: صحيح. جملة `as` ترسل المفاتيح التي ليست قيمها boolean إلى `never`، فتُسقط من النتيجة.
+      answer: 3
+    - q: |-
+        ما هو `X`؟
+        ```ts
+        type IdOf<T> = T extends { id: infer I } ? I : never;
+        type X = IdOf<{ id: number } | { id: string } | { name: string }>;
+        ```
+      options:
+        - text: "`number | string`"
+          why: "صحيح. يتوزّع الشرط على الـ union: عضوان يلتقطان نوع `id` لديهما، والثالث يصبح `never` ويختفي."
+        - text: "`never`، لأن الـ union ككل ليس فيه `id` مشترك"
+          why: هذه ستكون النتيجة غير التوزيعية. معامل النوع المجرّد يجعل الفحص يُنفَّذ لكل عضو.
+        - text: "`number`، من العضو الأول فقط"
+          why: كل عضو يُعالَج، وتُجمع النتائج.
+        - text: "`unknown`، لأن `infer` لا تستطيع الالتقاط من union"
+          why: "`infer` تعمل لكل عضو بعد التوزيع، فيكون كل التقاط دقيقًا."
+      answer: 0
+    - q: ما هو `` `on${Capitalize<'shipped' | 'cancelled'>}` ``؟
+      options:
+        - text: "`'onshipped' | 'oncancelled'`"
+          why: "`Capitalize` تكبّر الحرف الأول من كل عضو قبل أن يُضمّ إلى `on`."
+        - text: "`` `on${string}` ``"
+          why: مع أعضاء حرفية في الداخل، يتوسّع القالب إلى نصوص محدّدة بدل نمط.
+        - text: "`'onShipped' | 'onCancelled'`"
+          why: صحيح. يتوزّع الـ union عبر القالب، ويُكبَّر الحرف الأول من كل عضو.
+        - text: "`'onShipped | Cancelled'`"
+          why: الـ unions لا تُضمّ في نص واحد؛ كل عضو ينتج نصه الحرفي الخاص.
+      answer: 2
+    - q: |-
+        ما هو `Draft<{ readonly id: number; status: string }>`؟
+        ```ts
+        type Draft<T> = { -readonly [K in keyof T]?: T[K] };
+        ```
+      options:
+        - text: "`{ readonly id: number; status: string }`، دون تغيير"
+          why: المعدِّلان `-readonly` و`?` يغيّران الخاصيتين كلتيهما.
+        - text: "`{ id: number; status: string }`"
+          why: "تُطبَّق `-readonly`، لكن `?` تجعل أيضًا كل خاصية اختيارية."
+        - text: "`{ readonly id?: number; status?: string }`"
+          why: البادئة `-` تُزيل `readonly` من `id`؛ ولا يُضاف إلا معدِّل الاختيارية.
+        - text: "`{ id?: number; status?: string }`"
+          why: صحيح. `-readonly` تنزع معدِّل القراءة فقط و`?` تجعل كل خاصية اختيارية.
+      answer: 3
+    - q: |-
+        ما هو `ElementOf<readonly string[]>`؟
+        ```ts
+        type ElementOf<T> = T extends (infer E)[] ? E : T;
+        ```
+      options:
+        - text: "`string`"
+          why: المصفوفة `readonly string[]` غير قابلة للإسناد إلى النمط القابل للتعديل `(infer E)[]`، فلا يُؤخذ الفرع الصادق.
+        - text: "`readonly string[]`"
+          why: صحيح. المصفوفات للقراءة فقط تفتقد methods التعديل، فلا تطابق نمط مصفوفة قابلة للتعديل؛ استخدم `readonly (infer E)[]` في النمط.
+        - text: "`never`"
+          why: الفرع الكاذب يُعيد `T` نفسه، لا `never`.
+        - text: "`unknown`"
+          why: لا شيء هنا ينتج `unknown`؛ النمط ببساطة لا يطابق.
+      answer: 1
+  s-at-4:
+    - q: |-
+        ما الخطأ في هذا الكود؟
+        ```ts
+        const id = JSON.parse(body).orderId as OrderId;
+        cancelOrder(id);
+        ```
+      options:
+        - text: لا شيء؛ يُفحص الوسم حين تُنفَّذ `cancelOrder`.
+          why: الوسوم لا وجود لها وقت التشغيل، فلا شيء يفحص أي شيء حين تُنفَّذ الدالة.
+        - text: "`JSON.parse` تُعيد نصًا دائمًا، فيكون `orderId` نصًا."
+          why: "`JSON.parse` تُعيد ما يحتويه JSON أيًّا كان؛ والمشكلة هنا هي التحويل غير المفحوص."
+        - text: التحويل يسِم قيمة لم يتحقّق منها أحد؛ حلّلها بالمُنشئ الذكي، مثل `toOrderId(…)`، بدلًا من ذلك.
+          why: صحيح. الوسم لا معنى له إلا حين يُطبَّق بعد التحقّق، في مكان واحد.
+        - text: الـ branded types لا يمكن استخدامها مع قيم أتت من JSON.
+          why: يمكن ذلك، ما دامت قيمة JSON تمرّ بمُنشئ متحقِّق أولًا.
+      answer: 2
+    - q: "مستدعٍ لـ `charge(): Result<Receipt, PaymentError>` يكتب `if (result.error) showError(result.error)`. ماذا يحدث؟"
+      options:
+        - text: لا يمرّ في الترجمة، لأن `error` لا توجد إلا في عضو الإخفاق؛ افحص `result.ok` أولًا.
+          why: صحيح. الوصول إلى خاصية في union يتطلّب وجودها في كل عضو، فتضيّق النوع بالمميِّز.
+        - text: يمرّ في الترجمة ويعمل، لأن `error` تكون `undefined` عند النجاح.
+          why: عضو النجاح لا يعلن `error` إطلاقًا، فيرفض TypeScript قراءتها قبل التضييق.
+        - text: يمرّ في الترجمة، لكن الشرط كاذب دائمًا.
+          why: لا يمرّ في الترجمة أصلًا.
+        - text: يرمي خطأً وقت التشغيل حين تكون النتيجة نجاحًا.
+          why: قراءة خاصية غائبة تعطي `undefined` في JavaScript، لكن TypeScript يوقف الكود قبل أن يُنفَّذ أصلًا.
+      answer: 0
+    - q: يعرض خادم Cartwheel السلة الأولية في الصفحة كـ JSON. البيانات السيئة هناك تعني نشرًا معطوبًا، لا شيئًا يستطيع العميل إصلاحه. كيف يجب أن يتعامل العميل معها؟
+      options:
+        - text: type predicate داخل `if`، مع الرجوع إلى سلة فارغة حين يفشل.
+          why: عرض سلة فارغة بصمت يُخفي خطأ النشر عن الجميع، بما في ذلك أدوات المراقبة لديك.
+        - text: "`const cart = JSON.parse(text) as Cart`."
+          why: التحويل غير المفحوص يجعل النشر المعطوب يظهر كأخطاء مربكة بعيدة عن السبب.
+        - text: محلّل يُعيد `Result`، مع إعادة المحاولة حين يفشل.
+          why: إعادة المحاولة لا تُصلح بيانات عرضها الخادم خطأً؛ هذا ليس إخفاقًا متوقَّعًا قابلًا للتعافي.
+        - text: دالة تأكيد تُستدعى مرة واحدة عند البدء وترمي خطأً واضحًا، تلتقطه أداة الإبلاغ عن الأخطاء لديك.
+          why: صحيح. البيانات السيئة هنا خطأ برمجي، فالفشل بصوت عالٍ عند الحدود هو السلوك الصحيح.
+      answer: 3
+    - q: |-
+        ما المشكلة في method الـ emitter هذه؟
+        ```ts
+        on(event: keyof Events, handler: (payload: Events[keyof Events]) => void): void
+        ```
+      options:
+        - text: الدوال السهمية لا يمكن تمريرها كـ handlers.
+          why: أي دالة بتوقيع متوافق يمكن تمريرها؛ المسألة هي أيّ توقيع هذا.
+        - text: حمولة الـ handler هي الـ union من حمولات كل الأحداث، لا حمولة الحدث المشترَك فيه.
+          why: "صحيح. دون معامل نوع `K`، لا شيء يربط الاسم بحمولته. استخدم `on<K extends keyof Events>(event: K, handler: (payload: Events[K]) => void)`."
+        - text: تتّسع أسماء الأحداث إلى `string`، فتُقبل الأخطاء الإملائية.
+          why: "`keyof Events` هو union من أسماء الأحداث، فما زالت الأخطاء الإملائية مرفوضة؛ ما يضيع هو الحمولة."
+        - text: لا شيء؛ هذا هو التوقيع الموصى به.
+          why: يمرّ في الترجمة، لكن على كل handler أن يضيّق حمولة union ليس فيها مميِّز يُضيَّق عليه.
+      answer: 1
+    - q: تضيف `'on-hold'` إلى `OrderStatus`. أيّ جدول بحث يفشل في الترجمة إلى أن يحصل على مدخل `'on-hold'`؟
+      options:
+        - text: "`const LABELS = { … } satisfies Record<OrderStatus, string>`"
+          why: صحيح. `satisfies` تفحص الكائن مقابل الـ record الكامل، فيكون المفتاح الناقص خطأً.
+        - text: "`const LABELS: Partial<Record<OrderStatus, string>> = { … }`"
+          why: "`Partial` تجعل كل مفتاح اختياريًا، فالحالة الناقصة مسموحة."
+        - text: "`const LABELS: Record<string, string> = { … }`"
+          why: أي مفاتيح نصية مسموحة، فلا يعرف الجدول أيّ الحالات موجودة.
+        - text: "`const LABELS = { … } as Record<OrderStatus, string>`"
+          why: التأكيد لا يفحص إلا تداخل الأنواع، فلا يُبلَّغ عن المفتاح الناقص.
+      answer: 0
+  s-at-5:
+    - q: سكربت يُشغَّل بـ `node checkout.ts` (تجريد الأنواع المدمج في Node) يحتوي `enum Channel { Web = 'web' }` ويفشل عند البدء. أيّ خيار في الـ compiler كان سيعلّم الـ enum أثناء `tsc`؟
+      options:
+        - text: "`isolatedModules`"
+          why: يلتقط البُنى التي تحتاج معلومات من ملفات أخرى، مثل إعادة تصدير نوع دون `type`، لكنه يسمح بالـ enums.
+        - text: "`verbatimModuleSyntax`"
+          why: يتحكّم في طريقة توليد الـ imports والـ exports؛ وما زالت الـ enums مسموحة.
+        - text: "`erasableSyntaxOnly`"
+          why: صحيح. يرفض الصياغة التي تولّد كودًا وقت التشغيل، مثل الـ enums، التي لا يستطيع تجريد الأنواع التعامل معها.
+        - text: "`noEmit`"
+          why: يمنع `tsc` من كتابة الملفات؛ ولا يضيف أي فحوص.
+      answer: 2
+    - q: |-
+        لماذا يمكن أن يُنفَّذ هذا الخصم من البطاقة والسلة غير مقفلة؟
+        ```ts
+        async function pay(cartId: string, needsLock: boolean) {
+          if (needsLock) {
+            using lock = acquireCartLock(cartId);
+          }
+          await charge(cartId);
+        }
+        ```
+      options:
+        - text: "`using` غير مسموحة في الدوال `async`."
+          why: إنها مسموحة؛ وللتنظيف غير المتزامن ستستخدم `await using`، لكن هذه ليست المشكلة هنا.
+        - text: يجب أن تكون `await using`، لأن الدالة `async`.
+          why: "`await using` للموارد ذات التحرير غير المتزامن؛ والمشكلة الحقيقية في نطاق القفل."
+        - text: القفل لا يُحرَّر أبدًا.
+          why: إنه يُحرَّر، لكن مبكرًا جدًا.
+        - text: يُحرَّر القفل عند نهاية كتلة `if`، قبل أن تُنفَّذ `charge`.
+          why: صحيح. `using` محصورة في كتلتها؛ أعلنها في الكتلة التي تحتوي استدعاء `charge` أيضًا.
+      answer: 3
+    - q: "يقع `interface Window { dataLayer: unknown[] }` في المستوى الأعلى من `src/analytics.ts`، وفيه imports أيضًا. وما زال `window.dataLayer` خطأً. لماذا؟"
+      options:
+        - text: في ملف وحدة، يكون الـ interface في المستوى الأعلى محلّيًا لتلك الوحدة؛ غلّفه بـ `declare global { … }` ليندمج مع `Window` العام.
+          why: صحيح. الملفات التي فيها imports أو exports وحدات، ولا يصل إلى النطاق العام من داخل إحداها إلا `declare global`.
+        - text: "`Window` نوع مدمج ولا يمكن توسيعه."
+          why: يمكن ذلك؛ توسيع `Window` بدمج التصريحات أمر شائع.
+        - text: يجب أن يكون اسمًا مستعارًا بـ `type` بدل interface.
+          why: الأسماء المستعارة للأنواع لا تندمج أبدًا، فلن يوسّع `type` النوع `Window` أيضًا.
+        - text: دمج الـ interfaces لا يعمل إلا في ملفات `.d.ts`.
+          why: الدمج يعمل في ملفات `.ts` أيضًا؛ المهم هو ما إذا كان التصريح في النطاق العام.
+      answer: 0
+    - q: مستودع أحادي (monorepo) فيه ست حزم تُفحص أنواعها كبرنامج واحد كبير، وكل تغيير صغير يعيد فحصها كلها في 90 ثانية. أيّ تغيير يساعد أكثر؟
+      options:
+        - text: أطفئ `strict` في الحزمة الأبطأ.
+          why: هذا يقلّل جودة الفحص، ونادرًا ما يكون `strict` هو الكلفة الرئيسية.
+        - text: "قسّمه إلى مراجع مشاريع (`composite: true` لكل حزمة، و`tsc -b` في الجذر)، فلا يُعاد فحص الحزم التي لم تتغيّر."
+          why: صحيح. تُبنى كل حزمة مرة واحدة وتُعاد استخدام تصريحاتها، فلا يُعيد التغيير إلا فحص ما يعتمد عليه.
+        - text: "اضبط `skipLibCheck: false` لالتقاط مزيد من المشكلات مبكرًا."
+          why: هذا يجعل الفحص أبطأ، لا أسرع.
+        - text: ادمج كل الحزم في مجلد `src` واحد.
+          why: برنامج واحد أكبر فيه المشكلة نفسها مع حدود أقل للتخزين المؤقت.
+      answer: 1
+    - q: ملف `.js` يبدأ بـ `// @ts-check` ويعلن `/** @param {Order} order */ function ship(order) { … }`. ماذا يفعل TypeScript به (مع تفعيل `allowJs`)؟
+      options:
+        - text: لا شيء، حتى يُعاد تسمية الملف إلى `.ts`.
+          why: التعليق يُدخل ملف JavaScript في الفحص دون إعادة تسميته.
+        - text: يفحص الملف فقط إن كان `checkJs` أيضًا `true` في tsconfig.
+          why: "`checkJs` يفعّل الفحص لكل ملفات JS؛ و`// @ts-check` تفعله لملف واحد بغضّ النظر عنه."
+        - text: يفحص تعليقات JSDoc فقط، لا الكود.
+          why: JSDoc يوفّر الأنواع؛ والكود هو ما يُفحص مقابلها.
+        - text: يفحص أنواع الملف كله، مستخدمًا تعليقات JSDoc كأنواع لـ `ship` ومعاملها.
+          why: صحيح. هذا يتيح لك فحصًا حقيقيًا على ملفات JavaScript الخطرة قبل تحويلها.
+      answer: 3
+final:
+  - q: أيّ زوج من التغييرات يجعل `cancelOrder(customer.id)` و`add(usdPrice, eurShipping)` كليهما خطأ ترجمة؟
+    options:
+      - text: "سِم `OrderId` و`CustomerId`، وحدّد نوع `add` بـ `add<C>(a: Money<C>, b: Money<NoInfer<C>>)`."
+        why: صحيح. الوسوم تجعل المعرّفات المتشابهة في الشكل متمايزة، و`NoInfer` تمنع استنتاج union العملات.
+      - text: استخدم unions حرفية للحالات و`satisfies` على كائنات الإعداد.
+        why: كلتاهما عادة جيدة، لكن لا أحد منهما يميّز بين معرّفين رقميين أو عملتين.
+      - text: فعّل `exactOptionalPropertyTypes` و`noUncheckedIndexedAccess`.
+        why: هذان الخياران يفحصان الخصائص الاختيارية والوصول بالفهرس، لا المعرّفات ولا العملات.
+      - text: أعطِ `add` و`cancelOrder` معاملات نوع `const`.
+        why: "`const` تحتفظ بالقيم الحرفية في الاستنتاج؛ لا تجعل المعرّفات أو العملات غير متوافقة."
+    answer: 0
+  - q: |-
+      ما نوع `summary`؟
+      ```ts
+      function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> { /* … */ }
+      const summary = pick(order, 'id', 'status');
+      ```
+    options:
+      - text: "`Partial<Order>`"
+        why: "`Pick` تُبقي الخصائص المختارة إلزامية؛ لا شيء هنا يجعلها اختيارية."
+      - text: "`Order`"
+        why: لا يُحتفظ إلا بالمفاتيح التي تمرّرها، فليس `Order` الكامل هو النتيجة.
+      - text: "`Pick<Order, keyof Order>`"
+        why: "يُستنتج `K` من الوسائط، ولا يتّسع إلى كل المفاتيح."
+      - text: "`Pick<Order, 'id' | 'status'>`"
+        why: صحيح. كل وسيط بقية موقع استنتاج لـ `K`، والقيد `keyof T` يحتفظ بالقيم الحرفية.
+    answer: 3
+  - q: سلة محفوظة لعميل في `localStorage` كتبها إصدار العام الماضي من التطبيق، بشكل مختلف. ما الطريقة الصحيحة لتحميلها؟
+    options:
+      - text: "`JSON.parse(saved) as Cart`"
+        why: التحويل يثق ببيانات العام الماضي ثقة عمياء؛ ويظهر عدم التطابق لاحقًا كانهيارات.
+      - text: استخدم `JSON.parse(saved)` مباشرة، لأن نوعها `any`.
+        why: "`any` تنشر الشكل الخاطئ في التطبيق بصمت."
+      - text: حلّلها كـ `unknown` إلى `Result`، وارجع إلى سلة فارغة (أو رحّلها) حين يفشل التحليل.
+        why: صحيح. البيانات القديمة حالة متوقَّعة، فتصبح إخفاقًا مُعالَجًا عند الحدود.
+      - text: استدعِ دالة تأكيد أثناء الـ render ودع حدّ الأخطاء يعرض شاشة انهيار.
+        why: التخزين القديم متوقَّع لا خطأ برمجي، فإسقاط الصفحة هو الاستجابة الخاطئة.
+    answer: 2
+  - q: |-
+      ما هو `NoNulls<{ coupon: string | null; note?: string }>`؟
+      ```ts
+      type NoNulls<T> = { [K in keyof T]: NonNullable<T[K]> };
+      ```
+    options:
+      - text: "`{ coupon: string | null; note: string }`"
+        why: "`NonNullable` تُزيل `null` من `coupon`، والتحويل التماثلي يُبقي `note` اختيارية."
+      - text: "`{ coupon: string; note?: string }`"
+        why: صحيح. تُزال `null` من نوع كل خاصية، ويُنسخ المعدِّل `?` من الأصل.
+      - text: "`{ coupon: string; note: string }`"
+        why: التحويل تماثليّ الشكل، فينسخ معدِّل الاختيارية في `note`؛ ولا يُزيله إلا `-?`.
+      - text: "`never`"
+        why: الـ mapped types على نوع كائن تنتج نوع كائن، لا `never`.
+    answer: 1
+  - q: "يضيف فريق المدفوعات `'requires-3ds'` إلى الـ union المسمّى `PaymentError`. الدالة `errorMessage(e: PaymentError): string` تتفرّع على `e.type` دون `default`. ماذا يحدث؟"
+    options:
+      - text: "تفشل `errorMessage` في الترجمة حتى تُضاف حالة `'requires-3ds'`."
+        why: صحيح. مع العضو الجديد غير المُعالَج، تصبح نهاية الدالة قابلة للوصول، ونوع الإرجاع `string` يرفض ذلك.
+      - text: تمرّ في الترجمة وتُعيد `undefined` مع الخطأ الجديد.
+        why: "نوع الإرجاع الصريح `: string` هو بالضبط ما يمنع ذلك من المرور في الترجمة."
+      - text: تمرّ في الترجمة وترمي خطأً وقت التشغيل مع الخطأ الجديد.
+        why: لا شيء يرمي خطأً؛ الـ compiler يوقف الكود قبل أن يُنفَّذ.
+      - text: لا شيء يتغيّر، لأن الـ unions لا تُفحص إلا وقت التشغيل.
+        why: الـ unions أنواع وقت الترجمة، والشمول يُفحص وقت الترجمة.
+    answer: 0
+  - q: أيّ نص قابل للإسناد إلى `` type OrderPath = `/orders/${number}` ``؟
+    options:
+      - text: "`'/orders/abc'`"
+        why: "`abc` ليس نصًا رقميًا، فلا يطابق العنصر النائب `${number}`."
+      - text: "`'/orders/'`"
+        why: النص الفارغ ليس رقمًا، فلا يجد العنصر النائب ما يطابقه.
+      - text: "`'/orders/1042/lines'`"
+        why: يجب أن يطابق العنصر النائب بقية النص، و`1042/lines` ليس رقمًا.
+      - text: "`'/orders/1042'`"
+        why: صحيح. `1042` نص رقمي، وهذا بالضبط ما تقبله `${number}`.
+    answer: 3
+  - q: "بعد تفعيل `noUncheckedIndexedAccess`، أيّ سطر يصبح خطأ ترجمة (مع `lines: Line[]`)؟"
+    options:
+      - text: "`for (const line of lines) console.log(line.sku);`"
+        why: التكرار بـ `for…of` يعطي عناصر فعلية، فلا يضيف الخيار `undefined`.
+      - text: "`lines.map((line) => line.sku);`"
+        why: دوال المصفوفات تمرّر عناصر حقيقية إلى الـ callback، فلا تتأثّر.
+      - text: "`const [first] = lines; console.log(first.sku);`"
+        why: صحيح. التفكيك حسب الموضع وصولٌ بالفهرس، فيكون `first` من نوع `Line | undefined` مع الخيار.
+      - text: "`console.log(lines.length);`"
+        why: "`length` رقم دائمًا؛ الخيار يؤثّر فقط في البحث عن العناصر والمفاتيح."
+    answer: 2
+  - q: "زُخرفت `charge` بـ `@retry(3)` في السطر الذي فوق `@logged`. تفشل البوابة مرتين ثم تنجح. كم سطر تسجيل تطبع `logged` لاستدعاء واحد؟"
+    options:
+      - text: 1، لأن `logged` تغلّف الاستدعاء كله مع إعادة المحاولة
+        why: هذا سيكون الترتيب لو كُتبت `@logged` فوق `@retry(3)`. الـ decorators تُطبَّق من الأسفل إلى الأعلى.
+      - text: 3، لأن `logged` تُطبَّق أولًا و`retry` تستدعي الـ method المسجِّلة في كل محاولة
+        why: صحيح. الـ decorator الأقرب إلى الـ method يغلّفها أولًا، فتمرّ كل إعادة محاولة عبر غلاف التسجيل.
+      - text: 0، لأن decoratorين على method واحدة يلغي أحدهما الآخر
+        why: الـ decorators المكدّسة تتركّب؛ لا تلغي بعضها أبدًا.
+      - text: 6، لأن كل decorator يسجّل مرة لكل محاولة
+        why: "`logged` وحدها تسجّل؛ و`retry` تستدعي الـ method المغلَّفة مرة أخرى فقط."
+    answer: 1
+  - q: لماذا يمكن تمرير `DetailedOrder` (`id` و`status` و`totalCents` و`customer`) حيث يُنتظر `Order` (`id` و`status` و`totalCents`)، والعكس غير ممكن؟
+    options:
+      - text: كل `DetailedOrder` يملك كل الخصائص التي يتطلّبها `Order`، فهو ينتمي إلى مجموعة القيم الأصغر؛ أما `Order` فقد يفتقد `customer`.
+        why: صحيح. قابلية الإسناد هي علاقة الاحتواء، وخصائص إلزامية أكثر تعني مجموعة أصغر.
+      - text: لأن `DetailedOrder` أُعلن بـ `extends Order`.
+        why: التصريحات لا تهمّ في نظام أنواع بنيوي؛ الأشكال وحدها تهمّ.
+      - text: لأن أسماء الأنواع تُقارن أبجديًا.
+        why: TypeScript لا يقارن الأسماء أبدًا؛ إنه يقارن البنية.
+      - text: لأن `Order` هو interface والـ interfaces لا تقبل إلا الأنواع الفرعية.
+        why: الـ interfaces والأسماء المستعارة للأنواع تتبع القواعد البنيوية نفسها هنا.
+    answer: 0
+  - q: أيّ توقيع هو تحويل غير مفحوص متنكّر؟
+    options:
+      - text: "`function sortByTotal<T extends { totalCents: number }>(orders: T[]): T[]`"
+        why: "`T` يربط المدخل بالمخرج، فيكون نوع النتيجة بالضبط ما مُرِّر."
+      - text: "`function call<R extends keyof Routes>(route: R): Routes[R]['output']`"
+        why: "يُستنتج `R` من وسيط المسار، فتنبع النتيجة مما كتبه المستدعي."
+      - text: "`function indexById<T extends { id: number }>(items: T[]): Map<number, T>`"
+        why: "`T` يظهر في المدخل والمخرج، رابطًا بينهما."
+      - text: "`function readSetting<T>(key: string): T`"
+        why: صحيح. `T` لا يظهر إلا في نوع الإرجاع، فيستطيع المستدعي اختيار أي نوع ولا شيء يفحصه.
+    answer: 3
+  - q: ماذا يفعل `declare module 'legacy-shipping-calc';` دون جسم؟
+    options:
+      - text: يثبّت حزمة `@types` المطابقة.
+        why: التصريحات لا تثبّت شيئًا أبدًا؛ إنها تصف الكود للـ compiler فقط.
+      - text: يولّد الأنواع بقراءة JavaScript الخاصة بالحزمة.
+        why: لا يستنتج TypeScript أنواعًا لحزمة من تصريح وحدة مختصر.
+      - text: يجعل الـ import يمرّ في الترجمة، فيكون نوع كل ما يُستورد من الحزمة `any`.
+        why: صحيح. إنه مخرج طوارئ للترحيل، لا بديل عن التصريحات الحقيقية.
+      - text: يسبّب خطأ ترجمة حتى يُملأ الجسم.
+        why: الصيغة المختصرة صالحة بذاتها؛ ولهذا يسهل نسيان وجودها.
+    answer: 2
+  - q: أيّ ملف يجب أن تحوّله إلى TypeScript أولًا في عملية ترحيل؟
+    options:
+      - text: "`checkoutPage.js`، نقطة الدخول التي تستورد 30 وحدة أخرى"
+        why: إن حُوّل أولًا فسيستورد كودًا بلا أنواع وينتهي ممتلئًا بـ `any`.
+      - text: "`money.js`، الذي يستورده 40 ملفًا ولا يستورد شيئًا داخليًا"
+        why: صحيح. إنه ورقة، فيمكن تحديد أنواعه بالكامل اليوم، ويستفيد فورًا كل ملف يستورده.
+      - text: أكبر ملف في المستودع، للتخلّص منه
+        why: الحجم لا يقول شيئًا عن الاعتماديات؛ والملف الكبير الذي يستورد كودًا بلا أنواع يكسب القليل.
+      - text: آخر ملف تغيّر
+        why: الحداثة لا تخبرك إن كانت اعتمادياته قد حُدّدت أنواعها بعد.
+    answer: 1

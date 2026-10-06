@@ -1,0 +1,16 @@
+{
+  "title": "Pick a polynomial degree without touching the test set",
+  "prompt": "Using four diabetes features, choose the polynomial degree honestly.\n\n1. `val_scores`: a dict mapping each degree from 1 to 6 to its validation R². Each model is `PolynomialFeatures(degree=d, include_bias=False)` followed by `LinearRegression`, fitted on `X_fit, y_fit` and scored on `X_val, y_val`.\n2. `best_degree`: the degree with the highest validation R².\n3. `test_r2`: refit that degree on all of `X_train, y_train` and score it once on `X_test, y_test`.",
+  "hints": [
+    "A helper `poly_model(degree)` that returns `make_pipeline(PolynomialFeatures(...), LinearRegression())` keeps the loop short.",
+    "A dict comprehension works: `{d: poly_model(d).fit(X_fit, y_fit).score(X_val, y_val) for d in range(1, 7)}`.",
+    "`max(val_scores, key=val_scores.get)` returns the key with the largest value."
+  ],
+  "explanation": "Validation scores fall away as the degree grows, and some higher degrees go negative, so the procedure settles on a low degree. Refitting on all of `X_train` uses every training row for the final model, and the single test score is an unbiased estimate because the test set played no part in the choice.",
+  "checks": {
+    "degrees": "val_scores has degrees 1 to 6",
+    "validation": "Validation scores come from models fitted on X_fit and scored on X_val",
+    "best": "best_degree has the highest validation score",
+    "test-score": "test_r2 comes from the chosen degree refitted on all training data"
+  }
+}

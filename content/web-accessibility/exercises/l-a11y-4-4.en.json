@@ -1,0 +1,17 @@
+{
+  "title": "Make the Arabic event card speak and sit right",
+  "prompt": "The page is English (`<html lang=\"en\">` is already set). The second card's title and description are Arabic, and reviewers may type in either language. Fix it:\n\n1. Mark every piece of Arabic text with `lang=\"ar\"` and right-to-left direction.\n2. Keep the English note in that card (`.note`) English and left-to-right.\n3. Let the reviewer name and review fields pick their direction from what is typed.\n4. Replace the physical CSS so the badge's gap sits after the icon in both directions (on the right in English, on the left in Arabic).",
+  "hints": [
+    "Wrap the Arabic h3 and p in one element with lang=\"ar\" dir=\"rtl\", leaving .note outside it.",
+    "dir=\"auto\" on the input and the textarea handles user-generated text.",
+    "margin-right becomes margin-inline-end. While you are there, border-left can become border-inline-start and text-align: left can become start."
+  ],
+  "explanation": "`lang=\"ar\"` makes screen readers switch to an Arabic voice for the title and description (3.1.2 Language of Parts), and `dir=\"rtl\"` gives that block a right-to-left base direction, so text starts on the right and punctuation lands correctly. The English note stays outside the wrapper and keeps the page's language and direction. `dir=\"auto\"` lets each form field follow its first strong character. Finally, `margin-inline-end` puts the badge's gap after the icon in both directions, and the other logical properties mirror the accent border and alignment too, all from a single set of rules.",
+  "checks": {
+    "arabic-lang": "All Arabic text is inside an element with lang=\"ar\"",
+    "arabic-dir": "All Arabic text is laid out right to left",
+    "english-stays": "The page and the English note stay English and left-to-right",
+    "user-text-auto": "The name and review fields use dir=\"auto\"",
+    "logical-css": "The badge gap follows the icon in both English and Arabic cards"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "title": "ابنِ component الزر بالترتيب الصحيح",
+  "prompt": "تبني زر Steady: ‏Type وState كـ variant properties، إضافة إلى خاصية text للتسمية، وboolean لإظهار الأيقونة، وinstance swap لاختيار الأيقونة. رتّب الخطوات بالترتيب الذي يجنّبك إعادة العمل.",
+  "hints": [
+    "لا يمكن إنشاء component property إلا على شيء هو component بالفعل.",
+    "الـ variants الجديدة تنسخ روابط الخصائص من الـ component الذي أُنشئت منه.",
+    "الـ frame الأساسي، ثم الـ component، ثم الخصائص، ثم الـ variants، ثم التنسيق، ثم الاختبار."
+  ],
+  "explanation": "ابدأ بـ **frame مبني جيدًا بـ Auto layout** فيه طبقتا Icon وLabel مسمّاتان، لأن كل ما يأتي بعده يرث بنيته. **حوّله إلى component**، ثم أضف **خصائص text وboolean وinstance swap** ما دام هناك variant واحد فقط تربطها به. بعد ذلك **أضف الـ variants** وسمِّ الـ variant properties ‏Type وState؛ فيرث كل variant جديد روابط تلك الخصائص. ثم **أعِد تنسيق** كل variant حسب نوعه وحالته. وأخيرًا **اختبر instance** بتبديل كل خاصية، بما في ذلك التسميات الطويلة وإخفاء الأيقونة، لتثبت أن لا شيء ينكسر قبل أن يستخدمه أحد غيرك.",
+  "items": {
+    "build-base": "ابنِ الزر الأساسي الافتراضي كـ frame بـ Auto layout فيه طبقتا Icon وLabel مسمّاتان.",
+    "make-component": "حوّل الـ frame إلى main component.",
+    "add-props": "أضف خاصية text لـ Label، وboolean لـ Show icon، وinstance swap لـ Icon.",
+    "add-variants": "أضف variants وسمِّ الـ variant properties ‏Type وState بقيمها.",
+    "style-variants": "أعِد تنسيق كل variant: ألوان secondary وghost، وحالتا pressed وdisabled.",
+    "test-instance": "ضع instance وبدّل كل خاصية، مع تسمية طويلة وأيقونة مخفية، لتتأكّد أن لا شيء ينكسر."
+  },
+  "checks": {}
+}

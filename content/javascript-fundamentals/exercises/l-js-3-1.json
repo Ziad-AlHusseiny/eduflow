@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const amounts = [450, -300, 12000, 1220, -50, 15000];\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\n// Use array methods, not for loops, and never change the array you receive.\n\n// Only the positive amounts\nfunction spendingOnly(amounts) {\n  return amounts;\n}\n\n// Every amount formatted with formatMoney\nfunction formatAll(amounts) {\n}\n\n// The first amount of 10000 cents or more, or undefined\nfunction firstBig(amounts) {\n}\n\n// true if any amount is negative\nfunction hasRefund(amounts) {\n  return false;\n}\n\nconsole.log(spendingOnly(amounts), formatAll(amounts));\n"
+  },
+  "solution": {
+    "js": "const amounts = [450, -300, 12000, 1220, -50, 15000];\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction spendingOnly(amounts) {\n  return amounts.filter((a) => a > 0);\n}\n\nfunction formatAll(amounts) {\n  return amounts.map(formatMoney);\n}\n\nfunction firstBig(amounts) {\n  return amounts.find((a) => a >= 10000);\n}\n\nfunction hasRefund(amounts) {\n  return amounts.some((a) => a < 0);\n}\n\nconsole.log(spendingOnly(amounts), formatAll(amounts));\n"
+  },
+  "checks": [
+    {
+      "id": "spending",
+      "test": "const arr = [450, -300, 12000, 1220, -50];\nconst out = spendingOnly(arr);\nreturn Array.isArray(out) && out.join() === '450,12000,1220' && arr.length === 5;\n"
+    },
+    {
+      "id": "format",
+      "test": "const out = formatAll([450, -300, 5]);\nreturn Array.isArray(out) && out.join('|') === '$4.50|$-3.00|$0.05';\n"
+    },
+    {
+      "id": "first-big",
+      "test": "return firstBig([450, 12000, 15000]) === 12000 && firstBig([10000]) === 10000 && firstBig([1, 2]) === undefined;\n"
+    },
+    {
+      "id": "refund",
+      "test": "return hasRefund([450, -1]) === true && hasRefund([450, 0]) === false && hasRefund([]) === false;\n"
+    },
+    {
+      "id": "no-mutation",
+      "test": "const arr = [450, -300, 12000];\nspendingOnly(arr); formatAll(arr); firstBig(arr); hasRefund(arr);\nreturn arr.join() === '450,-300,12000';\n"
+    }
+  ]
+}

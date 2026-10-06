@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "branch",
+    "push",
+    "open",
+    "review",
+    "update",
+    "merge",
+    "cleanup"
+  ]
+}

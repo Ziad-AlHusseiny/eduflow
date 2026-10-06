@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "dockerfile",
+  "code": "# syntax=docker/dockerfile:1\nFROM node:24-slim\nARG NPM_TOKEN\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN echo \"//npm.pkg.github.com/:_authToken=${NPM_TOKEN}\" > .npmrc\nRUN npm ci --omit=dev\nRUN rm .npmrc\nCOPY dist ./dist\nUSER node\nCMD [\"node\", \"dist/server.js\"]",
+  "bugLines": [3, 6]
+}

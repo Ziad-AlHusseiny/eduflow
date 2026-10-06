@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "orders.csv"
+  ],
+  "starter": "import pandas as pd\n\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\n\n# 1. Orders placed in Q4 2025 (October to December) that were NOT cancelled\nq4 = None\n\n# 2. Share of those Q4 orders that used any coupon, rounded to 3 decimals\ncoupon_share = None\n\n# 3. In the whole table: number of marketplace orders that used a coupon\nmarketplace_coupons = None\n\n# 4. order_id of the 3 most recent orders in q4, newest first, as a list\nlatest_ids = None\n",
+  "solution": "import pandas as pd\n\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\n\nin_q4 = (orders[\"order_date\"] >= \"2025-10-01\") & (orders[\"order_date\"] < \"2026-01-01\")\nq4 = orders[in_q4 & (orders[\"status\"] != \"cancelled\")]\nprint(len(q4))\n\ncoupon_share = round(q4[\"coupon_code\"].notna().mean(), 3)\n\nmarketplace_coupons = ((orders[\"channel\"] == \"marketplace\") & orders[\"coupon_code\"].notna()).sum()\n\nlatest_ids = q4.nlargest(3, \"order_date\")[\"order_id\"].tolist()\n",
+  "checks": [
+    {
+      "id": "q4-rows",
+      "test": "isinstance(q4, pd.DataFrame) and len(q4) == 642"
+    },
+    {
+      "id": "q4-clean",
+      "test": "(q4['status'] != 'cancelled').all() and q4['order_date'].min() >= pd.Timestamp('2025-10-01')"
+    },
+    {
+      "id": "coupon-share",
+      "test": "round(float(coupon_share), 3) == 0.231"
+    },
+    {
+      "id": "marketplace",
+      "test": "int(marketplace_coupons) == 44"
+    },
+    {
+      "id": "latest",
+      "test": "list(latest_ids) == [2017, 2735, 1550]"
+    }
+  ]
+}

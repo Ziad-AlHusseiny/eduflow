@@ -1,0 +1,11 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# 1. Keep the RSVP function's logs for 30 days, then let them expire\naws logs {{0}} \\\n  --log-group-name /aws/lambda/lantern-rsvp --retention-in-days 30\n\n# 2. Email the maintainers when the function errors 5+ times in 5 minutes\naws cloudwatch {{1}} --alarm-name lantern-rsvp-errors \\\n  --namespace AWS/Lambda --metric-name {{2}} \\\n  --dimensions Name=FunctionName,Value=lantern-rsvp \\\n  --statistic Sum --period 300 --evaluation-periods 1 \\\n  --threshold 5 --comparison-operator GreaterThanOrEqualToThreshold \\\n  --alarm-actions arn:aws:{{3}}:eu-west-1:111122223333:lantern-alerts",
+  "blanks": [
+    { "answers": ["put-retention-policy"] },
+    { "answers": ["put-metric-alarm"] },
+    { "answers": ["Errors"] },
+    { "answers": ["sns"] }
+  ]
+}

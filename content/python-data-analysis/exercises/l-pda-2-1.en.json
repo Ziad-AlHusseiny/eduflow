@@ -1,0 +1,17 @@
+{
+  "title": "Your first Series and DataFrame",
+  "prompt": "Build `revenue`, a Series of `values` labelled by `months`. Set `best_month` to the label of its largest value and `share` to each month's share of the yearly total (a Series that sums to 1). Then build `products`, a DataFrame with the columns `name`, `unit_price` and `unit_cost` holding the three products listed in the comments, in that order, and `margin`, a Series of `unit_price` minus `unit_cost`.",
+  "hints": [
+    "`pd.Series(values, index=months)` attaches the labels.",
+    "`revenue.idxmax()` returns a label; dividing a Series by a single number divides every value.",
+    "Build the DataFrame from a dictionary of lists, one key per column, then subtract one column from the other: `products[\"unit_price\"] - products[\"unit_cost\"]`."
+  ],
+  "explanation": "Passing `index=months` makes each revenue carry its month, so `idxmax()` answers \"which month?\" directly. `revenue / revenue.sum()` divides every value by one total: a single number combines with every element of a Series (this is called broadcasting). For the DataFrame, the dictionary keys become column names and each list becomes a column. Subtracting two columns lines them up by the shared row index, giving the skillet a margin of 21.55, the grinder 52.01 and the tent 65.91.",
+  "checks": {
+    "series": "`revenue` is a Series labelled Jan to Dec",
+    "best-month": "`best_month` is `\"Nov\"`",
+    "share": "`share` sums to 1, with November at about 23%",
+    "products": "`products` is a 3 \u00d7 3 DataFrame with the right columns",
+    "margin": "`margin` holds 21.55, 52.01 and 65.91"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Rania's revenue trend",
+  "prompt": "Build the slide table for Rania: one row per month of 2025 (non-cancelled orders) with `month` ('YYYY-MM'), `revenue`, `running_revenue` (revenue accumulated from January up to and including that month) and `mom_change` (this month's revenue minus the previous month's; NULL for January). Round the money columns to 2 decimals and sort by `month`. Order matters.\n\nThe `monthly` CTE is correct. Both window columns in the final SELECT are wrong.",
+  "hints": [
+    "Every row of `running_revenue` shows the same number. What's missing inside `OVER ()`?",
+    "Use `SUM(revenue) OVER (ORDER BY month)` for the running total.",
+    "LEAD looks at the next row. To compare with the previous month, use `revenue - LAG(revenue) OVER (ORDER BY month)`."
+  ],
+  "explanation": "An empty `OVER ()` makes one window containing all twelve months, so the starter printed the annual total on every row. Adding `ORDER BY month` turns it into a growing window, which is a running total. For month-over-month change you need the previous row, which is LAG; LEAD compared each month with the following one and left December NULL instead of January. December's running revenue equals the year's total, a free reconciliation check against the category table from the joins lesson.",
+  "checks": {}
+}

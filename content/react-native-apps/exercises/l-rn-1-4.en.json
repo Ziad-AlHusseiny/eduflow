@@ -1,0 +1,17 @@
+{
+  "title": "Parse a hike's duration",
+  "prompt": "Trailhead's form has a **Duration** field with `keyboardType=\"default\"`, because hikers type durations in different ways. Write `parseDurationMin(text)` so it returns the duration in **whole minutes**, or `null` when the text isn't valid.\n\nAccept these shapes (ignoring case and surrounding spaces):\n\n- plain minutes: `\"135\"`\n- clock style: `\"2:15\"` (minutes must be below 60, so `\"2:75\"` is `null`)\n- hours and minutes: `\"2h 15m\"`, `\"2h15m\"`, `\"1h\"`, `\"45m\"`\n\nReturn `null` for empty text, anything else, and for zero.",
+  "hints": [
+    "Normalize first: `String(text).trim().toLowerCase()`.",
+    "Handle each shape with its own regular expression and return early, e.g. `/^(\\d+):(\\d{2})$/` for the clock style.",
+    "For the h/m form, `/^(?:(\\d+)\\s*h)?\\s*(?:(\\d+)\\s*m)?$/` matches both parts optionally; make sure at least one group actually matched, or an empty string sneaks through."
+  ],
+  "explanation": "The function normalizes the text, then tries one pattern per accepted shape, converting each to minutes. Every path that doesn't match leaves `minutes` as `null`, and a final guard rejects zero. Keeping this out of the component means the form only asks one question (`parseDurationMin(text) !== null`) and you can unit-test every odd input without launching a simulator.",
+  "checks": {
+    "plain-minutes": "Plain numbers are minutes (\"135\" → 135)",
+    "clock-format": "Clock style works and rejects minutes ≥ 60",
+    "hours-minutes": "\"2h 15m\", \"2h15m\" and \"1H 5M\" are parsed",
+    "single-unit": "\"1h\" → 60 and \"45m\" → 45",
+    "rejects-bad": "Empty, non-numeric and zero inputs return null"
+  }
+}

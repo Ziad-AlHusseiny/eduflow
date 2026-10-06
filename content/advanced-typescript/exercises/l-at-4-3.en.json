@@ -1,0 +1,18 @@
+{
+  "title": "Parse the order at the boundary",
+  "prompt": "Replace the lying cast in `parseOrder` with a real parser, and give the helpers real types:\n\n1. `isRecord` and `isOrderStatus` become type predicates.\n2. `parseOrder(input: unknown)` returns `ok(order)` only when `id` is an integer, `status` is a known status, `totalCents` is a whole number, and `couponCode` is a string or `null`. Otherwise it returns `err(message)`, where the message starts with the name of the bad field (for example `status: …`). The returned order must contain only those four fields.\n3. `assertIsOrder` becomes an assertion function that narrows its argument to `Order` and throws an `Error` whose message contains `Invalid order` when parsing fails.\n\nNo `as` casts in `parseOrder`.",
+  "hints": [
+    "Predicates: change the return type to `value is Record<string, unknown>` and `value is OrderStatus`.",
+    "In `parseOrder`, check `isRecord(input)` first, destructure the four fields, and check each with `typeof` or your predicate, returning `err('field: …')` on the first failure.",
+    "Build the result from the narrowed variables, `ok({ id, status, totalCents, couponCode })`, so TypeScript verifies it and extra fields are dropped. For the assertion, the return type is `asserts input is Order`."
+  ],
+  "explanation": "The old `input as Order` let anything through, including a status the UI has no branch for. Now each field is narrowed by an ordinary check, and the final object literal is built from the narrowed variables, so the compiler verifies it matches `Order` without a cast, and unexpected fields such as `cardNumber` never get past the boundary. The two predicates are small enough to be obviously correct. `assertIsOrder` reuses the parser and turns a failure into a thrown error, and its `asserts` signature narrows the caller's variable for the rest of the scope.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "accepts-valid": "A valid order is accepted",
+    "rejects-status": "An unknown status is rejected with a message naming `status`",
+    "rejects-types": "Wrong field types, arrays and `null` are rejected with messages naming the field",
+    "only-known-fields": "Unexpected fields are not copied into the parsed order",
+    "asserts": "`assertIsOrder` throws 'Invalid order…' for bad data"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "js",
+  "code": "// src/money.js\nexport function formatMoney(cents) {\n  return `$${(cents / 100).toFixed(2)}`;\n}\nfunction toCents(dollars) {\n  return Math.round(dollars * 100);\n}\n\n// src/main.js  (loaded with <script type=\"module\" src=\"./src/main.js\">)\nimport { formatMoney, toCents } from \"./money\";\nconst amount = toCents(12.2);\nconsole.log(formatMoney(amount));",
+  "bugLines": [
+    5,
+    10
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "التحميل والخطأ وإعادة المحاولة",
+  "prompt": "تعرض `mountBalancePanel(container, loadBalances)` الرسالة \"Loading balances…\" في `role=\"status\"` ما دام `loadBalances()` معلّقًا، ثم قائمة **Balances**. وإن رُفض الـ promise، تعرض \"Could not load balances.\" في `role=\"alert\"` مع زر **Try again** يحمّل من جديد.\n\nيضيف الكود المبدئي `waitFor` و`findByRole` و`findByText` إلى البدائل (وهي تستطلع حتى 500 ms). تحكّم في `loadBalances` باستخدام `vi.fn()` وأضف اختبارات حتى تلتقط مجموعتك أربعة أخطاء مخفيّة: نسخة **لا تعرض** حالة التحميل أبدًا، ونسخة **تُبقيها** على الشاشة بعد وصول البيانات، ونسخة **لا تعرض شيئًا** عند الفشل، ونسخة لا يفعل زر **Try again** فيها شيئًا.",
+  "hints": [
+    "تُضبط حالة التحميل بشكل متزامن عند تركيب اللوحة، لذا يجدها `getByRole(container, 'status')` مباشرة بعد `mountBalancePanel(...)`. وبعد `await findByRole(... 'list' ...)` يجب أن يكون `queryByRole(container, 'status')` مساويًا `null`.",
+    "للفشل: `vi.fn().mockRejectedValue(new Error('Offline'))`، ثم `await findByRole(container, 'alert')`.",
+    "لإعادة المحاولة: بعد ظهور التنبيه، استدعِ `loadBalances.mockResolvedValue({ Ana: 0 })`، وانقر Try again بـ `clickOn`، ثم `await findByText(container, 'Ana is settled up')`."
+  ],
+  "explanation": "كل حالة assertion واحد عمّا يراه المستخدم. فحص حالة التحميل مباشرة بعد التركيب يلتقط اللوحة التي لا تعرض رسالة تحميل؛ وفحص اختفائها بعد أن يُحلّ `findByRole` يلتقط اللوحة التي تتركها خلفها. وينتظر اختبار الفشل التنبيه بـ `findByRole`، الذي تنتهي مهلته إن ابتُلع الخطأ. وتحويل الـ mock إلى النجاح قبل النقر على Try again يجعل إعادة المحاولة قصة حتمية: إن لم يكن الزر موصولًا، لا يظهر نص التسوية أبدًا ويفشل الاختبار. لا يوجد أي انتظار ثابت في أي مكان، فالمجموعة بسرعة الكود نفسه.",
+  "checks": {
+    "passes": "كل اختباراتك تنجح على اللوحة الحقيقية",
+    "catches-no-loading": "تلتقط النسخة التي لا تعرض حالة التحميل",
+    "catches-stale-loading": "تلتقط النسخة التي تُبقي حالة التحميل على الشاشة",
+    "catches-error-hidden": "تلتقط النسخة التي لا تعرض شيئًا عند الفشل",
+    "catches-no-retry": "تلتقط النسخة التي لا يفعل زر Try again فيها شيئًا"
+  }
+}

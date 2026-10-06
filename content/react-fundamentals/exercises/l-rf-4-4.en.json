@@ -1,0 +1,27 @@
+{
+  "title": "Fetching posters the right way",
+  "prompt": "Your first stretch feature: when you open a movie's details, the Watchlist fetches its poster URL from a movie API, using the selected movie's title. The user can click quickly from one movie to another.\n\n**Pick every approach that would work correctly.**",
+  "hints": [
+    "Anything in the component body runs on every render.",
+    "If the user switches movies quickly, two requests are in flight. Which one should win?"
+  ],
+  "explanation": "Fetching is synchronizing with an outside system, so a hand-written version belongs in an Effect keyed on the title, with a cleanup that marks the old request as stale. Otherwise a slow response for the previous movie can arrive last and overwrite the poster. A data-fetching library such as TanStack Query handles that, plus caching, loading and error states, which is why most real projects use one. Fetching during render or in an Effect with no dependency array sends a request on every render, and setting state from the response triggers another render and another request, with nothing to stop an older response from winning.",
+  "options": {
+    "fetch-in-render": {
+      "text": "Call `fetch` at the top of the component body and `setPoster` when it resolves.",
+      "why": "The body runs on every render, so every render (including StrictMode's extra one) sends a request, and each response that sets state causes another render and another request. Rendering must stay pure."
+    },
+    "effect-no-deps": {
+      "text": "Fetch inside `useEffect(() => { … })` with no dependency array.",
+      "why": "With no array the Effect runs after every render, so each response that sets state triggers another render and another request, and nothing stops a stale response from overwriting the current poster."
+    },
+    "effect-ignore-flag": {
+      "text": "Fetch inside `useEffect(…, [title])`, with a cleanup that sets `ignore = true` so a stale response is not saved.",
+      "why": "Correct. It refetches only when the title changes, and the cleanup stops an older, slower response from overwriting the current poster."
+    },
+    "tanstack-query": {
+      "text": "Use TanStack Query's `useQuery` with the title in the query key.",
+      "why": "Correct. The library tracks requests per key, discards outdated ones and adds caching, loading and error states for you."
+    }
+  }
+}

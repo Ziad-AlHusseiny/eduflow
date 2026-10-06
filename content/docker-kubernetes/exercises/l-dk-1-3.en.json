@@ -1,0 +1,10 @@
+{
+  "title": "Find the cache killers",
+  "prompt": "CI builds for this Dockerfile take eight minutes even when a commit changes one line of TypeScript, and last week adding a second OS package failed with `Unable to locate package`. Select the **two** lines responsible.",
+  "hints": [
+    "Which line's cache key changes on every commit, and what runs after it?",
+    "Which `RUN` is cached by its text alone, so its result can be months old?"
+  ],
+  "explanation": "Line 6 copies the whole context before `npm ci`, so any source change misses the cache there and reinstalls every dependency. Copy only the manifests first, install, then copy the rest.\n\nLine 3 caches `apt-get update` on its own; when the install line changes, it runs against an index from the day the cache was made. Chain update and install in one `RUN`:\n\n```dockerfile\nRUN apt-get update \\\n && apt-get install -y --no-install-recommends ca-certificates \\\n && rm -rf /var/lib/apt/lists/*\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci\nCOPY . .\nRUN npm run build\n```",
+  "checks": {}
+}

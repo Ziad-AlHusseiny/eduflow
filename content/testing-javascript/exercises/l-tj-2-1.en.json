@@ -1,0 +1,17 @@
+{
+  "title": "Behaviour tests for splitEvenly",
+  "prompt": "The subject's comment lists `splitEvenly`'s contract. Write tests for that contract (not for how the function is written) until your suite passes on the real code and catches four hidden bugs:\n\n- one drops the leftover cents,\n- one hands out one leftover cent too many,\n- one gives the leftover cents to the **last** people instead of the first,\n- one returns an empty array for zero people instead of throwing.\n\nA `sum` helper is already in the starter.",
+  "hints": [
+    "Inputs that divide evenly (like 900 between 3) hide every remainder bug. Use totals that leave a remainder, such as 1000 between 3 or 1001 between 4.",
+    "The sum invariant catches two of the bugs at once: `expect(sum(splitEvenly(1000, 3))).toBe(1000)`.",
+    "For the order rule, compare the whole array: `splitEvenly(1001, 4)` must equal `[251, 250, 250, 250]`. For zero people, use `expect(() => splitEvenly(1000, 0)).toThrow(RangeError)`."
+  ],
+  "explanation": "The sum invariant does the heavy lifting: dropping the remainder makes the total too small and the off-by-one makes it too big, so one assertion kills both. The order rule is part of the documented contract, so asserting the exact array is a behaviour test, not an implementation test; it is the only way to catch the version that favours the last people, which still conserves money and stays fair. The zero-people case is a boundary that silently returned `[]` in the buggy version, and a caller would have divided a bill between nobody. None of these tests mention `Math.floor`, `%` or `Array.from`, so you can rewrite the function freely and they stay green.",
+  "checks": {
+    "passes": "All your tests pass against the real splitEvenly",
+    "catches-drops-remainder": "Catches the version that drops leftover cents",
+    "catches-extra-cent": "Catches the version that hands out one cent too many",
+    "catches-remainder-last": "Catches the version that gives leftover cents to the last people",
+    "catches-zero-people": "Catches the version that accepts zero people"
+  }
+}

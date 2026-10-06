@@ -1,0 +1,16 @@
+{
+  "title": "Build X and y, then split",
+  "prompt": "Prepare the churn data for modelling.\n\n1. `X`: the eight numeric feature columns: everything except `customer_id`, `country`, `segment`, `avg_satisfaction` and the target.\n2. `y`: the `churned` column.\n3. Split into `X_train, X_test, y_train, y_test` with a 25% test set, `random_state=42`, and the churn rate kept equal in both parts.",
+  "hints": [
+    "`customer_id` and `churned` are still inside `X` in the starter. Drop them too.",
+    "`test_size=0.25` gives 100 test rows from 398.",
+    "Pass `stratify=y` so both parts keep the 55% churn rate."
+  ],
+  "explanation": "Dropping the id and the target leaves eight numeric features. `test_size=0.25` holds back 100 customers, `random_state=42` makes the split repeatable, and `stratify=y` keeps the churn rate at 55% in both parts so the test score isn't skewed by an unlucky shuffle. Leaving `churned` inside `X` would let any model read the answer straight off the features, which is the most extreme form of leakage.",
+  "checks": {
+    "features": "X holds exactly the eight numeric features",
+    "target": "y is the churned column (398 values of 0 and 1)",
+    "sizes": "298 training rows and 100 test rows",
+    "stratified": "Train and test keep the overall churn rate"
+  }
+}

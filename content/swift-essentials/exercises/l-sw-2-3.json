@@ -1,0 +1,8 @@
+{
+  "kind": "spot-bug",
+  "language": "swift",
+  "code": "import Foundation\n\nstruct Budget {\n    var limit: Decimal\n    var spent: Decimal = 0\n}\n\nextension Budget: CustomStringConvertible {\n    var remaining: Decimal { limit - spent }\n    var description: String { \"\\(spent) of \\(limit) spent\" }\n\n    func record(_ amount: Decimal) { spent += amount }\n}\n\nvar food = Budget(limit: 300)\nfood.record(42)\nprint(food)",
+  "bugLines": [
+    12
+  ]
+}

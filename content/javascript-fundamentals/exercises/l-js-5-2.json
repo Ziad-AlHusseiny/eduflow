@@ -1,0 +1,40 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Pocket's data, unprotected: any code can push anything into it.\nclass ExpenseStore {\n  constructor() {\n    this.expenses = [];\n  }\n\n  add(expense) {\n    this.expenses.push(expense);\n  }\n}\n\nconst store = new ExpenseStore();\nstore.add({ label: \"Coffee\", amount: 450, category: \"food\" });\nconsole.log(store.expenses);\n"
+  },
+  "solution": {
+    "js": "class ExpenseStore {\n  #expenses = [];\n  #nextNumber = 1;\n\n  add({ label, amount, category = \"other\" }) {\n    const expense = { id: `exp-${this.#nextNumber++}`, label, amount, category };\n    this.#expenses.push(expense);\n    return expense;\n  }\n\n  remove(id) {\n    this.#expenses = this.#expenses.filter((e) => e.id !== id);\n  }\n\n  list() {\n    return [...this.#expenses];\n  }\n\n  get total() {\n    return this.#expenses.reduce((sum, e) => sum + e.amount, 0);\n  }\n\n  totalFor(category) {\n    return this.#expenses\n      .filter((e) => e.category === category)\n      .reduce((sum, e) => sum + e.amount, 0);\n  }\n}\n\nconst store = new ExpenseStore();\nstore.add({ label: \"Coffee\", amount: 450, category: \"food\" });\nconsole.log(store.list(), store.total);\n"
+  },
+  "checks": [
+    {
+      "id": "add-returns",
+      "test": "const s = new ExpenseStore();\nconst a = s.add({ label: 'Coffee', amount: 450, category: 'food' });\nconst b = s.add({ label: 'Gift', amount: 5000 });\nreturn a && a.id === 'exp-1' && b.id === 'exp-2' && b.category === 'other' && a.label === 'Coffee' && a.amount === 450;\n"
+    },
+    {
+      "id": "list-copy",
+      "test": "const s = new ExpenseStore();\ns.add({ label: 'Coffee', amount: 450, category: 'food' });\nconst l = s.list();\nl.push({ id: 'hack', label: 'x', amount: 1 });\nreturn Array.isArray(l) && s.list().length === 1;\n"
+    },
+    {
+      "id": "private",
+      "test": "const s = new ExpenseStore();\ns.add({ label: 'Coffee', amount: 450, category: 'food' });\nreturn Object.keys(s).length === 0 && !Object.values(s).some(Array.isArray);\n"
+    },
+    {
+      "id": "remove",
+      "test": "const s = new ExpenseStore();\ns.add({ label: 'A', amount: 1, category: 'x' });\nconst b = s.add({ label: 'B', amount: 2, category: 'x' });\ns.remove('exp-1');\nconst l = s.list();\nreturn l.length === 1 && l[0].id === b.id;\n"
+    },
+    {
+      "id": "total-getter",
+      "test": "const s = new ExpenseStore();\ns.add({ label: 'A', amount: 450, category: 'food' });\ns.add({ label: 'B', amount: 1220, category: 'travel' });\nconst d = Object.getOwnPropertyDescriptor(ExpenseStore.prototype, 'total');\nconst before = s.total;\ns.remove('exp-1');\nreturn !!d && typeof d.get === 'function' && before === 1670 && s.total === 1220;\n"
+    },
+    {
+      "id": "total-for",
+      "test": "const s = new ExpenseStore();\ns.add({ label: 'A', amount: 450, category: 'food' });\ns.add({ label: 'B', amount: 1220, category: 'travel' });\ns.add({ label: 'C', amount: 1350, category: 'food' });\nreturn s.totalFor('food') === 1800 && s.totalFor('fun') === 0;\n"
+    },
+    {
+      "id": "independent",
+      "test": "const a = new ExpenseStore();\nconst b = new ExpenseStore();\na.add({ label: 'A', amount: 1 });\na.add({ label: 'B', amount: 2 });\nconst first = b.add({ label: 'C', amount: 3 });\nreturn b.list().length === 1 && first.id === 'exp-1' && a.total === 3;\n"
+    }
+  ]
+}

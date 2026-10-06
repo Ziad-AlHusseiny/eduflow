@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Parses what a user typed in the amount field and returns integer cents.\n// Accepts: digits, optionally a dot and 1 or 2 decimals, surrounding spaces.\n//   \"12\" -> 1200, \"12.5\" -> 1250, \" 7.10 \" -> 710\n// Throws an Error for: empty input, zero, negatives, letters,\n// commas and more than 2 decimals.\nfunction parseAmount(input) {\n  const text = String(input).trim();\n  if (!/^\\d+(\\.\\d{1,2})?$/.test(text)) {\n    throw new Error(`Not a valid amount: \"${input}\"`);\n  }\n  const [whole, fraction = ''] = text.split('.');\n  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));\n  if (cents === 0) throw new Error('Amount must be greater than zero');\n  return cents;\n}\n",
+  "mutants": [
+    {
+      "id": "three-decimals",
+      "code": "// Parses what a user typed in the amount field and returns integer cents.\n// Accepts: digits, optionally a dot and 1 or 2 decimals, surrounding spaces.\n//   \"12\" -> 1200, \"12.5\" -> 1250, \" 7.10 \" -> 710\n// Throws an Error for: empty input, zero, negatives, letters,\n// commas and more than 2 decimals.\nfunction parseAmount(input) {\n  const text = String(input).trim();\n  if (!/^\\d+(\\.\\d{1,3})?$/.test(text)) {\n    throw new Error(`Not a valid amount: \"${input}\"`);\n  }\n  const [whole, fraction = ''] = text.split('.');\n  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));\n  if (cents === 0) throw new Error('Amount must be greater than zero');\n  return cents;\n}\n"
+    },
+    {
+      "id": "pads-wrong-side",
+      "code": "// Parses what a user typed in the amount field and returns integer cents.\n// Accepts: digits, optionally a dot and 1 or 2 decimals, surrounding spaces.\n//   \"12\" -> 1200, \"12.5\" -> 1250, \" 7.10 \" -> 710\n// Throws an Error for: empty input, zero, negatives, letters,\n// commas and more than 2 decimals.\nfunction parseAmount(input) {\n  const text = String(input).trim();\n  if (!/^\\d+(\\.\\d{1,2})?$/.test(text)) {\n    throw new Error(`Not a valid amount: \"${input}\"`);\n  }\n  const [whole, fraction = ''] = text.split('.');\n  const cents = Number(whole) * 100 + Number(fraction.padStart(2, '0'));\n  if (cents === 0) throw new Error('Amount must be greater than zero');\n  return cents;\n}\n"
+    },
+    {
+      "id": "accepts-zero",
+      "code": "// Parses what a user typed in the amount field and returns integer cents.\n// Accepts: digits, optionally a dot and 1 or 2 decimals, surrounding spaces.\n//   \"12\" -> 1200, \"12.5\" -> 1250, \" 7.10 \" -> 710\n// Throws an Error for: empty input, zero, negatives, letters,\n// commas and more than 2 decimals.\nfunction parseAmount(input) {\n  const text = String(input).trim();\n  if (!/^\\d+(\\.\\d{1,2})?$/.test(text)) {\n    throw new Error(`Not a valid amount: \"${input}\"`);\n  }\n  const [whole, fraction = ''] = text.split('.');\n  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));\n  if (cents < 0) throw new Error('Amount must be greater than zero');\n  return cents;\n}\n"
+    },
+    {
+      "id": "no-trim",
+      "code": "// Parses what a user typed in the amount field and returns integer cents.\n// Accepts: digits, optionally a dot and 1 or 2 decimals, surrounding spaces.\n//   \"12\" -> 1200, \"12.5\" -> 1250, \" 7.10 \" -> 710\n// Throws an Error for: empty input, zero, negatives, letters,\n// commas and more than 2 decimals.\nfunction parseAmount(input) {\n  const text = String(input);\n  if (!/^\\d+(\\.\\d{1,2})?$/.test(text)) {\n    throw new Error(`Not a valid amount: \"${input}\"`);\n  }\n  const [whole, fraction = ''] = text.split('.');\n  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));\n  if (cents === 0) throw new Error('Amount must be greater than zero');\n  return cents;\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "describe('parseAmount', () => {\n  test.each([\n    ['12', 1200],\n    ['12.50', 1250],\n  ])('parses %s as %i cents', (input, cents) => {\n    expect(parseAmount(input)).toBe(cents);\n  });\n\n  test.each(['', 'ten', '-5'])('rejects %s', (input) => {\n    expect(() => parseAmount(input)).toThrow();\n  });\n});\n"
+  },
+  "solution": {
+    "js": "describe('parseAmount', () => {\n  test.each([\n    ['12', 1200],\n    ['12.5', 1250],\n    ['12.50', 1250],\n    ['0.01', 1],\n    [' 7.10 ', 710],\n  ])('parses %s as %i cents', (input, cents) => {\n    expect(parseAmount(input)).toBe(cents);\n  });\n\n  test.each(['', 'ten', '-5', '1,000', '12.505'])('rejects %s', (input) => {\n    expect(() => parseAmount(input)).toThrow();\n  });\n\n  test.each(['0', '0.00'])('rejects a zero amount: %s', (input) => {\n    expect(() => parseAmount(input)).toThrow('greater than zero');\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-three-decimals",
+      "suite": "three-decimals"
+    },
+    {
+      "id": "catches-pads-wrong-side",
+      "suite": "pads-wrong-side"
+    },
+    {
+      "id": "catches-accepts-zero",
+      "suite": "accepts-zero"
+    },
+    {
+      "id": "catches-no-trim",
+      "suite": "no-trim"
+    }
+  ]
+}

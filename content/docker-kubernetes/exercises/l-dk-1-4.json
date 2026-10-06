@@ -1,0 +1,12 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# Start notes-api in the background, reachable at localhost:8080\ndocker run {{0}} --name notes -p {{1}}:3000 notes-api:dev\n\n# Follow its output\ndocker {{2}} -f notes\n\n# Open a shell inside the running container\ndocker {{3}} -it notes sh\n\n# Stop it, allowing 30 seconds to drain\ndocker stop {{4}} 30 notes",
+  "blanks": [
+    { "answers": ["-d", "--detach"] },
+    { "answers": ["8080"] },
+    { "answers": ["logs", "container logs"] },
+    { "answers": ["exec", "container exec"] },
+    { "answers": ["-t", "--time", "--timeout"] }
+  ]
+}

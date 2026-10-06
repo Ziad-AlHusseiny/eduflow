@@ -1,0 +1,17 @@
+{
+  "title": "A Panel with slots",
+  "prompt": "`App` already uses `Panel` the way it should work, but `Panel` ignores most of what it's given. Update **only `Panel`** so that:\n\n- whatever is passed in `actions` appears inside the `<header>`, after the `<h2>`;\n- whatever is nested between `<Panel>` tags (its `children`) appears inside the `<section>`, **after** the `<header>`, not inside it.\n\nThe Watched panel has no `actions`, so it must render no button.",
+  "hints": [
+    "Destructure two more props: `function Panel({ title, actions, children })`.",
+    "Render `{actions}` right after the `<h2>`. If it's `undefined`, React renders nothing.",
+    "Add `<div>{children}</div>` after the closing `</header>`."
+  ],
+  "explanation": "Nested JSX arrives as `children`, and the `actions` prop holds an element, so both are just values Panel places in its markup. Panel decides *where* things go; `App` decides *what* they are. Because a missing prop is `undefined` and `undefined` renders nothing, the actions slot is optional without any `if`.",
+  "checks": {
+    "two-panels": "Two panels titled \"To watch\" and \"Watched\"",
+    "children-first": "The To watch panel shows its two list items, outside the header",
+    "children-second": "The Watched panel shows its paragraph, outside the header",
+    "actions-slot": "The Shuffle button appears inside the To watch header",
+    "actions-optional": "The Watched panel has no button"
+  }
+}

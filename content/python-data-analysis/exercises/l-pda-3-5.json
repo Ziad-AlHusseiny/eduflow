@@ -1,0 +1,38 @@
+{
+  "kind": "python",
+  "files": [
+    "orders_messy.csv"
+  ],
+  "starter": "import pandas as pd\n\ndef parse_money(values):\n    cleaned = (values.astype(\"string\").str.strip()\n               .str.replace(\"$\", \"\", regex=False).str.replace(\",\", \"\", regex=False))\n    return pd.to_numeric(cleaned, errors=\"coerce\")\n\n\ndef clean_orders(path):\n    \"\"\"Return the messy export cleaned and deduplicated.\"\"\"\n    df = pd.read_csv(path)\n    # strip customer; strip + title-case country\n    # channel: \"mobile app\" -> \"mobile_app\", missing -> \"unknown\"\n    # total: parse_money\n    # order_date: pd.to_datetime(..., format=\"mixed\", dayfirst=True)\n    # drop exact duplicates and reset the index\n    # assert that order_id is unique\n    return df\n\n\nclean = clean_orders(\"orders_messy.csv\")\n\n# Sales per cleaned country, as a dict {country: total rounded to 2 decimals}\nsales_by_country = None\n",
+  "solution": "import pandas as pd\n\ndef parse_money(values):\n    cleaned = (values.astype(\"string\").str.strip()\n               .str.replace(\"$\", \"\", regex=False).str.replace(\",\", \"\", regex=False))\n    return pd.to_numeric(cleaned, errors=\"coerce\")\n\n\ndef clean_orders(path):\n    \"\"\"Return the messy export cleaned and deduplicated.\"\"\"\n    df = pd.read_csv(path)\n    df[\"customer\"] = df[\"customer\"].str.strip()\n    df[\"country\"] = df[\"country\"].str.strip().str.title()\n    df[\"channel\"] = df[\"channel\"].str.replace(\" \", \"_\").fillna(\"unknown\")\n    df[\"total\"] = parse_money(df[\"total\"])\n    df[\"order_date\"] = pd.to_datetime(df[\"order_date\"], format=\"mixed\", dayfirst=True)\n    df = df.drop_duplicates().reset_index(drop=True)\n    assert df[\"order_id\"].is_unique, \"duplicate order ids remain\"\n    return df\n\n\nclean = clean_orders(\"orders_messy.csv\")\n\nsales_by_country = {}\nfor country in clean[\"country\"].unique():\n    sales_by_country[country] = round(float(clean.loc[clean[\"country\"] == country, \"total\"].sum()), 2)\nprint(sales_by_country)\n",
+  "checks": [
+    {
+      "id": "rows",
+      "test": "isinstance(clean, pd.DataFrame) and len(clean) == 159 and clean['order_id'].is_unique"
+    },
+    {
+      "id": "index",
+      "test": "list(clean.index) == list(range(159))"
+    },
+    {
+      "id": "text",
+      "test": "clean['country'].nunique() == 8 and set(clean['channel']) == {'web', 'mobile_app', 'marketplace', 'unknown'} and (clean['customer'] == clean['customer'].str.strip()).all()"
+    },
+    {
+      "id": "types",
+      "test": "pd.api.types.is_numeric_dtype(clean['total']) and pd.api.types.is_datetime64_any_dtype(clean['order_date'])"
+    },
+    {
+      "id": "total",
+      "test": "round(float(clean['total'].sum()), 2) == 22486.69"
+    },
+    {
+      "id": "by-country",
+      "test": "isinstance(sales_by_country, dict) and len(sales_by_country) == 8 and round(sum(sales_by_country.values()), 2) == 22486.69"
+    },
+    {
+      "id": "reusable",
+      "test": "len(clean_orders('orders_messy.csv')) == 159"
+    }
+  ]
+}

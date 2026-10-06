@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "items": [
+    "build-base",
+    "make-component",
+    "add-props",
+    "add-variants",
+    "style-variants",
+    "test-instance"
+  ]
+}

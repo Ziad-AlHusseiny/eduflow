@@ -1,0 +1,20 @@
+{
+  "title": "Make the Today screen responsive",
+  "prompt": "You have a static Today screen with everything placed by hand. Put these steps in the order you would follow to make it adapt from a 360 px to a 440 px phone, the way Sofia does it.",
+  "hints": [
+    "You cannot set Fill container until the children sit inside an auto layout frame.",
+    "Testing comes after the structure is in place, and fixes go into the original, not the test copies.",
+    "Design, wrap content, set fills, pin edges and check the rows stretch, then test widths, then stress content, then fix."
+  ],
+  "explanation": "Start from one well-made **mid-size design** so you have something worth adapting. Wrap the flowing parts in a **vertical auto layout content frame**, because Fill container only exists for children of auto layout. Then set rows and text to **Fill container** width so they stretch. Next, add **constraints** in the screen frame for the content frame and the pinned elements; the quick drag check only shows rows stretching because their fills are already set. Only now do you **resize copies** to the narrowest and widest widths, then **stress the content** with long names, empty lists and larger text. Finally **fix the original** and delete the copies, so there is still one source of truth.",
+  "items": {
+    "design-mid": "Design the screen at a mid-size width such as 393 px.",
+    "content-frame": "Wrap header, progress and habit list in a vertical auto layout Content frame.",
+    "fill-children": "Set the rows and text inside Content to Fill container width.",
+    "constraints": "Set constraints (Content: Left and right, Top and bottom; tab bar: Left and right, Bottom; add button: Right, Bottom), then drag the screen wider to check the rows stretch with it.",
+    "resize-copies": "Duplicate the screen and resize the copies to 360 and 440 px wide.",
+    "stress": "Stress-test the copies with a long habit name, an empty list and text about 30% larger.",
+    "fix-original": "Fix what broke in the original screen, then delete the test copies."
+  },
+  "checks": {}
+}

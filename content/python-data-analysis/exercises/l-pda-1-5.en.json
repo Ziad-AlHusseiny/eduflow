@@ -1,0 +1,17 @@
+{
+  "title": "Three helper functions for the report",
+  "prompt": "Complete three functions. `parse_money(text)` returns a float from strings like `\" $1,234.50\"`, `\"$129.00\"` or `\"18.00\"`. `line_revenue(quantity, unit_price, discount=0.0)` returns quantity × unit price × (1 − discount), rounded to 2 decimals; the discount defaults to 0. `format_money(amount)` returns a string like `\"$1,234.50\"`: a dollar sign, thousands separators and exactly two decimals. Each function must `return` its result, not print it.",
+  "hints": [
+    "Replace `pass` with a `return` statement in each function.",
+    "For `parse_money`, chain `.strip()`, `.replace(\"$\", \"\")` and `.replace(\",\", \"\")`, then wrap it all in `float()`.",
+    "For `format_money`, an f-string with the spec `,.2f` does all the formatting: `f\"${amount:,.2f}\"`."
+  ],
+  "explanation": "Each function does one job and returns its result, so they compose: `format_money(line_revenue(2, parse_money(\"$129.00\"), 0.15))` gives `\"$219.30\"`. The default `discount=0.0` means callers can leave it out for full-price lines. In `format_money`, the first `$` is literal text and the braces hold the value with the spec `,.2f`: comma separators, fixed two decimals. You will reuse exactly this logic on whole pandas columns in Section 3.",
+  "checks": {
+    "parse-simple": "`parse_money` handles `\"18.00\"` and `\" $129.00\"`",
+    "parse-thousands": "`parse_money` handles thousands separators: `\"$1,234.50\"` becomes 1234.5",
+    "revenue": "`line_revenue` applies the discount and rounds to 2 decimals",
+    "revenue-default": "`line_revenue` works without a discount argument",
+    "format": "`format_money(1234.5)` returns `\"$1,234.50\"`"
+  }
+}

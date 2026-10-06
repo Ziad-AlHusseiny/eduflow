@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<main>\n  <h1>Harbour Lights: Friday</h1>\n  <p>Standing tickets, SAR 180 each.</p>\n  <button type=\"button\" id=\"book\">Book now</button>\n  <a href=\"#faq\">Festival FAQ</a>\n</main>\n\n<div class=\"modal\" id=\"booking\" hidden>\n  <h2 id=\"booking-title\">Book Friday pass</h2>\n  <label for=\"qty\">Quantity</label>\n  <input id=\"qty\" type=\"number\" min=\"1\" max=\"6\" value=\"1\">\n  <button type=\"button\" id=\"confirm\">Confirm</button>\n  <button type=\"button\" id=\"close\">Close</button>\n</div>",
+    "css": ".modal { border: 0; border-radius: 12px; padding: 16px 20px; box-shadow: 0 10px 40px rgb(0 0 0 / 0.3); }\ndiv.modal:not([hidden]) { position: fixed; inset: 10% 10% auto; background: #fff; }\n.modal::backdrop { background: rgb(20 16 40 / 0.6); }\n.modal h2 { margin-block-start: 0; }\n.modal input { display: block; margin-block: 4px 12px; font: inherit; }\n",
+    "js": "const modal = document.querySelector('#booking');\n\ndocument.querySelector('#book').addEventListener('click', () => {\n  modal.hidden = false;\n});\n\ndocument.querySelector('#close').addEventListener('click', () => {\n  modal.hidden = true;\n});\n"
+  },
+  "solution": {
+    "html": "<main>\n  <h1>Harbour Lights: Friday</h1>\n  <p>Standing tickets, SAR 180 each.</p>\n  <button type=\"button\" id=\"book\">Book now</button>\n  <a href=\"#faq\">Festival FAQ</a>\n</main>\n\n<dialog class=\"modal\" id=\"booking\" aria-labelledby=\"booking-title\">\n  <h2 id=\"booking-title\">Book Friday pass</h2>\n  <label for=\"qty\">Quantity</label>\n  <input id=\"qty\" type=\"number\" min=\"1\" max=\"6\" value=\"1\">\n  <button type=\"button\" id=\"confirm\">Confirm</button>\n  <button type=\"button\" id=\"close\">Close</button>\n</dialog>",
+    "css": ".modal { border: 0; border-radius: 12px; padding: 16px 20px; box-shadow: 0 10px 40px rgb(0 0 0 / 0.3); }\ndiv.modal:not([hidden]) { position: fixed; inset: 10% 10% auto; background: #fff; }\n.modal::backdrop { background: rgb(20 16 40 / 0.6); }\n.modal h2 { margin-block-start: 0; }\n.modal input { display: block; margin-block: 4px 12px; font: inherit; }\n",
+    "js": "const modal = document.querySelector('#booking');\n\ndocument.querySelector('#book').addEventListener('click', () => {\n  modal.showModal();\n});\n\ndocument.querySelector('#close').addEventListener('click', () => {\n  modal.close();\n});\n"
+  },
+  "checks": [
+    {
+      "id": "named-dialog",
+      "test": "const d = $('#booking'); if (!d || d.tagName !== 'DIALOG') return false; const ids = (d.getAttribute('aria-labelledby') || '').split(/\\s+/).filter(Boolean); const viaLabelledby = ids.some((id) => document.getElementById(id)?.textContent.includes('Book Friday pass')); return viaLabelledby || /Book Friday pass/.test(d.getAttribute('aria-label') || '');"
+    },
+    {
+      "id": "opens-modal",
+      "test": "const b = $('#book'); b.focus(); await click(b); const d = $('#booking'); return !!d.open && d.matches(':modal');"
+    },
+    {
+      "id": "focus-inside",
+      "test": "return $('#booking').contains(document.activeElement) && document.activeElement !== document.body;"
+    },
+    {
+      "id": "page-inert",
+      "test": "const inside = document.activeElement; $('#book').focus(); const escaped = document.activeElement === $('#book'); inside.focus(); return !escaped;"
+    },
+    {
+      "id": "focus-returns",
+      "test": "const d = $('#booking'); if (d.tagName !== 'DIALOG' || !d.open || !d.contains(document.activeElement)) return false; await click('#close'); await tick(30); return !d.open && document.activeElement === $('#book');"
+    }
+  ]
+}

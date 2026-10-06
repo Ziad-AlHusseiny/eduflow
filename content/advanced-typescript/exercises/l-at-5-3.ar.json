@@ -1,0 +1,15 @@
+{
+  "title": "أعلن ما لا يستطيع الـ compiler رؤيته",
+  "prompt": "كود التطبيق أدناه يعمل وقت التشغيل أصلًا، لكنه لا يجتاز فحص الأنواع. دون تعديل كود التطبيق أو الاختبارات، أضف تصريحات في الموضع المحدّد:\n\n1. أعلن المتغيّر العام `cartwheelAnalytics` من مقتطف المزوّد: method باسم `track(event, props?)` حيث `event` من نوع `AnalyticsEvent` و`props` تربط نصوصًا بنصوص أو أرقام، إضافة إلى قائمة `sent` للقراءة فقط من النصوص.\n2. أضف `findLast` إلى المصفوفات (موجودة في المتصفّح لكن ليس في الـ lib الخاصة بـ ES2022 في بيئة التجربة)، تُعيد نوع العنصر أو `undefined`.\n3. وسّع `CheckoutConfig` بحقل إلزامي `giftWrap: boolean`، دون تعديل الـ interface الأصلي.",
+  "hints": [
+    "المتغيّر العام الموجود وقت التشغيل يُوصف بـ `declare var name: { … };` (هذا الملف script، فهو عام).",
+    "يمكن توسيع الـ interfaces العامة في الـ lib بإعلان interface بالاسم نفسه: `interface Array<T> { findLast(…): T | undefined; }`.",
+    "الـ interfaces تندمج: اكتب `interface CheckoutConfig { giftWrap: boolean; }` ثانيًا."
+  ],
+  "explanation": "`declare var` تخبر TypeScript أن `cartwheelAnalytics` موجود وقت التشغيل دون توليد أي كود، والمعامل الدقيق `AnalyticsEvent` يحوّل الأخطاء الإملائية إلى أخطاء ترجمة لن يبلّغ عنها المقتطف نفسه أبدًا. ولأن هذا الملف script، يندمج `interface Array<T>` الثاني مع `Array` العام في الـ lib، فيسدّ الفجوة بين الـ lib الخاصة بـ ES2022 والمتصفّح. ويندمج تصريح `CheckoutConfig` الثاني مع الأول، وهذا بالضبط كيف يوسّع توسيعُ الوحدات الـ interfaces الخاصة بمكتبة. والثلاثة كلها وعود غير مفحوصة بشأن بيئة التشغيل، فيجب أن تبقى في حدّها الأدنى وأن تذكر ما تحقّقت منه مقابله.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها اختبارات الأنواع",
+    "latest": "`latestShipped` تُعيد آخر طلب مشحون",
+    "tracks": "`placeOrder` ترسل حدث `order_placed`"
+  }
+}

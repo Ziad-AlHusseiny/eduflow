@@ -1,0 +1,17 @@
+{
+  "title": "احزم البطل",
+  "prompt": "جهّز البطل للإطلاق.\n\n1. `bundle`: قاموس فيه `\"model\"` (الـ pipeline المدرَّب)، و`\"features\"` (قائمة الـ features)، و`\"version\"` (أي نص)، و`\"sklearn_version\"` (`sklearn.__version__`).\n2. احفظ `bundle` بـ `joblib.dump` في الـ `buffer` الموجود في الذاكرة، وأرجعه إلى البداية، ثم حمّله من جديد في `reloaded`.\n3. أكمل `predict_churn(record, bundle)`: ارفع `ValueError` إذا كان أي feature مفقودًا، أو كان `orders` أقل من 1، أو كان `mobile_share` خارج النطاق 0–1. وإلا فأعِد احتمال الانقطاع كـ `float` في Python، مع ترتيب الأعمدة بحسب ترتيب الـ features في الحزمة (فمفاتيح السجلّ قد تأتي بأي ترتيب).",
+  "hints": [
+    "`joblib.dump(bundle, buffer)`، ثم `buffer.seek(0)` قبل `joblib.load(buffer)`: فالتحميل يقرأ من الموضع الحالي.",
+    "ابنِ `missing = [f for f in bundle[\"features\"] if f not in record]` وارفع خطأً إذا لم تكن فارغة.",
+    "`pd.DataFrame([record])[bundle[\"features\"]]` يثبّت ترتيب الأعمدة؛ وغلّف نتيجة `predict_proba(...)[0, 1]` بـ `float()`."
+  ],
+  "explanation": "تحمل الحزمة كل ما تحتاجه مهمة في بيئة الإنتاج: الـ pipeline مع الـ scaler المدرَّب، وترتيب الأعمدة، وإصدارًا يُسجَّل مع كل تنبؤ، وإصدار المكتبة لتثبيته. وإعادة التحميل تعطي تنبؤات متطابقة. ويحوّل الحارس المدخلات السيئة إلى خطأ صريح بدل احتمال يبدو معقولًا، واختيار `bundle[\"features\"]` يجعل ترتيب الأعمدة مستقلًا عن طريقة بناء المستدعي للسجلّ. وفي خدمة حقيقية سيكون الـ buffer ملفًا في مخزن نماذج موثوق.",
+  "checks": {
+    "bundle": "يحتوي bundle على model وfeatures وversion وsklearn_version",
+    "reloaded": "يتنبأ reloaded تمامًا كالأصل",
+    "predicts": "تُعيد predict_churn قيمة float الصحيحة، أيًّا كان ترتيب المفاتيح",
+    "missing": "الـ feature المفقود يرفع ValueError",
+    "ranges": "قيمة orders الأقل من 1 أو mobile_share خارج 0–1 ترفع ValueError"
+  }
+}

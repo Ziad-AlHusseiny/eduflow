@@ -1,0 +1,11 @@
+{
+  "title": "Audit the kit before publishing",
+  "prompt": "Before the first publish of the Steady Kit, Sofia asks you to audit the Components page. Here it is written out as text. Check it against the component checklist from the lesson, focusing on duplication, naming and variables (states get their own review in Lesson 4.2), and select every line that should block the publish.",
+  "hints": [
+    "Look for anything that duplicates an existing component instead of using its properties.",
+    "Check that values are named by meaning and that colors come from variables.",
+    "Three lines: a near-duplicate main component, appearance-based values, and a hard-coded fill."
+  ],
+  "explanation": "Line 6: `Button 2` is a second main component that duplicates Button with an icon. The Button already has a **Show icon** boolean and an **Icon** instance swap, so delete the copy and use the property; otherwise every fix must be made twice. Line 10: the Toggle's values `Teal | Grey` describe **appearance**; in dark mode or after a rebrand they lie. Use `On | Off`. Line 14: the row background has a **hard-coded** `#FFFFFF` fill, so it will stay white in dark mode. Bind it to `color/surface/default`.",
+  "checks": {}
+}

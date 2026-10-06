@@ -1,0 +1,27 @@
+{
+  "kind": "fill",
+  "language": "swift",
+  "template": "@{{0}}\nfinal class Expense {\n    var title: String\n    var amount: Decimal\n    var date: Date\n\n    init(title: String, amount: Decimal, date: Date = .now) {\n        self.title = title\n        self.amount = amount\n        self.date = date\n    }\n}\n\nstruct ExpensesList: View {\n    @{{1}}(sort: \\Expense.date, order: .reverse) private var expenses: [Expense]\n    @Environment(\\.modelContext) private var context\n\n    var body: some View {\n        List {\n            ForEach(expenses) { expense in\n                Text(expense.title)\n            }\n            .onDelete { offsets in\n                for index in offsets {\n                    context.{{2}}(expenses[index])\n                }\n            }\n        }\n        .toolbar {\n            Button(\"Add coffee\") {\n                context.{{3}}(Expense(title: \"Coffee\", amount: 4.5))\n            }\n        }\n    }\n}",
+  "blanks": [
+    {
+      "answers": [
+        "Model"
+      ]
+    },
+    {
+      "answers": [
+        "Query"
+      ]
+    },
+    {
+      "answers": [
+        "delete"
+      ]
+    },
+    {
+      "answers": [
+        "insert"
+      ]
+    }
+  ]
+}

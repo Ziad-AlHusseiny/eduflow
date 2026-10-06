@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<form id=\"expense-form\" novalidate>\n  <label for=\"label\">What</label>\n  <input id=\"label\" name=\"label\">\n  <label for=\"amount\">Amount ($)</label>\n  <input id=\"amount\" name=\"amount\" type=\"number\" step=\"0.01\">\n  <p id=\"form-error\" role=\"alert\"></p>\n  <button type=\"submit\">Add expense</button>\n</form>\n<ul id=\"expense-list\"></ul>\n",
+    "css": "form { display: grid; gap: 4px; max-width: 280px; }\n#form-error { color: #b42318; min-height: 1.5em; margin: 0; }\n[aria-invalid=\"true\"] { outline: 2px solid #b42318; }\n",
+    "js": "let expenses = [{ id: \"exp-1\", label: \"Train\", amount: 1220 }];\nlet count = 1;\nconst nextId = () => `exp-${++count}`;\n\nconst form = document.querySelector(\"#expense-form\");\nconst errorEl = document.querySelector(\"#form-error\");\nconst list = document.querySelector(\"#expense-list\");\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction renderExpenses() {\n  list.replaceChildren();\n  for (const e of expenses) {\n    const li = document.createElement(\"li\");\n    li.textContent = `${e.label}: ${formatMoney(e.amount)}`;\n    list.append(li);\n  }\n}\nrenderExpenses();\n\n// Return an object of error messages: { label: \"...\", amount: \"...\" }.\n// An empty object means the values are valid.\nfunction validateExpense({ label, amount }) {\n  return {};\n}\n\nform.addEventListener(\"submit\", (event) => {\n  const data = new FormData(form);\n  const values = { label: data.get(\"label\"), amount: data.get(\"amount\") };\n  expenses = [...expenses, { id: nextId(), ...values }];\n  renderExpenses();\n});\n"
+  },
+  "solution": {
+    "html": "<form id=\"expense-form\" novalidate>\n  <label for=\"label\">What</label>\n  <input id=\"label\" name=\"label\">\n  <label for=\"amount\">Amount ($)</label>\n  <input id=\"amount\" name=\"amount\" type=\"number\" step=\"0.01\">\n  <p id=\"form-error\" role=\"alert\"></p>\n  <button type=\"submit\">Add expense</button>\n</form>\n<ul id=\"expense-list\"></ul>\n",
+    "css": "form { display: grid; gap: 4px; max-width: 280px; }\n#form-error { color: #b42318; min-height: 1.5em; margin: 0; }\n[aria-invalid=\"true\"] { outline: 2px solid #b42318; }\n",
+    "js": "let expenses = [{ id: \"exp-1\", label: \"Train\", amount: 1220 }];\nlet count = 1;\nconst nextId = () => `exp-${++count}`;\n\nconst form = document.querySelector(\"#expense-form\");\nconst errorEl = document.querySelector(\"#form-error\");\nconst list = document.querySelector(\"#expense-list\");\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction renderExpenses() {\n  list.replaceChildren();\n  for (const e of expenses) {\n    const li = document.createElement(\"li\");\n    li.textContent = `${e.label}: ${formatMoney(e.amount)}`;\n    list.append(li);\n  }\n}\nrenderExpenses();\n\nfunction validateExpense({ label, amount }) {\n  const errors = {};\n  if (label.trim() === \"\") {\n    errors.label = \"Enter what you spent money on.\";\n  }\n  if (!Number.isFinite(amount) || amount <= 0) {\n    errors.amount = \"Enter an amount greater than zero.\";\n  }\n  return errors;\n}\n\nform.addEventListener(\"submit\", (event) => {\n  event.preventDefault();\n  const data = new FormData(form);\n  const values = {\n    label: data.get(\"label\").trim(),\n    amount: Math.round(Number(data.get(\"amount\")) * 100),\n  };\n\n  for (const field of form.querySelectorAll(\"input\")) {\n    field.removeAttribute(\"aria-invalid\");\n  }\n\n  const errors = validateExpense(values);\n  const names = Object.keys(errors);\n  if (names.length > 0) {\n    errorEl.textContent = Object.values(errors).join(\" \");\n    const firstBad = form.elements[names[0]];\n    firstBad.setAttribute(\"aria-invalid\", \"true\");\n    firstBad.focus();\n    return;\n  }\n\n  errorEl.textContent = \"\";\n  expenses = [...expenses, { id: nextId(), ...values }];\n  renderExpenses();\n  form.reset();\n  form.elements.label.focus();\n});\n"
+  },
+  "checks": [
+    {
+      "id": "validate-fn",
+      "test": "const bad = validateExpense({ label: '   ', amount: 0 });\nconst nan = validateExpense({ label: 'Tea', amount: NaN });\nconst good = validateExpense({ label: 'Tea', amount: 300 });\nreturn 'label' in bad && 'amount' in bad && 'amount' in nan && !('label' in nan) && Object.keys(good).length === 0;\n"
+    },
+    {
+      "id": "empty-blocked",
+      "test": "await input($('#label'), '   ');\nawait input($('#amount'), '');\nawait click($('button[type=\"submit\"]'));\nreturn $$('#expense-list li').length === 1 && text('#form-error') !== '' && $('#label').getAttribute('aria-invalid') === 'true';\n"
+    },
+    {
+      "id": "prevents-default",
+      "test": "let prevented = null;\nconst spy = (event) => { prevented = event.defaultPrevented; };\ndocument.addEventListener('submit', spy);\nawait click($('button[type=\"submit\"]'));\ndocument.removeEventListener('submit', spy);\nreturn prevented === true;\n"
+    },
+    {
+      "id": "adds-valid",
+      "test": "await input($('#label'), '  Coffee with Sam ');\nawait input($('#amount'), '4.50');\nawait click($('button[type=\"submit\"]'));\nconst items = $$('#expense-list li');\nconst last = expenses[expenses.length - 1];\nreturn items.length === 2 && items[1].textContent.trim() === 'Coffee with Sam: $4.50' && last.amount === 450 && last.label === 'Coffee with Sam';\n"
+    },
+    {
+      "id": "resets",
+      "test": "return $('#label').value === '' && $('#amount').value === '' && text('#form-error') === '';\n"
+    }
+  ]
+}

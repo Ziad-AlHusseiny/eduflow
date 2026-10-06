@@ -1,0 +1,11 @@
+{
+  "title": "Your first three CLI commands",
+  "prompt": "Complete Lantern's start-of-day routine with the AWS CLI v2. Step 1 signs in without access keys, step 2 proves which account you are in, and step 3 lists bucket names as plain tab-separated text in Lantern's Region (`eu-west-1`).",
+  "hints": [
+    "The sign-in command is a single word and needs CLI 2.32.0 or later.",
+    "`get-caller-identity` belongs to the Security Token Service.",
+    "The global option that overrides the profile's Region is `--region`; the plain-text output format is the one that suits shell loops."
+  ],
+  "explanation": "`aws login` creates short-term credentials from your console sign-in, so no secret access key is stored. `aws sts get-caller-identity` returns the account ID and the ARN of the identity in use, which you check before doing anything that changes resources. `--region` overrides the Region stored in the profile for a single command, and `--output text` prints the values selected by `--query` without JSON brackets, one tab between each name.",
+  "checks": {}
+}

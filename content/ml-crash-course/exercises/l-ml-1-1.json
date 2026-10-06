@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["churn-flag", "spend-next-year", "find-segments", "big-order-rule", "ticket-team"],
+  "correct": ["churn-flag", "spend-next-year", "ticket-team"]
+}

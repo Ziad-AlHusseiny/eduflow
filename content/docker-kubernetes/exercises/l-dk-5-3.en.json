@@ -1,0 +1,10 @@
+{
+  "title": "Watch it, then take it back",
+  "prompt": "Release 1.5.0 is rolling out. Fill in the blanks to wait for the rollout, list the Deployment's revisions, roll back to the previous one, and roll the Helm-managed staging release back to revision 4.",
+  "hints": [
+    "All three `kubectl rollout` subcommands are single words: one waits, one lists, one reverses.",
+    "Helm's command for returning to an earlier release has the same name as the concept."
+  ],
+  "explanation": "```bash\nkubectl rollout status deployment/notes-api --timeout=5m\nkubectl rollout history deployment/notes-api\nkubectl rollout undo deployment/notes-api\nhelm rollback notes-api 4 -n notes\n```\n`status` blocks until the rollout finishes and exits non-zero if it fails, which makes it a good CI gate. `undo` scales the previous ReplicaSet back up with the same rolling-update rules. `helm rollback` re-applies all manifests from release revision 4. Afterwards, revert the change in Git so the next deploy doesn't bring 1.5.0 back.",
+  "checks": {}
+}

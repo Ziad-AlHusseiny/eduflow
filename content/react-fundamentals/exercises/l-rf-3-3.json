@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useState } from 'react';\n\nfunction AddMovieForm({ onAdd }) {\n  // Make both inputs controlled, handle submit, and disable Add while the title is blank.\n  return (\n    <form>\n      <label htmlFor=\"title\">Title</label>\n      <input id=\"title\" />\n      <label htmlFor=\"year\">Year</label>\n      <input id=\"year\" type=\"number\" />\n      <button type=\"submit\">Add</button>\n    </form>\n  );\n}\n\nlet nextId = 1; // in a real app: crypto.randomUUID()\n\nexport default function App() {\n  const [movies, setMovies] = useState([]);\n\n  function addMovie(title, year) {\n    setMovies([...movies, { id: nextId++, title, year }]);\n  }\n\n  return (\n    <main>\n      <AddMovieForm onAdd={addMovie} />\n      <ul>\n        {movies.map((m) => (\n          <li key={m.id}>{m.year ? `${m.title} (${m.year})` : m.title}</li>\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useState } from 'react';\n\nfunction AddMovieForm({ onAdd }) {\n  const [title, setTitle] = useState('');\n  const [year, setYear] = useState('');\n  const trimmed = title.trim();\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    if (!trimmed) return;\n    onAdd(trimmed, year === '' ? null : Number(year));\n    setTitle('');\n    setYear('');\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <label htmlFor=\"title\">Title</label>\n      <input id=\"title\" value={title} onChange={(e) => setTitle(e.target.value)} />\n      <label htmlFor=\"year\">Year</label>\n      <input id=\"year\" type=\"number\" value={year} onChange={(e) => setYear(e.target.value)} />\n      <button type=\"submit\" disabled={!trimmed}>Add</button>\n    </form>\n  );\n}\n\nlet nextId = 1; // in a real app: crypto.randomUUID()\n\nexport default function App() {\n  const [movies, setMovies] = useState([]);\n\n  function addMovie(title, year) {\n    setMovies([...movies, { id: nextId++, title, year }]);\n  }\n\n  return (\n    <main>\n      <AddMovieForm onAdd={addMovie} />\n      <ul>\n        {movies.map((m) => (\n          <li key={m.id}>{m.year ? `${m.title} (${m.year})` : m.title}</li>\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "disabled-empty",
+      "test": "const b = $('button'); if (!b.disabled) return false; await input('#title', '   '); return $('button').disabled === true;"
+    },
+    {
+      "id": "enabled-with-title",
+      "test": "await input('#title', 'Dune'); return $('button').disabled === false;"
+    },
+    {
+      "id": "adds-movie",
+      "test": "await input('#year', '2021'); const __f = $('form'); if (__f) __f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); else await click($('button')); await tick(20); const li = $$('li'); return li.length === 1 && text(li[0]) === 'Dune (2021)';"
+    },
+    {
+      "id": "clears-fields",
+      "test": "return $('#title').value === '' && $('#year').value === '' && $('button').disabled === true;"
+    },
+    {
+      "id": "trims-title",
+      "test": "await input('#title', '  Past Lives  '); const __f = $('form'); if (__f) __f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); else await click($('button')); await tick(20); const li = $$('li'); return li.length === 2 && text(li[1]) === 'Past Lives';"
+    }
+  ]
+}

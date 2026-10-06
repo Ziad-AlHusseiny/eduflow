@@ -1,0 +1,27 @@
+{
+  "title": "Which count can't drift?",
+  "prompt": "The Watchlist header shows how many movies are still unwatched. Users can add movies, remove them and mark them watched. **Pick every design where the header can never disagree with the list.**",
+  "hints": [
+    "Ask of each design: is there a second copy of the number that someone has to remember to update?",
+    "A value calculated from the list every time it's shown has no second copy to forget."
+  ],
+  "explanation": "The two correct designs both **derive** the count from the list whenever the screen is drawn, so there is only one source of truth: the array of movies. The other two keep a second copy of the number (in a variable or in the DOM) and rely on every handler, now and in the future, to update it correctly. That is exactly the bookkeeping React is designed to remove.",
+  "options": {
+    "derive-in-render": {
+      "text": "The header calculates `movies.filter((m) => !m.watched).length` each time it renders.",
+      "why": "Correct. The number is recalculated from the list on every render, so there is nothing separate to keep in sync."
+    },
+    "counter-variable": {
+      "text": "A `leftCount` variable starts at the list length, and each click handler adds or subtracts 1.",
+      "why": "This keeps a second copy of the truth. Forget to adjust it in one handler (say, removing a watched movie) and the header is wrong."
+    },
+    "read-dom": {
+      "text": "Each handler reads the number currently shown in the header, changes it and writes it back.",
+      "why": "The DOM becomes the source of truth, and any handler that forgets to touch it leaves the screen out of sync with the data."
+    },
+    "derive-in-child": {
+      "text": "A `WatchCount` component receives the movie list and computes the number itself.",
+      "why": "Correct. It's the same idea moved into its own component: the count comes from the list, never from a separate tally."
+    }
+  }
+}

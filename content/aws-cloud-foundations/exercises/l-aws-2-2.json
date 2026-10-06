@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "json",
+  "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ReadWriteRsvps\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"dynamodb:*\",\n      \"Resource\": \"arn:aws:dynamodb:eu-west-1:111122223333:table/lantern-rsvps\"\n    },\n    {\n      \"Sid\": \"ReadPosters\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"s3:GetObject\",\n      \"Resource\": \"arn:aws:s3:::lantern-posters\"\n    },\n    {\n      \"Sid\": \"DeletePostersOnlyWithMfa\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"s3:DeleteObject\",\n      \"Resource\": \"arn:aws:s3:::lantern-posters/*\",\n      \"Condition\": {\n        \"Bool\": { \"aws:MultiFactorAuthPresent\": \"false\" }\n      }\n    }\n  ]\n}",
+  "bugLines": [
+    7,
+    14,
+    22
+  ]
+}

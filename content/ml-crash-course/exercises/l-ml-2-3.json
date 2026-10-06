@@ -1,0 +1,23 @@
+{
+  "kind": "python",
+  "starter": "from sklearn.datasets import load_diabetes\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import PolynomialFeatures\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX = X[[\"bmi\", \"bp\", \"s5\", \"s3\"]]\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\nX_fit, X_val, y_fit, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=0)\n\n# 1. val_scores: {degree: validation R2} for degrees 1 to 6.\n#    Fit each model on X_fit / y_fit, score it on X_val / y_val.\nval_scores = {}\n\n# 2. The degree with the best validation score\nbest_degree = None\n\n# 3. Refit that degree on ALL the training data, then score once on the test set\ntest_r2 = None\n",
+  "solution": "from sklearn.datasets import load_diabetes\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import PolynomialFeatures\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX = X[[\"bmi\", \"bp\", \"s5\", \"s3\"]]\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\nX_fit, X_val, y_fit, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=0)\n\ndef poly_model(degree):\n    return make_pipeline(PolynomialFeatures(degree=degree, include_bias=False), LinearRegression())\n\nval_scores = {d: poly_model(d).fit(X_fit, y_fit).score(X_val, y_val) for d in range(1, 7)}\nbest_degree = max(val_scores, key=val_scores.get)\ntest_r2 = poly_model(best_degree).fit(X_train, y_train).score(X_test, y_test)\nprint(val_scores, best_degree, test_r2)\n",
+  "checks": [
+    {
+      "id": "degrees",
+      "test": "sorted(val_scores) == [1, 2, 3, 4, 5, 6]"
+    },
+    {
+      "id": "validation",
+      "test": "abs(float(val_scores[2]) - __import__('sklearn.pipeline', fromlist=['make_pipeline']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['PolynomialFeatures']).PolynomialFeatures(degree=2, include_bias=False), __import__('sklearn.linear_model', fromlist=['LinearRegression']).LinearRegression()).fit(X_fit, y_fit).score(X_val, y_val)) < 1e-6"
+    },
+    {
+      "id": "best",
+      "test": "best_degree == max(val_scores, key=val_scores.get)"
+    },
+    {
+      "id": "test-score",
+      "test": "test_r2 is not None and abs(float(test_r2) - __import__('sklearn.pipeline', fromlist=['make_pipeline']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['PolynomialFeatures']).PolynomialFeatures(degree=best_degree, include_bias=False), __import__('sklearn.linear_model', fromlist=['LinearRegression']).LinearRegression()).fit(X_train, y_train).score(X_test, y_test)) < 1e-6"
+    }
+  ]
+}

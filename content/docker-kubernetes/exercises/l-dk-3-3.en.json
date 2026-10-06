@@ -1,0 +1,10 @@
+{
+  "title": "Healthy on paper",
+  "prompt": "With this `compose.yaml`, `db` shows `(unhealthy)` forever even though `psql` works fine, and the API still crashes on cold starts with `ECONNREFUSED`. Select the **two** lines to fix.",
+  "hints": [
+    "In exec form (`CMD`), how many arguments does Docker see in that list?",
+    "Which form of `depends_on` only waits for the container to start?"
+  ],
+  "explanation": "Line 15 uses exec form with one string, so Docker looks for a program literally named `pg_isready -U notes -d notes` and the check never passes. Use `CMD-SHELL` with the string, or split the arguments.\n\nLine 5 uses the short form of `depends_on`, which only waits for `db` to start. Wait for the healthcheck instead:\n\n```yaml\n  api:\n    depends_on:\n      db:\n        condition: service_healthy\n  db:\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U notes -d notes\"]\n```",
+  "checks": {}
+}

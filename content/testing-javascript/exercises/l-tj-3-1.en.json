@@ -1,0 +1,17 @@
+{
+  "title": "Query the balances like a user",
+  "prompt": "`renderBalances(container, balances)` renders a list labelled **Balances**: `\"Ana is owed $12.00\"`, `\"Ben owes $5.00\"`, `\"Cai is settled up\"`, sorted by name. With no people it shows `No expenses yet` and no list.\n\nThe starter begins with small stand-ins for Testing Library's queries (`getByRole`, `getAllByRole`, `queryByRole`, `getByText`, `queryByText`; each takes the container as its first argument) and creates a fresh `container` for every test. Add tests until your suite catches four hidden bugs: swapped **owes**/**is owed** wording, a version that **hides** settled-up people, one that prints a **minus sign** (\"owes -$5.00\"), and one with **no empty state**.",
+  "hints": [
+    "Read what the user reads: `getAllByRole(container, 'listitem').map((li) => li.textContent)` gives you every line of text.",
+    "Use one balance of each kind (positive, negative, zero) so a single `toEqual` on the texts covers the wording, the sign and the settled person.",
+    "For the empty state, call `renderBalances(container, {})`, then `getByText(container, 'No expenses yet')` and `expect(queryByRole(container, 'list')).toBeNull()`."
+  ],
+  "explanation": "The strongest assertion here compares the visible text of every item with one balance of each kind. That single `toEqual` catches the swapped wording, the stray minus sign and the missing settled-up line, because each changes what a user would read. The empty-state test uses `getByText` for what must be there and `queryByRole(...)` with `toBeNull()` for what must not, the standard `getBy`/`queryBy` split. None of the tests depends on tag nesting or classes: you could render the balances as a `<div role=\"list\">` with `role=\"listitem\"` rows, or restyle everything, and they would still pass.",
+  "checks": {
+    "passes": "All your tests pass against the real renderBalances",
+    "catches-swapped-wording": "Catches the version that swaps \"owes\" and \"is owed\"",
+    "catches-hides-settled": "Catches the version that hides settled-up people",
+    "catches-minus-sign": "Catches the version that prints \"owes -$5.00\"",
+    "catches-no-empty-state": "Catches the version with no empty state"
+  }
+}

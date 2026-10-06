@@ -1,0 +1,20 @@
+{
+  "title": "Ship the projects filter through a pull request",
+  "prompt": "Put the steps of the pull request workflow in order, from starting the projects filter to having it on `main` with your local repository tidy.",
+  "hints": [
+    "A pull request needs a branch that exists on GitHub.",
+    "Review feedback is answered by pushing to the same branch, before anything merges.",
+    "Local cleanup comes after GitHub has merged and deleted the branch."
+  ],
+  "explanation": "Work starts on a fresh branch from an up-to-date `main`. Pushing it with `-u` puts it on GitHub, where you open a pull request against `main` with a clear description. Reviewers comment; you answer by committing and pushing to the same branch, which updates the pull request. Once approved, it's merged (here, squashed) and the remote branch deleted. Finally you update your local `main` and delete the local branch.",
+  "items": {
+    "branch": "`git switch main`, `git pull`, then `git switch -c projects-filter`.",
+    "push": "Commit the work and run `git push -u origin projects-filter`.",
+    "open": "Open a pull request (base: `main`) with what, why, how to check, and `Closes #12`.",
+    "review": "A reviewer leaves line comments and requests changes.",
+    "update": "Commit the fixes on `projects-filter` and `git push`; the pull request updates.",
+    "merge": "After approval, click Squash and merge, then Delete branch.",
+    "cleanup": "Locally: `git switch main`, `git pull`, `git branch -D projects-filter`."
+  },
+  "checks": {}
+}

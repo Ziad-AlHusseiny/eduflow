@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": false,
+  "options": ["startup", "initial-delay", "no-liveness", "liveness-readyz"],
+  "correct": ["startup"]
+}

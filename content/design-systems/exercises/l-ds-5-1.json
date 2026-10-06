@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "items": [
+    "search",
+    "evidence",
+    "rfc",
+    "review",
+    "build",
+    "release"
+  ]
+}

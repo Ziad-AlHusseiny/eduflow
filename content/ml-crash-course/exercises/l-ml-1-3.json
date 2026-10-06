@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\nnew_customer = pd.DataFrame([{\n    \"tenure_days\": 120, \"orders\": 6, \"total_spent\": 940.0, \"avg_order_value\": 156.7,\n    \"days_since_last_order\": 12, \"used_coupon\": 1, \"support_tickets\": 0,\n    \"mobile_share\": 0.8}])\n\n# 1. A tree limited to depth 3, and a tree with no depth limit (both random_state=42)\nshallow = DecisionTreeClassifier(max_depth=3, random_state=42)\ndeep = DecisionTreeClassifier(random_state=42)\n\n# 2. Fit both on the training data, then fill in the scores\nshallow_test = None\ndeep_train = None\ndeep_test = None\n\n# 3. The shallow tree's prediction (0 or 1) for new_customer\nnew_pred = None\n",
+  "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\nnew_customer = pd.DataFrame([{\n    \"tenure_days\": 120, \"orders\": 6, \"total_spent\": 940.0, \"avg_order_value\": 156.7,\n    \"days_since_last_order\": 12, \"used_coupon\": 1, \"support_tickets\": 0,\n    \"mobile_share\": 0.8}])\n\nshallow = DecisionTreeClassifier(max_depth=3, random_state=42).fit(X_train, y_train)\ndeep = DecisionTreeClassifier(random_state=42).fit(X_train, y_train)\n\nshallow_test = shallow.score(X_test, y_test)\ndeep_train = deep.score(X_train, y_train)\ndeep_test = deep.score(X_test, y_test)\n\nnew_pred = int(shallow.predict(new_customer)[0])\n\nprint(f\"shallow test {shallow_test:.2f} | deep train {deep_train:.2f}, test {deep_test:.2f}\")\n",
+  "checks": [
+    {
+      "id": "fitted",
+      "test": "hasattr(shallow, 'classes_') and hasattr(deep, 'classes_') and shallow.max_depth == 3 and deep.max_depth is None"
+    },
+    {
+      "id": "shallow-test",
+      "test": "shallow_test is not None and abs(float(shallow_test) - 0.73) < 0.005"
+    },
+    {
+      "id": "deep-scores",
+      "test": "deep_train is not None and float(deep_train) == 1.0 and abs(float(deep_test) - 0.72) < 0.005"
+    },
+    {
+      "id": "prediction",
+      "test": "new_pred is not None and int(__import__('numpy').ravel(new_pred)[0]) == 0"
+    }
+  ]
+}

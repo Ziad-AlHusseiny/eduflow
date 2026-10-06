@@ -1,0 +1,16 @@
+{
+  "title": "Let Lasso choose the features",
+  "prompt": "The starter pipeline forgets something important. Fix it, then inspect what Lasso did.\n\n1. `lasso_model`: degree-2 `PolynomialFeatures(include_bias=False)`, then `StandardScaler`, then `Lasso(alpha=1)`, fitted on the training data.\n2. `lasso_r2`: its test R². `n_zero`: how many of its 65 coefficients are exactly zero.\n3. `kept`: a list with the names of the generated columns whose coefficient is not zero.",
+  "hints": [
+    "Without a scaler the penalty judges features by their units. Add `StandardScaler()` between the two existing steps.",
+    "`lasso_model[-1].coef_` gives the Lasso coefficients; `(coef == 0).sum()` counts zeros.",
+    "`lasso_model[0].get_feature_names_out()` lists the 65 generated column names in the same order as the coefficients."
+  ],
+  "explanation": "With scaling in place, Lasso at `alpha=1` reaches a test R² of about 0.515 and sets 30 of 65 coefficients to zero, keeping 35 columns. Without the scaler, the diabetes features' tiny scale means the penalty overwhelms most coefficients for the wrong reason: their units, not their usefulness. Pairing names with coefficients is how you report which inputs the final model actually needs.",
+  "checks": {
+    "scaled": "The pipeline is PolynomialFeatures → StandardScaler → Lasso(alpha=1)",
+    "r2": "lasso_r2 is the test R²",
+    "zeros": "n_zero counts the zero coefficients",
+    "kept": "kept lists the names of the non-zero columns"
+  }
+}

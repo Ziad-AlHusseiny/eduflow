@@ -1,0 +1,11 @@
+{
+  "title": "Review the RSVP function",
+  "prompt": "This version of `lantern-rsvp` was opened as a pull request. It looks almost identical to the lesson's function, but three lines would cause a security incident, a growing bill, or broken RSVPs in production. Select them.",
+  "hints": [
+    "How should a Lambda function get its credentials?",
+    "Which DynamoDB operation reads the whole table, and which reads one partition?",
+    "Read the condition expression aloud: the write succeeds only if the item ... ?"
+  ],
+  "explanation": "Line 5 hard-codes an access key into the client. The function already has an execution role, and the SDK uses it automatically when you pass no credentials, so delete the `credentials` option entirely; never put keys in code or environment variables. Line 19 counts RSVPs with a `Scan` and a filter, which reads and bills every item in the table on every page view; use `QueryCommand` with `KeyConditionExpression: \"eventId = :e\"` and `Select: \"COUNT\"`. (A Scan also stops after 1 MB, so on a big table this count would be wrong as well as expensive.) Line 36 inverts the duplicate guard: `attribute_exists(email)` lets a write succeed only when the RSVP already exists, so every new RSVP fails with 409. It must be `attribute_not_exists(email)`.",
+  "checks": {}
+}

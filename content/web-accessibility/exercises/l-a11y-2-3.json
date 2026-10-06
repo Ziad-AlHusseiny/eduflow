@@ -1,0 +1,40 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<form id=\"checkout\" novalidate>\n  <input id=\"full-name\" name=\"fullName\" placeholder=\"Full name\">\n  <input id=\"email\" name=\"email\" type=\"text\" placeholder=\"Email\">\n  <p id=\"email-error\" class=\"error\" hidden></p>\n\n  <p class=\"question\">Ticket type</p>\n  <input type=\"radio\" name=\"ticket\" value=\"standing\" id=\"t-standing\"> Standing\n  <input type=\"radio\" name=\"ticket\" value=\"seated\" id=\"t-seated\"> Seated\n\n  <button id=\"pay\">Pay now</button>\n</form>",
+    "css": "form { display: grid; gap: 6px; max-width: 320px; }\ninput:not([type=\"radio\"]) { font: inherit; padding: 6px 8px; border: 1px solid #77708f; border-radius: 6px; }\nfieldset { border: 1px solid #c9c4dc; border-radius: 8px; padding: 8px 12px; }\n.error { color: #b3261e; margin: 0; }\n[aria-invalid=\"true\"] { border-color: #b3261e; border-width: 2px; }\nbutton { justify-self: start; font: inherit; padding: 8px 16px; border-radius: 8px; border: 0; background: #5b3cc4; color: #fff; }\n",
+    "js": "const email = document.querySelector('#email');\nconst error = document.querySelector('#email-error');\n\n// The playground blocks real form submission, so validation runs on the\n// submit button's click. That click also fires when Enter is pressed in a field.\ndocument.querySelector('#pay').addEventListener('click', (event) => {\n  event.preventDefault();\n  if (email.value.includes('@')) {\n    error.hidden = true;\n    return;\n  }\n  error.textContent = 'Enter an email address like name@example.com';\n  error.hidden = false;\n});\n"
+  },
+  "solution": {
+    "html": "<form id=\"checkout\" novalidate>\n  <label for=\"full-name\">Full name</label>\n  <input id=\"full-name\" name=\"fullName\" autocomplete=\"name\">\n  <label for=\"email\">Email</label>\n  <input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\">\n  <p id=\"email-error\" class=\"error\" hidden></p>\n\n  <fieldset>\n    <legend>Ticket type</legend>\n    <label><input type=\"radio\" name=\"ticket\" value=\"standing\" id=\"t-standing\"> Standing</label>\n    <label><input type=\"radio\" name=\"ticket\" value=\"seated\" id=\"t-seated\"> Seated</label>\n  </fieldset>\n\n  <button id=\"pay\">Pay now</button>\n</form>",
+    "css": "form { display: grid; gap: 6px; max-width: 320px; }\ninput:not([type=\"radio\"]) { font: inherit; padding: 6px 8px; border: 1px solid #77708f; border-radius: 6px; }\nfieldset { border: 1px solid #c9c4dc; border-radius: 8px; padding: 8px 12px; }\n.error { color: #b3261e; margin: 0; }\n[aria-invalid=\"true\"] { border-color: #b3261e; border-width: 2px; }\nbutton { justify-self: start; font: inherit; padding: 8px 16px; border-radius: 8px; border: 0; background: #5b3cc4; color: #fff; }\n",
+    "js": "const email = document.querySelector('#email');\nconst error = document.querySelector('#email-error');\n\n// The playground blocks real form submission, so validation runs on the\n// submit button's click. That click also fires when Enter is pressed in a field.\ndocument.querySelector('#pay').addEventListener('click', (event) => {\n  event.preventDefault();\n  if (email.value.includes('@')) {\n    error.hidden = true;\n    email.removeAttribute('aria-invalid');\n    email.removeAttribute('aria-describedby');\n    return;\n  }\n  error.textContent = 'Enter an email address like name@example.com';\n  error.hidden = false;\n  email.setAttribute('aria-invalid', 'true');\n  email.setAttribute('aria-describedby', 'email-error');\n  email.focus();\n});\n"
+  },
+  "checks": [
+    {
+      "id": "labels",
+      "test": "const lbl = (el) => [...(el.labels || [])].map((l) => l.textContent).join(' ').replace(/\\s+/g, ' ').trim(); const fields = $$('input'); return fields.length === 4 && fields.every((f) => lbl(f).length > 0) && /full name/i.test(lbl($('#full-name'))) && /email/i.test(lbl($('#email'))) && /standing/i.test(lbl($('#t-standing'))) && /seated/i.test(lbl($('#t-seated')));"
+    },
+    {
+      "id": "fieldset",
+      "test": "const radios = $$('input[type=\"radio\"]'); const fs = radios[0] && radios[0].closest('fieldset'); if (!fs || !radios.every((r) => fs.contains(r))) return false; const lg = fs.querySelector('legend'); return !!lg && fs.firstElementChild === lg && /ticket type/i.test(lg.textContent);"
+    },
+    {
+      "id": "autocomplete",
+      "test": "return $('#full-name').getAttribute('autocomplete') === 'name' && $('#email').getAttribute('autocomplete') === 'email' && $('#email').type === 'email';"
+    },
+    {
+      "id": "error-linked",
+      "test": "const email = $('#email'); await input(email, 'samir.example.com'); await click('#pay'); if (email.getAttribute('aria-invalid') !== 'true') return false; const ids = (email.getAttribute('aria-describedby') || '').split(/\\s+/).filter(Boolean); return ids.some((id) => { const el = document.getElementById(id); return el && !el.hidden && /enter an email/i.test(el.textContent); });"
+    },
+    {
+      "id": "error-focus",
+      "test": "return document.activeElement === $('#email');"
+    },
+    {
+      "id": "error-clears",
+      "test": "const email = $('#email'); await input(email, 'samir@example.com'); await click('#pay'); if (email.getAttribute('aria-invalid') === 'true') return false; const ids = (email.getAttribute('aria-describedby') || '').split(/\\s+/).filter(Boolean); return !ids.some((id) => { const el = document.getElementById(id); return el && /enter an email/i.test(el.textContent) && !el.hidden; }) && $('#email-error').hidden;"
+    }
+  ]
+}

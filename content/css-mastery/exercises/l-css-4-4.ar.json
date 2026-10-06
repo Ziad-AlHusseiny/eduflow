@@ -1,0 +1,19 @@
+{
+  "title": "أعد هيكلة البطاقة في معمارية",
+  "prompt": "أعد هيكلة هذه الشريحة من ملف الأنماط القديم. أبقِ الـ HTML كما هو.\n\n1. أعلن layers تتضمّن **`reset` و`tokens` و`components` و`utilities`** بهذا الترتيب (يمكنك إضافة `layouts` أو غيرها بينها)، وضع كل قاعدة في layer.\n2. لا selectors بـ ID ولا `!important` في أيّ مكان.\n3. حدّ التمييز في البطاقة يقرأ token اسمه **`--card-accent`** قيمته الافتراضية `#6d28d9`؛ و`.theme-sponsor` تضبطه على **`#0e7490`**.\n4. ما زالت `.u-hidden` تخفي شارة Draft.\n5. البطاقات **بلا margins خاصة بها**؛ وتخطيط `.schedule` يضع **16px** بينها.",
+  "hints": [
+    "ابدأ بتعليمة الـ layers، ثم انقل كل قاعدة موجودة إلى الـ layer التي تطابق وظيفتها.",
+    "الـ tokens: `:root { --card-accent: #6d28d9; }` و`.theme-sponsor { --card-accent: #0e7490; }`. والبطاقة تستخدم `border-inline-start: 6px solid var(--card-accent);`.",
+    "المسافات: احذف margin البطاقة وأعطِ `.schedule` القيم `display: grid; gap: 16px;`. وضع `.u-hidden` في layer الـ utilities، دون `!important`."
+  ],
+  "explanation": "تعليمة الـ layers تُخرج حسم التعارضات من الـ selectors: `.u-hidden` في آخر layer تتغلّب على `display: inline-block` في الـ component بـ specificity عادية (0,1,0)، فلا حاجة إلى IDs ولا إلى `!important`. والبطاقة تقرأ `--card-accent` بدل لون مكتوب يدويًا، فتغيّر `.theme-sponsor` ثيم كل بطاقة بداخلها بـ custom property واحدة، وأيّ جزء مستقبلي من البطاقة يستخدم لون التمييز سيتبعها تلقائيًا. ونقل المسافات إلى `.schedule { gap: 16px; }` يتيح للبطاقة نفسها أن تنتقل إلى شريط جانبي أو carousel دون أن تحارب margin مدمجة.",
+  "checks": {
+    "layer-order": "الـ layers reset وtokens وcomponents وutilities مُعلنة بالترتيب",
+    "no-ids-or-important": "لا selectors بـ ID ولا !important",
+    "accent-token": "البطاقات العادية تستخدم token --card-accent البنفسجي",
+    "sponsor-theme": "بطاقات الراعي زرقاء مخضرّة عبر الـ token",
+    "token-drives-card": "تغيير --card-accent يغيّر ثيم البطاقة",
+    "utility-wins": "الـ utility u-hidden ما زالت تخفي شارة Draft",
+    "layout-owns-spacing": "البطاقات بلا margins؛ والتخطيط يباعد بينها 16px"
+  }
+}

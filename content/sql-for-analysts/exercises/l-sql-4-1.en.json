@@ -1,0 +1,11 @@
+{
+  "title": "Sold before launch",
+  "prompt": "Write this check **from scratch**. Rule: a product can't be ordered before its `launched_on` date.\n\nReturn one row per product that breaks the rule, with `product_id`, `name`, `launched_on`, `first_sold` (the date of its earliest order, as 'YYYY-MM-DD') and `lines` (how many order lines were placed before the launch date). Only count lines from before launch. Row order doesn't matter.",
+  "hints": [
+    "You need three tables: `order_items` (the lines), `orders` (the date) and `products` (the launch date).",
+    "The rule-breaking condition compares two columns from different tables: `o.order_date < p.launched_on`. ISO text compares correctly.",
+    "Group by the product columns, then use `date(MIN(o.order_date))` and `COUNT(*)`."
+  ],
+  "explanation": "Joining lines to their orders and products puts the order date and the launch date on the same row, so the rule becomes a WHERE condition. Grouping by product turns 149 offending lines into 8 products. Some gaps are huge: the Adjustable Dumbbells were selling from February 2024 but 'launched' in May 2025. That pattern suggests `launched_on` records something else, perhaps a relaunch or a catalogue import date, rather than true first availability. Take that question to the product team before using `launched_on` in any 'new product' analysis.",
+  "checks": {}
+}

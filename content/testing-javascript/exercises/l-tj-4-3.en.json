@@ -1,0 +1,10 @@
+{
+  "title": "Find what makes this test flaky",
+  "prompt": "This Playwright test fails about once in ten CI runs, never on the author's laptop. Select **every line** that makes it flaky or unreliable. (Assume the app itself works.)",
+  "hints": [
+    "Look for a line whose action is never waited for.",
+    "Look for a fixed wait, and for a value that is read once instead of asserted with a retrying matcher.",
+    "Think about which other tests might use a group with that exact name, at the same time, on four workers."
+  ],
+  "explanation": "Five lines cause trouble, for four reasons.\n\n- **Line 4** opens a shared, pre-seeded group, `lisbon-trip`. Any other test that adds expenses to it, in parallel or earlier in the run, changes the balances this test sees. Use a fixture that creates a fresh group per test.\n- **Line 8** has no `await`, so the click races the next line. Sometimes the settle-up happens before the status is read, sometimes after.\n- **Line 9** is a fixed two-second sleep: wasted time on a fast run, not enough on a slow one.\n- **Lines 10 and 11** read the status once with `textContent()` and compare it with a plain `toBe`, so nothing retries if the status updates a moment later.\n\nThe fixed version:\n\n```ts\ntest('settling up clears the balances', async ({ page, group }) => {\n  await page.goto(`/groups/${group.id}`);\n  await page.getByLabel('Description').fill('Dinner');\n  await page.getByLabel('Amount').fill('30.00');\n  await page.getByRole('button', { name: 'Add expense' }).click();\n  await page.getByRole('button', { name: 'Settle up' }).click();\n  await expect(page.getByRole('status')).toHaveText('Everyone is settled up');\n  await expect(page.getByRole('listitem')).toHaveCount(0);\n});\n```\n\nLine 12 was already right: `toHaveCount` is a web-first assertion that retries."
+}

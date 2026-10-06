@@ -1,0 +1,34 @@
+{
+  "kind": "python",
+  "files": [
+    "customers.csv"
+  ],
+  "starter": "import pandas as pd\n\n# Load customers.csv with signup_date parsed as a date\ncustomers = None\n\nn_rows = None             # number of customers (rows)\nn_countries = None        # how many distinct countries\ntop_country = None        # the country with the most customers\nmissing_referrals = None  # how many rows have no referred_by value\nfirst_signup = None       # the earliest signup_date\n",
+  "solution": "import pandas as pd\n\ncustomers = pd.read_csv(\"customers.csv\", parse_dates=[\"signup_date\"])\ncustomers.info()\n\nn_rows = len(customers)\nn_countries = customers[\"country\"].nunique()\ntop_country = customers[\"country\"].value_counts().idxmax()\nmissing_referrals = customers[\"referred_by\"].isna().sum()\nfirst_signup = customers[\"signup_date\"].min()\n",
+  "checks": [
+    {
+      "id": "loaded",
+      "test": "isinstance(customers, pd.DataFrame) and customers.shape == (600, 9)"
+    },
+    {
+      "id": "dates-parsed",
+      "test": "pd.api.types.is_datetime64_any_dtype(customers['signup_date'])"
+    },
+    {
+      "id": "counts",
+      "test": "n_rows == 600 and n_countries == 8"
+    },
+    {
+      "id": "top-country",
+      "test": "top_country == 'United States'"
+    },
+    {
+      "id": "missing",
+      "test": "int(missing_referrals) == 503"
+    },
+    {
+      "id": "first-signup",
+      "test": "str(pd.Timestamp(first_signup).date()) == '2024-01-01'"
+    }
+  ]
+}

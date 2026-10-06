@@ -1,0 +1,17 @@
+{
+  "title": "Isolate Q4 2025",
+  "prompt": "Using `orders` (with `order_date` already parsed): set `q4` to the orders placed from 1 October to 31 December 2025 that were not cancelled. Set `coupon_share` to the share of `q4` orders that used a coupon, rounded to 3 decimals. Set `marketplace_coupons` to the number of orders in the whole table that came through the `\"marketplace\"` channel and used a coupon. Set `latest_ids` to a list of the `order_id`s of the 3 most recent orders in `q4`, newest first.",
+  "hints": [
+    "Compare `order_date` with `\"2025-10-01\"` and `\"2026-01-01\"`, and combine masks with `&`, each in parentheses.",
+    "A coupon was used when `coupon_code` is not missing: `.notna()`. The mean of a boolean Series is a share; `.sum()` is a count.",
+    "`q4.nlargest(3, \"order_date\")[\"order_id\"].tolist()` gives the newest three ids as a list."
+  ],
+  "explanation": "Q4 2025 has 677 orders, of which 642 were not cancelled. Using \"before 1 January\" as the upper bound keeps every order on 31 December, whatever its time. 23.1% of those orders used a coupon, above the 18.8% average across both years, an early hint that promotions matter to the Q4 story. Counting with `(mask_a & mask_b).sum()` answers the marketplace question without building a filtered table. For the latest ids, `nlargest` on the date column (or `sort_values(\"order_date\", ascending=False).head(3)`) both work.",
+  "checks": {
+    "q4-rows": "`q4` has 642 orders",
+    "q4-clean": "`q4` has no cancelled orders and nothing before October 2025",
+    "coupon-share": "`coupon_share` is 0.231",
+    "marketplace": "44 marketplace orders used a coupon",
+    "latest": "`latest_ids` is `[2017, 2735, 1550]`"
+  }
+}

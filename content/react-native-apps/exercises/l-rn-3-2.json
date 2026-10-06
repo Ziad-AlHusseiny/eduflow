@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// params is whatever useLocalSearchParams() returned for /hikes/[id]\n// Return { id, units, photo } with real types and safe defaults.\nfunction parseHikeParams(params) {\n  return { id: params.id, units: params.units, photo: params.photo };\n}\n\nconsole.log(parseHikeParams({ id: '42', units: 'MI', photo: '2' }));\nconsole.log(parseHikeParams({ id: 'abc' }));\n"
+  },
+  "solution": {
+    "js": "function first(value) {\n  return Array.isArray(value) ? value[0] : value;\n}\n\nfunction parseHikeParams(params) {\n  const rawId = first(params.id);\n  const id = /^\\d+$/.test(rawId ?? '') && Number(rawId) > 0 ? Number(rawId) : null;\n\n  const rawUnits = String(first(params.units) ?? '').toLowerCase();\n  const units = rawUnits === 'mi' ? 'mi' : 'km';\n\n  const rawPhoto = first(params.photo);\n  const photo = /^\\d+$/.test(rawPhoto ?? '') ? Number(rawPhoto) : 0;\n\n  return { id, units, photo };\n}\n\nconsole.log(parseHikeParams({ id: '42', units: 'MI', photo: '2' }));\nconsole.log(parseHikeParams({ id: 'abc' }));\n"
+  },
+  "checks": [
+    {
+      "id": "valid",
+      "test": "return typeof parseHikeParams === 'function' && (() => { const r = parseHikeParams({ id: '42', units: 'mi', photo: '2' }); return r.id === 42 && r.units === 'mi' && r.photo === 2; })();"
+    },
+    {
+      "id": "bad-id",
+      "test": "return (() => { const r = parseHikeParams({ id: 'abc' }); return r.id === null && r.units === 'km' && r.photo === 0; })() && parseHikeParams({ id: '0' }).id === null && parseHikeParams({ id: '4.5' }).id === null && parseHikeParams({ id: '-3' }).id === null && parseHikeParams({}).id === null;"
+    },
+    {
+      "id": "units",
+      "test": "return parseHikeParams({ id: '1', units: 'MI' }).units === 'mi' && parseHikeParams({ id: '1', units: 'miles' }).units === 'km' && parseHikeParams({ id: '1' }).units === 'km';"
+    },
+    {
+      "id": "photo",
+      "test": "return parseHikeParams({ id: '1', photo: '0' }).photo === 0 && parseHikeParams({ id: '1', photo: '3' }).photo === 3 && parseHikeParams({ id: '1', photo: 'x' }).photo === 0 && parseHikeParams({ id: '1', photo: '-2' }).photo === 0;"
+    },
+    {
+      "id": "arrays",
+      "test": "const r = parseHikeParams({ id: ['7', '8'], units: ['mi', 'km'], photo: ['1'] }); return r.id === 7 && r.units === 'mi' && r.photo === 1;"
+    }
+  ]
+}

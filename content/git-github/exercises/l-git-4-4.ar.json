@@ -1,0 +1,11 @@
+{
+  "title": "أصلح الـ CI workflow",
+  "prompt": "كتب زميل ملف `.github/workflows/ci.yml` ليشغّل فحص الـ HTML في الموقع الشخصي على كل pull request إلى `main`. لكنه لا يظهر أبدًا على الـ pull requests، وحتى بعد إصلاح ذلك سيظل يفشل. حدّد الأسطر الثلاثة الخاطئة.",
+  "hints": [
+    "أسماء الأحداث في `on` يجب أن تكون دقيقة؛ قارنها باسم الحدث الذي رأيته في الدرس.",
+    "يبدأ الـ runner فارغًا. ما الذي يجب أن يحدث قبل أن يجد `npm` الملف `package.json`؟",
+    "كل `uses:` يجب أن يحدّد أيّ إصدار من الـ action يُشغَّل."
+  ],
+  "explanation": "السطر 4: الحدث هو `pull_request` (بالمفرد)؛ و `pull_requests` ليس حدثًا يعرفه GitHub، فيصبح الـ workflow غير صالح ولا يعمل أبدًا على الـ pull requests. السطر 11: يعمل `npm ci` قبل `actions/checkout`، على runner فارغ لا يحتوي `package.json`؛ انقله إلى ما بعد الـ checkout والـ setup-node. السطر 13: يجب أن يتضمّن `uses` مرجعًا، مثل `actions/setup-node@v7`؛ ودون `@…` يفشل تحميل الـ workflow. وبعد الإصلاح تصبح الخطوات: checkout، ثم setup-node مع Node 24، ثم `npm ci`، ثم `npm test`.",
+  "checks": {}
+}

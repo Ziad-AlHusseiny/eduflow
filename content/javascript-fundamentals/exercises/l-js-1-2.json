@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const appName = \"Pocket\";\nconst monthlyBudget = 2000;\n\n// 1. Declare spent, starting at 0\n// 2. Add an expense of 45 to spent, then one of 120\n// 3. Declare remaining: the budget minus what was spent\n// 4. Log the type of remaining\n"
+  },
+  "solution": {
+    "js": "const appName = \"Pocket\";\nconst monthlyBudget = 2000;\n\nlet spent = 0;\nspent = spent + 45;\nspent = spent + 120;\n\nconst remaining = monthlyBudget - spent;\nconsole.log(typeof remaining);\n"
+  },
+  "checks": [
+    {
+      "id": "spent-total",
+      "test": "return typeof spent === 'number' && spent === 165;"
+    },
+    {
+      "id": "remaining-value",
+      "test": "return remaining === 1835;"
+    },
+    {
+      "id": "logs-type",
+      "test": "return logs.some((l) => l.trim() === 'number');"
+    },
+    {
+      "id": "budget-const",
+      "test": "try { monthlyBudget = 1; return false; } catch (e) { return e instanceof TypeError; }\n"
+    }
+  ]
+}

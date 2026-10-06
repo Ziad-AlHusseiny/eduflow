@@ -1,0 +1,16 @@
+{
+  "title": "Pick Lantern's Region",
+  "prompt": "Lantern must keep RSVP data (names and emails) inside the EU, most visitors are in Portugal, and the plan uses Amazon S3, Amazon CloudFront, AWS Lambda, Amazon API Gateway and Amazon DynamoDB. You have four candidate Regions with these made-up properties. Apply the order from the lesson (data rules, latency, service availability, price) and choose one.",
+  "hints": [
+    "Cross out every candidate that fails a hard rule before comparing anything else.",
+    "A Region that is missing a service you need is not cheaper; you would have to redesign or run that part elsewhere.",
+    "Among the Regions left, prefer the one nearest the users. A small price difference rarely beats latency for a public website."
+  ],
+  "explanation": "The US Region fails the data rule, so it is out no matter how cheap or complete it is. The cheapest EU Region lacks a service in the plan, which would force a redesign. Of the two EU Regions with everything you need, the one nearest Portugal gives visitors lower latency, and the small price gap does not outweigh that. Notice that CloudFront would serve cached files from edge locations anyway, but the API calls to Lambda and DynamoDB still travel to the Region, so its distance matters for every RSVP.",
+  "options": {
+    "us": { "text": "A US Region: every service available, lowest prices, default in the console.", "why": "It fails the first and hardest rule. RSVP data must stay in the EU, so nothing else about this Region matters." },
+    "eu-cheap-missing": { "text": "An EU Region about 1,500 km away: cheapest in the EU, but Amazon API Gateway is not offered there yet.", "why": "It passes the data rule but fails service availability. Saving a little on price is not worth redesigning the API." },
+    "eu-near": { "text": "An EU Region about 500 km from Lisbon: every planned service available, prices a few percent above the cheapest EU Region.", "why": "Correct. It meets the data rule, is closest to the users and has every service. A few percent on price is the least important factor." },
+    "eu-far": { "text": "An EU Region about 2,500 km away: every planned service available, same prices as the nearest Region.", "why": "It is valid, but it is further from users for no gain. Each API call pays the extra distance in latency." }
+  }
+}

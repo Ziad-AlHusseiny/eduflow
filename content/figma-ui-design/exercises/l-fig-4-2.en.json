@@ -1,0 +1,11 @@
+{
+  "title": "Complete the accessibility checklist",
+  "prompt": "Before handing off the New habit sheet, Sofia fills in this checklist. Complete it with the numbers from WCAG 2.2 and the platform guidelines, and the one word that finishes the last rule. Numbers only for the numeric blanks.",
+  "hints": [
+    "WCAG's AA target minimum is smaller than either platform's recommendation.",
+    "A 15 px label is normal text. A focus ring is a non-text visual indicator.",
+    "Targets: 24, 44, 48. Contrast: 4.5 and 3. The rule is about color."
+  ],
+  "explanation": "WCAG 2.2 SC 2.5.8 sets the AA minimum at **24 × 24** CSS px (or enough spacing around smaller targets). Apple recommends **44 × 44** pt and Material recommends **48 × 48** dp; for a phone app, design to the platform number. A 15 px label is normal text, so it needs **4.5:1**. A focus ring is a non-text indicator and needs **3:1** against its surroundings. And SC 1.4.1 says meaning is never conveyed by **color** alone, which is why the Missed state also has an icon and a word.",
+  "checks": {}
+}

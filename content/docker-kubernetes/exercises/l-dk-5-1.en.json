@@ -1,0 +1,28 @@
+{
+  "title": "The restart loop on big databases",
+  "prompt": "After a customer's database grew, notes-api's startup cache warm-up takes up to 90 seconds. Its liveness probe on `/healthz` uses the defaults (`periodSeconds: 10`, `failureThreshold: 3`), so Pods are killed at about 30 seconds and never finish starting. The `/healthz` handler isn't registered until warm-up completes. Which change is the best fix?",
+  "hints": [
+    "You want generous patience during startup and quick detection of hangs afterwards. Which probe separates those two phases?",
+    "Count: how long does `periodSeconds × failureThreshold` need to be?"
+  ],
+  "explanation": "A startup probe holds off liveness and readiness until it succeeds once. With `periodSeconds: 5` and `failureThreshold: 24`, notes-api gets up to 120 seconds to warm up, is detected as started within 5 seconds of finishing, and from then on liveness runs at its normal 10-second pace:\n\n```yaml\nstartupProbe:\n  httpGet:\n    path: /healthz\n    port: http\n  periodSeconds: 5\n  failureThreshold: 24\n```\n`initialDelaySeconds` would work today but delays every start by the worst case and breaks again when warm-up hits 95 seconds.",
+  "options": {
+    "startup": {
+      "text": "Add a `startupProbe` on `/healthz` with `periodSeconds: 5` and `failureThreshold: 24`.",
+      "why": "Correct. Up to 120 seconds to start, checked every 5 seconds, then liveness takes over unchanged."
+    },
+    "initial-delay": {
+      "text": "Set `initialDelaySeconds: 90` on the liveness probe.",
+      "why": "It delays liveness by 90 seconds on every start, even fast ones, and fails again as soon as warm-up exceeds 90 seconds."
+    },
+    "no-liveness": {
+      "text": "Remove the liveness probe; readiness is enough.",
+      "why": "Readiness never restarts anything, so a deadlocked process would sit there forever, out of rotation but never fixed."
+    },
+    "liveness-readyz": {
+      "text": "Point the liveness probe at `/readyz` instead.",
+      "why": "That doesn't add startup time, and it ties restarts to database health, which turns database blips into outages."
+    }
+  },
+  "checks": {}
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Set up the Watchlist project",
+  "prompt": "You're on a fresh laptop with Node.js installed. Put these steps in the order you'd run them to get the Watchlist project running and showing your own heading in the browser.",
+  "hints": [
+    "You can't install dependencies for a project that doesn't exist yet.",
+    "npm commands run against the package.json in the current folder, so you need to be inside the project first."
+  ],
+  "explanation": "First confirm Node is new enough for Vite (20.19+ or 22.12+). Scaffolding creates the `watchlist` folder, so you `cd` into it before `npm install`, which reads its `package.json`. `npm run dev` starts the server on port 5173. Only then does editing `App.jsx` show up in the browser, via hot module replacement.",
+  "items": {
+    "check-node": "`node -v` — confirm Node.js 20.19+ or 22.12+",
+    "scaffold": "`npm create vite@latest watchlist -- --template react`",
+    "enter-folder": "`cd watchlist`",
+    "install": "`npm install`",
+    "start-dev": "`npm run dev`, then open http://localhost:5173",
+    "edit-app": "Replace src/App.jsx with your own `<h1>My Watchlist</h1>` and save"
+  }
+}

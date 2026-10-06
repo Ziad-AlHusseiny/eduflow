@@ -1,0 +1,15 @@
+{
+  "title": "Narrow the order status",
+  "prompt": "Cartwheel orders have exactly five statuses: `processing`, `shipped`, `delivered`, `cancelled` and `returned`. Replace `string` in `OrderStatus` with a union of those five literals so the type tests pass. Once the type is narrow, the compiler points at a gap in `statusLabels`: fill it so `statusLabel('returned')` returns `'Returned'`.",
+  "hints": [
+    "A union of string literals looks like `'a' | 'b' | 'c'`.",
+    "After you change `OrderStatus`, read the new error on `statusLabels`: `Record<OrderStatus, string>` now requires one key per status.",
+    "Add `returned: 'Returned'` to the object."
+  ],
+  "explanation": "With `OrderStatus` as `string`, `Record<OrderStatus, string>` means \"any string keys\", so a missing status is invisible and the typo `'canceled'` is a valid argument. As a union of five literals, the record must have exactly those five keys, and `canCancel('canceled')` is rejected, which is what the `@ts-expect-error` line asserts. Nothing changed at runtime except the added label: the types alone found both problems.",
+  "checks": {
+    "types": "The file type-checks with zero errors (including the type tests)",
+    "returned-label": "`statusLabel('returned')` returns `'Returned'`",
+    "can-cancel": "`canCancel` still allows only `processing` orders to be cancelled"
+  }
+}

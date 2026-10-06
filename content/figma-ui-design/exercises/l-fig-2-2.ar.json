@@ -1,0 +1,36 @@
+{
+  "title": "اجعل لوحة New habit تصمد في أي شاشة",
+  "prompt": "سجّل فريق ضمان الجودة (QA) ثلاثة أخطاء على لوحة New habit: على هاتف بعرض 320 px تخرج الشرائح عن الحافّة (انظر الرسم)، ومفتاح Reminder يلتصق بتسميته بدل أن يجلس عند الحافّة اليمنى، وعلى iPad يتمدّد زر Save habit حتى عرض 900 px.\n\n:::figure لوحة New habit على هاتف بعرض 320 px\n<svg viewBox=\"0 0 420 380\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">لوحة سفلية ضيّقة. حقل الاسم يتّسع. شرائح التكرار الأربع تتجاوز الحافّة اليمنى للّوحة. تسمية Reminder يليها مفتاح التبديل مباشرة بدل أن يجلس المفتاح عند الحافّة اليمنى. زر Save habit يتّسع.</title>\n  <rect class=\"d-box\" x=\"20\" y=\"20\" width=\"300\" height=\"340\" rx=\"20\"/>\n  <text class=\"d-label-strong\" x=\"40\" y=\"56\">New habit</text>\n  <rect class=\"d-box\" x=\"40\" y=\"76\" width=\"260\" height=\"40\" rx=\"8\"/>\n  <text class=\"d-label-muted\" x=\"52\" y=\"101\">Habit name</text>\n  <rect class=\"d-box-accent\" x=\"40\" y=\"136\" width=\"64\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"72\" y=\"156\" text-anchor=\"middle\">Daily</text>\n  <rect class=\"d-box-accent\" x=\"112\" y=\"136\" width=\"96\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"160\" y=\"156\" text-anchor=\"middle\">Weekdays</text>\n  <rect class=\"d-box-accent\" x=\"216\" y=\"136\" width=\"96\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"264\" y=\"156\" text-anchor=\"middle\">Weekends</text>\n  <rect class=\"d-box-warn\" x=\"320\" y=\"136\" width=\"84\" height=\"30\" rx=\"15\"/>\n  <text class=\"d-label\" x=\"362\" y=\"156\" text-anchor=\"middle\">Custom</text>\n  <text class=\"d-label\" x=\"40\" y=\"210\">Reminder</text>\n  <rect class=\"d-box-primary\" x=\"120\" y=\"194\" width=\"44\" height=\"24\" rx=\"12\"/>\n  <rect class=\"d-box-primary\" x=\"40\" y=\"290\" width=\"260\" height=\"48\" rx=\"12\"/>\n  <text class=\"d-label-strong\" x=\"170\" y=\"320\" text-anchor=\"middle\">Save habit</text>\n</svg>\n:::\n\nاللوحة frame عمودي بـ Auto layout وعرضه مضبوط على Fill container. اختر **كل** تغيير يصلح أحد هذه الأخطاء إصلاحًا سليمًا.",
+  "hints": [
+    "طابق كل خطأ مع أداة حجم واحدة: Wrap، أو الحدّ الأدنى/الأقصى، أو Fill container.",
+    "في حالة مفتاح التبديل، يجب أن تذهب المساحة المتبقية إلى مكان ما. أيّ ابن يجب أن يمتصّها؟",
+    "فعّل Wrap لصف الشرائح، وضع حدًّا أقصى لعرض الزر، واجعل التسمية على Fill."
+  ],
+  "explanation": "تفعيل **Wrap** لصف الشرائح يتيح لـ \"Custom\" الانتقال إلى سطر ثانٍ بدل أن يفيض. و**الحدّ الأقصى للعرض** على زر Save habit (يستخدم Steady القيمة 480) يمنع Fill container من إنتاج شريط بعرض 900 px على الأجهزة اللوحية. وضبط **تسمية Reminder على Fill container** يجعلها تمتصّ العرض المتبقي، فيندفع مفتاح التبديل إلى الـ padding الأيمن للصف في كل شاشة. أما جعل اللوحة تحتضن محتواها فسيقلّصها إلى عرض أعرض أبنائها بدل أن تملأ الشاشة؛ وجعل كل الشرائح على Fill يمطّها إلى كبسولات غير متساوية؛ وإخراج المفتاح من الـ flow بـ Ignore auto layout يصلح عرضًا واحدًا ويكسر البقية.",
+  "options": {
+    "wrap-chips": {
+      "text": "فعّل Wrap لصف شرائح التكرار.",
+      "why": "صحيح. الشرائح التي لا تتّسع تنتقل إلى سطر جديد، وهذا بالضبط ما وُجد الـ Wrap من أجله."
+    },
+    "max-button": {
+      "text": "امنح زر Save habit حدًّا أقصى للعرض، مثل 480.",
+      "why": "صحيح. يحافظ الزر على Fill container في الهواتف لكنه يتوقّف عن النمو في الشاشات الكبيرة."
+    },
+    "fill-label": {
+      "text": "اضبط عرض تسمية Reminder على Fill container.",
+      "why": "صحيح. تأخذ التسمية العرض الفائض، فيستقرّ مفتاح التبديل عند الحافّة اليمنى في كل الأحجام."
+    },
+    "hug-sheet": {
+      "text": "اضبط عرض اللوحة على Hug contents.",
+      "why": "اللوحة المحتضنة لمحتواها تأخذ عرض أعرض أبنائها، فلن تمتدّ على الشاشة بعد ذلك، وستنتقل الأخطاء إلى مكان آخر بدل أن تختفي."
+    },
+    "fill-chips": {
+      "text": "اضبط كل شريحة على Fill container.",
+      "why": "ستتمدّد الشرائح لتتقاسم عرض الصف بالتساوي، ولن تتّسع مع ذلك في شاشة بعرض 320 px. الشرائح يجب أن تحتضن تسمياتها."
+    },
+    "ignore-toggle": {
+      "text": "فعّل Ignore auto layout لمفتاح التبديل واسحبه إلى الحافّة اليمنى.",
+      "why": "يمكنك تثبيته بالـ constraints، لكن إخراجه من الـ flow يعني أن التسمية قد تمتدّ الآن تحته. Fill على التسمية أبسط وأمتن."
+    }
+  }
+}

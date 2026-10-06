@@ -1,0 +1,17 @@
+{
+  "title": "Build a ten-line test runner",
+  "prompt": "Write the two functions every test framework is built on.\n\n- `expectEqual(actual, expected)` does nothing when the values are strictly equal (`===`) and **throws an `Error`** otherwise. The message must include both values, for example `Expected 334 but received 333`.\n- `test(name, fn)` calls `fn`. If it returns normally, log `PASS <name>`. If it throws, log `FAIL <name>: <error message>` and **do not rethrow**, so the next test still runs.\n\nRun it: the second test fails on purpose, because `0.1 + 0.2` is not exactly `0.3` in JavaScript.",
+  "hints": [
+    "`expectEqual` needs one `if` and one `throw new Error(...)`. Use a template literal to put both values in the message.",
+    "`test` needs a `try { … } catch (error) { … }` around the call to `fn()`.",
+    "Log with `` console.log(`PASS ${name}`) `` after `fn()` inside `try`, and `` console.log(`FAIL ${name}: ${error.message}`) `` inside `catch`."
+  ],
+  "explanation": "This is the core of Vitest, Jest and every other runner: an assertion is an `if` that throws, and a test is a function the runner calls inside `try/catch`. Catching the error is what lets one failing test be reported without stopping the rest of the suite. Real frameworks add better messages (diffs of objects), async support, hooks, watch mode and parallel runs, but the contract is identical: **a test passes when its function finishes without throwing**. Notice also the deliberate failure: `0.1 + 0.2` is `0.30000000000000004`, which is exactly why Splitwise-lite stores money as integer cents.",
+  "checks": {
+    "equal-passes": "expectEqual does not throw when the values are equal",
+    "unequal-throws": "expectEqual throws an Error that names both values",
+    "logs-pass": "test logs PASS <name> for a passing test",
+    "logs-fail": "test logs FAIL <name>: <message> for a failing test",
+    "keeps-going": "test catches the error instead of rethrowing it"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\nfrom scipy.stats import ks_2samp\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import precision_score, recall_score\nfrom sklearn.model_selection import StratifiedKFold, cross_val_predict\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\nmodel = make_pipeline(StandardScaler(), LogisticRegression())\n\n# Next quarter's customers (simulated): a premium range lifted basket sizes and a returns policy change caused more tickets\nrng = np.random.default_rng(3)\nrecent = churn[features].sample(150, random_state=2).copy()\nrecent[\"avg_order_value\"] *= 1.6\nrecent[\"support_tickets\"] += rng.integers(1, 3, len(recent))\n\n# 1. Out-of-fold churn flags (threshold 0.5) for every customer, using cross_val_predict\nflagged = None\n\n# 2. Recall per segment (a Series indexed by segment), and the segment with the lowest recall\nrecall_by_segment = None\nlowest_recall_segment = None\n\n# 3. Columns of `recent` whose distribution differs from churn[features] (KS test p < 0.01), as a list\ndrifted = []\n",
+  "solution": "import numpy as np\nimport pandas as pd\nfrom scipy.stats import ks_2samp\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import precision_score, recall_score\nfrom sklearn.model_selection import StratifiedKFold, cross_val_predict\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\nmodel = make_pipeline(StandardScaler(), LogisticRegression())\n\n# Next quarter's customers (simulated): a premium range lifted basket sizes and a returns policy change caused more tickets\nrng = np.random.default_rng(3)\nrecent = churn[features].sample(150, random_state=2).copy()\nrecent[\"avg_order_value\"] *= 1.6\nrecent[\"support_tickets\"] += rng.integers(1, 3, len(recent))\n\nprob = cross_val_predict(model, churn[features], churn[\"churned\"], cv=cv, method=\"predict_proba\")[:, 1]\nflagged = (prob >= 0.5).astype(int)\n\naudit = churn.assign(flagged=flagged)\nrecall_by_segment = audit.groupby(\"segment\")[[\"churned\", \"flagged\"]].apply(\n    lambda g: recall_score(g[\"churned\"], g[\"flagged\"]))\nlowest_recall_segment = recall_by_segment.idxmin()\n\ndrifted = [c for c in features if ks_2samp(churn[c], recent[c]).pvalue < 0.01]\nprint(recall_by_segment.round(2).to_dict(), lowest_recall_segment, drifted)\n",
+  "checks": [
+    {
+      "id": "flags",
+      "test": "flagged is not None and len(flagged) == 398 and set(np.unique(flagged)) <= {0, 1} and abs(int(np.sum(flagged)) - 218) <= 2"
+    },
+    {
+      "id": "recall",
+      "test": "recall_by_segment is not None and set(recall_by_segment.index) == {'consumer', 'enterprise', 'small_business'} and abs(float(recall_by_segment['consumer']) - 0.7582) < 0.01"
+    },
+    {
+      "id": "lowest",
+      "test": "lowest_recall_segment == 'enterprise'"
+    },
+    {
+      "id": "drift",
+      "test": "sorted(drifted) == ['avg_order_value', 'support_tickets']"
+    }
+  ]
+}

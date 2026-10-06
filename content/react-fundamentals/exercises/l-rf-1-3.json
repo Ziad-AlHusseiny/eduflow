@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "function Header() {\n  // Return a <header> with an <h1> and a <p>\n  return null;\n}\n\nfunction MovieCard() {\n  // Return an <article> with an <h2> title and a <p> year\n  return null;\n}\n\nexport default function App() {\n  return (\n    <main>\n      {/* Use Header once and MovieCard twice */}\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "function Header() {\n  return (\n    <header>\n      <h1>My Watchlist</h1>\n      <p>Movies I want to see</p>\n    </header>\n  );\n}\n\nfunction MovieCard() {\n  return (\n    <article>\n      <h2>Arrival</h2>\n      <p>2016</p>\n    </article>\n  );\n}\n\nexport default function App() {\n  return (\n    <main>\n      <Header />\n      <MovieCard />\n      <MovieCard />\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "header-heading",
+      "test": "return text('header h1') === 'My Watchlist';"
+    },
+    {
+      "id": "header-tagline",
+      "test": "return text('header p').length > 0;"
+    },
+    {
+      "id": "two-cards",
+      "test": "return $$('main article').length === 2;"
+    },
+    {
+      "id": "card-content",
+      "test": "return $$('article').every((a) => a.querySelector('h2') && a.querySelector('h2').textContent.includes('Arrival') && a.querySelector('p') && a.querySelector('p').textContent.includes('2016')) && $$('article').length > 0;"
+    }
+  ]
+}

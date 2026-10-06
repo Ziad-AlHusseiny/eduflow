@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<h1>Pocket</h1>\n<button type=\"button\" id=\"add-sample\">Add a sample expense</button>\n<ul id=\"expense-list\"></ul>\n<p id=\"total\"></p>\n",
+    "css": "li { display: flex; gap: 8px; align-items: center; }\n",
+    "js": "let expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450 },\n  { id: \"exp-2\", label: \"Train\", amount: 1220 },\n  { id: \"exp-3\", label: \"Lunch\", amount: 1350 },\n];\nlet nextNumber = 4;\n\nconst list = document.querySelector(\"#expense-list\");\nconst totalEl = document.querySelector(\"#total\");\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction renderExpenses() {\n  list.replaceChildren();\n  for (const expense of expenses) {\n    const li = document.createElement(\"li\");\n    li.dataset.id = expense.id;\n    const label = document.createElement(\"span\");\n    label.textContent = `${expense.label}: ${formatMoney(expense.amount)}`;\n    const button = document.createElement(\"button\");\n    button.type = \"button\";\n    button.className = \"delete\";\n    button.textContent = \"Delete\";\n    li.append(label, button);\n    list.append(li);\n  }\n  const total = expenses.reduce((sum, e) => sum + e.amount, 0);\n  totalEl.textContent = `Total: ${formatMoney(total)}`;\n}\n\ndocument.querySelector(\"#add-sample\").addEventListener(\"click\", () => {\n  expenses = [...expenses, { id: `exp-${nextNumber}`, label: `Sample ${nextNumber}`, amount: 100 }];\n  nextNumber++;\n  renderExpenses();\n});\n\nrenderExpenses();\n\n// BUG: these listeners are lost every time renderExpenses rebuilds the list.\n// Replace this block with ONE delegated listener on the list.\nfor (const button of document.querySelectorAll(\".delete\")) {\n  button.addEventListener(\"click\", () => {\n    const id = button.closest(\"li\").dataset.id;\n    expenses = expenses.filter((e) => e.id !== id);\n    renderExpenses();\n  });\n}\n"
+  },
+  "solution": {
+    "html": "<h1>Pocket</h1>\n<button type=\"button\" id=\"add-sample\">Add a sample expense</button>\n<ul id=\"expense-list\"></ul>\n<p id=\"total\"></p>\n",
+    "css": "li { display: flex; gap: 8px; align-items: center; }\n",
+    "js": "let expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450 },\n  { id: \"exp-2\", label: \"Train\", amount: 1220 },\n  { id: \"exp-3\", label: \"Lunch\", amount: 1350 },\n];\nlet nextNumber = 4;\n\nconst list = document.querySelector(\"#expense-list\");\nconst totalEl = document.querySelector(\"#total\");\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction renderExpenses() {\n  list.replaceChildren();\n  for (const expense of expenses) {\n    const li = document.createElement(\"li\");\n    li.dataset.id = expense.id;\n    const label = document.createElement(\"span\");\n    label.textContent = `${expense.label}: ${formatMoney(expense.amount)}`;\n    const button = document.createElement(\"button\");\n    button.type = \"button\";\n    button.className = \"delete\";\n    button.textContent = \"Delete\";\n    li.append(label, button);\n    list.append(li);\n  }\n  const total = expenses.reduce((sum, e) => sum + e.amount, 0);\n  totalEl.textContent = `Total: ${formatMoney(total)}`;\n}\n\ndocument.querySelector(\"#add-sample\").addEventListener(\"click\", () => {\n  expenses = [...expenses, { id: `exp-${nextNumber}`, label: `Sample ${nextNumber}`, amount: 100 }];\n  nextNumber++;\n  renderExpenses();\n});\n\nrenderExpenses();\n\nlist.addEventListener(\"click\", (event) => {\n  const button = event.target.closest(\".delete\");\n  if (!button) {\n    return;\n  }\n  const id = button.closest(\"li\").dataset.id;\n  expenses = expenses.filter((e) => e.id !== id);\n  renderExpenses();\n});\n"
+  },
+  "checks": [
+    {
+      "id": "first-delete",
+      "test": "await click($('li[data-id=\"exp-2\"] .delete'));\nreturn $$('#expense-list li').length === 2 && !$('li[data-id=\"exp-2\"]') && text('#total') === 'Total: $18.00';\n"
+    },
+    {
+      "id": "second-delete",
+      "test": "await click($('li[data-id=\"exp-1\"] .delete'));\nreturn $$('#expense-list li').length === 1 && !$('li[data-id=\"exp-1\"]') && text('#total') === 'Total: $13.50';\n"
+    },
+    {
+      "id": "new-items",
+      "test": "await click($('#add-sample'));\nconst added = $('li[data-id=\"exp-4\"] .delete');\nif (!added) return false;\nawait click(added);\nreturn !$('li[data-id=\"exp-4\"]') && $$('#expense-list li').length === 1;\n"
+    },
+    {
+      "id": "ignore-other-clicks",
+      "test": "await click($('#expense-list li span'));\nreturn $$('#expense-list li').length === 1;\n"
+    },
+    {
+      "id": "data-updated",
+      "test": "return expenses.length === 1 && expenses[0].id === 'exp-3';\n"
+    }
+  ]
+}

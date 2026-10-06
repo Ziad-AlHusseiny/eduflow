@@ -1,0 +1,18 @@
+{
+  "title": "Build accessible day tabs",
+  "prompt": "Ticketly's line-up tabs work only with a mouse and say nothing to screen readers. Turn them into the APG tabs pattern:\n\n- `role=\"tablist\"` on the container (name it, for example `aria-label=\"Festival days\"`), `role=\"tab\"` on each button, `role=\"tabpanel\"` on each panel.\n- Each tab has `aria-controls` pointing to its panel; each panel has `aria-labelledby` pointing back to its tab.\n- `aria-selected` is `\"true\"` on the selected tab and `\"false\"` on the others. Friday starts selected.\n- Roving tabindex: the selected tab has `tabindex=\"0\"`, the others `-1`.\n- Clicking a tab selects it. **ArrowRight** and **ArrowLeft** select and focus the next or previous tab, wrapping around at the ends.",
+  "hints": [
+    "Keep the tab text exactly Friday, Saturday and Sunday; the checks find tabs by their text.",
+    "Write one select(tab) function that updates aria-selected, tabIndex and the panels' hidden attribute, then calls tab.focus().",
+    "In a keydown listener on the tablist, find the index of event.target in the tabs array, add or subtract 1, and wrap with (index + tabs.length) % tabs.length."
+  ],
+  "explanation": "The roles turn three loose buttons into one widget that screen readers announce as \"Festival days, tab list, Friday, tab, selected, 1 of 3\". `aria-controls` and `aria-labelledby` link each tab and panel both ways. Because only the selected tab has `tabindex=\"0\"`, the tablist is a single Tab stop; the arrow-key handler moves the selection, the focus and the `0` together, and wraps at the ends as the APG describes. Having one `select()` function keep every state in sync is what makes the widget trustworthy: the visuals (`.active`), the semantics (`aria-selected`) and the focus can never disagree.",
+  "checks": {
+    "roles": "One tablist holds three tabs, and there are three tabpanels",
+    "linked": "Each tab controls its panel, and each panel is labelled by its tab",
+    "initial-state": "Friday starts selected and only its panel is visible",
+    "roving": "Only the selected tab has tabindex 0; the others have -1",
+    "click-selects": "Clicking Saturday selects it, shows its panel and moves the tabindex",
+    "arrow-keys": "Arrow keys select and focus the next or previous tab, wrapping at the ends"
+  }
+}

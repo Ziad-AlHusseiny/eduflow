@@ -1,0 +1,17 @@
+{
+  "title": "Pocket's money helpers",
+  "prompt": "Write four small functions Pocket will use from now on:\n\n1. `toCents(dollars)` returns the amount in whole cents (`4.1` gives `410`).\n2. `formatMoney(cents, symbol)` returns a string like `\"$12.20\"`. `symbol` defaults to `\"$\"`.\n3. `isBig`, an **arrow function** that returns `true` for 10000 cents or more.\n4. `countWhere(amounts, test)` returns how many items in `amounts` make the callback `test(amount)` return a truthy value.\n",
+  "hints": [
+    "Remember `Math.round`, because `4.1 * 100` is not exactly 410. And remember `return`: without it every call gives `undefined`.",
+    "A default parameter is written in the parameter list: `function formatMoney(cents, symbol = \"$\")`.",
+    "`const isBig = (cents) => cents >= 10000;` In `countWhere`, call the callback inside a loop: `if (test(amount)) { count++; }`."
+  ],
+  "explanation": "Each helper returns its result instead of logging it, so callers can combine them: `formatMoney(toCents(12.2))` feeds one function's return value straight into the next. The default `symbol = \"$\"` applies whenever the argument is missing or `undefined`. `isBig` uses the arrow function's short form, where the single expression after `=>` is the return value. `countWhere` never needs to know what the test checks; it calls whatever function it was given, once per amount. Passing `isBig` without parentheses hands over the function itself, which is exactly how the array methods in section 3 work.\n",
+  "checks": {
+    "to-cents": "`toCents` returns whole cents",
+    "format": "`formatMoney` returns strings like \"$12.20\"",
+    "format-symbol": "`formatMoney` uses a custom symbol and defaults to \"$\"",
+    "is-big-arrow": "`isBig` is an arrow function with the 10000-cent threshold",
+    "count-where": "`countWhere` counts items that pass the callback"
+  }
+}

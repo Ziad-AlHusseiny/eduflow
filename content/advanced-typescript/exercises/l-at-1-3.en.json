@@ -1,0 +1,16 @@
+{
+  "title": "Fix three narrowing bugs",
+  "prompt": "This file has the three narrowing problems from the lesson. Fix them without using the non-null assertion `!`, `as` or `any`:\n\n1. `shippingLabel` must return `'Free'` when `shippingFeeCents` is `0`, `'Calculated at checkout'` when it is `null`, and a dollar amount like `'$4.99'` otherwise.\n2. `usedCoupons` must return a real `string[]` of the non-null coupon codes.\n3. `couponBanner` must compile and still upper-case the code inside the callback.",
+  "hints": [
+    "For 1, compare against `null` instead of relying on truthiness.",
+    "For 2, TypeScript 5.5+ infers a type predicate from `(c) => c !== null`, but not from `(c) => c`.",
+    "For 3, copy `order.couponCode` into a `const` before you check it, and use that `const` inside the arrow function."
+  ],
+  "explanation": "`!fee` is true for `0`, so free shipping fell into the `null` branch; checking `=== null` keeps the two meanings apart. `filter((c) => c !== null)` is inferred as the predicate `c is string`, so the array is narrowed to `string[]`, while a truthiness callback is not a predicate. In `couponBanner`, the narrowing of the mutable property `order.couponCode` does not survive into the callback, but a `const` can never change, so its narrowed type does.",
+  "checks": {
+    "types": "The file type-checks with zero errors",
+    "free-shipping": "`shippingLabel` returns 'Free' for 0, 'Calculated at checkout' for null and '$4.99' for 499",
+    "used-coupons": "`usedCoupons` keeps only the non-null codes, in order",
+    "banner": "`couponBanner` upper-cases the code and returns [] when there is no coupon"
+  }
+}

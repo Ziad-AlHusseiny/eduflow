@@ -1,0 +1,485 @@
+checkpoints:
+  s-at-1:
+    - q: |-
+        A reviewer worries that the card number reaches `saveAddress`. What is true?
+        ```ts
+        type Address = { line1: string; city: string };
+        function saveAddress(a: Address) { /* sends a to the address service */ }
+        const form = { line1: '12 Nile St', city: 'Cairo', cardNumber: '4242 4242 4242 4242' };
+        saveAddress(form);
+        ```
+      options:
+        - text: It fails to compile, because `cardNumber` is an excess property.
+          why: Excess property checks only apply to fresh object literals. `form` is a variable, so the extra field is allowed.
+        - text: TypeScript removes `cardNumber` before the call, because `Address` does not declare it.
+          why: Types are erased; they never add or remove properties at runtime.
+        - text: It compiles only if you write `form as Address`.
+          why: No assertion is needed. Structural typing already accepts `form`, which is exactly the risk.
+        - text: It compiles, and the whole object, card number included, is passed at runtime; copy the fields you need explicitly.
+          why: Correct. Structural typing allows extra properties, so the only safe fix is to build a new object with `line1` and `city`.
+      answer: 3
+    - q: |-
+        `quantityInStock` is `null` while stock is being checked and `0` when an item is sold out. Which change makes this label correct?
+        ```ts
+        function stockLabel(quantityInStock: number | null): string {
+          if (!quantityInStock) return 'Checking stock…';
+          return quantityInStock === 0 ? 'Sold out' : `${quantityInStock} left`;
+        }
+        ```
+      options:
+        - text: Replace `!quantityInStock` with `quantityInStock === null`.
+          why: Correct. The truthiness check also catches `0`, so 'Sold out' is unreachable. Comparing with `null` keeps the two meanings apart.
+        - text: Add `if (typeof quantityInStock === 'number')` after the first line.
+          why: After the first line `0` has already returned 'Checking stock…'; a later check cannot rescue it.
+        - text: Write `quantityInStock!` in the comparison.
+          why: A non-null assertion changes only the type, not the runtime path. The `0` still takes the first branch.
+        - text: "Remove the `: string` return type so TypeScript infers it."
+          why: The return type is not the problem; the truthiness check is.
+      answer: 0
+    - q: Cartwheel adds payments. A pending payment has no capture id; a captured one always has `captureId`; a refunded one always has `captureId`, `refundedAt` and `refundCents`. Which type makes the impossible combinations fail to compile?
+      options:
+        - text: "`{ status: 'pending' | 'captured' | 'refunded'; captureId?: string; refundedAt?: string; refundCents?: number }`"
+          why: Optional fields are independent of `status`, so a refunded payment without `refundCents` still compiles.
+        - text: "`{ status: string; details: Record<string, unknown> }`"
+          why: This accepts any status and any details, so it prevents nothing and forces casts everywhere.
+        - text: A union of three object types, each with a literal `status` and exactly the fields that state has, all required.
+          why: Correct. Each variant carries its own required data, and the literal `status` lets narrowing find the right one.
+        - text: "`Partial<{ status: string; captureId: string; refundedAt: string; refundCents: number }>`"
+          why: Making every field optional allows even more impossible states than the original.
+      answer: 2
+    - q: |-
+        What is `ShippingMethod`?
+        ```ts
+        const SHIPPING_FEES = { standard: 499, express: 1299 } satisfies Record<string, number>;
+        type ShippingMethod = keyof typeof SHIPPING_FEES;
+        ```
+      options:
+        - text: "`string`, because the object was checked against `Record<string, number>`"
+          why: That is what an annotation would give you. `satisfies` checks the object but keeps its inferred type.
+        - text: "`'standard' | 'express'`"
+          why: Correct. The inferred type has exactly the two keys written, so `keyof` gives their literal names.
+        - text: "`number`, the type of the values"
+          why: "`keyof` gives the property names, not the values; the values would be `(typeof SHIPPING_FEES)[ShippingMethod]`."
+        - text: "`'standard' | 'express' | string`"
+          why: There is no index signature in the inferred type, so `string` is not part of the key union.
+      answer: 1
+    - q: A `switch (order.status)` has `case 'canceled':` with one L, and it never matches. Which change turns that typo into a compile error?
+      options:
+        - text: Add a `default:` branch that logs unknown statuses.
+          why: That helps at runtime, but the compiler still accepts the misspelled case.
+        - text: Annotate `order` as `any` so TypeScript checks each case.
+          why: "`any` turns checking off; it would hide the typo even more."
+        - text: Rewrite the `switch` as an `if`/`else` chain.
+          why: With a `string` status, `=== 'canceled'` compiles just as happily as the `case`.
+        - text: Type `status` as the union of the five literal statuses instead of `string`.
+          why: Correct. Against a literal union, `case 'canceled':` is reported as not comparable to `OrderStatus`.
+      answer: 3
+  s-at-2:
+    - q: Which signature lets `firstWhere(orders, (o) => o.status === 'shipped')` return `Order | undefined`, and `firstWhere(products, …)` return `Product | undefined`, with `o` typed in the callback?
+      options:
+        - text: "`function firstWhere<T>(items: T[], predicate: (item: T) => boolean): T | undefined`"
+          why: Correct. `T` is inferred from `items`, then gives the callback its parameter type and the result its type.
+        - text: "`function firstWhere(items: unknown[], predicate: (item: unknown) => boolean): unknown`"
+          why: Without a type parameter, the callback's `o` is `unknown` and so is the result; callers would have to cast.
+        - text: "`function firstWhere<T>(items: unknown[], predicate: (item: T) => boolean): T | undefined`"
+          why: "`T` now has no inference site except the unannotated callback, so it ends up `unknown`."
+        - text: "`function firstWhere(items: any[], predicate: (item: any) => boolean): any`"
+          why: This compiles everywhere and checks nothing; typos in the callback go unnoticed.
+      answer: 0
+    - q: |-
+        What is the type of `t.value`?
+        ```ts
+        function tag<T>(value: T) {
+          return { value };
+        }
+        const t = tag('shipped');
+        ```
+      options:
+        - text: "`'shipped'`"
+          why: The literal would survive if `T` were constrained to `string` or declared `const`. Here it is nested in an object and widens.
+        - text: "`unknown`"
+          why: TypeScript found a candidate, the string argument, so it does not fall back to `unknown`.
+        - text: "`any`"
+          why: Inference never produces `any` from a string literal argument.
+        - text: "`string`"
+          why: Correct. `T` is unconstrained and appears inside the returned object, so the literal candidate is widened.
+      answer: 3
+    - q: "`setDefault(['standard', 'express'], 'overnight')` should be rejected because `'overnight'` is not one of the options. Which signature does that?"
+      options:
+        - text: "`function setDefault<const T>(options: T[], fallback: T)`"
+          why: "`fallback` is still an inference site, so `'overnight'` is added to `T` instead of being checked."
+        - text: "`function setDefault<T extends string>(options: T[], fallback: T)`"
+          why: The constraint keeps the literals, but `fallback` still contributes a candidate, so `T` grows to include `'overnight'`.
+        - text: "`function setDefault<T extends string>(options: T[], fallback: NoInfer<T>)`"
+          why: Correct. The constraint keeps the options as literals, and `NoInfer` makes `fallback` check-only.
+        - text: "`function setDefault<T>(options: T[], fallback: NoInfer<T>)`"
+          why: Without a primitive constraint, the array is inferred as `string[]`, so any string passes the check.
+      answer: 2
+    - q: Callers of Cartwheel's client write `api.get<Order>('/orders/1042')` everywhere, and last week someone wrote `api.get<Order[]>('/orders/1042')`. What is the best fix?
+      options:
+        - text: Key the client by a route map type, so the response type is looked up from the route and callers pass no type argument.
+          why: Correct. The route becomes the only inference site, and a wrong response type is no longer something a caller can write.
+        - text: Add an ESLint rule that requires a type argument on every `get` call.
+          why: That enforces writing a type argument, not writing the right one; the bug was a wrong type argument.
+        - text: Change the default type parameter of `get` to `any`.
+          why: That removes the remaining checking and makes wrong usage even quieter.
+        - text: Make `get` return `unknown` and let each caller cast with `as`.
+          why: This moves the same unchecked claim into an `as` at every call site; it is safer than `any` but not a fix.
+      answer: 0
+    - q: "`function useQuery<TData, TKey extends string>(key: TKey, fetcher: () => Promise<TData>)` is called as `useQuery<Order>('order-1042', loadOrder)` and fails with \"Expected 2 type arguments, but got 1\". What is the best fix at the call site?"
+      options:
+        - text: Write `useQuery<Order, string>(…)` everywhere.
+          why: It compiles, but the key loses its literal type and every call site gets noisier.
+        - text: Remove `<Order>` and let both type parameters be inferred, `TData` from `loadOrder`'s return type.
+          why: Correct. Explicit type arguments are all or nothing; with none, TypeScript infers both from the arguments.
+        - text: Wrap the key in `NoInfer`.
+          why: "`NoInfer` controls inference sites; it does not make explicit type arguments partial."
+        - text: Cast the call result to `any`.
+          why: The error is about the type arguments of the call, which a cast on the result cannot fix.
+      answer: 1
+  s-at-3:
+    - q: |-
+        What is `F`?
+        ```ts
+        type Flags<T> = { [K in keyof T as T[K] extends boolean ? K : never]: T[K] };
+        type F = Flags<{ giftWrap: boolean; note: string; express: boolean }>;
+        ```
+      options:
+        - text: "`{ giftWrap: boolean; note: never; express: boolean }`"
+          why: Mapping a key to `never` in an `as` clause removes it entirely; it does not keep it with type `never`.
+        - text: "`'giftWrap' | 'express'`"
+          why: That would be the result of indexing the mapped type with `[keyof T]`. This type keeps the object shape.
+        - text: "`{ note: string }`"
+          why: The condition keeps boolean properties and drops the rest, not the other way round.
+        - text: "`{ giftWrap: boolean; express: boolean }`"
+          why: Correct. The `as` clause sends non-boolean keys to `never`, which drops them from the result.
+      answer: 3
+    - q: |-
+        What is `X`?
+        ```ts
+        type IdOf<T> = T extends { id: infer I } ? I : never;
+        type X = IdOf<{ id: number } | { id: string } | { name: string }>;
+        ```
+      options:
+        - text: "`number | string`"
+          why: "Correct. The conditional distributes over the union: two members capture their `id` type, and the third becomes `never` and disappears."
+        - text: "`never`, because the union as a whole has no common `id`"
+          why: That would be the non-distributive result. A naked type parameter makes the check run per member.
+        - text: "`number`, from the first member only"
+          why: Every member is processed, and the results are joined.
+        - text: "`unknown`, because `infer` cannot capture from a union"
+          why: "`infer` works per member after distribution, so each capture is precise."
+      answer: 0
+    - q: What is `` `on${Capitalize<'shipped' | 'cancelled'>}` ``?
+      options:
+        - text: "`'onshipped' | 'oncancelled'`"
+          why: "`Capitalize` upper-cases the first letter of each member before it is joined to `on`."
+        - text: "`` `on${string}` ``"
+          why: With literal members inside, the template expands to concrete strings rather than a pattern.
+        - text: "`'onShipped' | 'onCancelled'`"
+          why: Correct. The union distributes through the template, and each member is capitalised.
+        - text: "`'onShipped | Cancelled'`"
+          why: Unions are not joined into one string; each member produces its own string literal.
+      answer: 2
+    - q: |-
+        What is `Draft<{ readonly id: number; status: string }>`?
+        ```ts
+        type Draft<T> = { -readonly [K in keyof T]?: T[K] };
+        ```
+      options:
+        - text: "`{ readonly id: number; status: string }`, unchanged"
+          why: The `-readonly` and `?` modifiers change both properties.
+        - text: "`{ id: number; status: string }`"
+          why: "`-readonly` is applied, but `?` also makes every property optional."
+        - text: "`{ readonly id?: number; status?: string }`"
+          why: The `-` prefix removes `readonly` from `id`; only the optional modifier is added.
+        - text: "`{ id?: number; status?: string }`"
+          why: Correct. `-readonly` strips the readonly modifier and `?` makes each property optional.
+      answer: 3
+    - q: |-
+        What is `ElementOf<readonly string[]>`?
+        ```ts
+        type ElementOf<T> = T extends (infer E)[] ? E : T;
+        ```
+      options:
+        - text: "`string`"
+          why: A `readonly string[]` is not assignable to the mutable pattern `(infer E)[]`, so the true branch is not taken.
+        - text: "`readonly string[]`"
+          why: Correct. Readonly arrays lack mutating methods, so they do not match a mutable array pattern; use `readonly (infer E)[]` in the pattern.
+        - text: "`never`"
+          why: The false branch returns `T` itself, not `never`.
+        - text: "`unknown`"
+          why: Nothing here produces `unknown`; the pattern simply fails to match.
+      answer: 1
+  s-at-4:
+    - q: |-
+        What is wrong with this code?
+        ```ts
+        const id = JSON.parse(body).orderId as OrderId;
+        cancelOrder(id);
+        ```
+      options:
+        - text: Nothing; the brand is checked when `cancelOrder` runs.
+          why: Brands do not exist at runtime, so nothing checks anything when the function runs.
+        - text: "`JSON.parse` always returns a string, so `orderId` is a string."
+          why: "`JSON.parse` returns whatever the JSON contains; here the problem is the unchecked cast."
+        - text: The cast brands a value nobody validated; parse it with the smart constructor, such as `toOrderId(…)`, instead.
+          why: Correct. A brand is only meaningful when it is applied after validation, in one place.
+        - text: Branded types cannot be used with values that came from JSON.
+          why: They can, as long as the JSON value goes through a validating constructor first.
+      answer: 2
+    - q: "A caller of `charge(): Result<Receipt, PaymentError>` writes `if (result.error) showError(result.error)`. What happens?"
+      options:
+        - text: It does not compile, because `error` only exists on the failure member; check `result.ok` first.
+          why: Correct. Property access on a union requires the property on every member, so you narrow with the discriminant.
+        - text: It compiles and works, because `error` is `undefined` on success.
+          why: The success member does not declare `error` at all, so TypeScript rejects reading it before narrowing.
+        - text: It compiles, but the condition is always false.
+          why: It does not compile in the first place.
+        - text: It throws at runtime when the result is a success.
+          why: Reading a missing property gives `undefined` in JavaScript, but TypeScript stops the code before it ever runs.
+      answer: 0
+    - q: Cartwheel's server renders the initial cart into the page as JSON. Bad data there means a broken deploy, not something a customer can fix. How should the client handle it?
+      options:
+        - text: A type predicate in an `if`, falling back to an empty cart when it fails.
+          why: Silently showing an empty cart hides a deploy bug from everyone, including your monitoring.
+        - text: "`const cart = JSON.parse(text) as Cart`."
+          why: An unchecked cast lets a broken deploy surface as confusing errors far from the cause.
+        - text: A parser returning a `Result`, with a retry when it fails.
+          why: Retrying cannot fix data that the server rendered wrong; this is not an expected, recoverable failure.
+        - text: An assertion function called once at startup that throws a clear error, which your error reporting picks up.
+          why: Correct. Bad data here is a bug, so failing loudly at the boundary is the right behaviour.
+      answer: 3
+    - q: |-
+        What is the problem with this emitter method?
+        ```ts
+        on(event: keyof Events, handler: (payload: Events[keyof Events]) => void): void
+        ```
+      options:
+        - text: Arrow functions cannot be passed as handlers.
+          why: Any function with a compatible signature can be passed; the issue is which signature that is.
+        - text: The handler's payload is the union of every event's payload, not the payload of the event being subscribed to.
+          why: "Correct. Without a type parameter `K`, nothing links the name to its payload. Use `on<K extends keyof Events>(event: K, handler: (payload: Events[K]) => void)`."
+        - text: Event names widen to `string`, so typos are accepted.
+          why: "`keyof Events` is a union of the event names, so typos are still rejected; the payload is what is lost."
+        - text: Nothing; this is the recommended signature.
+          why: It compiles, but every handler must narrow a union payload that has no discriminant to narrow on.
+      answer: 1
+    - q: You add `'on-hold'` to `OrderStatus`. Which lookup table fails to compile until it gets an `'on-hold'` entry?
+      options:
+        - text: "`const LABELS = { … } satisfies Record<OrderStatus, string>`"
+          why: Correct. `satisfies` checks the object against the full record, so a missing key is an error.
+        - text: "`const LABELS: Partial<Record<OrderStatus, string>> = { … }`"
+          why: "`Partial` makes every key optional, so a missing status is allowed."
+        - text: "`const LABELS: Record<string, string> = { … }`"
+          why: Any string keys are allowed, so the table has no idea which statuses exist.
+        - text: "`const LABELS = { … } as Record<OrderStatus, string>`"
+          why: An assertion only checks that the types overlap, so a missing key is not reported.
+      answer: 0
+  s-at-5:
+    - q: A script run with `node checkout.ts` (Node's built-in type stripping) contains `enum Channel { Web = 'web' }` and fails at startup. Which compiler flag would have flagged the enum during `tsc`?
+      options:
+        - text: "`isolatedModules`"
+          why: It catches constructs that need cross-file information, such as re-exporting a type without `type`, but it allows enums.
+        - text: "`verbatimModuleSyntax`"
+          why: It governs how imports and exports are emitted; enums are still allowed.
+        - text: "`erasableSyntaxOnly`"
+          why: Correct. It rejects syntax that generates runtime code, such as enums, which type stripping cannot handle.
+        - text: "`noEmit`"
+          why: It stops `tsc` writing files; it adds no checks.
+      answer: 2
+    - q: |-
+        Why can this charge run while the cart is unlocked?
+        ```ts
+        async function pay(cartId: string, needsLock: boolean) {
+          if (needsLock) {
+            using lock = acquireCartLock(cartId);
+          }
+          await charge(cartId);
+        }
+        ```
+      options:
+        - text: "`using` is not allowed in `async` functions."
+          why: It is allowed; for asynchronous cleanup you would use `await using`, but that is not the issue here.
+        - text: It should be `await using`, because the function is `async`.
+          why: "`await using` is for resources with async disposal; the lock's scope is the real problem."
+        - text: The lock is never released.
+          why: It is released, but too early.
+        - text: The lock is disposed at the end of the `if` block, before `charge` runs.
+          why: Correct. `using` is scoped to its block; declare it in the block that also contains the charge.
+      answer: 3
+    - q: "`interface Window { dataLayer: unknown[] }` sits at the top level of `src/analytics.ts`, which also has imports. `window.dataLayer` is still an error. Why?"
+      options:
+        - text: In a module file, a top-level interface is local to that module; wrap it in `declare global { … }` to merge with the global `Window`.
+          why: Correct. Files with imports or exports are modules, and only `declare global` reaches the global scope from inside one.
+        - text: "`Window` is a built-in type and cannot be extended."
+          why: It can; extending `Window` through declaration merging is common.
+        - text: It must be a `type` alias instead of an interface.
+          why: Type aliases never merge, so a `type` would not extend `Window` either.
+        - text: Interface merging only works in `.d.ts` files.
+          why: Merging works in `.ts` files too; what matters is whether the declaration is in the global scope.
+      answer: 0
+    - q: A monorepo has six packages type-checked as one big program, and every small change re-checks all of them for 90 seconds. Which change helps most?
+      options:
+        - text: Turn off `strict` in the slowest package.
+          why: That reduces checking quality, and `strict` is rarely the main cost.
+        - text: "Split it into project references (`composite: true` per package, `tsc -b` at the root), so unchanged packages are not re-checked."
+          why: Correct. Each package is built once and its declarations reused, so a change only re-checks what depends on it.
+        - text: "Set `skipLibCheck: false` to catch more problems early."
+          why: That makes checking slower, not faster.
+        - text: Merge all packages into one `src` folder.
+          why: One larger program has the same problem with fewer boundaries to cache.
+      answer: 1
+    - q: A `.js` file starts with `// @ts-check` and declares `/** @param {Order} order */ function ship(order) { … }`. What does TypeScript do with it (with `allowJs` on)?
+      options:
+        - text: Nothing, until the file is renamed to `.ts`.
+          why: The comment opts the JavaScript file into checking without renaming it.
+        - text: It checks the file only if `checkJs` is also `true` in tsconfig.
+          why: "`checkJs` turns checking on for all JS files; `// @ts-check` does it for one file regardless."
+        - text: It checks only the JSDoc comments, not the code.
+          why: The JSDoc provides the types; the code is what gets checked against them.
+        - text: It type-checks the whole file, using the JSDoc comments as the types of `ship` and its parameter.
+          why: Correct. This lets you get real checking on risky JavaScript files before converting them.
+      answer: 3
+final:
+  - q: Which pair of changes makes both `cancelOrder(customer.id)` and `add(usdPrice, eurShipping)` compile errors?
+    options:
+      - text: "Brand `OrderId` and `CustomerId`, and type `add` as `add<C>(a: Money<C>, b: Money<NoInfer<C>>)`."
+        why: Correct. Brands make same-shaped ids distinct, and `NoInfer` stops the currency union from being inferred.
+      - text: Use literal unions for statuses and `satisfies` on config objects.
+        why: Both are good habits, but neither distinguishes two numeric ids or two currencies.
+      - text: Turn on `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess`.
+        why: These flags check optional properties and index access, not ids or currencies.
+      - text: Give `add` and `cancelOrder` `const` type parameters.
+        why: "`const` keeps literals in inference; it does not make ids or currencies incompatible."
+    answer: 0
+  - q: |-
+      What is the type of `summary`?
+      ```ts
+      function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> { /* … */ }
+      const summary = pick(order, 'id', 'status');
+      ```
+    options:
+      - text: "`Partial<Order>`"
+        why: "`Pick` keeps the chosen properties required; nothing here makes them optional."
+      - text: "`Order`"
+        why: Only the keys you pass are kept, so the full `Order` is not the result.
+      - text: "`Pick<Order, keyof Order>`"
+        why: "`K` is inferred from the arguments, not widened to every key."
+      - text: "`Pick<Order, 'id' | 'status'>`"
+        why: Correct. Each rest argument is an inference site for `K`, and the literals are kept by the `keyof T` constraint.
+    answer: 3
+  - q: A customer's saved cart in `localStorage` was written by last year's version of the app, with a different shape. What is the right way to load it?
+    options:
+      - text: "`JSON.parse(saved) as Cart`"
+        why: The cast trusts last year's data blindly; the mismatch surfaces later as crashes.
+      - text: Use `JSON.parse(saved)` directly, since it is typed `any`.
+        why: "`any` silently spreads the wrong shape through the app."
+      - text: Parse it as `unknown` into a `Result`, and fall back to an empty cart (or migrate it) when parsing fails.
+        why: Correct. Old data is an expected case, so it becomes a handled failure at the boundary.
+      - text: Call an assertion function during render and let the error boundary show a crash screen.
+        why: Stale storage is expected, not a bug, so crashing the page is the wrong response.
+    answer: 2
+  - q: |-
+      What is `NoNulls<{ coupon: string | null; note?: string }>`?
+      ```ts
+      type NoNulls<T> = { [K in keyof T]: NonNullable<T[K]> };
+      ```
+    options:
+      - text: "`{ coupon: string | null; note: string }`"
+        why: "`NonNullable` removes `null` from `coupon`, and the homomorphic mapping keeps `note` optional."
+      - text: "`{ coupon: string; note?: string }`"
+        why: Correct. `null` is removed from each property type, and the `?` modifier is copied from the original.
+      - text: "`{ coupon: string; note: string }`"
+        why: The mapping is homomorphic, so it copies `note`'s optional modifier; only `-?` would remove it.
+      - text: "`never`"
+        why: Mapped types over an object type produce an object type, not `never`.
+    answer: 1
+  - q: "The payments team adds `'requires-3ds'` to the `PaymentError` union. `errorMessage(e: PaymentError): string` switches on `e.type` with no `default`. What happens?"
+    options:
+      - text: "`errorMessage` fails to compile until a `'requires-3ds'` case is added."
+        why: Correct. With the new member unhandled, the end of the function is reachable, and the `string` return type rejects that.
+      - text: It compiles and returns `undefined` for the new error.
+        why: "The explicit `: string` return type is exactly what prevents that from compiling."
+      - text: It compiles and throws at runtime for the new error.
+        why: Nothing throws; the compiler stops the code before it can run.
+      - text: Nothing changes, because unions are checked only at runtime.
+        why: Unions are compile-time types, and exhaustiveness is checked at compile time.
+    answer: 0
+  - q: Which string is assignable to `` type OrderPath = `/orders/${number}` ``?
+    options:
+      - text: "`'/orders/abc'`"
+        why: "`abc` is not a numeric string, so it does not match the `${number}` placeholder."
+      - text: "`'/orders/'`"
+        why: An empty string is not a number, so the placeholder has nothing to match.
+      - text: "`'/orders/1042/lines'`"
+        why: The placeholder must match the rest of the string, and `1042/lines` is not a number.
+      - text: "`'/orders/1042'`"
+        why: Correct. `1042` is a numeric string, which is exactly what `${number}` accepts.
+    answer: 3
+  - q: "After turning on `noUncheckedIndexedAccess`, which line becomes a compile error (with `lines: Line[]`)?"
+    options:
+      - text: "`for (const line of lines) console.log(line.sku);`"
+        why: Iterating with `for…of` yields actual elements, so the flag does not add `undefined`.
+      - text: "`lines.map((line) => line.sku);`"
+        why: Array methods pass real elements to the callback, so they are unaffected.
+      - text: "`const [first] = lines; console.log(first.sku);`"
+        why: Correct. Destructuring by position is index access, so `first` is `Line | undefined` under the flag.
+      - text: "`console.log(lines.length);`"
+        why: "`length` is always a number; the flag only affects element and key lookups."
+    answer: 2
+  - q: "`charge` is decorated with `@retry(3)` on the line above `@logged`. The gateway fails twice, then succeeds. How many log lines does `logged` print for one call?"
+    options:
+      - text: 1, because `logged` wraps the whole retrying call
+        why: That would be the order with `@logged` written above `@retry(3)`. Decorators apply from the bottom up.
+      - text: 3, because `logged` is applied first and `retry` calls the logged method on every attempt
+        why: Correct. The decorator nearest the method wraps it first, so each retry goes through the logging wrapper.
+      - text: 0, because two decorators on one method cancel each other out
+        why: Stacked decorators compose; they never cancel.
+      - text: 6, because each decorator logs once per attempt
+        why: Only `logged` logs; `retry` just calls the wrapped method again.
+    answer: 1
+  - q: Why can a `DetailedOrder` (`id`, `status`, `totalCents`, `customer`) be passed where an `Order` (`id`, `status`, `totalCents`) is expected, but not the other way round?
+    options:
+      - text: Every `DetailedOrder` has all the properties `Order` requires, so it belongs to the smaller set of values; an `Order` may lack `customer`.
+        why: Correct. Assignability is the subset relation, and more required properties mean a smaller set.
+      - text: Because `DetailedOrder` was declared with `extends Order`.
+        why: Declarations do not matter in a structural type system; only the shapes do.
+      - text: Because type names are compared alphabetically.
+        why: TypeScript never compares names; it compares structure.
+      - text: Because `Order` is an interface and interfaces only accept subtypes.
+        why: Interfaces and type aliases follow the same structural rules here.
+    answer: 0
+  - q: Which signature is an unchecked cast in disguise?
+    options:
+      - text: "`function sortByTotal<T extends { totalCents: number }>(orders: T[]): T[]`"
+        why: "`T` links input to output, so the result type is exactly what was passed in."
+      - text: "`function call<R extends keyof Routes>(route: R): Routes[R]['output']`"
+        why: "`R` is inferred from the route argument, so the result follows from what the caller wrote."
+      - text: "`function indexById<T extends { id: number }>(items: T[]): Map<number, T>`"
+        why: "`T` appears in the input and the output, linking them."
+      - text: "`function readSetting<T>(key: string): T`"
+        why: Correct. `T` appears only in the return type, so the caller can pick any type and nothing checks it.
+    answer: 3
+  - q: What does `declare module 'legacy-shipping-calc';` with no body do?
+    options:
+      - text: It installs the matching `@types` package.
+        why: Declarations never install anything; they only describe code to the compiler.
+      - text: It generates types by reading the package's JavaScript.
+        why: TypeScript does not infer types for a package from a shorthand module declaration.
+      - text: It lets the import compile, typing everything imported from the package as `any`.
+        why: Correct. It is an escape hatch for a migration, not a substitute for real declarations.
+      - text: It causes a compile error until the body is filled in.
+        why: The shorthand form is valid on its own; that is why it is easy to forget it is there.
+    answer: 2
+  - q: Which file should you convert to TypeScript first in a migration?
+    options:
+      - text: "`checkoutPage.js`, the entry point that imports 30 other modules"
+        why: Converted first, it would import untyped code and end up full of `any`.
+      - text: "`money.js`, imported by 40 files and importing nothing internal"
+        why: Correct. It is a leaf, so it can be fully typed today, and every file that imports it benefits immediately.
+      - text: The largest file in the repository, to get it out of the way
+        why: Size says nothing about dependencies; a large file with untyped imports gains little.
+      - text: The most recently changed file
+        why: Recency does not tell you whether its dependencies are typed yet.
+    answer: 1

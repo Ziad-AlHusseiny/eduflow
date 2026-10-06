@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "items": [
+    "replacement",
+    "deprecate",
+    "codemod",
+    "measure",
+    "remove",
+    "support"
+  ]
+}

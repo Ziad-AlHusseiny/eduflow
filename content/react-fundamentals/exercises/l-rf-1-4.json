@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// A tiny stand-in for what JSX compiles to.\nfunction h(type, props, ...children) {\n  return { type, props: { ...props, children } };\n}\n\n// Write the h() calls this JSX compiles to:\n//\n// <article className=\"card\">\n//   <h2>{movie.title}</h2>\n//   <p>{movie.year}</p>\n// </article>\nfunction buildCard(movie) {\n  return h('article', null);\n}\n"
+  },
+  "solution": {
+    "js": "// A tiny stand-in for what JSX compiles to.\nfunction h(type, props, ...children) {\n  return { type, props: { ...props, children } };\n}\n\n// Write the h() calls this JSX compiles to:\n//\n// <article className=\"card\">\n//   <h2>{movie.title}</h2>\n//   <p>{movie.year}</p>\n// </article>\nfunction buildCard(movie) {\n  return h('article', { className: 'card' },\n    h('h2', null, movie.title),\n    h('p', null, movie.year),\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "root",
+      "test": "const el = buildCard({ title: 'Arrival', year: 2016 }); return el.type === 'article' && el.props.className === 'card';"
+    },
+    {
+      "id": "two-children",
+      "test": "const el = buildCard({ title: 'Arrival', year: 2016 }); const c = el.props.children; return Array.isArray(c) && c.length === 2 && c[0].type === 'h2' && c[1].type === 'p';"
+    },
+    {
+      "id": "title-text",
+      "test": "const el = buildCard({ title: 'Arrival', year: 2016 }); return [].concat(el.props.children[0].props.children).join('') === 'Arrival';"
+    },
+    {
+      "id": "uses-data",
+      "test": "const el = buildCard({ title: 'Past Lives', year: 2023 }); const [t, y] = el.props.children; return [].concat(t.props.children).join('') === 'Past Lives' && [].concat(y.props.children).join('') === '2023';"
+    }
+  ]
+}

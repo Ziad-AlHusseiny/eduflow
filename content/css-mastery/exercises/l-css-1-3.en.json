@@ -1,0 +1,17 @@
+{
+  "title": "Let the utility win with layers",
+  "prompt": "The **Sold out** badge should be yellow (`#fde68a`) because it has the `.bg-accent` utility, but the component selector `.schedule .session-card .badge` out-scores it. Put the rules into cascade layers (`reset`, `components`, `utilities`, in that order) so utilities win. Keep every selector exactly as it is and don't use `!important`. The plain **Layout** badge must keep its lavender component style.",
+  "hints": [
+    "Start the stylesheet with one statement that declares all three layer names in priority order.",
+    "Wrap each group of rules in `@layer name { … }`. Order inside the file doesn't matter once the statement fixes it.",
+    "`@layer reset, components, utilities;` then `@layer components { … }` and `@layer utilities { .bg-accent { … } }`."
+  ],
+  "explanation": "The `@layer reset, components, utilities;` statement fixes the order, so any normal declaration in `utilities` beats any declaration in `components`, before specificity is compared. The badge selector keeps its (0,3,0) weight, which still matters inside the components layer, but it no longer competes with the utility. Leaving `.bg-accent` unlayered would also make it win, because unlayered styles beat layered ones, but naming the layer keeps the intent visible to the next person.",
+  "checks": {
+    "utility-wins": "The Sold out badge is yellow",
+    "component-kept": "The Layout badge keeps its lavender component style",
+    "uses-layers": "The CSS uses @layer blocks",
+    "selector-unchanged": "The component selector is unchanged",
+    "no-important": "No !important anywhere in the CSS"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Mark's whole organisation",
+  "prompt": "Mark Evans (VP Operations, `employee_id` 2) needs his full organisation for headcount planning: everyone who reports to him **directly or indirectly**, not including Mark himself.\n\nReturn `employee_id`, `first_name` and `depth` (1 for his direct reports, 2 for their reports, and so on), sorted by `depth` and then `employee_id`. Order matters.\n\nThe starter's anchor is already right but it stops at direct reports. Add the recursive step.",
+  "hints": [
+    "A recursive CTE needs `UNION ALL` followed by a second SELECT that joins back to `org`.",
+    "Join `employees AS e` to `org` on `e.manager_id = org.employee_id`: people whose manager is someone already found.",
+    "Select `e.employee_id, e.first_name, org.depth + 1` in the recursive step so each level is one deeper than its parent."
+  ],
+  "explanation": "The anchor finds Mark's three direct reports (Samir, Julia and Adam) at depth 1. The recursive step then repeatedly adds people whose manager is in the previous iteration: the three support specialists under Julia and Ben under Samir, at depth 2. The next iteration finds nobody reporting to those four, so the recursion stops with 7 people. Starting the anchor at `manager_id = 2` rather than at Mark himself is what keeps him out of the result.",
+  "checks": {}
+}

@@ -1,0 +1,18 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "edit-text",
+    "hide-streak",
+    "swap-icon",
+    "change-fill",
+    "add-layer",
+    "reorder"
+  ],
+  "correct": [
+    "edit-text",
+    "hide-streak",
+    "swap-icon",
+    "change-fill"
+  ]
+}

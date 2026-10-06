@@ -1,0 +1,14 @@
+{
+  "kind": "choice",
+  "multiple": false,
+  "options": [
+    "css-path",
+    "nth",
+    "role-filter",
+    "text-only",
+    "test-id"
+  ],
+  "correct": [
+    "role-filter"
+  ]
+}

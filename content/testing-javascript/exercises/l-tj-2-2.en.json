@@ -1,0 +1,17 @@
+{
+  "title": "A table that breaks parseAmount",
+  "prompt": "`parseAmount(input)` turns what a user typed into integer cents. Its rules are in the subject's comment.\n\nThe starter has two `test.each` tables that all pass but catch nothing interesting: every row sits safely inside a class. Add rows (and tables if you like) until your suite catches four hidden bugs: one accepts **three** decimals, one reads `'12.5'` as 1205 cents, one accepts **zero**, and one forgets to **trim** spaces.",
+  "hints": [
+    "For each rule, ask: what is the input just on the other side of the limit? Two decimals is allowed, so try three.",
+    "One decimal is its own class: `'12.5'` must be 1250, not 1205. Zero sits on the boundary between rejected and accepted: try `'0'`.",
+    "Add `['12.5', 1250]` and `[' 7.10 ', 710]` to the valid table, and `'12.505'` and `'0'` to the invalid ones."
+  ],
+  "explanation": "Every bug here hides at a boundary or in a class the starter never visited. `'12.505'` sits one step past the two-decimal limit, so only it can tell `{1,2}` from `{1,3}`. `'12.5'` is the one-decimal class, where padding on the wrong side turns $12.50 into $12.05. `'0'` sits exactly on the zero boundary, the only input that separates `=== 0` from `< 0`. `' 7.10 '` is formatting noise that users paste every day. Matching the message (`'greater than zero'`) in the zero test also proves the right rule rejected it, not a regex accident.",
+  "checks": {
+    "passes": "All your tests pass against the real parseAmount",
+    "catches-three-decimals": "Catches the version that accepts three decimals",
+    "catches-pads-wrong-side": "Catches the version that reads '12.5' as 1205 cents",
+    "catches-accepts-zero": "Catches the version that accepts a zero amount",
+    "catches-no-trim": "Catches the version that does not trim spaces"
+  }
+}

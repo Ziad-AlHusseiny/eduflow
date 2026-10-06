@@ -1,0 +1,15 @@
+{
+  "title": "Type the checkout client from a route map",
+  "prompt": "Build Cartwheel's typed `call` function.\n\n1. Add the route `'POST /orders/:id/cancel'` to `Routes`: its input is `{ id: number; reason: string }` and its output is `CancelledOrder`.\n2. Make `call` generic over the route name, so its `input` and its resolved value are looked up from `Routes`. The type tests show what callers expect: no type arguments, no casts.\n3. At runtime, replace each `:param` in the path with the matching input value, and send the remaining fields as the body for non-GET requests. `call('POST /orders/:id/cancel', { id: 7, reason: 'Late' })` must send `POST /orders/7/cancel` with the body `{\"reason\":\"Late\"}`.",
+  "hints": [
+    "The signature is `call<R extends keyof Routes>(route: R, input: Routes[R]['input']): Promise<Routes[R]['output']>`.",
+    "Inside the function, treat `input` as `Record<string, unknown>` with one commented cast, and cast the transport's result to `Routes[R]['output']` once.",
+    "`template.replace(/:(\\w+)/g, (_, name) => …)` gives you each parameter name; copy the input with `{ ...values }` and `delete` the names you used, so what is left is the body."
+  ],
+  "explanation": "`R` has one inference site, the route string, and its constraint keeps it as a literal key. Every other type is an indexed access on `Routes`, so adding an endpoint is a one-line change to the map and every caller is checked against it. The two casts live inside `call`, documented, instead of at every call site. Note that the output type is still a claim about the server: the fake transport returns what the map promises, but a real one could not be trusted without validation.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "fills-params": "Path parameters are filled in: `GET /orders/1042`",
+    "post-body": "The cancel route posts to `/orders/7/cancel` with only the remaining fields as the body"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Derive the track colors",
+  "prompt": "The Design track's base color is `--track: oklch(62% 0.19 350)`, but its badge tint and active border are hand-picked hex codes. Replace them with rules that work for **any** track:\n\n1. Badge background: mix **15%** of `--track` with **white**, in **oklch**.\n2. Active card (`.is-active`) border: the track color with lightness **0.15 lower**, same chroma and hue, using relative color syntax.\n3. Add a `.track-perf` class whose `--track` has the same lightness and chroma as Design, with hue **220**.\n\nThe checks read the computed OKLCH values, and also activate the Performance card to make sure your rules aren't specific to one track.",
+  "hints": [
+    "`color-mix(in oklch, A 15%, B)` gives 15% of A and 85% of B.",
+    "Relative syntax starts with `from`: `oklch(from var(--track) … c h)`. The `l` channel is a number from 0 to 1.",
+    "`.badge { background: color-mix(in oklch, var(--track) 15%, white); }`, `.is-active { border-inline-start-color: oklch(from var(--track) calc(l - 0.15) c h); }`, `.track-perf { --track: oklch(62% 0.19 220); }`."
+  ],
+  "explanation": "Both state colors now read `--track` at the element where they're used, so every track gets its own tint and active border from one base value. `color-mix(in oklch, var(--track) 15%, white)` interpolates lightness and chroma towards white while keeping the hue, giving a pale tint (L ≈ 0.94). The relative color form unpacks `--track` into `l`, `c` and `h`, subtracts 0.15 from the lightness and repacks it, so the active border is the same pink, only darker. Because the Performance track shares L and C with Design, its colors carry the same visual weight.",
+  "checks": {
+    "badge-tint": "The Design badge is a 15% tint of the track color",
+    "active-darker": "The active border is 0.15 darker than the track",
+    "perf-track": "The Performance track has the same L and C with hue 220",
+    "perf-badge-follows": "The Performance badge tint follows its own track",
+    "derived-for-new-tracks": "An active Performance card gets its own darker border"
+  }
+}

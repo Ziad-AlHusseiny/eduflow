@@ -1,0 +1,16 @@
+{
+  "title": "Audit by segment, then check for drift",
+  "prompt": "1. `flagged`: an out-of-fold 0/1 churn flag for every customer, from `cross_val_predict(model, ..., cv=cv, method=\"predict_proba\")` and a 0.5 threshold.\n2. `recall_by_segment`: recall of those flags within each `segment` (a Series indexed by segment). `lowest_recall_segment`: the segment whose churners are caught least often.\n3. `drifted`: the list of feature names where `recent` differs from `churn[features]` according to a two-sample KS test with p < 0.01.",
+  "hints": [
+    "`cross_val_predict(...)[:, 1]` gives the churn probability column; compare it with 0.5 and convert with `.astype(int)`.",
+    "Add the flags as a column, then `audit.groupby(\"segment\")[[\"churned\", \"flagged\"]].apply(lambda g: recall_score(g[\"churned\"], g[\"flagged\"]))`.",
+    "`ks_2samp(churn[c], recent[c]).pvalue` for each `c` in `features`; keep those below 0.01."
+  ],
+  "explanation": "Out-of-fold predictions let you audit all 398 customers without scoring anyone with a model that trained on them. Enterprise churners are caught least often (about 0.71, against 0.76 for consumers), but with only 24 enterprise customers that gap needs more data before anyone acts on it. The KS checks flag exactly the two columns the simulation changed: average order value and support tickets. That is the early warning you'd get months before the churn outcomes confirm a drop in performance.",
+  "checks": {
+    "flags": "flagged holds out-of-fold 0/1 flags for all 398 customers",
+    "recall": "recall_by_segment has the recall of each segment",
+    "lowest": "lowest_recall_segment names the weakest segment",
+    "drift": "drifted lists exactly the shifted columns"
+  }
+}

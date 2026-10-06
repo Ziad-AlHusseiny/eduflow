@@ -1,0 +1,48 @@
+{
+  "title": "Build Mobile Apps with React Native",
+  "tagline": "Use the React you know to ship a real iOS and Android app with Expo.",
+  "description": [
+    "React Native lets you write one React codebase that renders real native views on iPhone and Android. You'll build Trailhead, a hiking-log app, from an empty Expo project to a build on a real phone: screens, lists, navigation, forms, GPS, photos, reminders and offline storage, each added in the lesson that teaches it.",
+    "The course is honest about what's different on mobile: no cascade, column-first flexbox, the keyboard covering your form, permissions users can refuse, and release cycles that go through app review. You'll finish by debugging, testing and shipping with EAS Build, Submit and Update, the same pipeline teams use in production."
+  ],
+  "audience": "Web developers who know React and want to build and ship their first iOS and Android app.",
+  "prerequisites": "Comfortable with React components, props, state and hooks, plus modern JavaScript (async/await, array methods).",
+  "learnItems": [
+    "Explain how React Native renders native views, not a WebView",
+    "Lay out screens with StyleSheet, flexbox and safe areas",
+    "Build fast lists with FlatList and SectionList",
+    "Navigate with Expo Router stacks, tabs, params and modals",
+    "Use storage, location, camera and notifications safely",
+    "Debug, test and ship builds and OTA updates with EAS"
+  ],
+  "sections": {
+    "s-rn-1": "The Mental Model",
+    "s-rn-2": "Layout and Style",
+    "s-rn-3": "Navigation and State",
+    "s-rn-4": "Data and the Device",
+    "s-rn-5": "Shipping"
+  },
+  "lessons": {
+    "l-rn-1-1": "What React Native Really Is",
+    "l-rn-1-2": "Starting a Project with Expo",
+    "l-rn-1-3": "Core Components: View, Text, Image, ScrollView",
+    "l-rn-1-4": "Touch and Typing: Pressable and TextInput",
+    "l-rn-2-1": "StyleSheet in a World Without the Cascade",
+    "l-rn-2-2": "Flexbox with Mobile Defaults",
+    "l-rn-2-3": "Screen Sizes, Safe Areas and Platform Code",
+    "l-rn-2-4": "Lists That Stay Fast: FlatList and SectionList",
+    "l-rn-3-1": "File-Based Routing with Expo Router",
+    "l-rn-3-2": "Tabs, Dynamic Routes and Params",
+    "l-rn-3-3": "Shared State with Context and Reducers",
+    "l-rn-3-4": "Forms and the Keyboard",
+    "l-rn-3-5": "Modals, Protected Routes and Deep Links",
+    "l-rn-4-1": "Fetching Data: Loading, Error and Empty States",
+    "l-rn-4-2": "Storing Data on the Device",
+    "l-rn-4-3": "Permissions: Asking at the Right Moment",
+    "l-rn-4-4": "Location, Photos and Notifications",
+    "l-rn-5-1": "Debugging and Performance",
+    "l-rn-5-2": "Testing with Jest and React Native Testing Library",
+    "l-rn-5-3": "Building and Submitting with EAS",
+    "l-rn-5-4": "Over-the-Air Updates and Your Release Routine"
+  }
+}

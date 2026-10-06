@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "lighter-accent",
+    "flip-on-action",
+    "border-dark",
+    "secondary-white",
+    "duplicate-recolor",
+    "mode-primitives"
+  ],
+  "correct": [
+    "lighter-accent",
+    "flip-on-action",
+    "border-dark"
+  ]
+}

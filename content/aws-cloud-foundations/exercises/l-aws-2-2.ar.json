@@ -1,0 +1,10 @@
+{
+  "title": "راجع سياسة Developers",
+  "prompt": "كتب أحد زملائك هذه السياسة القائمة على الهوية لمجموعة **Developers** في Lantern. والمقصود، بحسب التذكرة: يستطيع المطوّرون **قراءة تأكيدات الحضور وكتابتها** (get وput وquery للعناصر) في جدول `lantern-rsvps`، و**قراءة أي ملصق** في الـ bucket المسمّى `lantern-posters`، و**حذف الملصقات فقط عند تسجيل الدخول باستخدام MFA**. اختر كل سطر يخالف هذا المقصود.",
+  "hints": [
+    "قارن كل Action بالأفعال الواردة في التذكرة. هل يوجد شيء أوسع مما طُلب؟",
+    "هل `s3:GetObject` إجراء على مستوى الـ bucket أم على مستوى الكائن؟ تحقّق من الـ Resource الخاص به.",
+    "اقرأ شرط MFA بصوت عالٍ: تنطبق العبارة حين يكون وجود MFA ... ماذا؟"
+  ],
+  "explanation": "السطر 7 يمنح `dynamodb:*`، وهذا يشمل `DeleteTable` و`UpdateTable`؛ والتذكرة لا تحتاج إلا إلى `dynamodb:GetItem` و`dynamodb:PutItem` و`dynamodb:Query`، فاسردها هي. السطر 14 يستخدم ARN الـ bucket مع `s3:GetObject`، وهو إجراء على مستوى الكائن، فلا تطابق العبارة أي تنزيل حقيقي أبدًا؛ إنها تحتاج إلى `arn:aws:s3:::lantern-posters/*`. السطر 22 يعكس الشرط: يسمح بالحذف فقط عندما يكون MFA **غائبًا**. يجب أن يكون `\"aws:MultiFactorAuthPresent\": \"true\"`. الأسطر بعد الإصلاح:\n\n```json\n\"Action\": [\"dynamodb:GetItem\", \"dynamodb:PutItem\", \"dynamodb:Query\"],\n\"Resource\": \"arn:aws:s3:::lantern-posters/*\"\n\"Bool\": { \"aws:MultiFactorAuthPresent\": \"true\" }\n```\n\nقد يرصد التحقّق من السياسات بعض هذه الأخطاء، لكن شرط MFA المعكوس JSON صالح تمامًا وسياسة صالحة تمامًا. لا تكشفه إلا قراءة السياسة ومقارنتها بالمقصود."
+}

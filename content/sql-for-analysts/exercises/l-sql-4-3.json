@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Pasted from the PostgreSQL warehouse. It fails in SQLite: port it.\n-- grain: one row per month, Dubai customers, 2025, non-cancelled orders\nSELECT\n  to_char(date_trunc('month', o.order_date::timestamp), 'YYYY-MM') AS month,\n  COUNT(*) AS orders,\n  COUNT(*) FILTER (WHERE o.channel ILIKE 'MOBILE%') AS app_orders\nFROM orders AS o\nJOIN customers AS c ON c.customer_id = o.customer_id\nWHERE c.city ILIKE 'dubai'\n  AND o.status <> 'cancelled'\n  AND o.order_date >= DATE '2025-01-01'\n  AND o.order_date < DATE '2026-01-01'\nGROUP BY month\nORDER BY month;",
+  "solution": "SELECT\n  strftime('%Y-%m', o.order_date) AS month,\n  COUNT(*) AS orders,\n  COUNT(*) FILTER (WHERE o.channel LIKE 'MOBILE%') AS app_orders\nFROM orders AS o\nJOIN customers AS c ON c.customer_id = o.customer_id\nWHERE c.city LIKE 'dubai'\n  AND o.status <> 'cancelled'\n  AND o.order_date >= '2025-01-01'\n  AND o.order_date < '2026-01-01'\nGROUP BY month\nORDER BY month;",
+  "orderMatters": true
+}

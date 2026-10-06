@@ -1,0 +1,18 @@
+{
+  "title": "Validate the add-hike form",
+  "prompt": "Write `validateHikeForm(draft, today)` for Trailhead's form. `draft` holds the raw strings the user typed: `name`, `date`, `distance`, `duration`, `notes`. `today` is today's date as `YYYY-MM-DD`. Return an object with a message for **each invalid field** (any non-empty string); return `{}` when everything is valid.\n\n- **name**: required after trimming; at most 60 characters.\n- **date**: `YYYY-MM-DD`, a date that exists (`2026-02-30` doesn't), and not after `today`.\n- **distance**: a number above 0 and at most 200; a comma decimal like `8,4` is fine.\n- **duration**: optional; if filled in, whole minutes from 1 to 1440.\n- **notes**: optional; at most 500 characters.",
+  "hints": [
+    "Build `errors` field by field with `if` statements; each failing rule sets `errors.field = '\u2026'`.",
+    "ISO date strings compare correctly as text, so `draft.date > today` means \"in the future\". To reject `2026-02-30`, build `new Date(Date.UTC(y, m - 1, d))` and check that the year, month and day come back unchanged.",
+    "For the distance, normalize first (`trim`, comma to dot), then test against `/^\\d+(\\.\\d+)?$/` before checking the range."
+  ],
+  "explanation": "Keeping validation in a pure function that maps a draft to an errors object means the form only needs `Object.keys(errors).length === 0` to decide whether to save, and each field can look up its own message. Passing `today` in, rather than calling `new Date()` inside, keeps the function deterministic, so tests don't break at midnight. The round-trip check through `Date.UTC` is a compact way to reject impossible dates, which JavaScript's `Date` would otherwise silently roll over into March.",
+  "checks": {
+    "valid-draft": "A complete, sensible draft has no errors",
+    "name": "Blank and overly long names are rejected",
+    "date": "Badly formatted, impossible and future dates are rejected",
+    "distance": "Missing, non-numeric and zero distances are rejected",
+    "duration": "A filled-in duration must be whole minutes from 1 to 1440",
+    "several": "Several invalid fields are all reported at once"
+  }
+}

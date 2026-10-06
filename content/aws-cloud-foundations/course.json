@@ -1,0 +1,28 @@
+{
+  "id": "aws-cloud-foundations",
+  "project": "Lantern, a small community events website (event listings, RSVPs and poster uploads) that outgrew a single rented server. Lesson by lesson you secure an AWS account for it, give its people and code the right permissions, choose compute, storage, database and network pieces, then ship the site on Amazon S3 and Amazon CloudFront with a serverless RSVP API, CloudWatch alarms and a Well-Architected review.",
+  "sections": [
+    { "id": "s-aws-1", "lessons": [
+      { "id": "l-aws-1-1", "minutes": 12 },
+      { "id": "l-aws-1-2", "minutes": 15 },
+      { "id": "l-aws-1-3", "minutes": 18 },
+      { "id": "l-aws-1-4", "minutes": 17 }
+    ] },
+    { "id": "s-aws-2", "lessons": [
+      { "id": "l-aws-2-1", "minutes": 16 },
+      { "id": "l-aws-2-2", "minutes": 20 },
+      { "id": "l-aws-2-3", "minutes": 17 }
+    ] },
+    { "id": "s-aws-3", "lessons": [
+      { "id": "l-aws-3-1", "minutes": 18 },
+      { "id": "l-aws-3-2", "minutes": 17 },
+      { "id": "l-aws-3-3", "minutes": 15 },
+      { "id": "l-aws-3-4", "minutes": 18 }
+    ] },
+    { "id": "s-aws-4", "lessons": [
+      { "id": "l-aws-4-1", "minutes": 17 },
+      { "id": "l-aws-4-2", "minutes": 17 },
+      { "id": "l-aws-4-3", "minutes": 13 }
+    ] }
+  ]
+}

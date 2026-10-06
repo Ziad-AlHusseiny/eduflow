@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "function Panel({ title }) {\n  // Add an actions slot in the header and render children in the body\n  return (\n    <section>\n      <header>\n        <h2>{title}</h2>\n      </header>\n    </section>\n  );\n}\n\nexport default function App() {\n  return (\n    <main>\n      <Panel title=\"To watch\" actions={<button>Shuffle</button>}>\n        <ul>\n          <li>Past Lives</li>\n          <li>Paddington 2</li>\n        </ul>\n      </Panel>\n      <Panel title=\"Watched\">\n        <p>You've watched 1 movie.</p>\n      </Panel>\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "function Panel({ title, actions, children }) {\n  return (\n    <section>\n      <header>\n        <h2>{title}</h2>\n        {actions}\n      </header>\n      <div>{children}</div>\n    </section>\n  );\n}\n\nexport default function App() {\n  return (\n    <main>\n      <Panel title=\"To watch\" actions={<button>Shuffle</button>}>\n        <ul>\n          <li>Past Lives</li>\n          <li>Paddington 2</li>\n        </ul>\n      </Panel>\n      <Panel title=\"Watched\">\n        <p>You've watched 1 movie.</p>\n      </Panel>\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "two-panels",
+      "test": "const s = $$('section'); return s.length === 2 && text(s[0].querySelector('header h2')) === 'To watch' && text(s[1].querySelector('header h2')) === 'Watched';"
+    },
+    {
+      "id": "children-first",
+      "test": "const s = $$('section'); return s.length === 2 && s[0].querySelectorAll('li').length === 2 && !s[0].querySelector('header li');"
+    },
+    {
+      "id": "children-second",
+      "test": "const s = $$('section'); return s.length === 2 && text(s[1]).includes(\"You've watched 1 movie.\") && !s[1].querySelector('header p');"
+    },
+    {
+      "id": "actions-slot",
+      "test": "const s = $$('section'); const b = s[0] && s[0].querySelector('header button'); return !!b && text(b) === 'Shuffle';"
+    },
+    {
+      "id": "actions-optional",
+      "test": "const s = $$('section'); return s.length === 2 && !s[1].querySelector('button');"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// An assertion: throw an Error when actual !== expected.\nfunction expectEqual(actual, expected) {\n  // your code\n}\n\n// A runner: run fn, log PASS or FAIL, never let one failure stop the others.\nfunction test(name, fn) {\n  // your code\n}\n\ntest(\"two plus two\", () => expectEqual(2 + 2, 4));\ntest(\"deliberately wrong\", () => expectEqual(0.1 + 0.2, 0.3));\n"
+  },
+  "solution": {
+    "js": "function expectEqual(actual, expected) {\n  if (actual !== expected) {\n    throw new Error(`Expected ${expected} but received ${actual}`);\n  }\n}\n\nfunction test(name, fn) {\n  try {\n    fn();\n    console.log(`PASS ${name}`);\n  } catch (error) {\n    console.log(`FAIL ${name}: ${error.message}`);\n  }\n}\n\ntest(\"two plus two\", () => expectEqual(2 + 2, 4));\ntest(\"deliberately wrong\", () => expectEqual(0.1 + 0.2, 0.3));\n"
+  },
+  "checks": [
+    {
+      "id": "equal-passes",
+      "test": "try { expectEqual(5, 5); expectEqual(\"a\", \"a\"); return true; } catch { return false; }"
+    },
+    {
+      "id": "unequal-throws",
+      "test": "try { expectEqual(333, 334); return false; } catch (e) { return e instanceof Error && String(e.message).includes(\"333\") && String(e.message).includes(\"334\"); }"
+    },
+    {
+      "id": "logs-pass",
+      "test": "test(\"check-pass-case\", () => expectEqual(1, 1)); return logs.includes(\"PASS check-pass-case\");"
+    },
+    {
+      "id": "logs-fail",
+      "test": "test(\"check-fail-case\", () => expectEqual(1, 2)); return logs.some((l) => l.startsWith(\"FAIL check-fail-case\") && l.includes(\"2\"));"
+    },
+    {
+      "id": "keeps-going",
+      "test": "try { test(\"check-boom\", () => { throw new Error(\"boom\"); }); } catch { return false; } return logs.some((l) => l.startsWith(\"FAIL check-boom\"));"
+    }
+  ]
+}

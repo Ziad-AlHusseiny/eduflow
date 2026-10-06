@@ -1,0 +1,19 @@
+{
+  "title": "Write clean_orders()",
+  "prompt": "Complete `clean_orders(path)` so it loads the export and returns it cleaned: strip `customer`; strip and title-case `country`; turn `mobile app` into `mobile_app` and missing channels into `\"unknown\"`; convert `total` with the provided `parse_money`; parse `order_date` with `pd.to_datetime(..., format=\"mixed\", dayfirst=True)`; drop exact duplicates and renumber the index from 0; and `assert` that `order_id` is unique before returning. Then set `sales_by_country` to a dictionary mapping each cleaned country to its total sales, rounded to 2 decimals.",
+  "hints": [
+    "Each step is one line inside the function, assigning back to `df[...]`. Do the text and money cleaning before `drop_duplicates()`.",
+    "`df = df.drop_duplicates().reset_index(drop=True)` removes the copies and renumbers rows 0 to 158. Then `assert df[\"order_id\"].is_unique, \"duplicate order ids remain\"`.",
+    "For the dictionary, loop over `clean[\"country\"].unique()` and sum `clean.loc[clean[\"country\"] == country, \"total\"]`, as in Lesson 1.4. (Lesson 4.1 shows a one-line `groupby` for this.)"
+  ],
+  "explanation": "The function reads its own file and applies every fix from this section in a fixed order, so running it twice, or on next month's file, gives the same kind of result. Cleaning happens before deduplication so near-identical copies would also match; here the nine copies were exact. One shortcut to be honest about: `format=\"mixed\", dayfirst=True` still misreads the five month-first dates you caught in Lesson 3.4, so a production version would keep the ambiguity flag or repair those rows from the order system. The assertion is the function's contract: if a future export contains two different rows for one order, it stops instead of returning bad data. The country totals add back up to 22,486.69, the deduplicated sales figure, which is the parts-equal-the-whole check from Lesson 1.4 again. In the next lesson, `clean.groupby(\"country\")[\"total\"].sum()` replaces the loop.",
+  "checks": {
+    "rows": "`clean` has 159 rows, one per order",
+    "index": "The index is renumbered 0 to 158",
+    "text": "Countries, channels and customer names are cleaned",
+    "types": "`total` is numeric and `order_date` is a datetime",
+    "total": "Total sales are 22,486.69",
+    "by-country": "`sales_by_country` has 8 countries adding up to 22,486.69",
+    "reusable": "Calling `clean_orders` again gives the same 159 rows"
+  }
+}

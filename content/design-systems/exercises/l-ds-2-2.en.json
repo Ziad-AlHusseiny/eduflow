@@ -1,0 +1,17 @@
+{
+  "title": "Review this week's token proposals",
+  "prompt": "Six semantic token names were proposed to Northwind UI this week. The system must support light and dark themes and two brands (Northwind and Tidewater), and follows the grammar `--nw-{category}-{concept}-{property}-{variant}-{state}`. Select every name you would **approve as written**.",
+  "hints": [
+    "For each name, imagine it in dark mode and in the Tidewater brand. Does it still tell the truth?",
+    "Watch for color words, theme words, version numbers and names that only fit one component."
+  ],
+  "explanation": "The approved names describe a role: a success border, text on an inverse surface, the focus ring. Each stays accurate in every theme and brand. `orange-badge` describes a look that Tidewater's palette will change, `modal-shadow-v2` encodes history instead of purpose (and the next redesign gives you `v3`), and `dark-surface` breaks in dark mode, where most surfaces are dark. A role-based alternative would be `--nw-color-surface-raised` or `--nw-color-surface-inverse`.",
+  "options": {
+    "success-border": { "text": "`--nw-color-success-border`", "why": "Approve. It names a role (the border of success messages) and follows the grammar's order." },
+    "orange-badge": { "text": "`--nw-color-orange-badge-bg`", "why": "Reject. 'Orange' is appearance; when the warning color changes for Tidewater, the name lies." },
+    "text-inverse": { "text": "`--nw-color-text-inverse`", "why": "Approve. 'Inverse' means text on the opposite surface, which holds in both themes." },
+    "modal-shadow-v2": { "text": "`--nw-shadow-modal-v2`", "why": "Reject. A version number records history, not purpose, and guarantees a `v3` later." },
+    "focus-ring": { "text": "`--nw-color-focus-ring`", "why": "Approve. Every interactive component shares the focus ring, and the role is stable across themes." },
+    "dark-surface": { "text": "`--nw-color-dark-surface`", "why": "Reject. In dark mode almost every surface is dark, so the name stops meaning anything." }
+  }
+}

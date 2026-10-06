@@ -1,0 +1,18 @@
+{
+  "title": "Decompose the Q4 jump",
+  "prompt": "`df` has one row per non-cancelled order with `revenue`, `customer_id`, `coupon_code` and a `quarter` period. Build `q`, one row per quarter with `revenue` (sum), `orders` (count), `customers` (distinct customers) and `aov` (revenue \u00f7 orders). Then compute the Q3-to-Q4 2025 growth of revenue, orders and AOV as fractions (`revenue_growth`, `orders_growth`, `aov_growth`), the share of Q4 2025 revenue from `BLACKFRIDAY25` orders (`bf_share`), and the 2024 Q3-to-Q4 revenue growth (`growth_2024`). Round each of these five numbers to 3 decimals.",
+  "hints": [
+    "`df.groupby(\"quarter\").agg(revenue=(\"revenue\", \"sum\"), orders=(\"order_id\", \"count\"), customers=(\"customer_id\", \"nunique\"))`, then add `aov` as a column.",
+    "Rows of `q` are labelled by period; `q.loc[\"2025Q4\"] / q.loc[\"2025Q3\"] - 1` gives every column's growth at once.",
+    "For the coupon share, filter Q4 2025 first, then divide the coupon orders' revenue by all Q4 revenue."
+  ],
+  "explanation": "Dividing one row of `q` by another computes all the growth rates in one step, because the two rows share the same columns. Revenue +82.3% = orders +98.1% combined with AOV \u22128.0% (1.981 \u00d7 0.920 \u2248 1.823): the decomposition is exact, which is why it is such a powerful first move. Black Friday coupon orders were 8.4% of Q4 revenue, and the 2024 baseline shows Q4 was already about 73% above Q3 the year before. Together these numbers support the conclusion from the lesson: a normal seasonal peak on a much bigger business, driven by order volume.",
+  "checks": {
+    "table": "`q` has 8 quarters with revenue, orders, customers and aov",
+    "q4-row": "Q4 2025 shows 642 orders, 282 customers and an AOV of 228.70",
+    "growth": "Revenue grew 82.3% and orders 98.1%",
+    "aov-growth": "AOV fell 8.0%",
+    "bf": "Black Friday coupon orders are 8.4% of Q4 revenue",
+    "baseline": "2024's Q3-to-Q4 growth was 72.7%"
+  }
+}

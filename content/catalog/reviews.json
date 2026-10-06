@@ -1,0 +1,353 @@
+[
+  {
+    "id": "r-rf-1", "courseId": "react-fundamentals", "name": "Alicia Grant", "rating": 5, "date": "2026-08-04",
+    "text": {
+      "en": "I'd bounced off React twice before. The pacing here finally made components click.",
+      "ar": "حاولت تعلّم React مرتين من قبل وتوقفت في المرتين. الإيقاع هنا هو ما جعل فكرة الـ components تتّضح لي أخيرًا."
+    }
+  },
+  {
+    "id": "r-rf-2", "courseId": "react-fundamentals", "name": "Tom Nakamura", "rating": 5, "date": "2026-06-18",
+    "text": {
+      "en": "Short lessons, real project, zero filler. Finished it in two weeks of lunch breaks.",
+      "ar": "دروس قصيرة، ومشروع حقيقي، ولا حشو على الإطلاق. أنهيتها في أسبوعين من استراحات الغداء."
+    }
+  },
+  {
+    "id": "r-rf-3", "courseId": "react-fundamentals", "name": "Fatima El-Sayed", "rating": 4, "date": "2026-07-22",
+    "text": {
+      "en": "Great fundamentals. I'd love a deeper section on useEffect edge cases, but it's an excellent start.",
+      "ar": "أساسيات ممتازة. كنت أتمنى قسمًا أعمق عن الحالات الخاصة في useEffect، لكنها بداية رائعة."
+    }
+  },
+
+  {
+    "id": "r-at-1", "courseId": "advanced-typescript", "name": "Jonas Becker", "rating": 5, "date": "2026-03-11",
+    "text": {
+      "en": "The lesson on discriminated unions changed how I model order states at work. The next sprint, we deleted a whole class of \"impossible\" checkout bugs.",
+      "ar": "غيّر درس الـ discriminated unions طريقتي في تمثيل حالات الطلب في عملي. في الـ sprint التالي تخلّصنا من فئة كاملة من أخطاء الدفع «المستحيلة»."
+    }
+  },
+  {
+    "id": "r-at-2", "courseId": "advanced-typescript", "name": "Mariam Al-Otaibi", "rating": 5, "date": "2026-05-27",
+    "text": {
+      "en": "I finally understood conditional types and infer by writing them instead of reading about them. The type-test exercises with Expect<Equal<…>> are addictive.",
+      "ar": "فهمت أخيرًا الـ conditional types والكلمة infer بكتابتها لا بالقراءة عنها. تمارين اختبار الأنواع باستخدام Expect<Equal<…>> ممتعة إلى حدّ الإدمان."
+    }
+  },
+  {
+    "id": "r-at-3", "courseId": "advanced-typescript", "name": "Arjun Mehta", "rating": 4, "date": "2026-08-30",
+    "text": {
+      "en": "Dense in the best way. The recursive types lesson moved too fast for me and I read it twice, but branded types and NoInfer alone were worth the price.",
+      "ar": "مكثّفة بأفضل معنى للكلمة. درس الأنواع التكرارية (recursive types) كان سريعًا عليّ فقرأته مرتين، لكن الـ branded types و NoInfer وحدهما يستحقان ثمن الدورة."
+    }
+  },
+
+  {
+    "id": "r-css-1", "courseId": "css-mastery", "name": "Lucas Moreau", "rating": 5, "date": "2026-02-09",
+    "text": {
+      "en": "Cascade layers were the missing piece for me. I moved our reset, vendor styles and components into @layer and stopped writing !important almost overnight.",
+      "ar": "كانت الـ cascade layers هي القطعة الناقصة عندي. نقلت ملف الـ reset وأنماط المكتبات الخارجية والـ components إلى @layer، وتوقفت عن كتابة !important تقريبًا بين ليلة وضحاها."
+    }
+  },
+  {
+    "id": "r-css-2", "courseId": "css-mastery", "name": "Nour Hamdan", "rating": 5, "date": "2026-06-03",
+    "text": {
+      "en": "The logical properties lesson is the first CSS material I've seen that treats right-to-left as normal, not an afterthought. Our Arabic layout now flips with a single dir attribute.",
+      "ar": "درس الخصائص المنطقية (logical properties) أول محتوى CSS أراه يتعامل مع الكتابة من اليمين إلى اليسار كأمر طبيعي لا كفكرة لاحقة. صار تخطيط موقعنا العربي ينقلب بخاصية dir واحدة."
+    }
+  },
+  {
+    "id": "r-css-3", "courseId": "css-mastery", "name": "Ana Ribeiro", "rating": 4, "date": "2026-09-12",
+    "text": {
+      "en": "Container queries and subgrid finally make sense, and the conference schedule page is a good project to keep refining. I wanted more time on scroll-driven animations; that lesson feels rushed.",
+      "ar": "صارت الـ container queries والـ subgrid مفهومة أخيرًا، وصفحة جدول المؤتمر مشروع مناسب تواصل تحسينه طوال الدورة. كنت أريد وقتًا أطول للـ scroll-driven animations؛ ذلك الدرس بدا مستعجلًا."
+    }
+  },
+
+  {
+    "id": "r-pda-1", "courseId": "python-data-analysis", "name": "Ahmed Farouk", "rating": 5, "date": "2026-01-28",
+    "text": {
+      "en": "I came from Excel and had never written a loop. By the end I'd built a cleaning function for the messy orders export and explained the Q4 revenue jump to my manager with one groupby.",
+      "ar": "جئت من Excel ولم أكتب حلقة تكرار في حياتي. في النهاية كنت قد بنيت دالة تنظيف لملف الطلبات الفوضوي، وشرحت لمديري قفزة إيرادات الربع الرابع بعملية groupby واحدة."
+    }
+  },
+  {
+    "id": "r-pda-2", "courseId": "python-data-analysis", "name": "Chloe Martin", "rating": 5, "date": "2026-04-16",
+    "text": {
+      "en": "The date-parsing lesson alone saved me a week at work. Seeing 05/03 and 03/05 in the same column, and learning how to tell them apart, is exactly the mess I deal with.",
+      "ar": "درس تحليل التواريخ وحده وفّر عليّ أسبوعًا في العمل. رؤية 05/03 و03/05 في العمود نفسه، وتعلّم كيف أميّز بينهما، هي بالضبط الفوضى التي أتعامل معها."
+    }
+  },
+  {
+    "id": "r-pda-3", "courseId": "python-data-analysis", "name": "Kwame Mensah", "rating": 4, "date": "2026-07-09",
+    "text": {
+      "en": "Clear, patient, and the in-browser exercises run fast. The first section drags if you already know basic Python, so I'd like a way to skip ahead.",
+      "ar": "واضحة وصبورة، والتمارين داخل المتصفّح تعمل بسرعة. القسم الأول بطيء إن كنت تعرف أساسيات Python، لذا أتمنى لو كانت هناك طريقة لتخطّيه."
+    }
+  },
+
+  {
+    "id": "r-sql-1", "courseId": "sql-for-analysts", "name": "Hana Kobayashi", "rating": 5, "date": "2026-03-02",
+    "text": {
+      "en": "The fan-out lesson explained why our revenue dashboard ran 30% high: two joins to order_items were double-counting orders. I fixed it the same afternoon.",
+      "ar": "شرح درس الـ fan-out سبب ارتفاع لوحة الإيرادات عندنا بنسبة 30%: عمليتا JOIN على order_items كانتا تعدّان الطلبات مرتين. أصلحتها في عصر اليوم نفسه."
+    }
+  },
+  {
+    "id": "r-sql-2", "courseId": "sql-for-analysts", "name": "Omar Khalil", "rating": 5, "date": "2026-05-19",
+    "text": {
+      "en": "Window functions always scared me. After the LAG and running-totals lesson I rebuilt our weekly retention report as one readable query with CTEs.",
+      "ar": "كانت الـ window functions تخيفني دائمًا. بعد درس LAG والمجاميع التراكمية أعدت بناء تقرير الاحتفاظ بالعملاء الأسبوعي في query واحد مقروء باستخدام الـ CTEs."
+    }
+  },
+  {
+    "id": "r-sql-3", "courseId": "sql-for-analysts", "name": "Sara Lindqvist", "rating": 4, "date": "2026-08-21",
+    "text": {
+      "en": "Realistic questions and a dataset that behaves like real data, NULLs included. The exercises run on SQLite and the dialect lesson is short, so I still had to look up a few Postgres differences myself.",
+      "ar": "أسئلة واقعية وبيانات تتصرّف مثل البيانات الحقيقية، بما فيها قيم NULL. التمارين تعمل على SQLite ودرس الفروق بين الأنظمة قصير، فاضطررت للبحث بنفسي عن بعض الفروق مع Postgres."
+    }
+  },
+
+  {
+    "id": "r-fig-1", "courseId": "figma-ui-design", "name": "Layla Saad", "rating": 5, "date": "2026-02-20",
+    "text": {
+      "en": "Auto layout clicked once I rebuilt the habit row three times with hug, fill and fixed. My designs stopped breaking every time I changed a label.",
+      "ar": "فهمت الـ auto layout حين أعدت بناء صف العادة ثلاث مرات بخيارات hug وfill وfixed. لم تعد تصاميمي تنكسر كلما غيّرت نصًّا."
+    }
+  },
+  {
+    "id": "r-fig-2", "courseId": "figma-ui-design", "name": "Mateo Fernández", "rating": 5, "date": "2026-06-29",
+    "text": {
+      "en": "I'm a developer, and this is the first time I've understood why designers care about variables and modes. Setting up light and dark for the Steady kit was the highlight.",
+      "ar": "أنا مطوّر، وهذه أول مرة أفهم لماذا يهتم المصممون بالـ variables والـ modes. إعداد الوضعين الفاتح والداكن لمجموعة مكوّنات Steady كان أفضل جزء بالنسبة لي."
+    }
+  },
+  {
+    "id": "r-fig-3", "courseId": "figma-ui-design", "name": "Zeynep Yılmaz", "rating": 4, "date": "2026-09-03",
+    "text": {
+      "en": "Great structure from the first frame to the Dev Mode handoff. The prototyping lesson could use one example more complex than the check-in flow.",
+      "ar": "بنية ممتازة من أول frame حتى التسليم في Dev Mode. درس النماذج التفاعلية (prototyping) يحتاج مثالًا أعقد من مسار تسجيل العادة."
+    }
+  },
+
+  {
+    "id": "r-ds-1", "courseId": "design-systems", "name": "Grace Okonkwo", "rating": 5, "date": "2026-04-07",
+    "text": {
+      "en": "Naming tokens in three tiers, primitive to semantic to component, ended a two-month argument on my team. We shipped the new token set the following week.",
+      "ar": "تسمية الـ tokens على ثلاث طبقات، من الأولية إلى الدلالية إلى الخاصة بكل component، أنهت جدالًا دام شهرين في فريقي. أطلقنا مجموعة الـ tokens الجديدة في الأسبوع التالي."
+    }
+  },
+  {
+    "id": "r-ds-2", "courseId": "design-systems", "name": "Khaled Mansour", "rating": 5, "date": "2026-07-15",
+    "text": {
+      "en": "Most design-system content stops at the Figma library. This one covers versioning, deprecations and getting other teams to adopt the system, which is where systems actually fail.",
+      "ar": "معظم المحتوى عن أنظمة التصميم يتوقف عند مكتبة Figma. هذه الدورة تغطي إدارة الإصدارات، وإيقاف المكوّنات القديمة، وإقناع الفرق الأخرى بتبنّي النظام، وهنا تحديدًا تفشل الأنظمة عادة."
+    }
+  },
+  {
+    "id": "r-ds-3", "courseId": "design-systems", "name": "Ingrid Solberg", "rating": 4, "date": "2026-09-18",
+    "text": {
+      "en": "The critiques of real component APIs are the best part. It assumes you already maintain a small library, though; as a solo designer I skimmed the governance material.",
+      "ar": "نقد واجهات components حقيقية هو أفضل ما في الدورة. لكنها تفترض أنك تدير مكتبة صغيرة بالفعل؛ وبصفتي مصممة أعمل وحدي، مررت على الجزء الخاص بالحوكمة سريعًا."
+    }
+  },
+
+  {
+    "id": "r-rn-1", "courseId": "react-native-apps", "name": "Diego Alvarez", "rating": 5, "date": "2026-03-24",
+    "text": {
+      "en": "Expo Router made navigation feel like the web routing I already knew. I had the app running on my own phone in the first evening.",
+      "ar": "جعل Expo Router التنقّل داخل التطبيق يشبه التوجيه (routing) الذي أعرفه من الويب. كان التطبيق يعمل على هاتفي منذ الأمسية الأولى."
+    }
+  },
+  {
+    "id": "r-rn-2", "courseId": "react-native-apps", "name": "Salma Idris", "rating": 5, "date": "2026-06-11",
+    "text": {
+      "en": "The FlatList performance lesson fixed the stutter in my feed. Maya explains why a list re-renders, not only which prop to add.",
+      "ar": "أصلح درس أداء FlatList التقطّع في قائمة المنشورات عندي. تشرح مايا لماذا يحدث re-render للقائمة، لا أيّ prop عليك إضافته فقط."
+    }
+  },
+  {
+    "id": "r-rn-3", "courseId": "react-native-apps", "name": "Ethan Brooks", "rating": 4, "date": "2026-08-14",
+    "text": {
+      "en": "Solid if you already know React. I'd have liked more on publishing to the App Store and Google Play; that part feels brief next to the rest.",
+      "ar": "قوية إن كنت تعرف React مسبقًا. كنت أتمنى تفصيلًا أكثر حول النشر على App Store وGoogle Play؛ هذا الجزء يبدو مختصرًا مقارنة بالباقي."
+    }
+  },
+
+  {
+    "id": "r-sw-1", "courseId": "swift-essentials", "name": "Yuki Sato", "rating": 5, "date": "2026-02-14",
+    "text": {
+      "en": "Optionals finally make sense. The walk-through of if let, guard let and why force-unwrapping crashes was exactly what I needed coming from JavaScript.",
+      "ar": "صارت الـ optionals مفهومة أخيرًا. شرح if let وguard let، ولماذا يتسبّب الـ force-unwrap في انهيار التطبيق، كان ما أحتاجه تمامًا بعد سنوات مع JavaScript."
+    }
+  },
+  {
+    "id": "r-sw-2", "courseId": "swift-essentials", "name": "Rania Aziz", "rating": 4, "date": "2026-05-08",
+    "text": {
+      "en": "A good introduction to SwiftUI with @Observable and NavigationStack. The practice is guided rather than live code, so I set up Xcode on my own to really get my hands dirty.",
+      "ar": "مقدمة جيدة إلى SwiftUI مع @Observable وNavigationStack. التمارين موجّهة وليست كودًا يعمل مباشرة، فأعددت Xcode بنفسي لأتدرّب فعليًا."
+    }
+  },
+  {
+    "id": "r-sw-3", "courseId": "swift-essentials", "name": "Ivan Petrov", "rating": 3, "date": "2026-08-26",
+    "text": {
+      "en": "The language lessons are clear, but the concurrency lesson lost me by introducing actors and Sendable at once. I needed a few small examples before the big one.",
+      "ar": "دروس اللغة واضحة، لكن درس التزامن (concurrency) أضاعني حين قدّم الـ actors وSendable دفعة واحدة. كنت أحتاج بضعة أمثلة صغيرة قبل المثال الكبير."
+    }
+  },
+
+  {
+    "id": "r-dk-1", "courseId": "docker-kubernetes", "name": "Sipho Ndlovu", "rating": 5, "date": "2026-01-30",
+    "text": {
+      "en": "A multi-stage build took our API image from 1.2 GB to 160 MB. The spot-the-bug Dockerfile exercises are why I now read every COPY line twice.",
+      "ar": "قلّص الـ multi-stage build حجم الـ image الخاصة بالـ API عندنا من 1.2 GB إلى 160 MB. وتمارين اكتشاف الخطأ في الـ Dockerfile هي السبب في أنني صرت أقرأ كل سطر COPY مرتين."
+    }
+  },
+  {
+    "id": "r-dk-2", "courseId": "docker-kubernetes", "name": "Lina Jaber", "rating": 5, "date": "2026-05-13",
+    "text": {
+      "en": "Readiness versus liveness probes, explained with a pod that keeps restarting at 3 a.m. That one example fixed a real outage pattern on my team.",
+      "ar": "الفرق بين readiness probe وliveness probe مشروح بمثال pod يُعاد تشغيله باستمرار في الثالثة فجرًا. هذا المثال وحده أنهى نمطًا متكرّرًا من الأعطال في فريقي."
+    }
+  },
+  {
+    "id": "r-dk-3", "courseId": "docker-kubernetes", "name": "Noah Fischer", "rating": 4, "date": "2026-07-27",
+    "text": {
+      "en": "The Docker half is excellent, the Kubernetes half is good. Without a real cluster the kubectl practice is fill-in-the-blank, so I ran kind locally alongside it.",
+      "ar": "نصف Docker ممتاز ونصف Kubernetes جيد. من دون cluster حقيقي يبقى التدرّب على kubectl على شكل ملء فراغات، لذا شغّلت kind محليًا بالتوازي مع الدورة."
+    }
+  },
+
+  {
+    "id": "r-aws-1", "courseId": "aws-cloud-foundations", "name": "Tariq Bakr", "rating": 5, "date": "2026-03-17",
+    "text": {
+      "en": "IAM finally stopped being a wall of JSON. I set up IAM Identity Center for our team of six, and we no longer share the root account.",
+      "ar": "لم تعد IAM جدارًا من JSON أخيرًا. أعددت IAM Identity Center لفريقنا المكوّن من ستة أشخاص، ولم نعد نتشارك حساب الـ root."
+    }
+  },
+  {
+    "id": "r-aws-2", "courseId": "aws-cloud-foundations", "name": "Elena Rossi", "rating": 5, "date": "2026-06-24",
+    "text": {
+      "en": "The VPC diagrams are the clearest I've seen: public and private subnets, the NAT gateway, and why my Lambda function couldn't reach the internet.",
+      "ar": "مخططات الـ VPC هي الأوضح التي رأيتها: الشبكات الفرعية العامة والخاصة، والـ NAT gateway، وسبب عجز دالة Lambda عندي عن الوصول إلى الإنترنت."
+    }
+  },
+  {
+    "id": "r-aws-3", "courseId": "aws-cloud-foundations", "name": "Bilal Chaudhry", "rating": 3, "date": "2026-09-09",
+    "text": {
+      "en": "A good map of the core services, but it stays high level. I expected to deploy something end to end; most of the practice is picking the right service for a scenario.",
+      "ar": "خريطة جيدة للخدمات الأساسية، لكنها تبقى على مستوى عام. توقّعت أن أنشر شيئًا من البداية إلى النهاية، بينما يقوم معظم التدريب على اختيار الخدمة المناسبة لسيناريو معيّن."
+    }
+  },
+
+  {
+    "id": "r-ml-1", "courseId": "ml-crash-course", "name": "Dina Mostafa", "rating": 5, "date": "2026-02-26",
+    "text": {
+      "en": "The data leakage lesson caught a mistake I'd made for a year: scaling before the train/test split. My accuracy dropped, and for the first time it meant something.",
+      "ar": "كشف درس تسرّب البيانات (data leakage) خطأً ظللت أرتكبه عامًا كاملًا: تطبيع البيانات قبل تقسيمها إلى تدريب واختبار. انخفضت الـ accuracy عندي، لكنها صارت لأول مرة تعني شيئًا."
+    }
+  },
+  {
+    "id": "r-ml-2", "courseId": "ml-crash-course", "name": "Rafael Costa", "rating": 5, "date": "2026-05-31",
+    "text": {
+      "en": "Building a churn model with a scikit-learn Pipeline, then explaining precision versus recall to an imaginary marketing team, is the most practical ML exercise I've done.",
+      "ar": "بناء نموذج للتنبؤ بتوقّف العملاء (churn) باستخدام Pipeline في scikit-learn، ثم شرح الفرق بين precision وrecall لفريق تسويق افتراضي، هو أكثر تمرين عملي في تعلّم الآلة مررت به."
+    }
+  },
+  {
+    "id": "r-ml-3", "courseId": "ml-crash-course", "name": "Mei Lin", "rating": 4, "date": "2026-08-08",
+    "text": {
+      "en": "Excellent intuition for decision trees, regularization and cross-validation. Neural networks only get a brief look, so don't come expecting deep learning.",
+      "ar": "بناء حدس ممتاز لأشجار القرار والـ regularization والـ cross-validation. الشبكات العصبية تحظى بلمحة قصيرة فقط، فلا تأتِ متوقعًا دورة في التعلّم العميق (deep learning)."
+    }
+  },
+
+  {
+    "id": "r-js-1", "courseId": "javascript-fundamentals", "name": "Youssef Benali", "rating": 5, "date": "2026-01-19",
+    "text": {
+      "en": "I'd copied JavaScript from tutorials for months without knowing what a closure was. The closures lesson made it obvious, and that week I fixed a bug in my own code because of it.",
+      "ar": "كنت أنسخ كود JavaScript من الدروس لأشهر دون أن أعرف ما هو الـ closure. جعل درس الـ closures الفكرة واضحة، وفي الأسبوع نفسه أصلحت بفضله خطأً في كودي."
+    }
+  },
+  {
+    "id": "r-js-2", "courseId": "javascript-fundamentals", "name": "Emily Carter", "rating": 5, "date": "2026-04-29",
+    "text": {
+      "en": "The event loop explanation, predicting the order of console.log calls around a setTimeout and a promise, is something I now draw on whiteboards for other people.",
+      "ar": "شرح الـ event loop، وتوقّع ترتيب استدعاءات console.log حول setTimeout وpromise، صار شيئًا أرسمه الآن على السبورة لزملائي."
+    }
+  },
+  {
+    "id": "r-js-3", "courseId": "javascript-fundamentals", "name": "Hamza Rahimi", "rating": 4, "date": "2026-07-02",
+    "text": {
+      "en": "Great DOM exercises with instant checks. The async/await part deserves one more lesson on error handling with try/catch around fetch.",
+      "ar": "تمارين DOM رائعة مع تحقّق فوري من الحل. جزء async/await يستحق درسًا إضافيًا عن معالجة الأخطاء باستخدام try/catch حول fetch."
+    }
+  },
+
+  {
+    "id": "r-git-1", "courseId": "git-github", "name": "Marta Kowalska", "rating": 5, "date": "2026-03-05",
+    "text": {
+      "en": "Seeing commits as a graph changed everything. I rebased my first feature branch without panicking, and recovered a \"lost\" commit with git reflog.",
+      "ar": "رؤية الـ commits على شكل graph غيّرت كل شيء. أجريت rebase لأول feature branch دون ذعر، واسترجعت commit «ضائعًا» باستخدام git reflog."
+    }
+  },
+  {
+    "id": "r-git-2", "courseId": "git-github", "name": "Karim Nasser", "rating": 5, "date": "2026-06-07",
+    "text": {
+      "en": "The pull request lessons are underrated: small PRs, clear descriptions, how to answer review comments. My team lead noticed the difference within a week.",
+      "ar": "دروس الـ pull request لا تنال حقها من التقدير: PRs صغيرة، ووصف واضح، وطريقة الرد على تعليقات المراجعة. لاحظ قائد فريقي الفرق خلال أسبوع."
+    }
+  },
+  {
+    "id": "r-git-3", "courseId": "git-github", "name": "Isabel Navarro", "rating": 4, "date": "2026-09-21",
+    "text": {
+      "en": "Clear and modern, using git switch and git restore instead of checkout for everything. I'd add more practice on resolving messy merge conflicts.",
+      "ar": "واضحة وحديثة، تستخدم git switch وgit restore بدل الاعتماد على checkout في كل شيء. كنت سأضيف تدريبًا أكثر على حل الـ merge conflicts المعقّدة."
+    }
+  },
+
+  {
+    "id": "r-a11y-1", "courseId": "web-accessibility", "name": "Mohammed Al-Harbi", "rating": 5, "date": "2026-02-03",
+    "text": {
+      "en": "I turned on VoiceOver for the first time and heard our signup form read as \"edit text, edit text, button\". Two lessons later every field had a real label.",
+      "ar": "شغّلت VoiceOver لأول مرة وسمعت نموذج التسجيل عندنا يُقرأ هكذا: «edit text، edit text، button». بعد درسين صار لكل حقل label حقيقي."
+    }
+  },
+  {
+    "id": "r-a11y-2", "courseId": "web-accessibility", "name": "Olivia Brennan", "rating": 5, "date": "2026-05-22",
+    "text": {
+      "en": "The focus management lesson fixed our modal: focus moves in, stays inside, and returns to the button that opened it. Switching to the native dialog element did half the work.",
+      "ar": "أصلح درس إدارة الـ focus النافذة المنبثقة عندنا: ينتقل التركيز إليها، ويبقى داخلها، ثم يعود إلى الزر الذي فتحها. والانتقال إلى عنصر dialog الأصلي أنجز نصف العمل وحده."
+    }
+  },
+  {
+    "id": "r-a11y-3", "courseId": "web-accessibility", "name": "Ravi Shankar", "rating": 4, "date": "2026-08-18",
+    "text": {
+      "en": "Practical and never preachy. I wanted more on complex widgets like comboboxes, which only get a short treatment.",
+      "ar": "عملية ولا تميل إلى الوعظ أبدًا. كنت أريد المزيد عن العناصر التفاعلية المعقّدة مثل الـ combobox، فهي لا تحظى إلا بمعالجة قصيرة."
+    }
+  },
+
+  {
+    "id": "r-tj-1", "courseId": "testing-javascript", "name": "Farah Siddiqui", "rating": 5, "date": "2026-03-29",
+    "text": {
+      "en": "The mutant exercises are brilliant: your tests must pass on the real code and fail on a planted bug. They showed me how many of my old tests checked nothing at all.",
+      "ar": "تمارين الـ mutants رائعة: يجب أن تنجح اختباراتك على الكود الحقيقي وتفشل على خطأ مزروع عمدًا. كشفت لي كم من اختباراتي القديمة لم يكن يتحقق من أي شيء."
+    }
+  },
+  {
+    "id": "r-tj-2", "courseId": "testing-javascript", "name": "Pedro Almeida", "rating": 5, "date": "2026-06-15",
+    "text": {
+      "en": "Testing Library's query-by-role approach finally clicked, and our component tests stopped breaking every time someone renamed a CSS class.",
+      "ar": "فهمت أخيرًا أسلوب Testing Library في البحث عن العناصر حسب الدور (role)، وتوقفت اختبارات الـ components عندنا عن الانكسار كلما غيّر أحدهم اسم class في CSS."
+    }
+  },
+  {
+    "id": "r-tj-3", "courseId": "testing-javascript", "name": "Aisha Bello", "rating": 4, "date": "2026-09-25",
+    "text": {
+      "en": "Clear on unit and component tests with Vitest. The Playwright end-to-end part is good but short; I'd happily take two more lessons on it.",
+      "ar": "واضحة في اختبارات الوحدات (unit tests) واختبارات الـ components باستخدام Vitest. جزء الاختبارات الشاملة (end-to-end) بـ Playwright جيد لكنه قصير؛ كنت سأرحّب بدرسين إضافيين عنه."
+    }
+  }
+]

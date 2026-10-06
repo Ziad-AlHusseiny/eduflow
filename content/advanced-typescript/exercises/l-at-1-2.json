@@ -1,0 +1,20 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type PaymentFailed = { type: 'payment-failed'; orderId: number; reason: string };\ntype OrderShipped = { type: 'order-shipped'; orderId: number; carrier: string };\ntype CheckoutEvent = PaymentFailed | OrderShipped;\n\n// Cartwheel's checkout event bus.\ninterface CheckoutListener {\n  onEvent(event: CheckoutEvent): void;\n}\n\nconst listeners: CheckoutListener[] = [];\nconst seen: string[] = [];\n\nfunction subscribe(listener: CheckoutListener): void {\n  listeners.push(listener);\n}\n\nfunction emit(event: CheckoutEvent): void {\n  for (const l of listeners) l.onEvent(event);\n}\n\n// Handles every event: must keep compiling.\nsubscribe({ onEvent: (e) => { seen.push(`${e.type}:${e.orderId}`); } });\n\n// A listener that takes no arguments at all: must keep compiling too.\nsubscribe({ onEvent: () => { seen.push('ping'); } });\n\n// ---- Type tests (do not edit) ----\n// This listener only understands PaymentFailed; an OrderShipped event would\n// crash it (e.reason is undefined). Subscribing it must be a type error.\nconst failuresOnly = { onEvent: (e: PaymentFailed) => { seen.push(e.reason.toUpperCase()); } };\n// @ts-expect-error: a PaymentFailed-only listener cannot receive every CheckoutEvent\nconst unsafe: CheckoutListener = failuresOnly;\n\nemit({ type: 'order-shipped', orderId: 1042, carrier: 'DHL' });\nconsole.log(seen);\n"
+  },
+  "solution": {
+    "ts": "type PaymentFailed = { type: 'payment-failed'; orderId: number; reason: string };\ntype OrderShipped = { type: 'order-shipped'; orderId: number; carrier: string };\ntype CheckoutEvent = PaymentFailed | OrderShipped;\n\n// Cartwheel's checkout event bus.\n// Property syntax: the parameter is checked strictly (contravariantly).\ninterface CheckoutListener {\n  onEvent: (event: CheckoutEvent) => void;\n}\n\nconst listeners: CheckoutListener[] = [];\nconst seen: string[] = [];\n\nfunction subscribe(listener: CheckoutListener): void {\n  listeners.push(listener);\n}\n\nfunction emit(event: CheckoutEvent): void {\n  for (const l of listeners) l.onEvent(event);\n}\n\n// Handles every event: must keep compiling.\nsubscribe({ onEvent: (e) => { seen.push(`${e.type}:${e.orderId}`); } });\n\n// A listener that takes no arguments at all: must keep compiling too.\nsubscribe({ onEvent: () => { seen.push('ping'); } });\n\n// ---- Type tests (do not edit) ----\n// This listener only understands PaymentFailed; an OrderShipped event would\n// crash it (e.reason is undefined). Subscribing it must be a type error.\nconst failuresOnly = { onEvent: (e: PaymentFailed) => { seen.push(e.reason.toUpperCase()); } };\n// @ts-expect-error: a PaymentFailed-only listener cannot receive every CheckoutEvent\nconst unsafe: CheckoutListener = failuresOnly;\n\nemit({ type: 'order-shipped', orderId: 1042, carrier: 'DHL' });\nconsole.log(seen);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "still-delivers",
+      "test": "return seen.includes('order-shipped:1042') && seen.includes('ping');"
+    }
+  ]
+}

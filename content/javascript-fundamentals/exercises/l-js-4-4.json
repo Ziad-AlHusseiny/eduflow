@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Pocket's storage helpers. In this playground, localStorage works but starts\n// empty on every run; on a real page it keeps its data between visits.\nconst STORAGE_KEY = \"pocket.expenses.v1\";\n\nfunction saveExpenses(expenses) {\n  localStorage.setItem(STORAGE_KEY, expenses);\n}\n\nfunction loadExpenses() {\n  return JSON.parse(localStorage.getItem(STORAGE_KEY));\n}\n\nsaveExpenses([{ id: \"exp-1\", label: \"Coffee\", amount: 450 }]);\nconsole.log(localStorage.getItem(STORAGE_KEY));\n"
+  },
+  "solution": {
+    "js": "// Pocket's storage helpers. In this playground, localStorage works but starts\n// empty on every run; on a real page it keeps its data between visits.\nconst STORAGE_KEY = \"pocket.expenses.v1\";\n\nfunction saveExpenses(expenses) {\n  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));\n}\n\nfunction loadExpenses() {\n  try {\n    const text = localStorage.getItem(STORAGE_KEY);\n    const data = text === null ? [] : JSON.parse(text);\n    return Array.isArray(data) ? data : [];\n  } catch {\n    return [];\n  }\n}\n\nsaveExpenses([{ id: \"exp-1\", label: \"Coffee\", amount: 450 }]);\nconsole.log(localStorage.getItem(STORAGE_KEY));\n"
+  },
+  "checks": [
+    {
+      "id": "saves-json",
+      "test": "localStorage.clear();\nsaveExpenses([{ id: 'a', label: 'Tea', amount: 300 }]);\nconst raw = localStorage.getItem('pocket.expenses.v1');\ntry { const back = JSON.parse(raw); return Array.isArray(back) && back[0].label === 'Tea' && back[0].amount === 300; } catch { return false; }\n"
+    },
+    {
+      "id": "round-trip",
+      "test": "localStorage.clear();\nconst data = [{ id: 'a', label: 'Tea', amount: 300 }, { id: 'b', label: 'Bus', amount: 270 }];\nsaveExpenses(data);\nconst back = loadExpenses();\nreturn Array.isArray(back) && back.length === 2 && back[1].label === 'Bus' && back[1].amount === 270 && back !== data;\n"
+    },
+    {
+      "id": "missing",
+      "test": "localStorage.clear();\nconst out = loadExpenses();\nreturn Array.isArray(out) && out.length === 0;\n"
+    },
+    {
+      "id": "corrupt",
+      "test": "localStorage.clear();\nlocalStorage.setItem('pocket.expenses.v1', '[{\"id\": \"a\", oops');\ntry { const out = loadExpenses(); return Array.isArray(out) && out.length === 0; } catch { return false; }\n"
+    },
+    {
+      "id": "wrong-shape",
+      "test": "localStorage.clear();\nlocalStorage.setItem('pocket.expenses.v1', '{\"label\":\"not a list\"}');\ntry { const out = loadExpenses(); return Array.isArray(out) && out.length === 0; } catch { return false; }\n"
+    }
+  ]
+}

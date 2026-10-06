@@ -1,0 +1,16 @@
+{
+  "title": "Loop through Pocket's expenses",
+  "prompt": "Each function receives `amounts`, an array of cents where negative numbers are refunds. Fill in:\n\n- `totalSpent(amounts)`: the sum of all spending, skipping refunds.\n- `countAtLeast(amounts, minimum)`: how many amounts are greater than or equal to `minimum`.\n- `firstOverBudget(amounts, budget)`: the **index** of the expense at which the running total of spending first goes over `budget` (skip refunds), or `-1` if it never does.\n",
+  "hints": [
+    "Each one is the accumulator pattern. Declare a result before the loop, update it inside, return it after.",
+    "`if (amount < 0) { continue; }` skips a refund. For `firstOverBudget` you need the position, so use the counting loop: `for (let i = 0; i < amounts.length; i++)`.",
+    "In `firstOverBudget`, as soon as `running > budget`, `return i;` ends the function (and the loop). After the loop, `return -1;`."
+  ],
+  "explanation": "All three functions share one shape: a variable set up before the loop, changed inside it, and returned after it. `continue` lets you skip refunds without wrapping the rest of the body in another `if`. `firstOverBudget` needs the position, so it uses the counting loop with `i < amounts.length`, the exact range of valid indexes. Returning from inside the loop stops it at the first match, and the `return -1` after the loop runs only when no match was ever found. Spending exactly the budget is not over it, so `[1000, 1000]` with a budget of 2000 returns -1.\n",
+  "checks": {
+    "total": "`totalSpent` adds spending and skips refunds",
+    "count": "`countAtLeast` counts amounts at or above the minimum",
+    "first-over": "`firstOverBudget` returns the index where the budget is first passed",
+    "never-over": "`firstOverBudget` returns -1 when the budget is never passed"
+  }
+}

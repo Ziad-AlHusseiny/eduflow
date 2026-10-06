@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- 2025 monthly revenue: running total and change vs previous month\nWITH monthly AS (\n  SELECT\n    strftime('%Y-%m', o.order_date) AS month,\n    SUM(oi.quantity * oi.unit_price * (1 - oi.discount)) AS revenue\n  FROM orders AS o\n  JOIN order_items AS oi ON oi.order_id = o.order_id\n  WHERE o.status <> 'cancelled'\n    AND o.order_date >= '2025-01-01'\n    AND o.order_date < '2026-01-01'\n  GROUP BY month\n)\nSELECT\n  month,\n  ROUND(revenue, 2) AS revenue,\n  ROUND(SUM(revenue) OVER (), 2) AS running_revenue,\n  ROUND(revenue - LEAD(revenue) OVER (ORDER BY month), 2) AS mom_change\nFROM monthly\nORDER BY month;",
+  "solution": "WITH monthly AS (\n  SELECT\n    strftime('%Y-%m', o.order_date) AS month,\n    SUM(oi.quantity * oi.unit_price * (1 - oi.discount)) AS revenue\n  FROM orders AS o\n  JOIN order_items AS oi ON oi.order_id = o.order_id\n  WHERE o.status <> 'cancelled'\n    AND o.order_date >= '2025-01-01'\n    AND o.order_date < '2026-01-01'\n  GROUP BY month\n)\nSELECT\n  month,\n  ROUND(revenue, 2) AS revenue,\n  ROUND(SUM(revenue) OVER (ORDER BY month), 2) AS running_revenue,\n  ROUND(revenue - LAG(revenue) OVER (ORDER BY month), 2) AS mom_change\nFROM monthly\nORDER BY month;",
+  "orderMatters": true
+}

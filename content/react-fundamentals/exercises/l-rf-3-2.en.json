@@ -1,0 +1,16 @@
+{
+  "title": "Select, remove and Escape",
+  "prompt": "Clicking a movie's title selects it. Two things are missing:\n\n1. **Remove** doesn't remove anything. `App`'s `handleRemove(id)` expects a movie id; fix how `MovieItem` calls `onRemove`.\n2. Pressing **Escape** while focus is anywhere inside `<main>` should clear the selection, so `#selected` reads **Selected: none**.\n\nWhen the selected movie is removed, the selection should also show **none**. (Look at how `selected` is calculated before adding any code for this.)",
+  "hints": [
+    "Right now `onClick={onRemove}` means React calls `onRemove(event)`. Wrap it in an arrow function to pass `movie.id`.",
+    "Keyboard events bubble. One `onKeyDown` handler on `<main>` sees Escape pressed on any button inside it.",
+    "In the handler, check `e.key === 'Escape'` and call `setSelectedId(null)`."
+  ],
+  "explanation": "`onClick={onRemove}` hands React a function that it calls with the click event, so `handleRemove` received an event instead of an id and filtered nothing out. `() => onRemove(movie.id)` passes exactly the argument the parent expects. Escape works from one handler on `<main>` because keydown events bubble up from the focused button. Removing the selected movie needs no extra code: `selected` is derived with `find`, so once the movie is gone it's `undefined` and the text falls back to \"none\".",
+  "checks": {
+    "select": "Clicking \"Past Lives\" selects it",
+    "remove": "Remove deletes Arrival and keeps the selection",
+    "remove-selected": "Removing the selected movie resets the selection to none",
+    "escape": "Escape clears the selection"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Read route params safely",
+  "prompt": "Trailhead's detail screen at `/hikes/[id]` can be opened from the app, from a notification, or from an old link with anything in it. Write `parseHikeParams(params)` that takes the object from `useLocalSearchParams()` and returns `{ id, units, photo }`:\n\n- `id`: a **positive whole number**, or `null` if missing or invalid (`'abc'`, `'0'`, `'4.5'`, `'-3'`).\n- `units`: `'mi'` if the param is `mi` in any case; otherwise `'km'`.\n- `photo`: a whole number of 0 or more (which photo to show first); `0` if missing or invalid.\n\nAny param may also arrive as an **array** of strings (a repeated query key). Use the first value.",
+  "hints": [
+    "Write a tiny helper first: `const first = (v) => Array.isArray(v) ? v[0] : v;`.",
+    "`/^\\d+$/` accepts only digits, so it rejects `-3`, `4.5` and `abc` in one test. Then check the number is above 0 for the id.",
+    "For units, lower-case the string and compare with `'mi'`; everything else falls back to `'km'`."
+  ],
+  "explanation": "Params come from a URL, so they're strings or arrays of strings, never numbers, whatever the TypeScript generic says. Normalizing them in one pure function gives the screen real types and safe defaults, and turns a broken deep link into `id: null`, which the screen renders as a friendly \"hike not found\" instead of a crash. The digits-only regular expression is stricter than `Number()`, which happily accepts `'4.5'`, `' 7 '` and `''` (as 0).",
+  "checks": {
+    "valid": "A normal set of params is converted to real types",
+    "bad-id": "Invalid or missing ids become null",
+    "units": "Units are case-insensitive and default to km",
+    "photo": "Photo index defaults to 0 for missing or invalid values",
+    "arrays": "Array params use their first value"
+  }
+}

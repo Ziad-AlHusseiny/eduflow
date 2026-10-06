@@ -1,0 +1,10 @@
+{
+  "title": "The card that won't expand",
+  "prompt": "This card should show the date and category when the user taps More. It doesn't build: Xcode reports \"cannot use mutating member on immutable value: 'self' is immutable\" on the `toggle()` call. Select the line you need to change to fix it.",
+  "hints": [
+    "The error appears on the toggle line, but that line is a symptom. Where is `isExpanded` declared?",
+    "View structs can't change their own plain stored properties from inside `body`.",
+    "Which property wrapper tells SwiftUI to own and store a value for this view?"
+  ],
+  "explanation": "Line 5 declares `isExpanded` as a plain stored property of a struct, so nothing inside `body` can change it, and SwiftUI wouldn't know to redraw even if it could. Declare it as view-owned state:\n\n```swift\n@State private var isExpanded = false\n```\n\nNow SwiftUI stores the value outside the struct, `toggle()` compiles, and every tap re-renders the card. `private` signals that only this view owns the value; a parent that needs to control it would pass a `@Binding` instead."
+}

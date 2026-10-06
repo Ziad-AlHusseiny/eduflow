@@ -1,0 +1,13 @@
+{
+  "title": "What's really happening on the phone?",
+  "prompt": "Trailhead's first screen shows a list of hikes and a big **Log a hike** button. Select **every** statement that is true about how that screen runs on a phone today.",
+  "hints": ["Think about what draws the pixels and where your code runs.", "Remember which architecture React Native has used exclusively since 0.82.", "Three statements are true."],
+  "explanation": "The list and button are real native views created by the Fabric renderer, and your JavaScript runs in Hermes on its own thread, separate from the UI thread that draws and receives touches. Your React knowledge carries over unchanged. There is no CSS file or cascade: styles are JavaScript objects. And the JSON-batching bridge belongs to the old architecture; JSI replaced it.",
+  "options": {
+    "native-views": { "text": "The button is a real platform view, the same kind of view a Swift or Kotlin app would use.", "why": "True. React Native's renderer creates native views, not HTML elements in a WebView." },
+    "js-thread": { "text": "If the JavaScript thread is busy with a long loop, the button stops responding to taps until it finishes.", "why": "True. The touch reaches the UI thread, but the JS handler can't run until the JS thread is free." },
+    "css-file": { "text": "The button's colors come from a CSS file that cascades into child components.", "why": "False. Styles are plain JavaScript objects passed to each component; there's no stylesheet cascade." },
+    "bridge-json": { "text": "Every button press is serialized to JSON and sent over the bridge in a batch.", "why": "False. That describes the legacy architecture. With the New Architecture, JSI lets JavaScript and native code call each other directly." },
+    "react-skills": { "text": "The screen uses the same components, props, state and hooks you already know from React.", "why": "True. React itself is identical; only the primitives and the platform around it change." }
+  }
+}

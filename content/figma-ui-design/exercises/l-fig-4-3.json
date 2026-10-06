@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "clean",
+    "sections",
+    "states",
+    "annotate",
+    "ready",
+    "walkthrough",
+    "review"
+  ]
+}

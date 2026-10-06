@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "function MovieCard() {\n  return (\n    <article>\n      <h2>Arrival</h2>\n      <p>2016</p>\n      <p>To watch</p>\n    </article>\n  );\n}\n\nexport default function App() {\n  return (\n    <main>\n      <MovieCard />\n      <MovieCard />\n      <MovieCard />\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "function MovieCard({ title, year, watched = false }) {\n  return (\n    <article>\n      <h2>{title}</h2>\n      <p>{year}</p>\n      <p>{watched ? 'Watched' : 'To watch'}</p>\n    </article>\n  );\n}\n\nexport default function App() {\n  return (\n    <main>\n      <MovieCard title=\"Arrival\" year={2016} watched />\n      <MovieCard title=\"Past Lives\" year={2023} />\n      <MovieCard title=\"Paddington 2\" year={2017} watched={false} />\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "titles",
+      "test": "const a = $$('article'); return a.length === 3 && a.map((x) => text(x.querySelector('h2'))).join('|') === 'Arrival|Past Lives|Paddington 2';"
+    },
+    {
+      "id": "years",
+      "test": "const a = $$('article'); return a.length === 3 && ['2016', '2023', '2017'].every((y, i) => text(a[i]).includes(y));"
+    },
+    {
+      "id": "watched-status",
+      "test": "const a = $$('article'); return a.length === 3 && text(a[0]).includes('Watched') && !text(a[0]).includes('To watch');"
+    },
+    {
+      "id": "default-status",
+      "test": "const a = $$('article'); return a.length === 3 && [a[1], a[2]].every((x) => text(x).includes('To watch') && !text(x).includes('Watched'));"
+    }
+  ]
+}

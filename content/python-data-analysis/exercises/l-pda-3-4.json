@@ -1,0 +1,31 @@
+{
+  "kind": "python",
+  "files": [
+    "orders_messy.csv",
+    "orders.csv"
+  ],
+  "starter": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nraw = messy[\"order_date\"]\n\n# 1. Parse raw three ways (ISO, day-first, month-first) and combine: ISO, then day-first, then month-first\nparsed = None\n\n# 2. Column is_ambiguous: True where raw parses both day-first and month-first to DIFFERENT dates\n\n# 3. The real date of each export row, looked up by order_id in orders (date only, no time)\ntruth = None\n\n# 4. How many parsed dates disagree with truth\nn_wrong = None\n\n# 5. messy[\"order_date\"]: parsed dates, but use truth for the ambiguous rows\n",
+  "solution": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nraw = messy[\"order_date\"]\n\niso = pd.to_datetime(raw, format=\"%Y-%m-%d\", errors=\"coerce\")\ndmy = pd.to_datetime(raw, format=\"%d/%m/%Y\", errors=\"coerce\")\nmdy = pd.to_datetime(raw, format=\"%m/%d/%Y\", errors=\"coerce\")\nparsed = iso.fillna(dmy).fillna(mdy)\n\nmessy[\"is_ambiguous\"] = dmy.notna() & mdy.notna() & (dmy != mdy)\n\ntrue_dates = orders.set_index(\"order_id\")[\"order_date\"].dt.normalize()\ntruth = messy[\"order_id\"].map(true_dates)\n\nn_wrong = int((parsed != truth).sum())\n\nmessy[\"order_date\"] = parsed.where(~messy[\"is_ambiguous\"], truth)\nprint(n_wrong, messy[\"is_ambiguous\"].sum())\n",
+  "checks": [
+    {
+      "id": "parsed",
+      "test": "isinstance(parsed, pd.Series) and pd.api.types.is_datetime64_any_dtype(parsed) and int(parsed.isna().sum()) == 0"
+    },
+    {
+      "id": "ambiguous",
+      "test": "'is_ambiguous' in messy.columns and int(messy['is_ambiguous'].sum()) == 30"
+    },
+    {
+      "id": "wrong",
+      "test": "int(n_wrong) == 5"
+    },
+    {
+      "id": "fixed-column",
+      "test": "pd.api.types.is_datetime64_any_dtype(messy['order_date']) and messy.loc[messy['order_id'] == 2401, 'order_date'].iloc[0] == pd.Timestamp('2025-02-08')"
+    },
+    {
+      "id": "all-correct",
+      "test": "(messy['order_date'] == messy['order_id'].map(orders.set_index('order_id')['order_date'].dt.normalize())).all()"
+    }
+  ]
+}

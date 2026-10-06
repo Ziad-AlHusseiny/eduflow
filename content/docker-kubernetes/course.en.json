@@ -1,0 +1,47 @@
+{
+  "title": "Docker & Kubernetes: Ship with Confidence",
+  "tagline": "Package a real API into a lean, secure image and run it on Kubernetes without 3 a.m. surprises.",
+  "description": [
+    "Containers are how most software ships in 2026, and Kubernetes is where much of it runs. This course takes one small service, notes-api (Node.js and Postgres), from a laptop to a cluster. You write the Dockerfile, shrink and harden the image, wire up a local stack with Docker Compose, then deploy, scale, update and roll back on Kubernetes.",
+    "Your instructor is Amara Diallo, a cloud architect at Skylane who carries the pager for production clusters. Every recommendation here is tied to an incident it prevents: the cache that took builds from forty seconds to eight minutes, the secret baked into a public image, the rollout that sent traffic to Pods that weren't ready. You learn the defaults that keep services boring."
+  ],
+  "audience": "Developers who can build a small web API and now need to package, run and operate it with containers.",
+  "prerequisites": "Comfort with the command line, Git and one backend language; Node.js is used in examples.",
+  "learnItems": [
+    "Write fast, cache-friendly Dockerfiles with multi-stage builds",
+    "Ship small, non-root images pinned by digest and scanned for CVEs",
+    "Run an app and its database locally with Docker Compose",
+    "Deploy with Deployments, Services, ConfigMaps and Secrets",
+    "Add probes, resource requests and autoscaling that hold up under load",
+    "Roll out, roll back and debug a broken release with kubectl and Helm"
+  ],
+  "sections": {
+    "s-dk-1": "Containers from First Principles",
+    "s-dk-2": "Production-Grade Images",
+    "s-dk-3": "Local Environments with Docker Compose",
+    "s-dk-4": "Kubernetes Core",
+    "s-dk-5": "Running in Production"
+  },
+  "lessons": {
+    "l-dk-1-1": "What a Container Really Is",
+    "l-dk-1-2": "Your First Dockerfile",
+    "l-dk-1-3": "Layers and the Build Cache",
+    "l-dk-1-4": "Running Containers: Ports, Env, Logs and Signals",
+    "l-dk-2-1": "Multi-Stage Builds and .dockerignore",
+    "l-dk-2-2": "Small Bases and Non-Root Users",
+    "l-dk-2-3": "Tags, Digests and Registries",
+    "l-dk-2-4": "Scanning Images and Keeping Secrets Out",
+    "l-dk-3-1": "Compose Fundamentals: Services and Networks",
+    "l-dk-3-2": "Volumes: Data That Survives",
+    "l-dk-3-3": "Startup Order with Healthchecks",
+    "l-dk-3-4": "Env Files, Overrides and Watch Mode",
+    "l-dk-4-1": "The Control Loop and Your First Cluster",
+    "l-dk-4-2": "Pods, ReplicaSets and Deployments",
+    "l-dk-4-3": "Services: Stable Addresses for Moving Pods",
+    "l-dk-4-4": "ConfigMaps, Secrets and Namespaces",
+    "l-dk-5-1": "Probes and Graceful Shutdown",
+    "l-dk-5-2": "Requests, Limits and Autoscaling",
+    "l-dk-5-3": "Rolling Updates, Rollbacks and Helm",
+    "l-dk-5-4": "Traffic In, Trouble Out: Gateway API and Debugging"
+  }
+}

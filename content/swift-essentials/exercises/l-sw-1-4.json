@@ -1,0 +1,27 @@
+{
+  "kind": "fill",
+  "language": "swift",
+  "template": "// expenses: [Expense], each with title, amount and category\nlet large = expenses.{{0}} { $0.amount > 50 }\nlet titles = large.{{1}} { $0.title }\nlet spent = expenses.{{2}}(0) { $0 + $1.amount }\nlet biggestFirst = expenses.sorted { $0.amount {{3}} $1.amount }",
+  "blanks": [
+    {
+      "answers": [
+        "filter"
+      ]
+    },
+    {
+      "answers": [
+        "map"
+      ]
+    },
+    {
+      "answers": [
+        "reduce"
+      ]
+    },
+    {
+      "answers": [
+        ">"
+      ]
+    }
+  ]
+}

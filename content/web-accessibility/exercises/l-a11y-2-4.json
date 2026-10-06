@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["logo-link", "seat-map", "artist-file", "hero-ambient", "search-empty", "sold-badge"], "correct": ["logo-link", "hero-ambient", "sold-badge"] }

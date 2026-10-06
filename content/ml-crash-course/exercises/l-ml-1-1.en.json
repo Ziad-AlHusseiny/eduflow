@@ -1,0 +1,17 @@
+{
+  "title": "Which of these are supervised learning problems?",
+  "prompt": "Cartwheel's teams have pitched five ideas. Select every idea that is a **supervised learning** problem: one where you have past examples with a known answer and want a model to predict that answer for new cases.",
+  "hints": [
+    "Ask of each idea: is there a column of known answers in the historical data?",
+    "Supervised covers both categories (classification) and numbers (regression).",
+    "One idea has no labels at all, and one is a rule someone can already write down."
+  ],
+  "explanation": "Churn flags, next-year spend and ticket routing all have historical answers to learn from: two classification problems and one regression problem. Finding shopping styles has no labels, so it is unsupervised clustering. The $10,000 review threshold is a known rule, so it needs an `if`, not a model.",
+  "options": {
+    "churn-flag": { "text": "Predict whether a customer will order again in the next 90 days, using past customers whose outcome is known.", "why": "Supervised classification: the historical `churned` column is the label." },
+    "spend-next-year": { "text": "Predict how much a customer will spend next year, using customers from previous years.", "why": "Supervised regression: past customers' actual spend is a numeric label." },
+    "find-segments": { "text": "Discover a handful of shopping styles among customers, without any predefined styles.", "why": "No labels exist, so this is unsupervised learning (clustering)." },
+    "big-order-rule": { "text": "Flag every order above $10,000 for manual review.", "why": "The rule is known and exact. Write the condition; no learning is involved." },
+    "ticket-team": { "text": "Route each new support ticket to one of five teams, using past tickets that were routed correctly.", "why": "Supervised multi-class classification: past routing decisions are the labels." }
+  }
+}

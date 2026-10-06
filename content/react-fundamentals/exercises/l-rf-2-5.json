@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useState } from 'react';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival', year: 2016 },\n  { id: 'p2', title: 'Past Lives', year: 2023 },\n];\n\nexport default function App() {\n  const [movies, setMovies] = useState(INITIAL);\n\n  function addDune() {\n    setMovies([{ id: 'd3', title: 'Dune: Part Two', year: 2024 }, ...movies]);\n  }\n\n  // 1. Show the movies newest first, without changing `movies` itself.\n  // 2. Fix the key so each note stays with its movie.\n  return (\n    <main>\n      <button onClick={addDune}>Add Dune: Part Two</button>\n      <ul>\n        {movies.map((movie, index) => (\n          <li key={index}>\n            <span>{movie.title} ({movie.year})</span>\n            <input aria-label=\"Note\" placeholder=\"Note\" />\n          </li>\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useState } from 'react';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival', year: 2016 },\n  { id: 'p2', title: 'Past Lives', year: 2023 },\n];\n\nexport default function App() {\n  const [movies, setMovies] = useState(INITIAL);\n\n  function addDune() {\n    setMovies([{ id: 'd3', title: 'Dune: Part Two', year: 2024 }, ...movies]);\n  }\n\n  const newestFirst = movies.toSorted((a, b) => b.year - a.year);\n\n  return (\n    <main>\n      <button onClick={addDune}>Add Dune: Part Two</button>\n      <ul>\n        {newestFirst.map((movie) => (\n          <li key={movie.id}>\n            <span>{movie.title} ({movie.year})</span>\n            <input aria-label=\"Note\" placeholder=\"Note\" />\n          </li>\n        ))}\n      </ul>\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "sorted",
+      "test": "const titles = $$('li').map((li) => text(li.querySelector('span')).replace(/\\s*\\(\\d+\\)$/, '')); return titles.join('|') === 'Past Lives|Arrival';"
+    },
+    {
+      "id": "note-follows-movie",
+      "test": "const row = (t) => $$('li').find((li) => text(li.querySelector('span')).startsWith(t)); await input(row('Arrival').querySelector('input'), 'Loved it'); await click($('button')); const a = row('Arrival'); const d = row('Dune'); return !!a && !!d && a.querySelector('input').value === 'Loved it' && d.querySelector('input').value === '';"
+    },
+    {
+      "id": "sorted-after-add",
+      "test": "const titles = $$('li').map((li) => text(li.querySelector('span')).replace(/\\s*\\(\\d+\\)$/, '')); return titles.join('|') === 'Dune: Part Two|Past Lives|Arrival';"
+    }
+  ]
+}

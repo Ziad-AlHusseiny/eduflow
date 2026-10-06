@@ -1,0 +1,8 @@
+{
+  "kind": "spot-bug",
+  "language": "swift",
+  "code": "import Foundation\n\nfunc addExpense(_ amountText: String, to total: Decimal) -> Decimal {\n    let amount = Decimal(string: amountText)!\n    return total + amount\n}\n\nvar total: Decimal = 0\ntotal = addExpense(\"12.50\", to: total)\ntotal = addExpense(\"\", to: total)   // user tapped Save on an empty field\nprint(total)",
+  "bugLines": [
+    4
+  ]
+}

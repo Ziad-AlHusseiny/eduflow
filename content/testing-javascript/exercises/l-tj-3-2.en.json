@@ -1,0 +1,17 @@
+{
+  "title": "Use the expense form like a person",
+  "prompt": "`mountExpenseForm(container, onAdd)` renders fields labelled **Description** and **Amount** and an **Add expense** button. A valid click calls `onAdd({ description, amountCents })` and clears the fields; an invalid one shows the reason in `role=\"alert\"`, skips `onAdd` and keeps the typed text.\n\nThe starter includes the query stand-ins from the last exercise plus `typeInto(el, text)` and `clickOn(el)`, which mimic user-event (they're synchronous: no `await`). Add tests until your suite catches four hidden bugs: one calls `onAdd` even when the amount is **invalid**, one **doesn't clear** the fields, one passes the amount in **dollars** instead of cents, and one **never shows** the alert.",
+  "hints": [
+    "Happy path: type 'Dinner' and '45.50', click the button, then `expect(onAdd).toHaveBeenCalledWith({ description: 'Dinner', amountCents: 4550 })`.",
+    "After a successful add, read the fields again and check that `.value` is `''` for both.",
+    "Invalid path: type 'abc' as the amount, click, then check `getByRole(container, 'alert').textContent`, `expect(onAdd).not.toHaveBeenCalled()` and that the amount field still holds 'abc'. The query stand-ins skip hidden elements, just like the real `getByRole`."
+  ],
+  "explanation": "Two tests, six assertions, four bugs. `toHaveBeenCalledWith({ description: 'Dinner', amountCents: 4550 })` pins the contract with the rest of the app, so the dollars-for-cents bug fails it (it sends 45.5). Checking the fields after the add catches the form that forgets to clear. On the invalid path, `getByRole(container, 'alert')` fails when the alert stays hidden, because hidden elements aren't in the accessibility tree, and `not.toHaveBeenCalled()` catches the form that saves garbage anyway. Every assertion is about something the user sees or the app receives; none mentions a variable inside the widget.",
+  "checks": {
+    "passes": "All your tests pass against the real form",
+    "catches-adds-invalid": "Catches the version that calls onAdd with an invalid amount",
+    "catches-keeps-values": "Catches the version that doesn't clear the fields",
+    "catches-dollars-not-cents": "Catches the version that sends dollars instead of cents",
+    "catches-silent-error": "Catches the version that never shows the alert"
+  }
+}

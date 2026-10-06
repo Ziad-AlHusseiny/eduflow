@@ -1,0 +1,358 @@
+checkpoints:
+  s-fig-1:
+    - q: "On Steady's Settings screen, section headers such as \"Reminders\" and \"Appearance\" sit 8 px below the previous section's last row and 8 px above their own first row. People say the sections run together. What single change helps most?"
+      options:
+        - text: "Color the headers teal so they stand out."
+          why: "Teal is reserved for actions. Using it on headers makes them look tappable and dilutes the accent."
+        - text: "Add a divider line under every row."
+          why: "More lines add noise. The real problem is that the header is equally close to both sections."
+        - text: "Increase the space above each header to 24 or 32 px and keep 8 px below it."
+          why: "Correct. With more space above than below, each header groups with the rows it introduces."
+        - text: "Center the headers above each section."
+          why: "Centering adds a second alignment axis and does nothing for grouping."
+      answer: 2
+    - q: "A 13 px streak caption in #6B7280 passed at 4.83:1 on white. You place it on a light gray card, #F3F4F6. What should you do?"
+      options:
+        - text: "Measure again against the card, because it drops to 4.39:1, then use a darker gray such as #4B5563."
+          why: "Correct. Contrast depends on both colors. On the card the pair fails, and #4B5563 gives 6.87:1."
+        - text: "Nothing, because it already passed on white."
+          why: "Passing on one background says nothing about another. The card is darker, so the ratio falls."
+        - text: "Make the caption bold, which lowers the requirement to 3:1."
+          why: "Bold only counts as large text from about 18.66 px. At 13 px the caption still needs 4.5:1."
+        - text: "Switch to #9CA3AF so the caption looks lighter and calmer."
+          why: "That makes it worse: #9CA3AF on the card is about 2.31:1."
+      answer: 0
+    - q: "You select the header's title and date, press Cmd+G, and then look for padding and a background fill for the header. You can't find them. Why?"
+      options:
+        - text: "Padding only appears after you add a layout guide."
+          why: "Layout guides are visual aids. Padding belongs to auto layout frames."
+        - text: "The header needs a constraint before padding is available."
+          why: "Constraints control resizing behaviour, not padding or fills."
+        - text: "Text layers cannot be inside anything with a background."
+          why: "Text sits inside frames with fills all the time, such as every button."
+        - text: "Cmd+G made a group, and groups have no fill, padding or auto layout of their own."
+          why: "Correct. Use a frame instead (Cmd+Option+G wraps the selection in one), then add auto layout and a fill."
+      answer: 3
+    - q: "The \"No habits yet\" illustration should stay in the middle of the screen on every phone size. Which constraints do you set?"
+      options:
+        - text: "Left and right, Top and bottom."
+          why: "That stretches the illustration in both directions, distorting it on other screen sizes."
+        - text: "Center horizontally and Center vertically."
+          why: "Correct. Center keeps a fixed offset from the frame's middle on both axes, without resizing the artwork."
+        - text: "Scale on both axes."
+          why: "Scale keeps proportional position but also resizes the illustration with the frame."
+        - text: "Left and Top."
+          why: "Those pin it to the top-left corner, so it drifts off-center on larger screens."
+      answer: 1
+    - q: "A developer asks why Steady's Headline and Body text styles are both 17 px. What is the best answer?"
+      options:
+        - text: "It was a mistake; one of them should be 16 px."
+          why: "It is intentional. Adding a size to separate them would bloat the scale."
+        - text: "Figma requires text styles to share sizes."
+          why: "Figma has no such rule. The choice is a design decision."
+        - text: "Headline ranks above Body through weight alone, so the scale gets a new rank without a new size."
+          why: "Correct. Semibold versus Regular at the same size is a clean, readable step in hierarchy."
+        - text: "Platform rules forbid more than one size between 15 and 20 px."
+          why: "No platform rule says this. The reason is consistency and a short scale."
+      answer: 2
+  s-fig-2:
+    - q: "The habit list is a vertical auto layout frame with an 8 px gap. You delete the third of five rows. What happens?"
+      options:
+        - text: "A 72 px hole stays where the row was until you move the others."
+          why: "That happens in frames without auto layout. Auto layout re-flows immediately."
+        - text: "The rows below move up and the 8 px gap is kept between every row."
+          why: "Correct. Position comes from the flow, so removing a child closes the space."
+        - text: "The remaining rows stretch to fill the old height."
+          why: "Rows that hug their contents keep their height. Only the list's height changes, if it hugs."
+        - text: "Figma converts the list back to a regular frame."
+          why: "Deleting a child never removes auto layout from its parent."
+      answer: 1
+    - q: "Which width setting lets a frequency chip grow when its label changes from \"Daily\" to \"Every other day\"?"
+      options:
+        - text: "Fixed width of 80 px."
+          why: "Fixed never changes, so a longer label overflows or truncates."
+        - text: "Fill container."
+          why: "Fill takes the parent's space, so chips share the row instead of fitting their labels."
+        - text: "Scale constraint."
+          why: "Constraints do not apply to children of auto layout, and Scale ignores content."
+        - text: "Hug contents, optionally with a min width."
+          why: "Correct. Hug sizes the chip to its label plus padding, and a min width keeps short labels tappable."
+      answer: 3
+    - q: "A card has 16 px padding and an 8 px gap between its children. The designer wants a little more breathing room inside the card. What is the next value on Steady's scale?"
+      options:
+        - text: "20 px, the half step, or 24 px for a bigger change."
+          why: "Correct. Both are on the 8-point scale with its 4-point half step, so the change stays systematic."
+        - text: "17 px, the smallest possible increase."
+          why: "Off-scale values like 17 are exactly the drift the system prevents."
+        - text: "18 px, halfway between 16 and 20."
+          why: "18 is not a multiple of 4. Pick a step on the scale instead."
+        - text: "Keep 16 px and enlarge the text instead."
+          why: "Bigger text changes hierarchy, not breathing room, and makes the card feel tighter."
+      answer: 0
+    - q: "Why does Steady use Stretch as the type of its 4-column layout guide on phones?"
+      options:
+        - text: "Stretch columns snap layers into place automatically."
+          why: "Layout guides never move layers. Snapping is a canvas aid, not what Stretch does."
+        - text: "Stretch is the only type that supports gutters."
+          why: "Left, Center and Right column types have gutters too."
+        - text: "Stretch columns grow and shrink with the frame, so the guide fits every phone width."
+          why: "Correct. Fixed-width columns would leave uneven space on wider or narrower phones."
+        - text: "Stretch hides the guide in prototypes."
+          why: "Guides never appear in prototypes or exports, whatever the type."
+      answer: 2
+    - q: "The New habit sheet's icon picker shows 24 icons in equal columns, six per row on phones. Which setup fits best?"
+      options:
+        - text: "A horizontal auto layout with wrap and Hug contents icons."
+          why: "Wrap works, but leftover space makes ragged rows. Equal columns are what grid does."
+        - text: "A grid auto layout with 6 columns and equal gaps."
+          why: "Correct. Grid places children into even rows and columns, and you can change the column count per breakpoint."
+        - text: "24 icons placed by hand with constraints."
+          why: "Manual placement must be redone for each change, and constraints do not create columns."
+        - text: "A vertical auto layout with a negative gap."
+          why: "Negative gaps overlap items; they do not form a grid."
+      answer: 1
+  s-fig-3:
+    - q: "A designer has overridden the streak text color in 12 habit row instances because the main component's gray looks too light. What should they do instead?"
+      options:
+        - text: "Keep overriding; overrides are free."
+          why: "Each override stops that property following the main component, so future fixes miss those 12 rows."
+        - text: "Detach all 12 rows so the color sticks."
+          why: "Detached rows lose every future update, not just the color."
+        - text: "Create a second Habit row component with the darker gray."
+          why: "Two near-identical components split every future fix in two."
+        - text: "Fix the color once on the main component's variable binding, then reset the 12 overrides."
+          why: "Correct. One change at the source reaches every instance, and resetting overrides brings the 12 rows back in line."
+      answer: 3
+    - q: "Steady's text field has four looks (Default, Focused, Error, Disabled) and optional helper text below it. How do you model it?"
+      options:
+        - text: "Eight variants: every state with and without helper text."
+          why: "That doubles the set for a simple show or hide. A boolean handles it without new variants."
+        - text: "A boolean for each state and a variant for the helper text."
+          why: "States restyle several layers together, which is a variant's job, not a boolean's."
+        - text: "A State variant property, a boolean for showing helper text and a text property for its content."
+          why: "Correct. Variants for coordinated restyling, boolean and text properties for the optional helper."
+        - text: "Four separate components with no variants."
+          why: "Separate components make people hunt in assets and break the shared structure."
+      answer: 2
+    - q: "The page is set to Dark. The Today frame is on Auto. A promo card inside it is set to Light. Which mode does a button inside the promo card use?"
+      options:
+        - text: "Light, because it inherits from its nearest parent with a mode set, the promo card."
+          why: "Correct. Figma walks up the tree and stops at the first explicit mode."
+        - text: "Dark, because the page's mode always wins."
+          why: "The nearest explicit mode wins, not the outermost one."
+        - text: "Auto, so it uses the collection's default regardless of parents."
+          why: "Auto means inherit. It only falls back to the default if no parent has a mode."
+        - text: "Neither; Figma flags the conflict."
+          why: "Mixing modes is allowed and resolves predictably."
+      answer: 0
+    - q: "Steady's raised bottom sheet needs a soft two-layer drop shadow used in several places. Where should it live?"
+      options:
+        - text: "A color variable."
+          why: "A color variable holds one color, not a stack of shadow layers with offsets and blur."
+        - text: "An effect style."
+          why: "Correct. Shadows are composites of several values, which is what styles are for."
+        - text: "A number variable for the blur radius only."
+          why: "A blur number alone cannot describe the full two-layer shadow."
+        - text: "A boolean variable that shows or hides a shadow rectangle."
+          why: "Faking shadows with rectangles is fragile and hard for developers to read."
+      answer: 1
+    - q: "You are publishing a kit update that changes the habit row's padding from 12/16 to 16/16. What should the publish description say?"
+      options:
+        - text: "Nothing; subscribers can compare files themselves."
+          why: "Silent updates make people afraid to accept them. The description is how subscribers decide."
+        - text: "\"Updates\"."
+          why: "Too vague to help anyone judge whether the update affects their work."
+        - text: "A list of every layer in the kit."
+          why: "Listing everything hides the one change that matters."
+        - text: "What changed, why, and whether anyone needs to act, for example \"rows are now 16/16; check tight layouts\"."
+          why: "Correct. Clear notes let subscribers accept updates confidently and spot where to look."
+      answer: 3
+  s-fig-4:
+    - q: "Habit detail can be reached from Today and from Stats. Its back arrow should return people to wherever they came from. Which action fits?"
+      options:
+        - text: "Navigate to Today."
+          why: "That sends people who came from Stats to the wrong screen."
+        - text: "Close overlay."
+          why: "Habit detail is a full screen, not an overlay, so there is nothing to close."
+        - text: "Back."
+          why: "Correct. Back returns to the previous screen in the prototype's history, whichever it was."
+        - text: "Swap overlay."
+          why: "Swap overlay replaces one overlay with another and does not apply to full screens."
+      answer: 2
+    - q: "Steady's Stats chart shows fully completed days in teal and partially completed days in light teal, with nothing else to tell them apart. What is the best fix?"
+      options:
+        - text: "Add a second cue, such as a pattern or a half-filled shape for partial days, plus a legend."
+          why: "Correct. Use of Color requires a non-color cue, and a legend makes the meaning explicit."
+        - text: "Make the light teal lighter for more difference."
+          why: "Still color alone. People with color vision deficiencies may not see the difference at all."
+        - text: "Add a hover tooltip with the exact value."
+          why: "Phones have no hover, and the information should be visible without extra steps."
+        - text: "Switch partial days to red."
+          why: "Red and teal can be confused too, and red suggests failure, which partial days are not."
+      answer: 0
+    - q: "In Dev Mode a developer sees a card's padding as a raw 15 with no variable. What does that tell you?"
+      options:
+        - text: "Dev Mode hides variables for padding."
+          why: "Dev Mode shows variables on padding and gaps when they are bound."
+        - text: "The value was typed by hand and is off the spacing scale, so fix it in the design before handoff."
+          why: "Correct. Bind the padding to a space variable such as space/4 so code and design share the token."
+        - text: "The developer needs a Full seat to see the variable."
+          why: "Variables show for anyone who can use Dev Mode. The binding is simply missing."
+        - text: "15 is fine, because Dev Mode rounds values for code."
+          why: "Dev Mode shows exact values. 15 is off Steady's 8-point scale."
+      answer: 1
+    - q: "The presenter says, \"Navigation is final; I only want feedback on the color of the Stats screen.\" A colleague starts critiquing the tab bar. What should the facilitator do?"
+      options:
+        - text: "Let the discussion run, because all feedback is useful."
+          why: "Off-topic feedback eats the time the presenter asked for and can reopen settled decisions."
+        - text: "Ask the colleague to leave the critique."
+          why: "Far too harsh. The concern may be valid, just not for this session."
+        - text: "End the critique early."
+          why: "The session can continue on its stated focus."
+        - text: "Note the tab bar concern for a later conversation and steer back to color."
+          why: "Correct. The concern is captured, and the session stays on the feedback the presenter requested."
+      answer: 3
+    - q: "In the prototype, the New habit sheet is an overlay. When someone taps Save habit, the sheet should disappear and reveal Today underneath. Which action do you use on Save?"
+      options:
+        - text: "Close overlay."
+          why: "Correct. It dismisses the sheet and leaves the screen underneath as it was."
+        - text: "Navigate to Today."
+          why: "Navigating would add another Today to the history and can leave the overlay logic confused."
+        - text: "Open overlay with Today."
+          why: "Today is a full screen, not an overlay. This would stack it over the sheet."
+        - text: "Scroll to the top of the sheet."
+          why: "Scrolling moves content within the sheet; it does not dismiss it."
+      answer: 0
+final:
+  - q: "Marketing asks for a \"Streak at risk!\" banner at the top of Today, in the teal accent with a teal button. What is the main design risk?"
+    options:
+      - text: "Banners cannot be built with auto layout."
+        why: "Banners are ordinary auto layout frames. The risk is about hierarchy, not tooling."
+      - text: "The banner competes with the check buttons for the accent, so people may no longer know where to tap first."
+        why: "Correct. When the accent appears on new elements, it stops pointing only at the primary action."
+      - text: "Teal fails contrast on white for every text size."
+        why: "Steady's teal/700 gives 5.47:1 with white, which passes. The issue is competition, not legibility."
+      - text: "Banners are not allowed above a list."
+        why: "There is no such rule. Whether it belongs depends on the screen's job."
+    answer: 1
+  - q: "Which of these pairs passes WCAG AA for a 15 px label?"
+    options:
+      - text: "#9CA3AF on white, 2.54:1."
+        why: "Far below 4.5:1, and it would fail even the 3:1 large-text bar."
+      - text: "teal/700 on gray/950, 3.24:1."
+        why: "3.24:1 only passes for large text. A 15 px label is normal text."
+      - text: "White on teal/400, 1.86:1."
+        why: "This fails every threshold, which is why on-action flips to dark in dark mode."
+      - text: "#6B7280 on white, 4.83:1."
+        why: "Correct. Normal text needs 4.5:1, and 4.83:1 clears it."
+    answer: 3
+  - q: "The gap between the icon and label inside Steady's button looks too wide. Where do you change it?"
+    options:
+      - text: "The gap setting on the button's auto layout frame."
+        why: "Correct. Space between siblings is the parent's gap, a single value on the button frame."
+      - text: "Move the label 4 px left by hand."
+        why: "Children in auto layout are positioned by the flow; manual moves are undone or take the layer out of the flow."
+      - text: "Add negative padding to the label."
+        why: "Padding cannot be negative, and the space belongs to the gap anyway."
+      - text: "Shrink the icon's frame."
+        why: "That changes the icon size, not the spacing, and breaks the 16 px icon standard."
+    answer: 0
+  - q: "The New habit sheet has Cancel and Save buttons side by side, and they should split the sheet's width equally on every phone. How do you set them?"
+    options:
+      - text: "Both Hug contents."
+        why: "Hugging makes each button as wide as its label, so they will not split the width equally."
+      - text: "Both Fixed at 170 px."
+        why: "Fixed widths only fit one screen width exactly."
+      - text: "Both Fill container inside a horizontal auto layout row."
+        why: "Correct. Siblings that fill share the available space equally, at any width."
+      - text: "Cancel Fill container, Save Hug contents."
+        why: "Cancel would take most of the row and the primary action would shrink."
+    answer: 2
+  - q: "Steady's Habit detail screen is one vertical auto layout frame including a floating Edit button. On a tall phone the button sits right after the last stat card, not near the bottom. What is the fix?"
+    options:
+      - text: "Add a spacer rectangle above the button."
+        why: "A spacer only works for one screen height and hides intent."
+      - text: "Set the button to Fill container height."
+        why: "The button would stretch into a tall slab instead of moving to the bottom."
+      - text: "Move the button out of the auto layout content and pin it with Bottom constraints in the screen frame."
+        why: "Correct. Things pinned to screen edges belong outside the flow, controlled by constraints."
+      - text: "Turn on wrap for the content frame."
+        why: "Wrap moves items onto new lines; it does not anchor anything to the bottom edge."
+    answer: 2
+  - q: "Steady adds a \"Paused\" look for habit rows: gray icon, gray name and a pause glyph instead of the check button. The row is used in 40 places. What do you do?"
+    options:
+      - text: "Add Paused as a value of the Habit row's State variant property."
+        why: "Correct. Several layers change together, which is a variant, and all 40 instances can switch to it."
+      - text: "Override the 40 instances that need it by hand."
+        why: "Repeated overrides drift and stop receiving updates for every property you touched."
+      - text: "Create a separate Paused habit row component."
+        why: "A separate component duplicates the row's structure, so fixes must be made twice."
+      - text: "Add a boolean called Paused that hides the check button."
+        why: "A boolean only toggles one layer; it cannot restyle the icon and name at the same time."
+    answer: 0
+  - q: "Designers keep swapping the Save button's icon for unrelated icons like Trash and Share. How do you guide them without removing flexibility?"
+    options:
+      - text: "Lock the icon layer so it cannot change."
+        why: "That removes the flexibility the button legitimately needs."
+      - text: "Detach the icon from the component."
+        why: "Detaching breaks the link and makes things worse, not more guided."
+      - text: "Write a note on the Cover page."
+        why: "Notes far from the component are easy to miss at the moment of choosing."
+      - text: "Set preferred values on the Icon instance swap property, such as Plus, Check and Bell."
+        why: "Correct. Preferred values curate the picker so the right icons are the easy choice."
+    answer: 3
+  - q: "The brand team changes Steady's teal to a slightly bluer shade. With the two-tier variable setup, what do you edit?"
+    options:
+      - text: "Every component's fill."
+        why: "Components bind to semantic variables, so they never need editing for a palette change."
+      - text: "The primitive teal values; the semantic variables that alias them update everywhere."
+        why: "Correct. Primitives hold the raw palette, so one edit flows through every meaning that points at them."
+      - text: "Every semantic variable's raw value."
+        why: "Semantic variables alias primitives instead of holding raw values, so they do not need editing."
+      - text: "The text styles."
+        why: "Text styles hold typography, not the brand color of actions."
+    answer: 1
+  - q: "In dark mode, the unchecked check circle's outline fails 3:1 against the row surface. Where do you fix it?"
+    options:
+      - text: "Override the outline color on every check button instance."
+        why: "Overrides scatter the fix and stop those instances from following future updates."
+      - text: "Add a Dark mode to the Primitives collection."
+        why: "Primitives stay single-mode facts. Modes belong on the semantic layer."
+      - text: "Make the outline thicker and keep the color."
+        why: "Thickness helps visibility, but the color pair still fails the 3:1 requirement."
+      - text: "Point the outline's semantic variable at a lighter primitive in its Dark mode value."
+        why: "Correct. One change in the Dark column fixes every check button in dark mode."
+    answer: 3
+  - q: "The progress ring on Habit detail should grow from 60% to 80% when a habit is checked, but it jumps instead. Both frames use Smart animate. What should you check first?"
+    options:
+      - text: "Whether the duration is longer than 1 second."
+        why: "Duration only affects the speed of an animation that already has matching layers."
+      - text: "Whether the ring layer has the same name and the same parent in both frames."
+        why: "Correct. Smart animate only animates layers it can match by name and hierarchy."
+      - text: "Whether the trigger is On click rather than On tap."
+        why: "They are the same trigger, labelled for desktop and mobile."
+      - text: "Whether the ring uses a color style."
+        why: "Styles do not affect matching. Names and hierarchy do."
+    answer: 1
+  - q: "The Habit detail header has a 20 px Edit icon and a 20 px Share icon with 4 px between them. What is the best change?"
+    options:
+      - text: "Wrap each icon in a 44 × 44 frame so the tap areas are comfortable and do not overlap."
+        why: "Correct. The icons look the same, but each now has a tappable area that meets Apple's recommendation."
+      - text: "Scale both icons up to 44 px."
+        why: "That meets the size but makes the header heavy. A larger invisible frame does the job."
+      - text: "Leave them, because 20 px is close to 24 px."
+        why: "Even if WCAG's spacing exception lets them scrape past the minimum, they are far below the 44 pt platform guideline, and 4 px spacing makes mis-taps likely."
+      - text: "Remove the Share icon."
+        why: "That may be a product decision, but it does not solve target size as a design principle."
+    answer: 0
+  - q: "Which item is most worth annotating on the Today screen before handoff?"
+    options:
+      - text: "The habit row's corner radius."
+        why: "Dev Mode shows the radius and its variable already."
+      - text: "The font family of the title."
+        why: "The text style and font are visible in Dev Mode."
+      - text: "That habit names wrap to two lines and then truncate, and the add button's accessible name is \"Add habit\"."
+        why: "Correct. Behaviour and accessible names cannot be read from a static frame, so they need annotations."
+      - text: "The screen's background color."
+        why: "The fill and its variable are visible to developers without a note."
+    answer: 2

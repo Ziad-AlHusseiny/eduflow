@@ -1,0 +1,17 @@
+{
+  "title": "Let the card measure its slot",
+  "prompt": "The card switches to two columns with a **media query**, so it measures the screen instead of its slot. The checks set `.slot` to widths between 300px and 500px.\n\n1. Make `.slot` a size container named `session` that tracks its inline size.\n2. Replace the media query with a container query: when the `session` container is **400px or wider**, the card becomes the two-column grid; below that, it stays stacked.\n3. Add a style query: when `--variant` is `featured`, the card's inline-start border becomes `#6d28d9`.",
+  "hints": [
+    "`container: name / type` sets both the name and the type in one declaration.",
+    "The grid rules can move unchanged into `@container session (width >= 400px) { … }`.",
+    "For the variant: `@container style(--variant: featured) { .session-card { border-inline-start-color: #6d28d9; } }`."
+  ],
+  "explanation": "`container: session / inline-size` makes the slot a named size container, so `@container session (width >= 400px)` compares *the slot's* width with 400px, whatever the viewport is. The card itself can't be the container, because a query only styles descendants of the container it measures. The style query doesn't need a container type: every element is a style container, and the card picks up the `--variant` value from its parent slot. In browsers without style-query support, the card simply keeps its default grey border.",
+  "checks": {
+    "named-container": "The slot is an inline-size container named session",
+    "wide-side-by-side": "At 500px the time sits beside the content",
+    "narrow-stacked": "At 300px the card stacks",
+    "threshold": "The switch happens exactly at 400px",
+    "featured-variant": "--variant: featured turns the border violet"
+  }
+}

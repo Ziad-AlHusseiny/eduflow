@@ -1,0 +1,11 @@
+{
+  "kind": "fill",
+  "language": "yaml",
+  "template": "# compose.yaml\nservices:\n  db:\n    environment:\n      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD{{0}}set POSTGRES_PASSWORD in .env}\n\n# compose.override.yaml\nservices:\n  api:\n    develop:\n      watch:\n        - action: {{1}}\n          path: ./src\n          target: /app/src\n        - action: {{2}}\n          path: package-lock.json\n\n# start the stack and keep watching:\n# docker compose up {{3}}",
+  "blanks": [
+    { "answers": [":?"] },
+    { "answers": ["sync"] },
+    { "answers": ["rebuild"] },
+    { "answers": ["--watch", "-w"] }
+  ]
+}

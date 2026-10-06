@@ -1,0 +1,12 @@
+{
+  "kind": "choice",
+  "options": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ],
+  "correct": [
+    "d"
+  ]
+}

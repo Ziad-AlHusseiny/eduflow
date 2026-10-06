@@ -1,0 +1,16 @@
+{
+  "title": "Make the helpers keep their types",
+  "prompt": "These four helpers from Cartwheel's order history page work at runtime but lose type information. Make each one generic so the type tests pass:\n\n- `sortByTotal` returns a sorted **copy** typed as the caller's element type, and still rejects objects without `totalCents`.\n- `indexById` returns a `Map` from id to the caller's element type.\n- `pluck(items, key)` only accepts real property names and returns an array of that property's type.\n- `lastItem` returns the last element, typed as the element type or `undefined`.\n\nKeep the runtime behaviour the same, and do not use `any` or `as`.",
+  "hints": [
+    "Each helper needs a type parameter that appears in both the parameter and the return type.",
+    "Constrain with `extends`: `<T extends { totalCents: number }>` lets you read `totalCents` while returning `T[]`.",
+    "For `pluck`, use two type parameters: `<T, K extends keyof T>(items: T[], key: K): T[K][]`."
+  ],
+  "explanation": "Each type parameter now appears at least twice, linking the input to the output, so the caller gets back exactly the element type they passed in. The constraints (`extends { totalCents: number }`, `extends { id: number }`) are what make the property reads legal inside the functions, and they are also what rejects `[{ sku: 'TENT-2P' }]`. In `pluck`, `K extends keyof T` ties the key to the items, and `T[K]` looks up that property's type, so `'customer'` gives `string[]` and `'email'` is refused.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "sorts-copy": "`sortByTotal` sorts ascending without mutating its input",
+    "indexes": "`indexById` maps each id to its item",
+    "plucks": "`pluck` and `lastItem` still work at runtime"
+  }
+}

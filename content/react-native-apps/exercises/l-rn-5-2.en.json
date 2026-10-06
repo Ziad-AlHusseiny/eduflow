@@ -1,0 +1,10 @@
+{
+  "title": "Complete the form test",
+  "prompt": "Fill in the blanks in this React Native Testing Library test for Trailhead's `HikeForm`. It should set up user events, render the form, press the Save button found **by its role**, check that the distance error appears on screen, and finally check that `onSave` received the right hike.",
+  "hints": [
+    "`userEvent` needs a one-time call that returns the `user` object, and the component is mounted with the library's main function.",
+    "Users press buttons; the query looks for the accessibility role a Pressable gets from `accessibilityRole`.",
+    "One matcher checks an element is on the screen; the other checks a mock function received specific arguments."
+  ],
+  "explanation": "`userEvent.setup()` creates a user that types and presses like a real person, and `await render(...)` mounts the form (both are async in current versions of the library). `getByRole('button', { name: 'Save' })` finds the button the way a screen reader does, so the test also guards accessibility. `toBeOnTheScreen()` asserts the validation message rendered, and `toHaveBeenCalledWith(expect.objectContaining(...))` checks the saved hike without depending on fields the test doesn't care about, such as the generated id."
+}

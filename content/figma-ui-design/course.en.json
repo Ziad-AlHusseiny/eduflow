@@ -1,0 +1,43 @@
+{
+  "title": "UI Design with Figma",
+  "tagline": "Design a real mobile app in Figma, from first frame to developer handoff, and know why every pixel is where it is.",
+  "description": [
+    "You design Steady, a habit-tracker app, from an empty canvas to a handed-off screen set. Along the way you learn the principles that make interfaces readable (hierarchy, alignment, spacing, type and color with real contrast) and the Figma features professionals use every day: frames, auto layout, layout guides, components, variants, variables and modes.",
+    "Every lesson is taught by Sofia Reyes, a principal product designer who asks for the reason behind each decision. You critique layouts, build a small component kit with light and dark themes, prototype the check-in flow, check it for accessibility, mark it ready in Dev Mode and finish with a portfolio case study you can show an employer."
+  ],
+  "audience": "Career switchers and developers who want to design clean, consistent app screens in Figma and talk about them with confidence.",
+  "prerequisites": "None. A free Figma account and a laptop or desktop computer are enough.",
+  "learnItems": [
+    "Apply hierarchy, alignment, spacing and contrast on purpose",
+    "Build screens with frames, constraints and auto layout",
+    "Use an 8-point spacing system and layout guides",
+    "Create components with variants and component properties",
+    "Theme a kit with variables and light and dark modes",
+    "Prototype, check accessibility and hand off in Dev Mode"
+  ],
+  "sections": {
+    "s-fig-1": "Foundations",
+    "s-fig-2": "Layout",
+    "s-fig-3": "Components and Systems",
+    "s-fig-4": "Prototype to Handoff"
+  },
+  "lessons": {
+    "l-fig-1-1": "How UI Design Decisions Get Made",
+    "l-fig-1-2": "Hierarchy, Alignment and Spacing",
+    "l-fig-1-3": "Type Scale and Color with Contrast",
+    "l-fig-1-4": "Frames, Groups, Layers and Constraints",
+    "l-fig-2-1": "Auto Layout: Direction, Gap and Padding",
+    "l-fig-2-2": "Resizing: Hug, Fill, Fixed and Wrap",
+    "l-fig-2-3": "Layout Guides and the 8-Point System",
+    "l-fig-2-4": "Responsive Resizing Across Screen Sizes",
+    "l-fig-3-1": "Components and Instances",
+    "l-fig-3-2": "Variants and Component Properties",
+    "l-fig-3-3": "Styles vs Variables",
+    "l-fig-3-4": "Variable Modes: Light and Dark",
+    "l-fig-3-5": "Building the Steady Mini Kit",
+    "l-fig-4-1": "Prototyping: Interactions, Smart Animate and Overlays",
+    "l-fig-4-2": "Designing for Accessibility",
+    "l-fig-4-3": "Dev Mode and Handoff",
+    "l-fig-4-4": "Design Critique and Your Case Study"
+  }
+}

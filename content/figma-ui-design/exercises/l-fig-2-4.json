@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "design-mid",
+    "content-frame",
+    "fill-children",
+    "constraints",
+    "resize-copies",
+    "stress",
+    "fix-original"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv",
+    "orders.csv"
+  ],
+  "starter": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\nsales = items.merge(orders, on=\"order_id\", how=\"left\", validate=\"many_to_one\")\nsales = sales[sales[\"status\"] != \"cancelled\"]\nsales = sales.assign(year=sales[\"order_date\"].dt.year, quarter=sales[\"order_date\"].dt.quarter)\nsales_2025 = sales[sales[\"year\"] == 2025]\n\ntargets = pd.DataFrame({\n    \"channel\": [\"marketplace\", \"mobile_app\", \"web\"],\n    \"Q1\": [5000, 15000, 28000],\n    \"Q2\": [5000, 16000, 30000],\n    \"Q3\": [6000, 20000, 40000],\n    \"Q4\": [9000, 30000, 60000],\n})\n\n# 1. grid: 2025 revenue with quarters (1-4) as rows and channels as columns\ngrid = None\n\n# 2. targets_long: columns channel, quarter (int 1-4), target - 12 rows\ntargets_long = None\n\n# 3. vs_target: targets_long with an added \"revenue\" column (actual 2025 revenue\n#    for that channel and quarter)\nvs_target = None\n\n# 4. Number of channel-quarters where revenue reached the target\nbeat = None\n",
+  "solution": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\nsales = items.merge(orders, on=\"order_id\", how=\"left\", validate=\"many_to_one\")\nsales = sales[sales[\"status\"] != \"cancelled\"]\nsales = sales.assign(year=sales[\"order_date\"].dt.year, quarter=sales[\"order_date\"].dt.quarter)\nsales_2025 = sales[sales[\"year\"] == 2025]\n\ntargets = pd.DataFrame({\n    \"channel\": [\"marketplace\", \"mobile_app\", \"web\"],\n    \"Q1\": [5000, 15000, 28000],\n    \"Q2\": [5000, 16000, 30000],\n    \"Q3\": [6000, 20000, 40000],\n    \"Q4\": [9000, 30000, 60000],\n})\n\ngrid = sales_2025.pivot_table(index=\"quarter\", columns=\"channel\", values=\"revenue\", aggfunc=\"sum\")\n\ntargets_long = targets.melt(id_vars=\"channel\", var_name=\"quarter\", value_name=\"target\")\ntargets_long[\"quarter\"] = targets_long[\"quarter\"].str[1].astype(int)\n\nactual = sales_2025.groupby([\"channel\", \"quarter\"], as_index=False)[\"revenue\"].sum()\nvs_target = targets_long.merge(actual, on=[\"channel\", \"quarter\"], how=\"left\", validate=\"one_to_one\")\n\nbeat = int((vs_target[\"revenue\"] >= vs_target[\"target\"]).sum())\nprint(grid.round(0))\nprint(vs_target.round(0))\n",
+  "checks": [
+    {
+      "id": "grid",
+      "test": "isinstance(grid, pd.DataFrame) and grid.shape == (4, 3) and abs(float(grid.loc[4, 'web']) - 87530) < 1"
+    },
+    {
+      "id": "long",
+      "test": "isinstance(targets_long, pd.DataFrame) and len(targets_long) == 12 and {'channel', 'quarter', 'target'} <= set(targets_long.columns) and sorted(set(targets_long['quarter'].tolist())) == [1, 2, 3, 4]"
+    },
+    {
+      "id": "vs-target",
+      "test": "isinstance(vs_target, pd.DataFrame) and len(vs_target) == 12 and abs(float(vs_target['revenue'].sum()) - 326808) < 1"
+    },
+    {
+      "id": "beat",
+      "test": "int(beat) == 8"
+    }
+  ]
+}

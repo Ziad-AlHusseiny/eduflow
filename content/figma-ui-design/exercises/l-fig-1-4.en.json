@@ -1,0 +1,11 @@
+{
+  "title": "Find the layers that break on other phones",
+  "prompt": "This is the layer tree of Steady's Today screen, written out as text with each layer's type, constraints and text resizing. The screen looks right at 393 × 852, but it breaks on a 430 × 932 phone and with long habit names. Select the line or lines that cause those problems.",
+  "hints": [
+    "Think about what changes on a bigger phone: the width, the height, or both. Which layers should follow the bottom or right edge?",
+    "Habit names vary in length. Which text resizing mode cuts off a long name instead of letting it wrap?",
+    "Two lines are wrong: one constraint and one text resizing mode."
+  ],
+  "explanation": "Line 11: the floating `Add button` is pinned **Left, Top**, so on a larger phone it stays where it was instead of following the bottom-right corner. Set it to **Right, Bottom**. Line 8: `Habit name` uses **Fixed size**, so \"Practise Spanish vocabulary for 15 minutes\" is clipped or overflows. Use **Auto height**, which keeps the width and lets the name wrap. The other lines are fine: short labels such as the title and streak suit Auto width, the header, list and tab bar have the constraints from the lesson, and the row stretches with the list while its check button stays pinned to the right.",
+  "checks": {}
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Trailhead keeps hikes sorted newest first (dates are 'YYYY-MM-DD').\nfunction hikesReducer(state, action) {\n  switch (action.type) {\n    case 'added':\n      state.push(action.hike);\n      return state;\n    case 'updated': {\n      const hike = state.find((h) => h.id === action.id);\n      Object.assign(hike, action.changes);\n      return state;\n    }\n    case 'deleted':\n      return state.filter((h) => h.id !== action.id);\n    case 'favoriteToggled': {\n      const hike = state.find((h) => h.id === action.id);\n      hike.favorite = !hike.favorite;\n      return state;\n    }\n    default:\n      throw new Error('Unknown action ' + action.type);\n  }\n}\n\nconst start = [\n  { id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false },\n  { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true },\n];\nconsole.log(hikesReducer(start, { type: 'added', hike: { id: 'c', name: 'Fern Gully', date: '2026-10-10', distanceKm: 3.6, favorite: false } }).map((h) => h.id));\n"
+  },
+  "solution": {
+    "js": "const byNewest = (a, b) => b.date.localeCompare(a.date);\n\nfunction hikesReducer(state, action) {\n  switch (action.type) {\n    case 'added':\n      if (state.some((h) => h.id === action.hike.id)) return state;\n      return [...state, action.hike].sort(byNewest);\n    case 'updated': {\n      if (!state.some((h) => h.id === action.id)) return state;\n      return state\n        .map((h) => (h.id === action.id ? { ...h, ...action.changes, id: h.id } : h))\n        .sort(byNewest);\n    }\n    case 'deleted':\n      return state.filter((h) => h.id !== action.id);\n    case 'favoriteToggled':\n      return state.map((h) => (h.id === action.id ? { ...h, favorite: !h.favorite } : h));\n    default:\n      return state;\n  }\n}\n\nconst start = [\n  { id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false },\n  { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true },\n];\nconsole.log(hikesReducer(start, { type: 'added', hike: { id: 'c', name: 'Fern Gully', date: '2026-10-10', distanceKm: 3.6, favorite: false } }).map((h) => h.id));\n"
+  },
+  "checks": [
+    {
+      "id": "add-sorted",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); const n = hikesReducer(s, { type: 'added', hike: { id: 'c', name: 'Fern', date: '2026-10-10', distanceKm: 3.6, favorite: false } }); return n !== s && n.map((h) => h.id).join() === 'a,c,b' && s.length === 2;"
+    },
+    {
+      "id": "add-duplicate",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); const n = hikesReducer(s, { type: 'added', hike: { id: 'a', name: 'Copy', date: '2026-01-01', distanceKm: 1, favorite: false } }); return n === s;"
+    },
+    {
+      "id": "update",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); const n = hikesReducer(s, { type: 'updated', id: 'b', changes: { name: 'Ridge Loop East', date: '2026-10-25', id: 'zzz' } }); return n !== s && n[0].id === 'b' && n[0].name === 'Ridge Loop East' && s[1].name === 'Ridge Loop' && n.length === 2;"
+    },
+    {
+      "id": "toggle",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); const n = hikesReducer(s, { type: 'favoriteToggled', id: 'a' }); return n !== s && n[0].favorite === true && s[0].favorite === false && n[1] === s[1];"
+    },
+    {
+      "id": "delete",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); const n = hikesReducer(s, { type: 'deleted', id: 'a' }); return n.length === 1 && n[0].id === 'b' && s.length === 2;"
+    },
+    {
+      "id": "unknown",
+      "test": "const mk = () => [{ id: 'a', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2, favorite: false }, { id: 'b', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4, favorite: true }]; const s = mk(); let n; try { n = hikesReducer(s, { type: 'somethingElse' }); } catch { return false; } return n === s;"
+    }
+  ]
+}

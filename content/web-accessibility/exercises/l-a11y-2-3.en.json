@@ -1,0 +1,18 @@
+{
+  "title": "Repair Ticketly's checkout form",
+  "prompt": "The checkout form relies on placeholders, floats a question above unlabelled radios, and shows an email error that only sighted users notice. Fix it:\n\n1. Give `#full-name`, `#email` and both radios a real `<label>` (\"Full name\", \"Email\", \"Standing\", \"Seated\").\n2. Group the radios in a `<fieldset>` whose `<legend>` is \"Ticket type\".\n3. Add `autocomplete=\"name\"` and `autocomplete=\"email\"`, and make the email field `type=\"email\"`.\n4. In the script, when the email is invalid: set `aria-invalid=\"true\"`, point `aria-describedby` at `#email-error`, and move focus to the email field. When it becomes valid, remove both attributes.",
+  "hints": [
+    "Either <label for=\"email\">Email</label> before the input, or wrap the radio in <label> … Standing</label>.",
+    "The legend must be the first child of the fieldset.",
+    "In the invalid branch: email.setAttribute('aria-invalid', 'true'); email.setAttribute('aria-describedby', 'email-error'); email.focus();"
+  ],
+  "explanation": "Labels give every field a name that survives typing, and the fieldset lets screen readers announce \"Ticket type, grouping\" before the options. The autocomplete tokens let browsers and password managers fill the form, which is what 1.3.5 asks for. The script now connects the error in three ways: `aria-invalid` says the field is wrong, `aria-describedby` makes the message its description, and `focus()` takes the user straight to it, so NVDA reads \"Email, edit text, invalid entry, Enter an email address like name@example.com\". Removing both attributes on success stops the old error being read again, because a referenced element is announced even while hidden.",
+  "checks": {
+    "labels": "All four inputs have labels with the right text",
+    "fieldset": "The radios sit in a fieldset whose first child is the legend \"Ticket type\"",
+    "autocomplete": "Name and email have autocomplete tokens, and email is type=\"email\"",
+    "error-linked": "An invalid email sets aria-invalid and links the visible error with aria-describedby",
+    "error-focus": "Focus moves to the email field after the failed attempt",
+    "error-clears": "A valid email removes aria-invalid and hides the error"
+  }
+}

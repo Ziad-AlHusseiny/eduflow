@@ -1,0 +1,17 @@
+{
+  "title": "زيّف الشبكة عند طرفها",
+  "prompt": "تطلب `loadGroup(groupId, fetchImpl)` العنوان `https://api.splitwise-lite.test/groups/<id>`، وتحوّل الـ JSON القادم من الـ API (بالدولار، وبصيغة snake_case) إلى شكل Splitwise-lite (بالسنتات، وبصيغة camelCase)، وتُرفض بالرسالة `Could not load group <id> (HTTP <status>)` حين لا تكون الاستجابة ok. الأشكال الدقيقة مذكورة في تعليق الـ subject.\n\nيعطيك الكود المبدئي `jsonResponse(body, status)` التي تبني `Response` حقيقيًا، وعيّنة `apiGroup`. مرّر `vi.fn().mockResolvedValue(jsonResponse(...))` على أنه `fetchImpl` وأضف اختبارات حتى تلتقط مجموعتك أربعة أخطاء مخفيّة: نسخة **تتجاهل** رمز حالة HTTP، ونسخة تطلب **URL خاطئًا**، ونسخة تنسى تحويل الدولارات إلى **سنتات**، ونسخة تقرأ `paidBy` من الحقل الخاطئ.",
+  "hints": [
+    "افحص الطلب: `expect(fetchMock).toHaveBeenCalledWith('https://api.splitwise-lite.test/groups/lisbon')`.",
+    "قارن النتيجة كلها بـ `toEqual`؛ الكائن المتوقّع مكتوب بالتفصيل في تعليق الـ subject (45.5 دولارًا تساوي 4550 سنتًا).",
+    "لمسار الخطأ، استخدم `jsonResponse({ error: 'Not found' }, 404)` وأكّد الرسالة، لا مجرّد الرفض: فالنسخة المعطوبة تُرفض أيضًا، بخطأ TypeError."
+  ],
+  "explanation": "لأن وسيلة النقل وحدها مزيّفة، يعمل كل سطر من `loadGroup` في الاختبار. يلتقط `toHaveBeenCalledWith` على الـ fetch mock الـ URL الخاطئ، الذي لا يراه أي assertion على النتيجة، لأن البديل المزيّف يجيب عن أي URL. و`toEqual` واحد على المجموعة المحوّلة يلتقط خطأي التشكيل معًا: الدولارات التي بقيت 45.5، و`paidBy` الذي يعود `undefined`. اختبار 404 هو الدقيق: بدون فحص `ok`، يظلّ الكود يُرفض، بالرسالة `Cannot read properties of undefined`، فلا يثبت أن رمز الحالة عولج عن قصد إلا مطابقة الرسالة `HTTP 404`. وهذا هو الانضباط نفسه الذي يمنحك إياه MSW، دون المكتبة.",
+  "checks": {
+    "passes": "كل اختباراتك تنجح على loadGroup الحقيقية",
+    "catches-ignores-status": "تلتقط النسخة التي تتجاهل رمز حالة HTTP",
+    "catches-wrong-url": "تلتقط النسخة التي تطلب URL خاطئًا",
+    "catches-no-cents": "تلتقط النسخة التي تُبقي الدولارات بدل السنتات",
+    "catches-snake-case-leak": "تلتقط النسخة التي تقرأ paidBy من الحقل الخاطئ"
+  }
+}

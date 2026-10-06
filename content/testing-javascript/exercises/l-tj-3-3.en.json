@@ -1,0 +1,17 @@
+{
+  "title": "Loading, error and retry",
+  "prompt": "`mountBalancePanel(container, loadBalances)` shows `role=\"status\"` \"Loading balances…\" while `loadBalances()` is pending, then the **Balances** list. If the promise rejects, it shows `role=\"alert\"` \"Could not load balances.\" and a **Try again** button that loads again.\n\nThe starter adds `waitFor`, `findByRole` and `findByText` to the stand-ins (they poll for up to 500 ms). Control `loadBalances` with `vi.fn()` and add tests until your suite catches four hidden bugs: one **never shows** the loading status, one **leaves** it on screen after the data arrives, one **shows nothing** on failure, and one whose **Try again** button does nothing.",
+  "hints": [
+    "The loading status is set synchronously when the panel mounts, so `getByRole(container, 'status')` right after `mountBalancePanel(...)` finds it. After `await findByRole(... 'list' ...)`, `queryByRole(container, 'status')` must be `null`.",
+    "For the failure: `vi.fn().mockRejectedValue(new Error('Offline'))`, then `await findByRole(container, 'alert')`.",
+    "For the retry: after the alert appears, call `loadBalances.mockResolvedValue({ Ana: 0 })`, click Try again with `clickOn`, then `await findByText(container, 'Ana is settled up')`."
+  ],
+  "explanation": "Each state is one assertion about what the user sees. Checking the status immediately after mounting catches the panel with no loading message; checking that it's gone after `findByRole` resolves catches the one that leaves it behind. The failure test awaits the alert with `findByRole`, which times out if the error is swallowed. Switching the mock to resolve before clicking Try again turns the retry into a deterministic story: if the button isn't wired up, the settled-up text never appears and the test fails. No sleeps anywhere, so the suite is as fast as the code.",
+  "checks": {
+    "passes": "All your tests pass against the real panel",
+    "catches-no-loading": "Catches the version with no loading status",
+    "catches-stale-loading": "Catches the version that leaves the loading status on screen",
+    "catches-error-hidden": "Catches the version that shows nothing on failure",
+    "catches-no-retry": "Catches the version whose Try again button does nothing"
+  }
+}

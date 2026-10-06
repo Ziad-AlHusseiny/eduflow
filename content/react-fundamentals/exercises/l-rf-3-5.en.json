@@ -1,0 +1,16 @@
+{
+  "title": "Sync the tab title",
+  "prompt": "Two jobs in `Watchlist`:\n\n1. **Remove the unnecessary Effect.** `left` is copied into state by an Effect. Calculate it during render instead.\n2. **Sync the browser tab title.** While the Watchlist is on screen, `document.title` should read **2 to watch · Watchlist** (with the real number), and update when a movie is marked watched. When the Watchlist is removed (click **Hide watchlist**), the title must go back to what it was before, **Playground**.",
+  "hints": [
+    "Replace the `left` state and its Effect with `const left = movies.filter((m) => !m.watched).length;`",
+    "The title Effect reads `left`, so its dependency array is `[left]`.",
+    "Save the old title inside the Effect (`const previous = document.title;`) and return a cleanup that puts it back."
+  ],
+  "explanation": "`left` is derived from `movies`, so it's calculated during render. The Effect version rendered once with a wrong count of 0 and then again with the right one. The document title, on the other hand, lives outside React, so syncing it is a real Effect. Listing `[left]` re-runs it only when the count changes, and the cleanup restores the previous title both before each re-run and when the component unmounts. That's also exactly what StrictMode's mount, cleanup, mount check exercises in development.",
+  "checks": {
+    "count-derived": "The page shows \"2 to watch\"",
+    "title-initial": "The tab title is \"2 to watch · Watchlist\"",
+    "title-updates": "Marking Past Lives watched updates the title to \"1 to watch · Watchlist\"",
+    "title-cleanup": "Hiding the Watchlist restores the title \"Playground\""
+  }
+}

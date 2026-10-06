@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "const API = 'https://api.splitwise-lite.test';\n\n// Loads a group: GET `${API}/groups/<id>` (id URL-encoded).\n// The API answers with JSON like:\n//   { \"name\": \"Lisbon trip\",\n//     \"members\": [{ \"name\": \"Ana\" }, { \"name\": \"Ben\" }],\n//     \"expenses\": [{ \"description\": \"Dinner\", \"amount\": 45.5,\n//                    \"paid_by\": \"Ana\", \"split_among\": [\"Ana\", \"Ben\"] }] }\n// and loadGroup resolves with Splitwise-lite's own shape:\n//   { name: \"Lisbon trip\", members: [\"Ana\", \"Ben\"],\n//     expenses: [{ description: \"Dinner\", amountCents: 4550,\n//                  paidBy: \"Ana\", splitAmong: [\"Ana\", \"Ben\"] }] }\n// If the response is not ok, it rejects with\n//   \"Could not load group <id> (HTTP <status>)\".\nasync function loadGroup(groupId, fetchImpl = fetch) {\n  const response = await fetchImpl(`${API}/groups/${encodeURIComponent(groupId)}`);\n  if (!response.ok) {\n    throw new Error(`Could not load group ${groupId} (HTTP ${response.status})`);\n  }\n  const data = await response.json();\n  return {\n    name: data.name,\n    members: data.members.map((member) => member.name),\n    expenses: data.expenses.map((e) => ({\n      description: e.description,\n      amountCents: Math.round(e.amount * 100),\n      paidBy: e.paid_by,\n      splitAmong: e.split_among,\n    })),\n  };\n}\n",
+  "mutants": [
+    {
+      "id": "ignores-status",
+      "code": "const API = 'https://api.splitwise-lite.test';\n\n// Loads a group: GET `${API}/groups/<id>` (id URL-encoded).\n// The API answers with JSON like:\n//   { \"name\": \"Lisbon trip\",\n//     \"members\": [{ \"name\": \"Ana\" }, { \"name\": \"Ben\" }],\n//     \"expenses\": [{ \"description\": \"Dinner\", \"amount\": 45.5,\n//                    \"paid_by\": \"Ana\", \"split_among\": [\"Ana\", \"Ben\"] }] }\n// and loadGroup resolves with Splitwise-lite's own shape:\n//   { name: \"Lisbon trip\", members: [\"Ana\", \"Ben\"],\n//     expenses: [{ description: \"Dinner\", amountCents: 4550,\n//                  paidBy: \"Ana\", splitAmong: [\"Ana\", \"Ben\"] }] }\n// If the response is not ok, it rejects with\n//   \"Could not load group <id> (HTTP <status>)\".\nasync function loadGroup(groupId, fetchImpl = fetch) {\n  const response = await fetchImpl(`${API}/groups/${encodeURIComponent(groupId)}`);\n  const data = await response.json();\n  return {\n    name: data.name,\n    members: data.members.map((member) => member.name),\n    expenses: data.expenses.map((e) => ({\n      description: e.description,\n      amountCents: Math.round(e.amount * 100),\n      paidBy: e.paid_by,\n      splitAmong: e.split_among,\n    })),\n  };\n}\n"
+    },
+    {
+      "id": "wrong-url",
+      "code": "const API = 'https://api.splitwise-lite.test';\n\n// Loads a group: GET `${API}/groups/<id>` (id URL-encoded).\n// The API answers with JSON like:\n//   { \"name\": \"Lisbon trip\",\n//     \"members\": [{ \"name\": \"Ana\" }, { \"name\": \"Ben\" }],\n//     \"expenses\": [{ \"description\": \"Dinner\", \"amount\": 45.5,\n//                    \"paid_by\": \"Ana\", \"split_among\": [\"Ana\", \"Ben\"] }] }\n// and loadGroup resolves with Splitwise-lite's own shape:\n//   { name: \"Lisbon trip\", members: [\"Ana\", \"Ben\"],\n//     expenses: [{ description: \"Dinner\", amountCents: 4550,\n//                  paidBy: \"Ana\", splitAmong: [\"Ana\", \"Ben\"] }] }\n// If the response is not ok, it rejects with\n//   \"Could not load group <id> (HTTP <status>)\".\nasync function loadGroup(groupId, fetchImpl = fetch) {\n  const response = await fetchImpl(`${API}/group/${encodeURIComponent(groupId)}`);\n  if (!response.ok) {\n    throw new Error(`Could not load group ${groupId} (HTTP ${response.status})`);\n  }\n  const data = await response.json();\n  return {\n    name: data.name,\n    members: data.members.map((member) => member.name),\n    expenses: data.expenses.map((e) => ({\n      description: e.description,\n      amountCents: Math.round(e.amount * 100),\n      paidBy: e.paid_by,\n      splitAmong: e.split_among,\n    })),\n  };\n}\n"
+    },
+    {
+      "id": "no-cents",
+      "code": "const API = 'https://api.splitwise-lite.test';\n\n// Loads a group: GET `${API}/groups/<id>` (id URL-encoded).\n// The API answers with JSON like:\n//   { \"name\": \"Lisbon trip\",\n//     \"members\": [{ \"name\": \"Ana\" }, { \"name\": \"Ben\" }],\n//     \"expenses\": [{ \"description\": \"Dinner\", \"amount\": 45.5,\n//                    \"paid_by\": \"Ana\", \"split_among\": [\"Ana\", \"Ben\"] }] }\n// and loadGroup resolves with Splitwise-lite's own shape:\n//   { name: \"Lisbon trip\", members: [\"Ana\", \"Ben\"],\n//     expenses: [{ description: \"Dinner\", amountCents: 4550,\n//                  paidBy: \"Ana\", splitAmong: [\"Ana\", \"Ben\"] }] }\n// If the response is not ok, it rejects with\n//   \"Could not load group <id> (HTTP <status>)\".\nasync function loadGroup(groupId, fetchImpl = fetch) {\n  const response = await fetchImpl(`${API}/groups/${encodeURIComponent(groupId)}`);\n  if (!response.ok) {\n    throw new Error(`Could not load group ${groupId} (HTTP ${response.status})`);\n  }\n  const data = await response.json();\n  return {\n    name: data.name,\n    members: data.members.map((member) => member.name),\n    expenses: data.expenses.map((e) => ({\n      description: e.description,\n      amountCents: e.amount,\n      paidBy: e.paid_by,\n      splitAmong: e.split_among,\n    })),\n  };\n}\n"
+    },
+    {
+      "id": "snake-case-leak",
+      "code": "const API = 'https://api.splitwise-lite.test';\n\n// Loads a group: GET `${API}/groups/<id>` (id URL-encoded).\n// The API answers with JSON like:\n//   { \"name\": \"Lisbon trip\",\n//     \"members\": [{ \"name\": \"Ana\" }, { \"name\": \"Ben\" }],\n//     \"expenses\": [{ \"description\": \"Dinner\", \"amount\": 45.5,\n//                    \"paid_by\": \"Ana\", \"split_among\": [\"Ana\", \"Ben\"] }] }\n// and loadGroup resolves with Splitwise-lite's own shape:\n//   { name: \"Lisbon trip\", members: [\"Ana\", \"Ben\"],\n//     expenses: [{ description: \"Dinner\", amountCents: 4550,\n//                  paidBy: \"Ana\", splitAmong: [\"Ana\", \"Ben\"] }] }\n// If the response is not ok, it rejects with\n//   \"Could not load group <id> (HTTP <status>)\".\nasync function loadGroup(groupId, fetchImpl = fetch) {\n  const response = await fetchImpl(`${API}/groups/${encodeURIComponent(groupId)}`);\n  if (!response.ok) {\n    throw new Error(`Could not load group ${groupId} (HTTP ${response.status})`);\n  }\n  const data = await response.json();\n  return {\n    name: data.name,\n    members: data.members.map((member) => member.name),\n    expenses: data.expenses.map((e) => ({\n      description: e.description,\n      amountCents: Math.round(e.amount * 100),\n      paidBy: e.paidBy,\n      splitAmong: e.split_among,\n    })),\n  };\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "// Builds a real Response, like the one fetch resolves with.\nconst jsonResponse = (body, status = 200) =>\n  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });\n\nconst apiGroup = {\n  name: 'Lisbon trip',\n  members: [{ name: 'Ana' }, { name: 'Ben' }],\n  expenses: [{ description: 'Dinner', amount: 45.5, paid_by: 'Ana', split_among: ['Ana', 'Ben'] }],\n};\n\ndescribe('loadGroup', () => {\n  test('resolves with the group name', async () => {\n    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(apiGroup));\n\n    const group = await loadGroup('lisbon', fetchMock);\n\n    expect(group.name).toBe('Lisbon trip');\n  });\n\n  // Add: the URL that was requested, the full converted shape,\n  // and what happens with a 404.\n});\n"
+  },
+  "solution": {
+    "js": "// Builds a real Response, like the one fetch resolves with.\nconst jsonResponse = (body, status = 200) =>\n  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });\n\nconst apiGroup = {\n  name: 'Lisbon trip',\n  members: [{ name: 'Ana' }, { name: 'Ben' }],\n  expenses: [{ description: 'Dinner', amount: 45.5, paid_by: 'Ana', split_among: ['Ana', 'Ben'] }],\n};\n\ndescribe('loadGroup', () => {\n  test('requests the group by id', async () => {\n    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(apiGroup));\n\n    await loadGroup('lisbon', fetchMock);\n\n    expect(fetchMock).toHaveBeenCalledWith('https://api.splitwise-lite.test/groups/lisbon');\n  });\n\n  test(\"converts the API's shape into Splitwise-lite's\", async () => {\n    const fetchMock = vi.fn().mockResolvedValue(jsonResponse(apiGroup));\n\n    const group = await loadGroup('lisbon', fetchMock);\n\n    expect(group).toEqual({\n      name: 'Lisbon trip',\n      members: ['Ana', 'Ben'],\n      expenses: [{ description: 'Dinner', amountCents: 4550, paidBy: 'Ana', splitAmong: ['Ana', 'Ben'] }],\n    });\n  });\n\n  test('rejects with the status when the response is not ok', async () => {\n    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ error: 'Not found' }, 404));\n\n    await expect(loadGroup('nope', fetchMock)).rejects.toThrow('Could not load group nope (HTTP 404)');\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-ignores-status",
+      "suite": "ignores-status"
+    },
+    {
+      "id": "catches-wrong-url",
+      "suite": "wrong-url"
+    },
+    {
+      "id": "catches-no-cents",
+      "suite": "no-cents"
+    },
+    {
+      "id": "catches-snake-case-leak",
+      "suite": "snake-case-leak"
+    }
+  ]
+}

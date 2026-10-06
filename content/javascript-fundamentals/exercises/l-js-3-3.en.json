@@ -1,0 +1,17 @@
+{
+  "title": "Totals and rankings",
+  "prompt": "Fill in four functions for Pocket's summary screen:\n\n- `totalCents(expenses)` returns the sum of every `amount` (and `0` for an empty list). Use `reduce`.\n- `totalsByCategory(expenses)` returns an object with one property per category holding that category's total, such as `{ food: 1800, travel: 1220, fun: 99 }`.\n- `biggestFirst(expenses)` returns a **new** array sorted by `amount`, largest first.\n- `alphabetical(expenses)` returns a **new** array sorted by `label` from A to Z, treating \"coffee\" and \"Coffee\" alike.\n\nNeither sort may reorder the array it receives.\n",
+  "hints": [
+    "`reduce((sum, e) => sum + e.amount, 0)`: the `0` at the end is the initial value, and it is what makes the empty list work.",
+    "For the categories, start from `{}` and in the callback do `totals[e.category] = (totals[e.category] ?? 0) + e.amount; return totals;`.",
+    "`toSorted` returns a sorted copy. Largest first is `(a, b) => b.amount - a.amount`; by label is `(a, b) => a.label.localeCompare(b.label)`."
+  ],
+  "explanation": "Both totals are the accumulator pattern written with `reduce`. The initial value decides the shape of the result: `0` for a number, `{}` for an object of totals. In the grouping callback, bracket notation creates each category's property the first time it appears, and returning `totals` passes the same object on to the next call. The starter's `expenses.sort()` failed twice: it sorted the objects as text (every object becomes the string \"[object Object]\") and it reordered the caller's array. `toSorted` with a comparator fixes both. `localeCompare` puts \"coffee\" before \"Lunch\", where `<` would put every capitalised label first.\n",
+  "checks": {
+    "total": "`totalCents` sums the amounts and returns 0 for an empty list",
+    "by-category": "`totalsByCategory` totals each category",
+    "biggest": "`biggestFirst` sorts by amount, largest first",
+    "alpha": "`alphabetical` sorts by label, ignoring case",
+    "no-mutation": "The original array keeps its order"
+  }
+}

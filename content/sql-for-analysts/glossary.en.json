@@ -1,0 +1,182 @@
+[
+  {
+    "id": "grain",
+    "term": "Grain",
+    "definition": "What one row of a table or query result represents, such as one row per order or one row per country per month. Stating it before writing GROUP BY prevents most aggregation mistakes.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "operator-precedence",
+    "term": "Operator precedence (AND before OR)",
+    "definition": "The rule that SQL evaluates AND before OR, so a filter mixing them groups conditions unexpectedly unless every OR group is wrapped in parentheses.",
+    "lesson": "l-sql-1-2"
+  },
+  {
+    "id": "three-valued-logic",
+    "term": "Three-valued logic",
+    "definition": "SQL's logic in which a condition is TRUE, FALSE or NULL (unknown). Any comparison with NULL is unknown, and WHERE keeps only rows whose condition is TRUE.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "is-distinct-from",
+    "term": "IS DISTINCT FROM",
+    "definition": "A NULL-safe comparison that treats NULL as an ordinary value, so rows with NULL are not silently dropped the way they are with the plain not-equal operator.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "coalesce",
+    "term": "COALESCE",
+    "definition": "A function that returns its first non-NULL argument, used to give missing values a display default such as 'none'. Replacing NULL with 0 in averages distorts results.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "case-expression",
+    "term": "CASE expression",
+    "definition": "An expression that returns the result of the first WHEN condition that is TRUE, or the ELSE value; without an ELSE, unmatched rows get NULL.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "iso-date-text",
+    "term": "ISO-8601 date text",
+    "definition": "Dates stored as text in the form 'YYYY-MM-DD HH:MM:SS'. Because the largest unit comes first, alphabetical order equals chronological order, so string comparison works as a date filter.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "half-open-range",
+    "term": "Half-open date range",
+    "definition": "A period filter that includes its start and excludes the start of the next period, such as order_date >= '2025-11-01' AND order_date < '2025-12-01', so the last day is never cut off.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "julianday",
+    "term": "julianday()",
+    "definition": "A SQLite function that converts a date to a fractional number of days. Subtracting two julianday values gives a duration in days; multiplying by 24 gives hours.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "having",
+    "term": "HAVING",
+    "definition": "The clause that filters groups after aggregation, so it can test values like COUNT(*) or SUM(revenue). Row conditions belong in WHERE, which runs before grouping.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "bare-column",
+    "term": "Bare column",
+    "definition": "A selected column that is neither grouped nor aggregated. SQLite allows it and fills it from an arbitrary row of each group; PostgreSQL rejects the query.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "filter-clause",
+    "term": "FILTER clause",
+    "definition": "A standard SQL addition to an aggregate, as in COUNT(*) FILTER (WHERE channel = 'web'), that restricts that one aggregate to matching rows inside each group.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "left-join",
+    "term": "LEFT JOIN",
+    "definition": "A join that keeps every row of the left table and fills the right table's columns with NULL where no match exists. Right-table filters belong in its ON clause.",
+    "lesson": "l-sql-2-2"
+  },
+  {
+    "id": "fan-out",
+    "term": "Fan-out",
+    "definition": "The row multiplication that happens when a join follows a one-to-many relationship. Values stored on the 'one' side repeat once per match, so summing them inflates totals.",
+    "lesson": "l-sql-2-3"
+  },
+  {
+    "id": "derived-table",
+    "term": "Derived table",
+    "definition": "A subquery in the FROM clause that acts like a temporary table with its own grain, often used to aggregate a detailed table before joining it.",
+    "lesson": "l-sql-2-3"
+  },
+  {
+    "id": "self-join",
+    "term": "Self-join",
+    "definition": "A join of a table to itself using two aliases for two roles, such as employee and manager, to follow a link stored within the same table.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "semi-join",
+    "term": "Semi-join",
+    "definition": "A filter that keeps rows having at least one match in another table, written with EXISTS or IN (subquery). Unlike a join, it never duplicates rows.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "anti-join",
+    "term": "Anti-join",
+    "definition": "A filter that keeps rows with no match in another table, written as NOT EXISTS or LEFT JOIN ... WHERE right_key IS NULL. NOT IN fails when the subquery contains NULL.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "scalar-subquery",
+    "term": "Scalar subquery",
+    "definition": "A subquery that returns exactly one row and one column, such as an overall average, and can be used anywhere a single value is allowed.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "cte",
+    "term": "Common table expression (CTE)",
+    "definition": "A named intermediate result defined with WITH name AS (...). CTEs let a long analysis read as ordered steps, each of which can be run and checked on its own.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "recursive-cte",
+    "term": "Recursive CTE",
+    "definition": "A CTE with an anchor query, UNION ALL and a step that joins back to the CTE itself, repeating until no new rows appear. Used to walk hierarchies of any depth.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "window-function",
+    "term": "Window function",
+    "definition": "A function followed by OVER (...) that computes a value from a set of related rows while keeping every row, unlike GROUP BY, which collapses them.",
+    "lesson": "l-sql-3-2"
+  },
+  {
+    "id": "partition-by",
+    "term": "PARTITION BY",
+    "definition": "The part of a window definition that splits rows into groups so the window calculation, such as a ranking or running total, restarts for each group.",
+    "lesson": "l-sql-3-2"
+  },
+  {
+    "id": "lag-lead",
+    "term": "LAG and LEAD",
+    "definition": "Window functions that return a value from the previous (LAG) or next (LEAD) row in the window order, used for period-over-period comparisons.",
+    "lesson": "l-sql-3-3"
+  },
+  {
+    "id": "window-frame",
+    "term": "Window frame",
+    "definition": "The range of rows around the current row that a window aggregate sees, such as ROWS BETWEEN 6 PRECEDING AND CURRENT ROW for a 7-row moving average.",
+    "lesson": "l-sql-3-3"
+  },
+  {
+    "id": "funnel",
+    "term": "Funnel",
+    "definition": "A sequence of steps, such as session, add to cart and purchase, reported as counts and step-to-step conversion rates to show where people drop off.",
+    "lesson": "l-sql-3-4"
+  },
+  {
+    "id": "cohort-retention",
+    "term": "Cohort retention",
+    "definition": "The share of a group of customers who started in the same period, such as their first-order month, who are active again a given number of periods later.",
+    "lesson": "l-sql-3-4"
+  },
+  {
+    "id": "data-quality-check",
+    "term": "Data-quality check",
+    "definition": "A query that returns the rows breaking a stated rule, such as orphaned references or impossible dates, so an empty result means the rule holds.",
+    "lesson": "l-sql-4-1"
+  },
+  {
+    "id": "query-plan",
+    "term": "Query plan",
+    "definition": "The database's description of how it will execute a query, shown in SQLite with EXPLAIN QUERY PLAN. SEARCH means an index narrowed the work; SCAN means every row was read.",
+    "lesson": "l-sql-4-2"
+  },
+  {
+    "id": "sargable",
+    "term": "Sargable",
+    "definition": "Describes a condition the database can answer with an index, typically a bare column compared with a constant. Wrapping the column in a function usually makes it non-sargable.",
+    "lesson": "l-sql-4-2"
+  }
+]

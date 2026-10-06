@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// An expense as it arrived from a messy form\nconst rawLabel = \"   coffee with Sam \";\nconst cents = 450;\nconst category = \"FOOD\";\n\n// Build line so it reads exactly: Coffee with Sam: $4.50 (food)\nconst line = rawLabel + \": \" + cents + \" (\" + category + \")\";\nconsole.log(line);\n"
+  },
+  "solution": {
+    "js": "const rawLabel = \"   coffee with Sam \";\nconst cents = 450;\nconst category = \"FOOD\";\n\nconst trimmed = rawLabel.trim();\nconst label = trimmed[0].toUpperCase() + trimmed.slice(1);\nconst price = (cents / 100).toFixed(2);\n\nconst line = `${label}: $${price} (${category.toLowerCase()})`;\nconsole.log(line);\n"
+  },
+  "checks": [
+    {
+      "id": "trimmed",
+      "test": "return typeof line === 'string' && line === line.trim() && line.startsWith('C');"
+    },
+    {
+      "id": "price",
+      "test": "return typeof line === 'string' && line.includes('$4.50');"
+    },
+    {
+      "id": "exact",
+      "test": "return line === 'Coffee with Sam: $4.50 (food)';\n"
+    },
+    {
+      "id": "logged",
+      "test": "return logs.some((l) => l === 'Coffee with Sam: $4.50 (food)');\n"
+    }
+  ]
+}

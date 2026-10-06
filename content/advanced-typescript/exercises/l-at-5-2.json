@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "// ---- Playground shim (do not edit) ----\n// The playground's lib is ES2022. These lines add what lib.esnext.disposable\n// would declare, and make sure Symbol.dispose exists at runtime.\ninterface SymbolConstructor { readonly dispose: unique symbol; }\ninterface Disposable { [Symbol.dispose](): void; }\n(Symbol as { dispose?: symbol }).dispose ??= Symbol.for('Symbol.dispose');\n// ----------------------------------------\n\nconst events: string[] = [];\n\nfunction reserve(sku: string) {\n  events.push(`reserve ${sku}`);\n  return { sku, release: () => events.push(`release ${sku}`) };\n}\n\nclass PaymentGateway {\n  calls = 0;\n  failuresLeft: number;\n\n  constructor(failures: number) {\n    this.failuresLeft = failures;\n  }\n\n  // Should be retried up to 3 times in total.\n  charge(amountCents: number): string {\n    this.calls++;\n    if (this.failuresLeft > 0) {\n      this.failuresLeft--;\n      throw new Error('Gateway timeout');\n    }\n    events.push(`charge ${amountCents}`);\n    return `receipt-${amountCents}`;\n  }\n}\n\nfunction placeOrder(skus: string[], gateway: PaymentGateway): string {\n  const reservations = skus.map((sku) => reserve(sku));\n  const receipt = gateway.charge(skus.length * 1000);\n  reservations.forEach((r) => r.release());\n  return receipt;\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<ReturnType<typeof reserve>[typeof Symbol.dispose], () => void>>;\ntype T2 = Expect<Equal<ReturnType<PaymentGateway['charge']>, string>>;\n\nconsole.log(placeOrder(['TENT-2P', 'MUG-SET'], new PaymentGateway(0)), events);\n"
+  },
+  "solution": {
+    "ts": "// ---- Playground shim (do not edit) ----\n// The playground's lib is ES2022. These lines add what lib.esnext.disposable\n// would declare, and make sure Symbol.dispose exists at runtime.\ninterface SymbolConstructor { readonly dispose: unique symbol; }\ninterface Disposable { [Symbol.dispose](): void; }\n(Symbol as { dispose?: symbol }).dispose ??= Symbol.for('Symbol.dispose');\n// ----------------------------------------\n\nconst events: string[] = [];\n\nfunction reserve(sku: string) {\n  events.push(`reserve ${sku}`);\n  return {\n    sku,\n    [Symbol.dispose]: () => {\n      events.push(`release ${sku}`);\n    },\n  };\n}\n\nfunction retry(times: number) {\n  return function <This, Args extends unknown[], Return>(\n    method: (this: This, ...args: Args) => Return,\n    _context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>,\n  ) {\n    return function (this: This, ...args: Args): Return {\n      for (let attempt = 1; ; attempt++) {\n        try {\n          return method.call(this, ...args);\n        } catch (e) {\n          if (attempt >= times) throw e;\n        }\n      }\n    };\n  };\n}\n\nclass PaymentGateway {\n  calls = 0;\n  failuresLeft: number;\n\n  constructor(failures: number) {\n    this.failuresLeft = failures;\n  }\n\n  @retry(3)\n  charge(amountCents: number): string {\n    this.calls++;\n    if (this.failuresLeft > 0) {\n      this.failuresLeft--;\n      throw new Error('Gateway timeout');\n    }\n    events.push(`charge ${amountCents}`);\n    return `receipt-${amountCents}`;\n  }\n}\n\nfunction placeOrder(skus: string[], gateway: PaymentGateway): string {\n  // Each reservation is released when this function exits, in reverse order.\n  using stack = new DisposableStackLite();\n  for (const sku of skus) stack.use(reserve(sku));\n  return gateway.charge(skus.length * 1000);\n}\n\n// A tiny stand-in for DisposableStack, which the ES2022 playground lib lacks.\nclass DisposableStackLite implements Disposable {\n  #items: Disposable[] = [];\n  use<T extends Disposable>(item: T): T {\n    this.#items.push(item);\n    return item;\n  }\n  [Symbol.dispose]() {\n    for (const item of this.#items.reverse()) item[Symbol.dispose]();\n  }\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<ReturnType<typeof reserve>[typeof Symbol.dispose], () => void>>;\ntype T2 = Expect<Equal<ReturnType<PaymentGateway['charge']>, string>>;\n\nconsole.log(placeOrder(['TENT-2P', 'MUG-SET'], new PaymentGateway(0)), events);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "releases",
+      "test": "events.length = 0; placeOrder(['A', 'B'], new PaymentGateway(0)); return events.join('|') === 'reserve A|reserve B|charge 2000|release B|release A';"
+    },
+    {
+      "id": "releases-on-error",
+      "test": "events.length = 0; try { placeOrder(['A', 'B'], new PaymentGateway(5)); return false; } catch { return events.join('|') === 'reserve A|reserve B|release B|release A'; }"
+    },
+    {
+      "id": "retries",
+      "test": "const g = new PaymentGateway(2); const r = g.charge(500); return r === 'receipt-500' && g.calls === 3;"
+    },
+    {
+      "id": "gives-up",
+      "test": "const g = new PaymentGateway(3); try { g.charge(500); return false; } catch (e) { return g.calls === 3 && String(e.message).includes('timeout'); }"
+    }
+  ]
+}

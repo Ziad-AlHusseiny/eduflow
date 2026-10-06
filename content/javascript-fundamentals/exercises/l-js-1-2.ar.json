@@ -1,0 +1,16 @@
+{
+  "title": "تتبّع ما أنفقته",
+  "prompt": "لدى Pocket ميزانية شهرية `monthlyBudget` قدرها 2000. صرّح بمتغيّر `spent` يبدأ من `0`، ثم أعِد إسناده مرتين لتضيف مصروفًا قدره `45` وآخر قدره `120`. صرّح بـ `remaining` على أنه `monthlyBudget` ناقص `spent`، واطبع **نوع** `remaining`. أبقِ `monthlyBudget` مُصرَّحًا به بـ `const`.\n",
+  "hints": [
+    "`spent` يجب أن يتغيّر، لذلك لا يمكن أن يكون `const`.",
+    "لتضيف إلى متغيّر، احسب القيمة الجديدة من القديمة: `spent = spent + 45;`.",
+    "`typeof` توضع قبل القيمة: `console.log(typeof remaining);`."
+  ],
+  "explanation": "صُرّح بـ `spent` باستخدام `let` لأنه يُوجَّه إلى رقم جديد مرتين: `0`، ثم `45`، ثم `165`. وفي كل مرة يُحسب الطرف الأيمن باستخدام القيمة الحالية قبل أن ينتقل الاسم. أما `remaining` فلا يتغيّر بعد حسابه، لذلك `const` هي الخيار الصحيح، و`typeof remaining` تساوي `\"number\"` لأن طرح رقمين يعطي رقمًا. ومحاولة إعادة إسناد `monthlyBudget` ترمي `TypeError`، وهذه بالضبط الحماية التي وُجدت `const` من أجلها.\n",
+  "checks": {
+    "spent-total": "قيمة `spent` تنتهي إلى 165",
+    "remaining-value": "قيمة `remaining` هي 1835",
+    "logs-type": "تطبع نوع `remaining` (number)",
+    "budget-const": "`monthlyBudget` ما زال `const` لا يمكن إعادة إسناده"
+  }
+}

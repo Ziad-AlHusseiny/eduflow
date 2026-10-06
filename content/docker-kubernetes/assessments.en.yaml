@@ -1,0 +1,422 @@
+checkpoints:
+  s-dk-1:
+    - q: "You run notes-api with `docker run --memory 256m`. Under a load test the container dies and `docker ps -a` shows `Exited (137)`. What enforced the limit?"
+      options:
+        - text: "The PID namespace, which caps how much the process tree may allocate."
+          why: "Namespaces control what a process can see, not how much it can use."
+        - text: "Node.js itself, which reads `--memory` and exits with 137."
+          why: "Node doesn't read Docker flags. The limit is enforced outside the process."
+        - text: "A cgroup memory limit; the kernel's OOM killer ended the process with SIGKILL (128 + 9 = 137)."
+          why: "Correct. cgroups enforce resource limits, and an out-of-memory kill shows up as exit code 137."
+        - text: "The image's read-only layers, which can't hold more than 256 MB."
+          why: "Layers are on disk and unrelated to how much RAM a process uses."
+      answer: 2
+    - q: |
+        You change one line in `src/server.ts` and rebuild this image. Roughly how long does the build take compared with an unchanged rebuild?
+        ```dockerfile
+        FROM node:24-slim
+        WORKDIR /app
+        COPY . .
+        RUN npm ci
+        RUN npm run build
+        ```
+      options:
+        - text: "Much longer, because `COPY . .` misses the cache and every step after it, including the full `npm ci`, reruns."
+          why: "Correct. The source change invalidates the `COPY`, and the expensive install sits after it. Copy the package files first."
+        - text: "About the same, because only `npm run build` needs to rerun."
+          why: "That would be true if dependencies were installed before the source was copied. Here they aren't."
+        - text: "Faster, because Docker reuses the previous `node_modules` folder."
+          why: "Once `COPY . .` misses, `npm ci` runs again from scratch on the new layer."
+        - text: "It fails, because changed files can't be copied over cached layers."
+          why: "Changed files simply produce a new layer. Nothing fails; it's just slow."
+      answer: 0
+    - q: "notes-api runs with `CMD [\"node\", \"dist/server.js\"]` and has no SIGTERM handler. What does `docker stop` do?"
+      options:
+        - text: "Node exits immediately with code 143, because SIGTERM's default action terminates the process."
+          why: "That's what happens for a normal process. As PID 1, the default action is not applied, so the signal is ignored."
+        - text: "Docker restarts the container instead of stopping it."
+          why: "`docker stop` never restarts. A restart policy could restart it later, but not as part of stop."
+        - text: "Node finishes in-flight requests and exits 0."
+          why: "Graceful draining only happens if your code handles SIGTERM. Without a handler there's no drain."
+        - text: "The signal is ignored because Node is PID 1 without a handler, so after 10 seconds Docker sends SIGKILL and the container exits with 137."
+          why: "Correct. Add a SIGTERM handler that closes the server and the database pool, and stops take well under a second."
+      answer: 3
+    - q: "You run `docker run -d -p 3000:3000 notes-api:dev`. The logs say `listening on 3000`, but `curl localhost:3000` from your laptop gets `connection reset`. What do you check first?"
+      options:
+        - text: "Whether the image has an `EXPOSE 3000` line."
+          why: "`EXPOSE` is documentation; the `-p` flag already published the port."
+        - text: "Whether the app binds to `127.0.0.1` inside the container instead of `0.0.0.0`."
+          why: "Correct. Published traffic arrives on the container's network interface, which a loopback-only listener never sees."
+        - text: "Whether port 3000 is open in the host firewall."
+          why: "A blocked port would refuse or time out from the start; a reset after connecting points to nothing listening on that interface inside the container."
+        - text: "Whether Docker Desktop is up to date."
+          why: "Version issues are rarely the cause; the listen address is a far more common culprit."
+      answer: 1
+    - q: "Which statement about images and containers is correct?"
+      options:
+        - text: "Each container gets its own full copy of the image's files on disk."
+          why: "Containers share the image's read-only layers and only add a thin writable layer each."
+        - text: "Removing a container also removes its image."
+          why: "Images stay until you remove them with `docker image rm` or a prune."
+        - text: "Many containers can run from one image; each has a private writable layer that is deleted with the container."
+          why: "Correct. That's why data that must survive goes into a volume."
+        - text: "A running container's changes are written back into the image when it stops."
+          why: "Images are immutable. Changes stay in the container's writable layer, which `docker commit` could snapshot, but you shouldn't."
+      answer: 2
+  s-dk-2:
+    - q: "notes-api's runtime stage has `COPY --from=build /app/dist ./dist` and `COPY --from=deps /app/node_modules ./node_modules`, but starting the container fails with `Cannot use import statement outside a module`. What's missing?"
+      options:
+        - text: "TypeScript, which must be installed in the runtime stage."
+          why: "The runtime runs compiled JavaScript. TypeScript is only needed in the build stage."
+        - text: "`package.json`, whose `\"type\": \"module\"` tells Node to treat `.js` files as ES modules."
+          why: "Correct. Copy `package.json` into the runtime stage alongside `dist` and `node_modules`."
+        - text: "The `src/` folder, which Node reads at startup."
+          why: "Node runs `dist/server.js`; it never reads TypeScript sources."
+        - text: "An `ENTRYPOINT` instruction."
+          why: "`CMD` alone starts the app. The error comes from how Node parses the file, not how it's started."
+      answer: 1
+    - q: "Your security team requires that the notes-api process can't modify its own code even if an attacker gets remote code execution. Which Dockerfile choice delivers that?"
+      options:
+        - text: "Use `COPY --chown=node:node` for all files so the app owns them."
+          why: "That gives the app user write access to its own code, the opposite of the requirement."
+        - text: "Run as root but mount the filesystem read-only."
+          why: "Read-only roots help, but running as root weakens everything else. Combine non-root with read-only, don't trade one for the other."
+        - text: "Use the full `node:24` image so system tools can verify file integrity."
+          why: "More tools mean more attack surface, not protection."
+        - text: "Leave the copied files owned by root and switch to `USER node` at the end, so the app can read but not write them."
+          why: "Correct. Root-owned, world-readable files plus an unprivileged user means the code is read-only to the process."
+      answer: 3
+    - q: "A CI job builds `notes-api` on an amd64 runner and deploys it to a cluster of arm64 nodes. Pods fail with `exec format error`. What's the fix?"
+      options:
+        - text: "Build with `docker buildx build --platform linux/amd64,linux/arm64` and push, so the tag points to an index with both architectures."
+          why: "Correct. Each node pulls the manifest for its own architecture from the same tag."
+        - text: "Pin the base image by digest."
+          why: "Digest pinning fixes the bytes, but if those bytes are amd64-only, arm64 nodes still can't run them."
+        - text: "Change the base image to `node:24-alpine`."
+          why: "Alpine images are also per architecture. The build still produces amd64 only."
+        - text: "Add `imagePullPolicy: Always`."
+          why: "It pulls the same amd64-only image again."
+      answer: 0
+    - q: "Your registry has `notes-api:1.4.0`. A hotfix is ready. What should you tag it?"
+      options:
+        - text: "`1.4.0` again, so the manifests don't need to change."
+          why: "Re-pushing a deployed tag means nodes run different code under the same name depending on when they pulled. Never reuse it."
+        - text: "`latest`, since it's the newest build."
+          why: "`latest` is just a default name; it gives no traceability and changes under you."
+        - text: "`1.4.1` plus a `sha-<commit>` tag, and update the manifest (ideally to the new digest)."
+          why: "Correct. New content gets a new version; the SHA tag and digest make it traceable and exact."
+        - text: "`1.4.0-fixed`, overwriting it if another fix comes."
+          why: "Overwriting a tag has the same problem as reusing `1.4.0`."
+      answer: 2
+    - q: "`docker scout cves` reports a critical CVE in an npm package that notes-api uses, and a fixed version exists. What's the right response?"
+      options:
+        - text: "Switch the base image to distroless."
+          why: "Distroless removes OS packages, but the vulnerable npm package is in your `node_modules` and ships either way."
+        - text: "Bump the dependency to the fixed version, rebuild, rescan, and keep the CVE gate in CI."
+          why: "Correct. A fixable app dependency gets fixed, and the gate stops it from coming back."
+        - text: "Add the CVE to an ignore list so the build passes."
+          why: "Ignoring a fixable critical finding hides real risk; ignore lists are for documented, unreachable or unfixable cases."
+        - text: "Rebuild with `--no-cache` so the scanner sees fresh layers."
+          why: "A fresh build installs the same locked version and gets the same finding."
+      answer: 1
+  s-dk-3:
+    - q: "In Compose, the `api` service's `DATABASE_URL` is `postgres://notes:notes@db:5432/notes`. You rename the service from `db` to `postgres` and run `docker compose up -d --remove-orphans`. What happens?"
+      options:
+        - text: "Nothing changes; Compose keeps the old DNS name as an alias."
+          why: "DNS names come from the current service names. `--remove-orphans` removes the old `db` container, and its name goes with it. (Without that flag the orphan keeps running and still answers to `db`, which hides the bug.)"
+        - text: "Compose rewrites `DATABASE_URL` to match."
+          why: "Compose never edits environment values for you."
+        - text: "Both names resolve, because the volume is still called `pgdata`."
+          why: "Volume names have nothing to do with network DNS."
+        - text: "The API can no longer resolve `db` and fails to connect until you update the URL host to `postgres`."
+          why: "Correct. Services find each other by service name, so the connection string must follow the rename."
+      answer: 3
+    - q: "You run `docker compose down`, edit `db/init/002-seed.sql`, and run `docker compose up -d`. The seed data doesn't appear. Why?"
+      options:
+        - text: "`down` deleted the bind mount."
+          why: "Bind mounts point at your host folder; nothing deletes it."
+        - text: "Init scripts run in reverse order."
+          why: "They run in name order, and that isn't the issue here."
+        - text: "The `pgdata` volume survived `down`, so the database is already initialised and init scripts are skipped."
+          why: "Correct. Use a migration for changes to an existing database, or remove the dev volume on purpose with `down -v`."
+        - text: "Postgres only reads `.sql` files at image build time."
+          why: "Init scripts run at container start, but only against an empty data directory."
+      answer: 2
+    - q: "A `migrate` service runs schema migrations and exits. You want `api` to start only after Postgres is healthy and the migration succeeded. Which `depends_on` for `api` is right?"
+      options:
+        - text: "`db` with `condition: service_healthy`, and `migrate` with `condition: service_completed_successfully`."
+          why: "Correct. One waits for the healthcheck; the other waits for the job to exit with code 0."
+        - text: "`db` and `migrate` in the short list form."
+          why: "Short form only waits for the containers to start, not for readiness or completion."
+        - text: "`migrate` with `condition: service_healthy`."
+          why: "A job that exits never becomes healthy, so `api` would never start."
+        - text: "`db` with `condition: service_started` and `restart: true`."
+          why: "That still doesn't wait for Postgres to accept connections or for the migration to finish."
+      answer: 0
+    - q: "Your project `.env` contains `POSTGRES_PASSWORD=devpass`. `compose.yaml` sets `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` under `db.environment`. You run `POSTGRES_PASSWORD=other docker compose up -d` on a fresh volume. Which password does Postgres get?"
+      options:
+        - text: "`devpass`, because `.env` always wins."
+          why: "For interpolation, a variable already set in your shell takes precedence over `.env`."
+        - text: "`other`, because shell environment variables take precedence over `.env` for interpolation."
+          why: "Correct. Handy for one-off overrides, and a reason to check `docker compose config` when values surprise you."
+        - text: "Both, joined with a comma."
+          why: "Variables have one value; nothing gets concatenated."
+        - text: "Neither; Compose errors on conflicting values."
+          why: "There's no conflict error; precedence rules decide."
+      answer: 1
+    - q: "Your teammate's dev setup bind-mounts the whole project (`.:/app`) into the API container on macOS. The app fails with a native module error and file changes feel slow. What do you recommend?"
+      options:
+        - text: "Add `:ro` to the bind mount."
+          why: "Read-only doesn't stop the host's macOS-built `node_modules` from shadowing the container's Linux one."
+        - text: "Switch to a named volume for the whole project."
+          why: "A named volume would never see their edits at all."
+        - text: "Run `npm ci` on the Mac before every start."
+          why: "That still produces macOS binaries, which Linux can't load."
+        - text: "Use Compose watch to sync `./src` into the container and rebuild on lockfile changes, leaving `node_modules` inside the image."
+          why: "Correct. Only source files cross the VM boundary, and dependencies stay built for Linux."
+      answer: 3
+  s-dk-4:
+    - q: "You apply a Deployment with 3 replicas, then delete its ReplicaSet with `kubectl delete rs notes-api-6c8f9d7b5`. What happens?"
+      options:
+        - text: "The Deployment controller creates a new ReplicaSet for the same template, which creates 3 Pods again."
+          why: "Correct. The Deployment still declares 3 replicas of that template, so its controller reconciles the missing ReplicaSet back."
+        - text: "The Deployment is deleted too, because it owned the ReplicaSet."
+          why: "Ownership flows downward: deleting a child doesn't delete its owner."
+        - text: "The Pods keep running without an owner forever."
+          why: "Deleting the ReplicaSet deletes its Pods by default, and the Deployment recreates both anyway."
+        - text: "Nothing, because ReplicaSets can't be deleted directly."
+          why: "You can delete them; the controller simply restores what the Deployment declares."
+      answer: 0
+    - q: "Pods in namespace `web` need to call notes-api, whose Service `notes-api` (port 80) lives in namespace `notes`. Which URL works?"
+      options:
+        - text: "`http://notes-api` (port 80)"
+          why: "The short name resolves only within the same namespace, so from `web` it doesn't find the `notes` Service."
+        - text: "`http://notes-api.notes` (port 80), or the full `notes-api.notes.svc.cluster.local`"
+          why: "Correct. Adding the namespace to the name makes it resolvable from any namespace."
+        - text: "`http://notes:3000`"
+          why: "`notes` is the namespace, not a Service, and 3000 is the Pod port rather than the Service port."
+        - text: "`http://localhost:80` with a NodePort"
+          why: "`localhost` is the calling Pod itself."
+      answer: 1
+    - q: "After a change, notes-api Pods are Running and Ready, but the Service's EndpointSlice is empty. What changed most likely?"
+      options:
+        - text: "The image tag was bumped."
+          why: "A new image creates new Pods with the same labels; endpoints follow them."
+        - text: "The Service type changed from ClusterIP to LoadBalancer."
+          why: "Type changes add external exposure; they don't change which Pods back the Service."
+        - text: "The Pod template's labels changed and no longer match the Service's selector."
+          why: "Correct. Ready Pods without matching labels are invisible to the Service. Compare `kubectl get pods --show-labels` with the selector."
+        - text: "The ConfigMap was updated."
+          why: "Configuration values don't affect label matching."
+      answer: 2
+    - q: "You update the `notes-db` Secret with a new password, and the Postgres password is changed to match. notes-api reads `DATABASE_URL` via `secretKeyRef`. Existing Pods start failing to authenticate. Why, and what's the fix?"
+      options:
+        - text: "Secrets are cached for 24 hours; wait for the cache to expire."
+          why: "There's no such cache rule for env vars. They never change in a running container."
+        - text: "The Secret must be deleted and recreated, not updated."
+          why: "Updating is fine; the issue is how the running Pods consume it."
+        - text: "The Deployment's selector must be changed to pick up the new Secret."
+          why: "Selectors choose Pods, not configuration. Changing them would break the Deployment."
+        - text: "Environment variables are read at container start, so running Pods still use the old value; run `kubectl rollout restart deployment/notes-api`."
+          why: "Correct. New Pods read the updated Secret. For zero-downtime rotation, make the database accept both passwords during the switch."
+      answer: 3
+    - q: "Why do teams run `kubectl diff -f k8s/` before `kubectl apply -f k8s/`?"
+      options:
+        - text: "To see exactly which fields on the live cluster will change, catching surprises such as resetting an emergency scale-up."
+          why: "Correct. It's the review step for the cluster, like reading a pull request before merging."
+        - text: "Because `apply` fails unless `diff` ran first."
+          why: "`apply` works on its own; `diff` is a safety habit, not a requirement."
+        - text: "To validate YAML syntax only."
+          why: "It does need valid YAML, but its value is comparing your files against the live objects."
+        - text: "To download the current manifests into the `k8s/` folder."
+          why: "`diff` doesn't write files; it prints differences."
+      answer: 0
+  s-dk-5:
+    - q: "notes-api's readiness probe hits `/readyz` (which checks Postgres) and liveness hits `/healthz`. Postgres goes down for two minutes. What happens?"
+      options:
+        - text: "All Pods restart repeatedly until Postgres returns."
+          why: "Liveness only checks `/healthz`, which doesn't touch Postgres, so no restarts happen."
+        - text: "Kubernetes reschedules the Pods to other nodes."
+          why: "Probes never move Pods between nodes."
+        - text: "All Pods become not ready and leave the Service's endpoints; they rejoin without restarting when Postgres is back."
+          why: "Correct. Requests fail fast at the Service instead of hanging in the app, and recovery needs no restarts."
+        - text: "Nothing, because probes are paused when a dependency is down."
+          why: "Kubernetes doesn't know about dependencies; it runs probes as configured."
+      answer: 2
+    - q: "A node has 4 CPU cores and its Pods' CPU requests add up to 3.8 cores, though actual usage is only 1 core. A new notes-api Pod requests 250m. What happens?"
+      options:
+        - text: "It's scheduled there, because actual usage is low."
+          why: "The scheduler places Pods by requests, not current usage."
+        - text: "It's scheduled there and other Pods are throttled to make room."
+          why: "Scheduling never squeezes existing Pods' requests."
+        - text: "It's scheduled with a reduced request of 200m."
+          why: "Requests are never adjusted to fit a node."
+        - text: "It isn't scheduled on that node, because only 200m of requestable CPU is left; it goes elsewhere or stays Pending."
+          why: "Correct. Requests are reservations. Over-requesting wastes capacity even when nodes look idle."
+      answer: 3
+    - q: "During a rollout to 1.6.0 with `maxUnavailable: 0`, `kubectl rollout status` hangs and then reports `exceeded its progress deadline`. The new Pod's readiness probe fails. What's the state of the service?"
+      options:
+        - text: "Users are getting errors from the 1.6.0 Pod."
+          why: "An unready Pod isn't in the Service's endpoints, so it receives no traffic."
+        - text: "The old 1.5.x Pods are still serving at full capacity; the rollout is stuck and needs an undo or a fix."
+          why: "Correct. With no unavailability allowed and readiness gating, the old ReplicaSet was never scaled down."
+        - text: "Kubernetes has already rolled back to the previous version."
+          why: "Kubernetes reports the failure but doesn't roll back by itself."
+        - text: "The Deployment has scaled to zero."
+          why: "Nothing in a rolling update scales the whole Deployment to zero."
+      answer: 1
+    - q: "Production uses a shared Gateway. The notes team's HTTPRoute shows `Accepted: False` with reason `NotAllowedByListeners`. What's the likely cause?"
+      options:
+        - text: "The Gateway's listener `allowedRoutes` doesn't permit routes from the `notes` namespace."
+          why: "Correct. Gateways choose which namespaces may attach routes; ask the platform team to allow `notes` or use a selector it matches."
+        - text: "The notes-api Service has no endpoints."
+          why: "Endpoints affect whether traffic reaches Pods, not whether the Gateway accepts the route."
+        - text: "The HTTPRoute uses `apiVersion: gateway.networking.k8s.io/v1`."
+          why: "That's the current, correct version."
+        - text: "The Pods are missing a readiness probe."
+          why: "Probes don't influence route attachment."
+      answer: 0
+    - q: "A distroless notes-api Pod is Running but every request to it times out. `kubectl exec` fails because there's no shell. Which command lets you test, from inside the Pod's network, whether the app answers on port 3000?"
+      options:
+        - text: "`kubectl logs <pod> --previous`"
+          why: "Logs show past output; they can't test connectivity, and the container hasn't crashed."
+        - text: "`kubectl port-forward pod/<pod> 3000:3000` followed by `kubectl events`"
+          why: "Port-forwarding tests from your laptop through the API server, not from inside the Pod's network, and events won't show request timeouts."
+        - text: "`kubectl debug -it <pod> --image=busybox:1.37 --target=api`, then `wget -qO- localhost:3000/healthz`"
+          why: "Correct. The ephemeral container shares the Pod's network namespace, so `localhost:3000` is the app itself."
+        - text: "`kubectl describe node`"
+          why: "Node details won't tell you whether the app answers inside the Pod."
+      answer: 2
+final:
+  - q: "A Skylane engineer wants faster CI builds for notes-api. Builds run on fresh runners with an empty Docker cache, and the Dockerfile is already ordered correctly. What helps most?"
+    options:
+      - text: "Switching `npm ci` to `npm install`."
+        why: "It's not meaningfully faster on a cold cache and gives up reproducible installs."
+      - text: "Exporting and importing the build cache with `--cache-to` and `--cache-from` (for example to a registry)."
+        why: "Correct. Fresh runners can then reuse layers built by earlier jobs."
+      - text: "Building with `--no-cache` for consistency."
+        why: "That guarantees every step runs, which is the slowest possible build."
+      - text: "Adding more `RUN` steps so there are more cache points."
+        why: "More layers don't help when there's no cache to read in the first place."
+    answer: 1
+  - q: "Which Dockerfile line puts a credential at risk even though it's deleted later in the same build?"
+    options:
+      - text: "`RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci`"
+        why: "A secret mount exists only for that step and is never written into a layer. This is the safe pattern."
+      - text: "`COPY package.json package-lock.json ./`"
+        why: "Manifests and lockfiles don't contain credentials."
+      - text: "`USER node`"
+        why: "Changing user doesn't expose any secret."
+      - text: "`COPY .npmrc .` followed later by `RUN rm .npmrc`"
+        why: "Correct. The file lives on in the `COPY` layer; deleting it in a later layer only hides it."
+    answer: 3
+  - q: "notes-api's image runs as `USER node`, and the Deployment's securityContext sets `runAsNonRoot: true`. Pods fail with `CreateContainerConfigError`. What's the cleanest fix?"
+    options:
+      - text: "Set a numeric user, either `USER 1000` in the Dockerfile or `runAsUser: 1000` in the securityContext, so the kubelet can verify it isn't root."
+        why: "Correct. The kubelet can't prove a user *name* isn't root, so it refuses to start the container."
+      - text: "Remove `runAsNonRoot` from the securityContext."
+        why: "That removes a safety check instead of satisfying it."
+      - text: "Switch the image back to running as root."
+        why: "Then `runAsNonRoot` rejects it outright, and you've lost the protection anyway."
+      - text: "Add `allowPrivilegeEscalation: true`."
+        why: "Unrelated to user verification, and a weaker setting."
+    answer: 0
+  - q: "A Compose stack starts reliably on your laptop, but in CI the integration tests sometimes run before the API is ready. Which change fixes it without guesswork?"
+    options:
+      - text: "Add `sleep 30` before the tests."
+        why: "Too short on a slow runner, wasteful on a fast one."
+      - text: "Use `restart: always` on the API."
+        why: "Restarting doesn't tell the test step when the API is ready."
+      - text: "Give the API and database healthchecks and start the stack with `docker compose up -d --wait`."
+        why: "Correct. `--wait` returns only when services are healthy and fails if one turns unhealthy."
+      - text: "Publish the database port so tests can poll it."
+        why: "The database being up doesn't prove the API is ready."
+    answer: 2
+  - q: "You inherit a Deployment with no readiness probe and default rolling-update settings. A release with a broken database URL goes out. What happens?"
+    options:
+      - text: "The rollout stalls and the old Pods keep serving."
+        why: "Without a readiness probe, the new Pods count as ready as soon as they're running, so nothing stalls."
+      - text: "Kubernetes detects the bad URL and rejects the release."
+        why: "Kubernetes knows nothing about your app's configuration values."
+      - text: "Only one Pod is replaced, because of `maxSurge`."
+        why: "`maxSurge` paces the rollout; it doesn't stop it."
+      - text: "New Pods are marked ready as soon as their containers start, so the rollout replaces every working Pod with a failing one."
+        why: "Correct. Readiness is what gates rollouts. Without it, a broken version takes all the traffic."
+    answer: 3
+  - q: "notes-api has CPU request 500m and no CPU limit, memory request and limit 512Mi. Under a traffic spike its CPU usage reaches 1.5 cores on a node with idle capacity. What happens?"
+    options:
+      - text: "It's OOM-killed for exceeding its request."
+        why: "OOM kills relate to memory limits, not CPU, and requests are never enforced as ceilings."
+      - text: "It uses the idle CPU, since there's no CPU limit to throttle it; its request still guarantees 500m under contention."
+        why: "Correct. Requests reserve; only limits cap. This is the reason some teams leave CPU limits off."
+      - text: "It's throttled to 500m."
+        why: "Throttling applies at a CPU *limit*. A request is a minimum reservation, not a cap."
+      - text: "The scheduler moves it to a bigger node."
+        why: "Running Pods are never moved by the scheduler; new Pods get new placements."
+    answer: 1
+  - q: "Which manifest is valid for current Kubernetes?"
+    options:
+      - text: "`apiVersion: extensions/v1beta1` with `kind: Deployment`"
+        why: "That group and version for Deployments was removed long ago."
+      - text: "`apiVersion: autoscaling/v1` with an HPA that uses `metrics` and `behavior`"
+        why: "`metrics` and `behavior` are `autoscaling/v2` fields."
+      - text: "`apiVersion: networking.k8s.io/v1beta1` with `kind: Ingress`"
+        why: "Ingress is served as `networking.k8s.io/v1`; the beta version was removed."
+      - text: "`apiVersion: apps/v1` with `kind: Deployment`"
+        why: "Correct. Deployments, ReplicaSets and StatefulSets live in `apps/v1`."
+    answer: 3
+  - q: "notes-api 1.5.0 added a column, and its code writes to both the old and new columns. 1.5.0 has a bug, so you run `kubectl rollout undo`. Why is this rollback safe?"
+    options:
+      - text: "Because `rollout undo` restores a database snapshot."
+        why: "Kubernetes never touches your database."
+      - text: "Because the schema change was additive, 1.4.0 still finds everything it expects."
+        why: "Correct. Expand-then-contract changes keep adjacent versions compatible, which makes rollbacks boring."
+      - text: "Because Postgres ignores unknown columns in UPDATE statements."
+        why: "Postgres doesn't ignore anything; 1.4.0 simply never references the new column."
+      - text: "Because rollbacks are always safe in Kubernetes."
+        why: "Code rollbacks are only safe when data and schema are compatible with the older code."
+    answer: 1
+  - q: "notes-api's HPA targets 60% CPU utilization with a CPU request of 200m. Four Pods average 240m each. Roughly how many replicas will the HPA want?"
+    options:
+      - text: "4, because the HPA only scales when usage exceeds the request."
+        why: "The target is 60% of the request (120m). 240m is double that."
+      - text: "5"
+        why: "Desired = 4 × 240 / 120 = 8, not 5."
+      - text: "8"
+        why: "Correct. Usage is 200% of the 120m target per Pod, so the HPA doubles the replicas (within `maxReplicas`)."
+      - text: "2, because it averages the request and the usage."
+        why: "The HPA scales by the ratio of usage to target; it doesn't average them."
+    answer: 2
+  - q: "The ingress-nginx controller your cluster used is retired and receives no security fixes. What's the recommended direction for new HTTP routing setups?"
+    options:
+      - text: "Expose every service with its own NodePort."
+        why: "NodePorts aren't a public entry point; you'd lose TLS termination and routing."
+      - text: "Keep the retired controller; it will be maintained by Kubernetes core."
+        why: "Retired means no releases and no security fixes."
+      - text: "Replace Ingress with a LoadBalancer Service per app."
+        why: "Workable for one service; costly and unroutable by host or path for many."
+      - text: "Gateway API: a Gateway owned by the platform team and HTTPRoutes owned by each app team."
+        why: "Correct. Gateway API is the project's recommended successor, with role-oriented resources and many implementations."
+    answer: 3
+  - q: "A notes-api Pod shows `CrashLoopBackOff` and `Last State: Terminated, Exit Code: 137`. `kubectl logs --previous` shows normal request logs, then nothing. What's the likely cause and fix?"
+    options:
+      - text: "The container exceeded its memory limit and was OOM-killed; check `describe` for `OOMKilled`, then raise the limit or fix the leak and cap the V8 heap."
+        why: "Correct. Exit 137 with no error output points to SIGKILL, and memory is the usual reason in a crash loop."
+      - text: "A JavaScript exception crashed the process."
+        why: "An uncaught exception prints a stack trace and exits with code 1, not 137."
+      - text: "The image can't be pulled."
+        why: "A pull failure never gets as far as running the app or logging requests."
+      - text: "The readiness probe failed."
+        why: "Readiness failures don't kill containers at all."
+    answer: 0
+  - q: "Which combination gives notes-api zero-downtime deploys?"
+    options:
+      - text: "`Recreate` strategy plus a liveness probe on `/readyz`."
+        why: "`Recreate` stops everything first, and a dependency-checking liveness probe adds restart storms."
+      - text: "No probes, `maxUnavailable: 25%`, and a high `terminationGracePeriodSeconds`."
+        why: "Without readiness, new Pods take traffic before they're ready, and capacity drops during the rollout."
+      - text: "A readiness probe, `maxUnavailable: 0`, a short `preStop` sleep, and a SIGTERM handler that drains in-flight requests."
+        why: "Correct. New Pods take traffic only when ready, capacity never drops, and old Pods leave without dropping requests."
+      - text: "`replicas: 1` with `kubectl rollout restart` after every change."
+        why: "A single replica means any restart is downtime."
+    answer: 2

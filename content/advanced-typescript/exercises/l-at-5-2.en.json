@@ -1,0 +1,17 @@
+{
+  "title": "Release the stock, retry the charge",
+  "prompt": "Two fixes for Cartwheel's checkout:\n\n1. Make `reserve` return a disposable (with a `[Symbol.dispose]` method that logs `release <sku>` instead of a `release` method), and rewrite `placeOrder` with `using` so every reservation is released when the function exits, **in reverse order**, even when the charge throws.\n2. Write a typed decorator factory `retry(times)` and apply `@retry(3)` to `PaymentGateway.charge`, so a charge that throws is attempted up to 3 times in total before the error propagates. Keep `charge`'s signature intact.\n\nThe top of the file declares `Symbol.dispose` and `Disposable`, because the playground uses the ES2022 lib. `DisposableStack` is not available here; if you need one, write a small class of your own.",
+  "hints": [
+    "`using r = reserve('A');` releases `r` at the end of the block. For a dynamic list of SKUs, collect the disposables in a small class with a `use(item)` method and a `[Symbol.dispose]()` that disposes them in reverse.",
+    "A standard method decorator has the shape `(method, context: ClassMethodDecoratorContext<This, …>) => replacementFunction`. A factory is a function that returns one: `function retry(times: number) { return function <This, Args extends unknown[], Return>(method, context) { … } }`.",
+    "Inside the replacement, loop: `try { return method.call(this, ...args); } catch (e) { if (attempt >= times) throw e; }`."
+  ],
+  "explanation": "`using` ties a resource's lifetime to a block: whatever way `placeOrder` exits, the stack is disposed, and it disposes reservations last-in, first-out, so the starter's leak on a declined charge is gone. The decorator factory captures `times` and returns a standard method decorator; the generic `This`, `Args` and `Return` are inferred from `charge`, so the replacement keeps its exact signature (the `T2` test) and calls the original with `method.call(this, ...args)`. The retry logic now lives in one reusable place instead of inside the payment code.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including the type tests",
+    "releases": "Reservations are released after the charge, in reverse order",
+    "releases-on-error": "Reservations are released even when the charge finally fails",
+    "retries": "`charge` succeeds on the third attempt after two failures",
+    "gives-up": "`charge` gives up and rethrows after 3 attempts"
+  }
+}

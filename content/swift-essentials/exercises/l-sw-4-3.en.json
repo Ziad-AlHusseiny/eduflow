@@ -1,0 +1,10 @@
+{
+  "title": "Persist expenses with SwiftData",
+  "prompt": "Make `Expense` a SwiftData model and finish the list: it must fetch expenses newest first, delete the ones the user swipes away, and add a coffee expense when the button is tapped. The app's scene already has `.modelContainer(for: Expense.self)`.",
+  "hints": [
+    "The macro that makes a class persistent is named after what it describes.",
+    "The property wrapper that fetches models for a view is also the name of a database read.",
+    "All writes go through the model context: one method adds a new model, another removes an existing one."
+  ],
+  "explanation": "`@Model` turns the class into a persisted SwiftData model. `@Query(sort: \\Expense.date, order: .reverse)` fetches every expense newest first and refreshes when the data changes. Writes go through the context from the environment: `context.delete(_:)` removes a model and `context.insert(_:)` adds one. The main context autosaves, and the query updates the list on its own, so there's no array to keep in sync by hand."
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Register the track color",
+  "prompt": "The CMS wrote `12px` into the **Lightning Talks** card's `--track-color`, so its border and badge lose their color. Register `--track-color` with `@property` as a `<color>` that **inherits** and has an initial value of `#64748b` (slate grey). The Design (`#db2777`) and Performance (`#0891b2`) cards must keep their colors, and the broken card should fall back to slate grey.",
+  "hints": [
+    "`@property` takes three descriptors: `syntax`, `inherits` and `initial-value`.",
+    "The syntax for a color is the string `\"<color>\"`, with the quotes.",
+    "@property --track-color { syntax: \"<color>\"; inherits: true; initial-value: #64748b; }"
+  ],
+  "explanation": "Once `--track-color` is registered as a `<color>`, the browser checks every value against that type. `12px` fails, so on the Lightning Talks card the property behaves as unset; because it inherits, it takes the parent's value, and the parent only has the initial value, `#64748b`. Valid track colors pass through and are now stored as real colors, which is why `getComputedStyle` reports `rgb(219, 39, 119)` instead of the text `#db2777`. Without registration, `12px` was substituted into the `border-inline-start` shorthand, making the whole declaration invalid at computed-value time; every longhand reset to its initial value, including `border-style: none`, so the border vanished.",
+  "checks": {
+    "design-pink": "The Design card is pink",
+    "perf-cyan": "The Performance card is cyan",
+    "bad-value-falls-back": "The card with a bad value falls back to slate grey",
+    "registered-color": "--track-color is registered as a color"
+  }
+}

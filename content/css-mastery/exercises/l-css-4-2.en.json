@@ -1,0 +1,18 @@
+{
+  "title": "Animate the filter with a view transition",
+  "prompt": "Clicking **Hide sold-out** hides two cards instantly. Make the change animate:\n\n1. Give every `.session-card` a **unique** `view-transition-name` (in CSS, in JS, or both).\n2. Run the filter update inside `document.startViewTransition()`, and fall back to a plain update when the method doesn't exist.\n3. Make every `::view-transition-group` animation last **250ms**.\n4. Turn the view-transition animations off for users who prefer reduced motion.\n\nThe checks spy on `document.startViewTransition` and also delete it to test your fallback.",
+  "hints": [
+    "One CSS rule can read a per-card custom property: `view-transition-name: var(--vt-name);`. Set `--vt-name` per card from its id in JS.",
+    "In the click handler: `if (!document.startViewTransition) { applyFilter(); return; }` then `document.startViewTransition(() => applyFilter());`.",
+    "`::view-transition-group(*) { animation-duration: 250ms; }`, and inside `@media (prefers-reduced-motion: reduce)` set `animation: none !important` on the group, old and new pseudo-elements."
+  ],
+  "explanation": "Each card now has a unique name (`card-s1`, `card-s2`…), so the browser pairs its old and new snapshots and slides the remaining cards into the gaps while the hidden ones fade out. A shared name would make the browser skip the transition. Wrapping `applyFilter()` in `startViewTransition()` gives the browser its before and after states; the feature check keeps the button working in browsers without the API. The group animations are normal CSS animations, so `animation-duration` sets their timing and `animation: none` inside the reduced-motion query turns them into an instant change.",
+  "checks": {
+    "unique-names": "Every card has a unique view-transition-name",
+    "uses-view-transition": "The click runs the update inside startViewTransition()",
+    "filter-works": "Sold-out cards are hidden and the button state updates",
+    "fallback-works": "The button still works without the View Transition API",
+    "group-duration": "View transition groups last 250ms",
+    "reduced-motion": "The animation is removed for reduced motion"
+  }
+}

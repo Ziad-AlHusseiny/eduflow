@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "// Cartwheel's five order statuses come from the orders table.\n// Right now the type accepts any string at all.\ntype OrderStatus = string;\n\nconst statusLabels: Record<OrderStatus, string> = {\n  processing: 'Processing',\n  shipped: 'Shipped',\n  delivered: 'Delivered',\n  cancelled: 'Cancelled',\n};\n\nfunction statusLabel(status: OrderStatus): string {\n  return statusLabels[status];\n}\n\nfunction canCancel(status: OrderStatus): boolean {\n  return status === 'processing';\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<OrderStatus, 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'>>;\n\n// @ts-expect-error: 'canceled' (one L) is a typo, not a status\ncanCancel('canceled');\n\nconsole.log(statusLabel('shipped'), canCancel('processing'));\n"
+  },
+  "solution": {
+    "ts": "// Cartwheel's five order statuses come from the orders table.\ntype OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\n\nconst statusLabels: Record<OrderStatus, string> = {\n  processing: 'Processing',\n  shipped: 'Shipped',\n  delivered: 'Delivered',\n  cancelled: 'Cancelled',\n  returned: 'Returned',\n};\n\nfunction statusLabel(status: OrderStatus): string {\n  return statusLabels[status];\n}\n\nfunction canCancel(status: OrderStatus): boolean {\n  return status === 'processing';\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<OrderStatus, 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'>>;\n\n// @ts-expect-error: 'canceled' (one L) is a typo, not a status\ncanCancel('canceled');\n\nconsole.log(statusLabel('shipped'), canCancel('processing'));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "returned-label",
+      "test": "return statusLabel('returned') === 'Returned';"
+    },
+    {
+      "id": "can-cancel",
+      "test": "return canCancel('processing') === true && canCancel('shipped') === false;"
+    }
+  ]
+}

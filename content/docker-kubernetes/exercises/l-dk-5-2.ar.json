@@ -1,0 +1,10 @@
+{
+  "title": "الـ autoscaler الذي لا يوسّع أبدًا",
+  "prompt": "يعرض `kubectl get hpa notes-api` القيمة `cpu: <unknown>/70%` مع أن metrics-server يعمل، وفي الأيام المزدحمة يهبط عدد النسخ إلى 3 في كل مرة ينشر فيها الـ CI. اختر السطرين **الاثنين** المسؤولين.",
+  "hints": [
+    "استخدام المعالج يُقاس كنسبة مئوية من شيء ما. هل هذا الشيء معرَّف لهذا الـ container؟",
+    "أي حقل يكتب فيه كلٌّ من الـ HPA وكل `kubectl apply`؟"
+  ],
+  "explanation": "السطر 14: الـ container يضبط حدًّا للذاكرة فقط، فلا يوجد request للمعالج، ولا يستطيع الـ HPA حساب الاستخدام كنسبة منه. أضف الـ requests:\n\n```yaml\n          resources:\n            requests:\n              cpu: 250m\n              memory: 256Mi\n            limits:\n              memory: 512Mi\n```\nالسطر 6: وجود `replicas: 3` في الـ manifest يعني أن كل `kubectl apply` يعيد ضبط العدد، متصارعًا مع الـ HPA. احذف الحقل حالما يدير HPA الـ Deployment؛ فالحدّ الأدنى صار في `minReplicas`.",
+  "checks": {}
+}

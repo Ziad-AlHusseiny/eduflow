@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "wrap-chips",
+    "max-button",
+    "fill-label",
+    "hug-sheet",
+    "fill-chips",
+    "ignore-toggle"
+  ],
+  "correct": [
+    "wrap-chips",
+    "max-button",
+    "fill-label"
+  ]
+}

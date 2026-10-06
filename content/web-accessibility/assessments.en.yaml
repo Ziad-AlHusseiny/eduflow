@@ -1,0 +1,396 @@
+checkpoints:
+  s-a11y-1:
+    - q: 'A Ticketly manager says: "Only 2% of our customers told us they are disabled, so accessibility can wait." What is the strongest response?'
+      options:
+        - text: Disability is under-reported, temporary and situational limits affect far more people, and selling to EU customers brings legal duties
+          why: Correct. Around one in six people has a significant disability, many never disclose it, and the same fixes help people with broken wrists, glare or slow connections.
+        - text: Agree, because WCAG only applies when more than 5% of users are disabled
+          why: WCAG has no usage threshold. It describes the content, not the audience size.
+        - text: Agree, but add an accessibility overlay script to be safe
+          why: Overlays don't fix the underlying markup, and the default page stays broken for the people who need it most.
+      answer: 0
+    - q: Karim uses a single switch. The scanning software steps through Ticketly's controls but never stops on the seat map's "Select" control, a div with a click handler. Why?
+      options:
+        - text: Switch software only works on mobile devices
+          why: Switch access works on desktop and mobile. The problem is the element, not the platform.
+        - text: The div needs a larger font size
+          why: Size doesn't affect whether scanning stops on an element; focusability does.
+        - text: Switch users can only press links, not buttons
+          why: Switch software can activate any focusable control, buttons included.
+        - text: Switch scanning moves between focusable elements, and a div with only a click handler isn't focusable
+          why: Correct. Switch users depend on the same keyboard operability as everyone else. A real button fixes it.
+      answer: 3
+    - q: Ticketly's "Need help?" link sits in the header on most pages but moves into the footer on the checkout steps. Which WCAG 2.2 criterion is at risk?
+      options:
+        - text: 2.4.11 Focus Not Obscured (Minimum)
+          why: That criterion is about focused elements being hidden behind other content, not about where help appears.
+        - text: 3.2.6 Consistent Help
+          why: "Correct. New in 2.2 at Level A: help mechanisms repeated across pages must appear in the same relative order."
+        - text: 3.3.7 Redundant Entry
+          why: Redundant Entry is about not asking users to re-enter information they already gave.
+        - text: 2.5.8 Target Size (Minimum)
+          why: Target size concerns how big a control is, not where it is placed across pages.
+      answer: 1
+    - q: A button shows a bin icon and the visible text "Delete ticket", but NVDA announces "Remove, button". What explains this?
+      options:
+        - text: NVDA shortens long button text automatically
+          why: Screen readers read the accessible name as it is; they don't shorten or paraphrase it.
+        - text: The bin icon's alt text is read instead of the text
+          why: If the icon had alt text it would be added to the content, not replace it.
+        - text: An aria-label="Remove" overrides the visible text, which also breaks Label in Name for voice control users
+          why: Correct. aria-label replaces the content as the name. Remove it, or make it start with "Delete ticket".
+        - text: The button is missing a title attribute
+          why: title is the last fallback and wouldn't override anything; the announced name comes from a higher-priority source.
+      answer: 2
+    - q: Ticketly is a 40-person company based outside the EU that sells festival tickets online to customers in Germany. Does the European Accessibility Act matter to it?
+      options:
+        - text: Yes; e-commerce services offered to EU consumers are in scope, and the microenterprise exemption only covers fewer than 10 staff
+          why: Correct. Since 28 June 2025 the EAA applies to covered services offered in the EU, wherever the company is based.
+        - text: No, because the company isn't based in the EU
+          why: The EAA follows where services are offered to consumers, not where the company is registered.
+        - text: No, because event tickets are not covered by any accessibility law
+          why: E-commerce is one of the EAA's covered services, and transport ticketing is covered too.
+      answer: 0
+  s-a11y-2:
+    - q: Ticketly's site search form sits in the header. Which markup exposes it as a search landmark?
+      options:
+        - text: '`<div class="search"><form>…</form></div>`'
+          why: A div with a class has no landmark role, so it doesn't appear in the landmarks list.
+        - text: "`<form>…</form>` with no name"
+          why: A form becomes a landmark only when it has an accessible name, and even then it is a form landmark, not search.
+        - text: '`<nav class="search">…</nav>`'
+          why: nav is for navigation links. Using it for search would mislabel the region.
+        - text: "`<search><form>…</form></search>`"
+          why: Correct. The search element maps to the search landmark. On older code you will also see form role="search".
+      answer: 3
+    - q: A "Download your tickets (PDF)" control fetches the file at /bookings/123/tickets.pdf. Which element is right?
+      options:
+        - text: 'A link: `<a href="/bookings/123/tickets.pdf">Download your tickets (PDF, 200 KB)</a>`'
+          why: Correct. It goes to a resource with a URL, so it is a link. Saying the file type and size sets expectations.
+        - text: A button that calls fetch() and opens the file
+          why: Recreating navigation with a script loses link behaviour such as opening in a new tab or copying the address.
+        - text: A div styled as a button with role="link"
+          why: That needs tabindex and key handling to work, and a real anchor already does it all.
+      answer: 0
+    - q: The checkout asks for date of birth as three inputs (day, month, year) under one visible text "Date of birth". What is the best markup?
+      options:
+        - text: One label element with for pointing at the day input
+          why: A label can only name one control, so month and year would be unnamed.
+        - text: aria-label="Date of birth" on all three inputs
+          why: All three would get the same name, so users couldn't tell day from month from year.
+        - text: A fieldset with legend "Date of birth", and labels Day, Month and Year with autocomplete bday-day, bday-month and bday-year
+          why: Correct. The legend names the group, each field has its own label, and autofill works.
+      answer: 2
+    - q: "`<button><img src=\"calendar.svg\" alt=\"calendar\"></button>` adds the event to the user's calendar. What should change?"
+      options:
+        - text: Nothing; the button has a name
+          why: It has a name, but "calendar" describes the picture, not what pressing the button does.
+        - text: The alt should describe the action, such as "Add to calendar"
+          why: Correct. For functional images, alt text names the action or destination.
+        - text: The alt should be empty because icons are decorative
+          why: This icon is the button's only content, so an empty alt would leave the button with no name at all.
+        - text: The image should get role="button"
+          why: The button element already supplies the role. The problem is the name.
+      answer: 1
+    - q: Ticketly's festival schedule is a table with stage names across the top and times down the first column. What makes each cell announce its time and stage?
+      options:
+        - text: Bold text in the first column and first row
+          why: Bold is visual only and isn't exposed as header information.
+        - text: A summary paragraph above the table
+          why: A summary helps orientation but doesn't associate headers with each cell.
+        - text: role="grid" on the table
+          why: grid is for interactive, spreadsheet-like widgets and adds keyboard expectations a schedule doesn't need.
+        - text: th scope="col" for the stages, th scope="row" for the times, and a caption
+          why: Correct. Screen readers then announce the row and column headers as users move between cells.
+      answer: 3
+  s-a11y-3:
+    - q: '`<div class="card" tabindex="0" onclick="openEvent()">` receives focus, but pressing Enter does nothing. Why?'
+      options:
+        - text: tabindex only makes it focusable; keyboard activation isn't wired, because Enter doesn't fire click on a div
+          why: Correct. Use a link (it opens an event page) and you get focus, Enter and the right role for free.
+        - text: The onclick attribute only works with a mouse in some browsers
+          why: onclick fires for real clicks in every browser; it is just never triggered by keys on a div.
+        - text: tabindex must be 1 for Enter to work
+          why: Positive tabindex only changes focus order and causes ordering bugs. It has nothing to do with activation.
+      answer: 0
+    - q: The booking dialog's custom close button removes the dialog element from the DOM. Afterwards, keyboard focus jumps to the top of the page. What is the best fix?
+      options:
+        - text: Add tabindex="-1" to the body so focus has somewhere to go
+          why: Focus already falls back to the body. The problem is that it should go back to the control that opened the dialog.
+        - text: Add aria-live to the dialog so the closing is announced
+          why: An announcement doesn't put the user back where they were.
+        - text: Close it with dialog.close() so the browser restores focus to the opener, or focus the opener explicitly before removing anything
+          why: Correct. Users continue from where they started instead of re-tabbing through the page.
+        - text: Remove the close button and rely on Escape only
+          why: Many users don't know about Escape, and touch users have no Escape key.
+      answer: 2
+    - q: As the user types in Ticketly's search box, a count such as "12 events found" updates. What is the best way to announce it?
+      options:
+        - text: Move focus to the count after every keystroke
+          why: That would pull the user out of the field they are typing in.
+        - text: A role="status" element present from page load, updated once typing pauses
+          why: Correct. A polite live region announces the count without moving focus, and waiting for a pause avoids a flood of announcements.
+        - text: role="alert" on the count so it is never missed
+          why: Assertive announcements on every keystroke interrupt the user's own typing echo, which is exhausting.
+        - text: Put the count in the input's placeholder
+          why: The placeholder isn't announced on change and disappears while the user types.
+      answer: 1
+    - q: In a tablist, arrow keys move focus between tabs, but the panel only changes when the user presses Enter or Space. Is that a valid implementation of the APG tabs pattern?
+      options:
+        - text: No, the APG requires panels to change as soon as a tab receives focus
+          why: The APG describes both automatic and manual activation.
+        - text: No, tabs must be activated with the Tab key
+          why: Tab moves out of the tablist into the panel. Arrow keys move between tabs.
+        - text: Only if each tab is also a link
+          why: Tabs aren't links; links to other pages are navigation, not a tab widget.
+        - text: Yes; this is manual activation, recommended when showing a panel is slow, for example because it loads data
+          why: Correct. Automatic activation suits instant panels; manual avoids loading every panel the user arrows past.
+      answer: 3
+    - q: '`<button aria-controls="events-menu">Events</button>` and `<ul id="events-menu" aria-expanded="true">`. NVDA never says "expanded" on the button. Why?'
+      options:
+        - text: aria-expanded belongs on the button that controls the content, not on the list
+          why: Correct. The control carries the state; move the attribute and update it on each toggle.
+        - text: aria-controls must be removed for aria-expanded to work
+          why: aria-controls is optional, but it doesn't stop aria-expanded from working.
+        - text: aria-expanded only works on elements with role="menu"
+          why: aria-expanded is supported on buttons, links, comboboxes and more. Disclosure buttons use it all the time.
+      answer: 0
+  s-a11y-4:
+    - q: A Ticketly section heading is 24px, regular weight, with a contrast ratio of 3.2:1. Does it meet 1.4.3 at Level AA?
+      options:
+        - text: No, all text needs 4.5:1
+          why: Large text has a lower threshold, because bigger letters are easier to read at lower contrast.
+        - text: No, headings need 7:1
+          why: 7:1 is the AAA threshold for normal text; it isn't required at AA.
+        - text: Yes; 24px counts as large text, which needs 3:1
+          why: Correct. Large text is at least 24px regular or 18.66px bold, and needs 3:1.
+        - text: Yes, because headings are exempt from contrast requirements
+          why: Headings are text and are covered. They pass here because of their size, not an exemption.
+      answer: 2
+    - q: At a 320px viewport, Ticketly's page reflows, but the wide festival schedule table scrolls horizontally inside its own container. Does this fail 1.4.10 Reflow?
+      options:
+        - text: No; content that needs two dimensions, like data tables, is exempt, as long as the rest of the page reflows
+          why: Correct. Keep the scrolling to the table's container (and make that container keyboard scrollable) rather than the whole page.
+        - text: Yes; nothing may ever scroll horizontally
+          why: The criterion explicitly exempts content that requires a two-dimensional layout.
+        - text: Yes, unless the table is replaced with an image
+          why: An image of a table would remove the data from screen readers and fail other criteria.
+      answer: 0
+    - q: |-
+        What is the accessible name of the search input?
+
+        ```html
+        <input id="q" placeholder="Search events" aria-labelledby="go">
+        <button id="go">Search</button>
+        ```
+      options:
+        - text: '"Search events"'
+          why: The placeholder is only a last resort, used when nothing else provides a name.
+        - text: No name, because aria-labelledby can't point at a button
+          why: aria-labelledby can reference any element with text.
+        - text: '"Search events Search"'
+          why: Names don't combine sources; the highest-priority source wins.
+        - text: '"Search"'
+          why: Correct. aria-labelledby has the highest priority, so the button's text becomes the input's name.
+      answer: 3
+    - q: "Ticketly's hero uses a parallax effect: the background moves at a different speed when scrolling. A user has set Reduce motion in their operating system. What should happen?"
+      options:
+        - text: Nothing; parallax is triggered by the user's own scrolling, so it is acceptable
+          why: Motion triggered by interaction can still cause dizziness; that is exactly what reduced motion preferences are for.
+        - text: "Inside a prefers-reduced-motion: reduce media query, turn the parallax off and show a static background"
+          why: Correct. The content stays, and the large movement that can trigger vestibular symptoms goes.
+        - text: Show a dialog asking whether they want animations
+          why: The user has already answered in their system settings. Respect the preference without asking again.
+      answer: 1
+    - q: Ticketly launches a fully Arabic version of its site. What belongs on the root element?
+      options:
+        - text: '`<html lang="en" dir="rtl">`'
+          why: The language would still be English, so screen readers would use an English voice for Arabic text.
+        - text: '`<html lang="ar">` only, with direction: rtl in CSS'
+          why: Direction is part of the content's meaning and belongs in the markup, not only in a stylesheet.
+        - text: '`<html dir="auto">`'
+          why: auto is for text of unknown direction such as user input. For a known Arabic page, state it, along with the language.
+        - text: '`<html lang="ar" dir="rtl">`'
+          why: Correct. lang selects the Arabic voice and other language features; dir sets the base direction for the whole page.
+      answer: 3
+  s-a11y-5:
+    - q: axe marks the contrast of white text over the festival photo as "needs review" rather than a violation. What should you do?
+      options:
+        - text: Check it manually against the lightest part of the photo behind the text, and add an overlay if it fails
+          why: Correct. axe can't know which pixels are behind the text, so a person must measure it.
+        - text: Ignore it, since it isn't a violation
+          why: "\"Needs review\" means the tool couldn't decide, not that the content passed."
+        - text: Disable the color-contrast rule so the report stays clean
+          why: That hides every future contrast failure on the site, not only this one.
+      answer: 0
+    - q: While testing a form with NVDA, typing the letter "h" in a text field jumps to the next heading instead of typing. What is happening?
+      options:
+        - text: The field is read-only
+          why: A read-only field wouldn't make NVDA jump to headings; it would simply not accept input.
+        - text: NVDA's keyboard layout is broken and needs reinstalling
+          why: Nothing is broken. This is how browse mode is designed to work.
+        - text: NVDA is still in browse mode, where letters are navigation keys; press Enter or NVDA+Space to switch to focus mode
+          why: Correct. If NVDA never switches automatically, check that the field is a real input and not a custom element without a role.
+        - text: The page has too many headings
+          why: The number of headings has no effect on whether letters are typed.
+      answer: 2
+    - q: Your first Playwright and axe run on Ticketly reports 340 violations across the site. What is the most effective next step?
+      options:
+        - text: Turn the scan off until there is time to fix everything
+          why: Without the scan, new violations are added every week, so the backlog only grows.
+        - text: Fix the violations in the order axe lists them
+          why: axe's order isn't a priority order. Impact on real tasks should decide.
+        - text: Add aria-label attributes wherever axe complains
+          why: Adding ARIA to silence a tool often creates new problems, such as names that don't match visible labels.
+        - text: Record the current violations as a baseline, fail CI only on new ones, and fix the baseline starting with the checkout flow
+          why: Correct. The baseline stops regressions immediately while the existing debt is paid down by impact.
+      answer: 3
+    - q: Which audit finding should be rated critical?
+      options:
+        - text: A decorative divider announced as "graphic"
+          why: This adds noise but doesn't stop anyone completing a task, so it is minor.
+        - text: A keyboard trap inside the embedded payment form
+          why: Correct. Keyboard users can't finish paying or leave the form, which blocks the most important task on the site.
+        - text: Footer link text that says "More"
+          why: Vague link text is a real issue, but it rarely blocks a task. It is moderate at most.
+        - text: Grey footer text at 4.2:1 contrast
+          why: It fails 1.4.3 and should be fixed, but it doesn't block a key task, so it isn't critical.
+      answer: 1
+    - q: The vendor of Ticketly's live-chat widget says it is "fully WCAG compliant". What should you do?
+      options:
+        - text: Ask for their Accessibility Conformance Report, and include the widget in your own keyboard and screen reader testing
+          why: Correct. Barriers in third-party widgets are your users' barriers, and claims are only as good as their testing.
+        - text: Accept the claim, since vendors are legally responsible for their widgets
+          why: On your site, your users meet the widget's barriers, and you may share responsibility for them.
+        - text: Exclude the widget from your audit scope to keep the report focused
+          why: Leaving out a feature people use to get help hides a part of the experience that may be inaccessible.
+      answer: 0
+final:
+  - q: |-
+      Which change fixes the most problems at once?
+
+      ```html
+      <span class="link" onclick="go('/faq')">FAQ</span>
+      ```
+    options:
+      - text: Add tabindex="0"
+        why: That makes it focusable, but it still has no link role, doesn't respond to Enter, and can't be opened in a new tab.
+      - text: Add role="link"
+        why: The role changes the announcement only; it is still unfocusable and has no keyboard support.
+      - text: Add aria-label="FAQ"
+        why: The span already has the text FAQ. A label on a generic span is ignored and fixes nothing.
+      - text: Replace it with `<a href="/faq">FAQ</a>`
+        why: Correct. A real link brings the role, focus, Enter activation, new-tab support and works without JavaScript.
+    answer: 3
+  - q: "Ticketly's buttons use white 14px text on #5b3cc4, a ratio of 7.27:1. How does this rate against WCAG contrast criteria?"
+    options:
+      - text: It fails AA, because small text needs 10:1
+        why: There is no 10:1 threshold. AA needs 4.5:1 for normal text.
+      - text: It passes AA (4.5:1) and also AAA (7:1) for normal text
+        why: Correct. 7.27 is above both thresholds.
+      - text: It passes AA only because buttons count as large text
+        why: Text size, not the element type, decides what counts as large. 14px regular is normal text.
+    answer: 1
+  - q: A long registration form is submitted with three errors. Where should focus go?
+    options:
+      - text: To an error summary at the top listing the three problems as links to their fields
+        why: Correct. Users hear how many problems there are and can jump to each one.
+      - text: Nowhere; the red borders show which fields are wrong
+        why: Colour alone fails 1.4.1, and without a focus change screen reader users don't know anything happened.
+      - text: To the submit button, so the user can try again
+        why: Focus would stay where the user already is, and nothing would tell them what went wrong.
+    answer: 0
+  - q: A text-formatting toggle uses `aria-pressed`, and its label also switches from "Bold" to "Unbold" when pressed. What is the problem?
+    options:
+      - text: aria-pressed only works on checkboxes
+        why: aria-pressed is the correct state for toggle buttons.
+      - text: Toggle buttons must use aria-expanded instead
+        why: aria-expanded is for controls that show and hide other content.
+      - text: Changing both the label and the state gives a confusing announcement such as "Unbold, toggle button, pressed"; keep the label constant
+        why: Correct. Either a fixed label with aria-pressed, or a changing label without it, but not both.
+    answer: 2
+  - q: A user deletes the last ticket in their basket, and the Remove button they pressed disappears. Where should focus go?
+    options:
+      - text: Nowhere; the browser handles it
+        why: The browser drops focus to the body, so the next Tab starts at the top of the page.
+      - text: To the site logo
+        why: That takes the user out of the context they were working in.
+      - text: To the first link in the footer
+        why: That is far from the basket and gives no feedback about what happened.
+      - text: To the basket heading or a "Your basket is empty" message made focusable with tabindex="-1"
+        why: Correct. The user stays in context and hears the result of their action.
+    answer: 3
+  - q: Two 20 × 20 px icon buttons have their centres 30 px apart. Do they meet 2.5.8 Target Size (Minimum)?
+    options:
+      - text: No, every target must be at least 24 × 24 px
+        why: There is a spacing exception for undersized targets.
+      - text: "Yes, under the spacing exception: 24 px circles centred on each target don't overlap each other or the other target"
+        why: Correct. With 30 px between centres, the 12 px radius circles stay clear. Bigger targets are still kinder.
+      - text: Yes, because icon buttons are exempt
+        why: Icon buttons have no special exemption; only inline targets, equivalents, browser-controlled and essential ones do.
+    answer: 1
+  - q: An English article on Ticketly quotes a French review in a blockquote. What does WCAG require?
+    options:
+      - text: '`lang="fr"` on the blockquote, so screen readers switch to French pronunciation (3.1.2 Language of Parts)'
+        why: Correct. Passages in another language get their own lang attribute.
+      - text: '`dir="rtl"` on the blockquote'
+        why: French is written left to right. dir is about direction, not language.
+      - text: Nothing, because the page already has lang="en"
+        why: The page language covers English content only. Other-language passages need their own lang.
+    answer: 0
+  - q: After each click on Add to basket, Ticketly uses `role="alert"` to say "Ticket added". What is the problem?
+    options:
+      - text: Alerts are never announced by screen readers
+        why: Alerts are announced, and immediately, which is the issue.
+      - text: Live regions can't contain the word "added"
+        why: Any text can be announced from a live region.
+      - text: alert is assertive and interrupts speech; a routine confirmation should use role="status"
+        why: Correct. Save alert for rare, urgent messages, such as a failed payment.
+      - text: The message should be in the page title instead
+        why: Changing the title isn't announced reliably and misuses the title.
+    answer: 2
+  - q: Which testing method would reveal that a modal dialog leaves keyboard focus on the page behind it?
+    options:
+      - text: An axe scan of the page with the dialog closed
+        why: With the dialog closed there is nothing to test, and focus behaviour needs interaction anyway.
+      - text: Checking colour contrast with the DevTools picker
+        why: Contrast has nothing to do with where focus goes.
+      - text: Validating the HTML
+        why: The markup can be perfectly valid while the focus behaviour is broken.
+      - text: Opening the dialog with the keyboard and pressing Tab, or watching document.activeElement
+        why: Correct. Focus management is about behaviour over time, which a person testing interactively sees immediately.
+    answer: 3
+  - q: |-
+      What is wrong with this link?
+
+      ```html
+      <a href="/artists/nour"><img src="nour.jpg" alt="Nour Quartet"> Nour Quartet</a>
+      ```
+    options:
+      - text: The image needs role="img"
+        why: img elements already have the image role.
+      - text: The name becomes "Nour Quartet Nour Quartet"; the image should have alt="" because the text already names the link
+        why: Correct. When link text is present, an image inside that only repeats it should be marked decorative.
+      - text: Links can't contain images
+        why: Links can contain images; the alt text just has to fit the context.
+    answer: 1
+  - q: Which of these WCAG 2.2 criteria is Level AAA and so not required for an AA conformance claim?
+    options:
+      - text: 2.4.13 Focus Appearance
+        why: Correct. It sets a minimum size and contrast for focus indicators at AAA. AA requires a visible indicator (2.4.7) that isn't fully obscured (2.4.11).
+      - text: 2.5.8 Target Size (Minimum)
+        why: "This is AA and required: targets of at least 24 by 24 CSS pixels or adequately spaced."
+      - text: 3.3.8 Accessible Authentication (Minimum)
+        why: "This is AA and required: no cognitive function test without an alternative or helper."
+      - text: 2.4.11 Focus Not Obscured (Minimum)
+        why: "This is AA and required: focused elements can't be entirely hidden by author content."
+    answer: 0
+  - q: Ticketly's JavaScript auto-scrolls a carousel of artists. How should the code respect a reduced-motion preference?
+    options:
+      - text: Check `navigator.reducedMotion` before starting
+        why: No such property exists. The preference is read through a media query.
+      - text: Ask the user with confirm() on every page load
+        why: Users have already set the preference in their system. Asking again is an annoyance.
+      - text: "Check `window.matchMedia('(prefers-reduced-motion: reduce)').matches` and don't start auto-scrolling when it is true, keeping a pause control either way"
+        why: Correct. Respect the system preference, and keep the pause control that 2.2.2 requires for everyone else.
+    answer: 2

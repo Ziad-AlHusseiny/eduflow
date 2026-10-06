@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- BLACKFRIDAY25 used outside November 2025, web or app, not cancelled\nSELECT order_id, order_date, channel\nFROM orders\nWHERE coupon_code = 'BLACKFRIDAY25'\n  AND channel = 'web' OR channel = 'mobile_app'\n  AND status <> 'cancelled'\n  AND order_date >= '2025-01-01'\n  AND order_date < '2025-11-01' OR order_date >= '2025-12-01'\nORDER BY order_date;",
+  "solution": "SELECT order_id, order_date, channel\nFROM orders\nWHERE coupon_code = 'BLACKFRIDAY25'\n  AND channel IN ('web', 'mobile_app')\n  AND status <> 'cancelled'\n  AND order_date >= '2025-01-01'\n  AND (order_date < '2025-11-01' OR order_date >= '2025-12-01')\nORDER BY order_date, order_id;",
+  "orderMatters": true
+}

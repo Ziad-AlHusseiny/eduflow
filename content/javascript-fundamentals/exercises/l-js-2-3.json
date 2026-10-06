@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// 1. Dollars (like 4.1) to whole cents (410)\nfunction toCents(dollars) {\n}\n\n// 2. Cents to a display string, with a symbol that defaults to \"$\"\nfunction formatMoney(cents) {\n}\n\n// 3. Replace null with an arrow function: true for 10000 cents or more\nconst isBig = null;\n\n// 4. Count the amounts for which test(amount) returns true\nfunction countWhere(amounts, test) {\n  return 0;\n}\n\nconsole.log(formatMoney(toCents(12.2)));\n"
+  },
+  "solution": {
+    "js": "function toCents(dollars) {\n  return Math.round(dollars * 100);\n}\n\nfunction formatMoney(cents, symbol = \"$\") {\n  return `${symbol}${(cents / 100).toFixed(2)}`;\n}\n\nconst isBig = (cents) => cents >= 10000;\n\nfunction countWhere(amounts, test) {\n  let count = 0;\n  for (const amount of amounts) {\n    if (test(amount)) {\n      count++;\n    }\n  }\n  return count;\n}\n\nconsole.log(formatMoney(toCents(12.2)));\n"
+  },
+  "checks": [
+    {
+      "id": "to-cents",
+      "test": "return toCents(4.1) === 410 && toCents(12.2) === 1220 && toCents(0.07) === 7;\n"
+    },
+    {
+      "id": "format",
+      "test": "return formatMoney(1220) === '$12.20' && formatMoney(5) === '$0.05';\n"
+    },
+    {
+      "id": "format-symbol",
+      "test": "return formatMoney(1220, '€') === '€12.20' && formatMoney(450, undefined) === '$4.50';\n"
+    },
+    {
+      "id": "is-big-arrow",
+      "test": "return typeof isBig === 'function' && !('prototype' in isBig) && isBig(10000) === true && isBig(9999) === false;\n"
+    },
+    {
+      "id": "count-where",
+      "test": "const amounts = [450, 12000, 99, 10000];\nreturn countWhere(amounts, isBig) === 2 && countWhere(amounts, (c) => c < 100) === 1 && countWhere([], isBig) === 0;\n"
+    }
+  ]
+}

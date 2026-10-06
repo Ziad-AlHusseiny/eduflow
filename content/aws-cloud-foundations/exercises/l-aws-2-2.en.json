@@ -1,0 +1,10 @@
+{
+  "title": "Review the Developers policy",
+  "prompt": "A colleague wrote this identity-based policy for Lantern's **Developers** group. The intent, from the ticket: developers can **read and write RSVPs** (get, put and query items) in the `lantern-rsvps` table, **read any poster** in the `lantern-posters` bucket, and **delete posters only when signed in with MFA**. Select every line that breaks that intent.",
+  "hints": [
+    "Compare each Action with the verbs in the ticket. Is anything broader than asked?",
+    "Is `s3:GetObject` a bucket-level or an object-level action? Check its Resource.",
+    "Read the MFA condition out loud: the statement applies when MFA present is ... what?"
+  ],
+  "explanation": "Line 7 grants `dynamodb:*`, which includes `DeleteTable` and `UpdateTable`; the ticket needs only `dynamodb:GetItem`, `dynamodb:PutItem` and `dynamodb:Query`, so list those. Line 14 uses the bucket ARN for `s3:GetObject`, an object-level action, so the statement never matches a real download; it needs `arn:aws:s3:::lantern-posters/*`. Line 22 inverts the condition: it allows deletes only when MFA is **absent**. It should be `\"aws:MultiFactorAuthPresent\": \"true\"`. Fixed lines:\n\n```json\n\"Action\": [\"dynamodb:GetItem\", \"dynamodb:PutItem\", \"dynamodb:Query\"],\n\"Resource\": \"arn:aws:s3:::lantern-posters/*\"\n\"Bool\": { \"aws:MultiFactorAuthPresent\": \"true\" }\n```\n\nPolicy validation can flag some of these, but the inverted MFA condition is perfectly valid JSON and a perfectly valid policy. Only reading the policy against the intent catches it."
+}

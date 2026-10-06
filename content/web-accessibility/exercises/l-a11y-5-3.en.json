@@ -1,0 +1,20 @@
+{
+  "title": "Plan Ticketly's audit",
+  "prompt": "You have been asked to audit Ticketly against WCAG 2.2 AA before the festival's ticket launch. Put the audit steps in the order you would carry them out.",
+  "hints": [
+    "You can't choose pages until you know what you are auditing against and which flows matter.",
+    "Do the cheap, fast automated checks before the slower manual passes, so the manual testers aren't distracted by missing labels.",
+    "Testing ends with a sweep of the visual and content checks the tool and the two passes don't cover. The report comes after all testing, and the work isn't finished until fixes are retested."
+  ],
+  "explanation": "An audit starts by fixing its **scope and target**, so everyone agrees what \"done\" means. The **sample** then picks representative pages and complete flows. **Automated scans** come first among the tests because they are fast and clear away the obvious problems. The **keyboard pass** precedes the **screen reader pass** because keyboard failures (unreachable controls, traps) block screen reader testing too. **Visual and content checks** cover what neither tool reveals. The **report** prioritises by impact, and the cycle closes with fixes, a **retest** of the same flows and an updated accessibility statement.",
+  "items": {
+    "scope": "Agree the scope and target: WCAG 2.2 AA, the browsers and assistive technologies, and the key flows",
+    "sample": "Choose a sample: home, event page, checkout and account pages, plus the complete booking flow",
+    "automated": "Run axe on every sampled page and state, including open dialogs and form errors",
+    "keyboard": "Do a keyboard pass through every flow: reach, see, operate, escape",
+    "screen-reader": "Repeat the flows with NVDA and Chrome, VoiceOver and Safari, and VoiceOver on iOS",
+    "visual-content": "Check 400% zoom, text spacing, reduced motion, alt text quality, headings and language",
+    "report": "Write findings with location, WCAG criterion, severity and fix, and prioritise blockers in key flows",
+    "retest": "Fix the issues, retest the same flows and update the accessibility statement"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "زامن عنوان التبويب",
+  "prompt": "مهمّتان في `Watchlist`:\n\n1. **احذف الـ effect غير الضروري.** تُنسخ `left` إلى الـ state بواسطة effect. احسبها أثناء الـ render بدلًا من ذلك.\n2. **زامن عنوان تبويب المتصفّح.** ما دام Watchlist على الشاشة، يجب أن تكون قيمة `document.title` هي **2 to watch · Watchlist** (بالرقم الحقيقي)، وأن تتحدّث حين يُعلَّم فيلم كمُشاهَد. وحين يُزال Watchlist (انقر **Hide watchlist**)، يجب أن يعود العنوان إلى ما كان عليه قبل ذلك، أي **Playground**.",
+  "hints": [
+    "استبدل state المسمّى `left` والـ effect الخاص به بـ `const left = movies.filter((m) => !m.watched).length;`",
+    "يقرأ effect العنوان القيمة `left`، فتكون مصفوفة اعتمادياته `[left]`.",
+    "احفظ العنوان القديم داخل الـ effect (`const previous = document.title;`) وأرجِع دالة تنظيف تعيده."
+  ],
+  "explanation": "القيمة `left` مشتقّة من `movies`، فتُحسب أثناء الـ render. أمّا نسخة الـ effect فكانت ترسم مرة بعدد خاطئ هو 0 ثم مرة أخرى بالعدد الصحيح. في المقابل، يعيش عنوان المستند خارج React، فمزامنته effect حقيقي. سرد `[left]` يعيد تشغيله فقط حين يتغيّر العدد، ودالة التنظيف تعيد العنوان السابق قبل كل إعادة تشغيل وحين يُلغى تركيب الـ component. وهذا بالضبط ما يختبره فحص StrictMode (تركيب، تنظيف، تركيب) أثناء التطوير.",
+  "checks": {
+    "count-derived": "تعرض الصفحة \"2 to watch\"",
+    "title-initial": "عنوان التبويب هو \"2 to watch · Watchlist\"",
+    "title-updates": "تعليم Past Lives كمُشاهَد يحدّث العنوان إلى \"1 to watch · Watchlist\"",
+    "title-cleanup": "إخفاء Watchlist يعيد العنوان \"Playground\""
+  }
+}

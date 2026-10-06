@@ -1,0 +1,13 @@
+{
+  "kind": "python",
+  "files": [],
+  "starter": "monthly_2025 = [16167, 14906, 18208, 18817, 17428, 13933,\n                22968, 32042, 25514, 30339, 75334, 41153]\nmonths = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\",\n          \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"]\n\nprices = {\"Cast Iron Skillet 26cm\": 39, \"Burr Coffee Grinder\": 129, \"Cork Yoga Mat\": 72}\n\n# 1. Q4 total (October, November, December) using a slice\nq4_total = None\n\n# 2. Name of the month with the highest revenue, e.g. \"Mar\"\nbest_month = None\n\n# 3. Add \"Laptop Stand\" to prices at 49\n\n# 4. The grinder's price after a 5% rise, rounded to 2 decimals\ngrinder_new_price = None\n",
+  "solution": "monthly_2025 = [16167, 14906, 18208, 18817, 17428, 13933,\n                22968, 32042, 25514, 30339, 75334, 41153]\nmonths = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\",\n          \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"]\n\nprices = {\"Cast Iron Skillet 26cm\": 39, \"Burr Coffee Grinder\": 129, \"Cork Yoga Mat\": 72}\n\nq4_total = sum(monthly_2025[9:12])\n\nbest_position = monthly_2025.index(max(monthly_2025))\nbest_month = months[best_position]\n\nprices[\"Laptop Stand\"] = 49\n\ngrinder_new_price = round(prices[\"Burr Coffee Grinder\"] * 1.05, 2)\n",
+  "checks": [
+    { "id": "q4-total", "test": "q4_total == 146826" },
+    { "id": "best-month", "test": "best_month == 'Nov'" },
+    { "id": "laptop-stand", "test": "prices.get('Laptop Stand') == 49 and len(prices) == 4" },
+    { "id": "grinder-price", "test": "isinstance(grinder_new_price, float) and grinder_new_price == 135.45" },
+    { "id": "lists-untouched", "test": "len(monthly_2025) == 12 and months[10] == 'Nov'" }
+  ]
+}

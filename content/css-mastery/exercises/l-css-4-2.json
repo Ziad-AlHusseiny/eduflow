@@ -1,0 +1,40 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<button id=\"hide-full\" type=\"button\" aria-pressed=\"false\">Hide sold-out</button>\n<section class=\"schedule\">\n  <article class=\"session-card\" id=\"s1\">Shipping View Transitions</article>\n  <article class=\"session-card is-full\" id=\"s2\">Grid Layout Workshop · Sold out</article>\n  <article class=\"session-card\" id=\"s3\">Color Spaces for Humans</article>\n  <article class=\"session-card is-full\" id=\"s4\">Container Queries Lab · Sold out</article>\n  <article class=\"session-card\" id=\"s5\">The Cost of a Frame</article>\n</section>",
+    "css": ".schedule { display: grid; gap: 8px; margin-top: 12px; }\n.session-card {\n  padding: 10px 14px;\n  border: 1px solid #e5e7eb;\n  border-radius: 10px;\n  background: white;\n}\n.session-card[hidden] { display: none; }\n",
+    "js": "const button = document.querySelector('#hide-full');\n\nfunction applyFilter() {\n  const hide = button.getAttribute('aria-pressed') !== 'true';\n  button.setAttribute('aria-pressed', String(hide));\n  for (const card of document.querySelectorAll('.session-card.is-full')) {\n    card.hidden = hide;\n  }\n}\n\nbutton.addEventListener('click', () => {\n  applyFilter();\n});\n"
+  },
+  "solution": {
+    "html": "<button id=\"hide-full\" type=\"button\" aria-pressed=\"false\">Hide sold-out</button>\n<section class=\"schedule\">\n  <article class=\"session-card\" id=\"s1\">Shipping View Transitions</article>\n  <article class=\"session-card is-full\" id=\"s2\">Grid Layout Workshop · Sold out</article>\n  <article class=\"session-card\" id=\"s3\">Color Spaces for Humans</article>\n  <article class=\"session-card is-full\" id=\"s4\">Container Queries Lab · Sold out</article>\n  <article class=\"session-card\" id=\"s5\">The Cost of a Frame</article>\n</section>",
+    "css": ".schedule { display: grid; gap: 8px; margin-top: 12px; }\n.session-card {\n  padding: 10px 14px;\n  border: 1px solid #e5e7eb;\n  border-radius: 10px;\n  background: white;\n}\n.session-card[hidden] { display: none; }\n.session-card {\n  view-transition-name: var(--vt-name);\n}\n\n::view-transition-group(*) {\n  animation-duration: 250ms;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  ::view-transition-group(*),\n  ::view-transition-old(*),\n  ::view-transition-new(*) {\n    animation: none !important;\n  }\n}\n",
+    "js": "const button = document.querySelector('#hide-full');\n\n// A unique view-transition-name per card\nfor (const card of document.querySelectorAll('.session-card')) {\n  card.style.setProperty('--vt-name', `card-${card.id}`);\n}\n\nfunction applyFilter() {\n  const hide = button.getAttribute('aria-pressed') !== 'true';\n  button.setAttribute('aria-pressed', String(hide));\n  for (const card of document.querySelectorAll('.session-card.is-full')) {\n    card.hidden = hide;\n  }\n}\n\nbutton.addEventListener('click', () => {\n  if (!document.startViewTransition) {\n    applyFilter();\n    return;\n  }\n  document.startViewTransition(() => applyFilter());\n});\n"
+  },
+  "checks": [
+    {
+      "id": "unique-names",
+      "test": "const names = $$('.session-card').map((c) => style(c, 'view-transition-name')); return names.every((n) => n && n !== 'none' && n !== 'auto') && new Set(names).size === names.length;"
+    },
+    {
+      "id": "uses-view-transition",
+      "test": "const waitFor = async (fn) => { for (let i = 0; i < 60; i++) { if (fn()) return true; await tick(25); } return fn(); }; if (!document.startViewTransition) return false; const orig = document.startViewTransition; let called = false; document.startViewTransition = function (...args) { called = true; return orig.apply(document, args); }; try { await click('#hide-full'); await waitFor(() => $('#s2').hidden); } finally { document.startViewTransition = orig; } return called;"
+    },
+    {
+      "id": "filter-works",
+      "test": "const waitFor = async (fn) => { for (let i = 0; i < 60; i++) { if (fn()) return true; await tick(25); } return fn(); }; return (await waitFor(() => $('#s2').hidden && $('#s4').hidden)) && !$('#s1').hidden && $('#hide-full').getAttribute('aria-pressed') === 'true';"
+    },
+    {
+      "id": "fallback-works",
+      "test": "const waitFor = async (fn) => { for (let i = 0; i < 60; i++) { if (fn()) return true; await tick(25); } return fn(); }; const orig = document.startViewTransition; document.startViewTransition = undefined; let ok = false; try { await click('#hide-full'); ok = await waitFor(() => !$('#s2').hidden); } catch (e) { ok = false; } finally { document.startViewTransition = orig; } return ok;"
+    },
+    {
+      "id": "group-duration",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion'))); } }; for (const s of document.styleSheets) walk(s.cssRules, false); return all.some(({ r }) => r.selectorText && r.selectorText.includes('::view-transition-group') && (parseFloat(r.style.animationDuration) === 250 || parseFloat(r.style.animationDuration) === 0.25));"
+    },
+    {
+      "id": "reduced-motion",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion'))); } }; for (const s of document.styleSheets) walk(s.cssRules, false); return all.some(({ r, media }) => media && r.selectorText && r.selectorText.includes('::view-transition') && (r.style.animation || r.style.animationName));"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Count, label and retype the gaps",
+  "prompt": "Load the messy export (done for you). Set `missing_by_col` to a Series counting missing values per column. In `messy` itself, replace missing channels with `\"unknown\"` and convert `quantity` to the nullable `\"Int64\"` dtype, keeping its gaps as missing. Then set `avg_quantity` to the mean of the known quantities, rounded to 2 decimals. Keep all 168 rows: no dropping, and no filling quantities.",
+  "hints": [
+    "`messy.isna().sum()` returns one count per column.",
+    "Assign the results back: `messy[\"channel\"] = messy[\"channel\"].fillna(\"unknown\")` and `messy[\"quantity\"] = messy[\"quantity\"].astype(\"Int64\")`.",
+    "`mean()` skips missing values on its own: `round(float(messy[\"quantity\"].mean()), 2)`."
+  ],
+  "explanation": "The channel gaps get an explicit label because \"unknown channel\" is useful information in a report, while the quantity gaps stay missing because, until you recover them with the join from Lesson 4.2, no defensible value exists. `Int64` (capital I) keeps the column as whole numbers with `<NA>` for the 9 gaps, instead of the `1.0`, `2.0` floats you started with. `mean()` skips missing values by default, so the average of 1.43 describes the 159 known quantities; filling with 0 first would have produced 1.36, a number that describes no real order.",
+  "checks": {
+    "missing-counts": "`missing_by_col` finds 9 missing quantities and 7 missing channels",
+    "channel-labelled": "Missing channels are now `\"unknown\"`",
+    "quantity-int64": "`quantity` is `Int64` and still has its 9 gaps",
+    "avg": "`avg_quantity` is 1.43",
+    "rows-kept": "All 168 rows are still there"
+  }
+}

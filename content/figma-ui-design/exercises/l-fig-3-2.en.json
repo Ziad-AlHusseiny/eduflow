@@ -1,0 +1,19 @@
+{
+  "title": "Build the button component in the right order",
+  "prompt": "You are building Steady's button: Type and State as variant properties, plus a text property for the label, a boolean to show the icon and an instance swap for which icon. Put the steps in the order that avoids redoing work.",
+  "hints": [
+    "A component property can only be created on something that is already a component.",
+    "New variants copy the property connections of the component they were created from.",
+    "Base frame, component, properties, variants, styling, then test."
+  ],
+  "explanation": "Start with a well-built **auto layout frame** with named Icon and Label layers, because everything after inherits its structure. **Make it a component**, then add the **text, boolean and instance swap properties** while there is only one variant to connect them to. Next **add variants** and name the variant properties Type and State; each new variant inherits those property connections. Then **restyle** each variant for its type and state. Finally **test an instance** by switching every property, including long labels and the icon off, to prove nothing breaks before anyone else uses it.",
+  "items": {
+    "build-base": "Build the default primary button as an auto layout frame with named Icon and Label layers.",
+    "make-component": "Turn the frame into a main component.",
+    "add-props": "Add a text property for Label, a boolean for Show icon and an instance swap for Icon.",
+    "add-variants": "Add variants and name the variant properties Type and State with their values.",
+    "style-variants": "Restyle each variant: secondary and ghost colors, pressed and disabled states.",
+    "test-instance": "Place an instance and switch every property, with a long label and the icon off, to check nothing breaks."
+  },
+  "checks": {}
+}

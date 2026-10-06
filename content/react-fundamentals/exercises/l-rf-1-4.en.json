@@ -1,0 +1,16 @@
+{
+  "title": "Compile JSX by hand",
+  "prompt": "JSX is function calls. The starter gives you `h(type, props, ...children)`, a simplified version of what the compiler produces. Complete `buildCard(movie)` so it returns exactly what this JSX would create:\n\n```jsx\n<article className=\"card\">\n  <h2>{movie.title}</h2>\n  <p>{movie.year}</p>\n</article>\n```\n\nUse the `movie` argument, not hard-coded values.",
+  "hints": [
+    "The first argument is the tag name as a string, the second is the props object (or `null`), and every argument after that is a child.",
+    "Attributes go in the props object: `{ className: 'card' }`.",
+    "Children can be other `h()` calls: `h('article', { className: 'card' }, h('h2', null, movie.title), …)`."
+  ],
+  "explanation": "Each JSX tag becomes one call: the tag name, then an object of attributes, then the children in order. Curly-brace expressions like `{movie.title}` are just arguments, which is why only expressions are allowed inside them. React's real `jsx()` differs in details (it receives children already inside the props object instead of as extra arguments, a single child isn't wrapped in an array, and keys are passed separately), but the tree of plain objects is the same idea.",
+  "checks": {
+    "root": "The root is an \"article\" with className \"card\"",
+    "two-children": "It has two children: an \"h2\" then a \"p\"",
+    "title-text": "The h2 contains the movie title",
+    "uses-data": "It works for any movie, not only Arrival"
+  }
+}

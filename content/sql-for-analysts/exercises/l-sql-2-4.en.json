@@ -1,0 +1,11 @@
+{
+  "title": "Who hasn't referred anyone?",
+  "prompt": "Huda wants to pitch the referral programme to business accounts. List every customer in the `enterprise` or `small_business` segment who has **never referred anyone** (no other customer has their id in `referred_by`).\n\nReturn `customer_id`, `email` and `segment`. Row order doesn't matter. The starter returns no rows at all; rewrite the anti-join so it works.",
+  "hints": [
+    "Run `SELECT referred_by FROM customers LIMIT 10`. What value does most of that column hold, and what does NOT IN do with it?",
+    "Rewrite the condition as `NOT EXISTS (SELECT 1 FROM customers AS r WHERE r.referred_by = c.customer_id)`, giving the outer table the alias `c`.",
+    "Alternatively, keep NOT IN but filter the subquery: `SELECT referred_by FROM customers WHERE referred_by IS NOT NULL`."
+  ],
+  "explanation": "The subquery behind NOT IN returns 600 values, 503 of them NULL. `x NOT IN (..., NULL)` can never be TRUE, because the unknown value might equal x, so every row is dropped. NOT EXISTS asks a yes/no question per customer (is there any customer whose `referred_by` is me?) and NULLs never match, so it behaves as intended: 88 business customers, 21 enterprise and 67 small business, have never referred anyone.",
+  "checks": {}
+}

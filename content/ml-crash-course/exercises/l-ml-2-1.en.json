@@ -1,0 +1,17 @@
+{
+  "title": "A three-feature regression, measured three ways",
+  "prompt": "Fit a `LinearRegression` on body mass index, blood pressure and `s5` (the columns in `cols`) and measure it on the test set.\n\n- `model`: the fitted regression.\n- `pred`: its predictions for `X_test[cols]`.\n- `mae`, `rmse`, `r2`: the three metrics from this lesson, computed on the test set.",
+  "hints": [
+    "Fit with `model = LinearRegression().fit(X_train[cols], y_train)`.",
+    "The metric functions take `(y_true, y_pred)` in that order.",
+    "`root_mean_squared_error` is in `sklearn.metrics`; it's already imported."
+  ],
+  "explanation": "Three well-chosen features get MAE about 42 and R² about 0.50, a slightly higher R² than all ten features reach on this split (0.49). That's common: a few features carry most of the signal, and extra correlated features add noise to the coefficients. RMSE is larger than MAE because a handful of patients are predicted badly, and squaring makes those misses count more.",
+  "checks": {
+    "fitted": "model is a fitted regression on three features",
+    "pred": "pred holds the test predictions",
+    "mae": "mae is the mean absolute error",
+    "rmse": "rmse is the root mean squared error",
+    "r2": "r2 is the test R² (and RMSE ≥ MAE)"
+  }
+}

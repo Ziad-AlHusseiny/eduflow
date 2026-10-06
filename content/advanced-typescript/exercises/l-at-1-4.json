@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "// Every field that only some statuses have is optional,\n// so impossible states (shipped with no tracking number\u2026) compile.\ntype Order = {\n  id: number;\n  status: 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\n  trackingNumber?: string; // shipped, delivered, returned\n  deliveredAt?: string;    // delivered, returned\n  cancelReason?: string;   // cancelled\n  refundCents?: number;    // returned\n};\n\nfunction ship(order: Order, trackingNumber: string): Order {\n  return { id: order.id, status: 'shipped', trackingNumber };\n}\n\nfunction describe(order: Order): string {\n  switch (order.status) {\n    case 'processing': return `#${order.id} is being packed`;\n    case 'shipped': return `#${order.id} is on its way (${order.trackingNumber})`;\n    case 'delivered': return `#${order.id} arrived on ${order.deliveredAt}`;\n    case 'cancelled': return `#${order.id} was cancelled: ${order.cancelReason}`;\n    case 'returned': return `#${order.id} was refunded $${(order.refundCents! / 100).toFixed(2)}`;\n  }\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Order['status'], 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'>>;\n\n// @ts-expect-error: a shipped order must have a tracking number\nconst noTracking: Order = { id: 1, status: 'shipped' };\n\n// @ts-expect-error: a cancelled order cannot have a delivery date\nconst cancelledButDelivered: Order = { id: 2, status: 'cancelled', cancelReason: 'Out of stock', deliveredAt: '2025-05-02' };\n\n// @ts-expect-error: only processing orders can be shipped\nship({ id: 3, status: 'delivered', trackingNumber: '1Z-77', deliveredAt: '2025-05-02' }, '1Z-88');\n\nconsole.log(describe(ship({ id: 1042, status: 'processing' }, '1Z-999')));\n"
+  },
+  "solution": {
+    "ts": "type ProcessingOrder = { id: number; status: 'processing' };\ntype ShippedOrder = { id: number; status: 'shipped'; trackingNumber: string };\ntype DeliveredOrder = { id: number; status: 'delivered'; trackingNumber: string; deliveredAt: string };\ntype CancelledOrder = { id: number; status: 'cancelled'; cancelReason: string };\ntype ReturnedOrder = {\n  id: number;\n  status: 'returned';\n  trackingNumber: string;\n  deliveredAt: string;\n  refundCents: number;\n};\n\ntype Order = ProcessingOrder | ShippedOrder | DeliveredOrder | CancelledOrder | ReturnedOrder;\n\nfunction ship(order: ProcessingOrder, trackingNumber: string): ShippedOrder {\n  return { id: order.id, status: 'shipped', trackingNumber };\n}\n\nfunction describe(order: Order): string {\n  switch (order.status) {\n    case 'processing': return `#${order.id} is being packed`;\n    case 'shipped': return `#${order.id} is on its way (${order.trackingNumber})`;\n    case 'delivered': return `#${order.id} arrived on ${order.deliveredAt}`;\n    case 'cancelled': return `#${order.id} was cancelled: ${order.cancelReason}`;\n    case 'returned': return `#${order.id} was refunded $${(order.refundCents / 100).toFixed(2)}`;\n  }\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Order['status'], 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'>>;\n\n// @ts-expect-error: a shipped order must have a tracking number\nconst noTracking: Order = { id: 1, status: 'shipped' };\n\n// @ts-expect-error: a cancelled order cannot have a delivery date\nconst cancelledButDelivered: Order = { id: 2, status: 'cancelled', cancelReason: 'Out of stock', deliveredAt: '2025-05-02' };\n\n// @ts-expect-error: only processing orders can be shipped\nship({ id: 3, status: 'delivered', trackingNumber: '1Z-77', deliveredAt: '2025-05-02' }, '1Z-88');\n\nconsole.log(describe(ship({ id: 1042, status: 'processing' }, '1Z-999')));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "ships",
+      "test": "const s = ship({ id: 7, status: 'processing' }, 'TRK-1'); return s.status === 'shipped' && s.trackingNumber === 'TRK-1' && s.id === 7;"
+    },
+    {
+      "id": "describes",
+      "test": "return describe({ id: 9, status: 'returned', trackingNumber: 'T', deliveredAt: '2025-05-02', refundCents: 1250 }).includes('12.50') && describe({ id: 9, status: 'cancelled', cancelReason: 'Out of stock' }).includes('Out of stock');"
+    }
+  ]
+}

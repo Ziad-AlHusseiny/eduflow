@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "name: CI\n\non:\n  pull_requests:\n    branches: [main]\n\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm ci\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node\n        with:\n          node-version: 24\n          cache: npm\n      - run: npm test",
+  "bugLines": [
+    4,
+    11,
+    13
+  ]
+}

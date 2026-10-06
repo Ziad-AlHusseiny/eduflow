@@ -1,0 +1,16 @@
+{
+  "title": "Make the case for a product team",
+  "prompt": "Northwind's VP of Product will fund a permanent design system team only if you show evidence that the company needs one. Which of these findings support funding the system **as a product with a standing team**? Select every one that applies.",
+  "hints": [
+    "Look for evidence of ongoing, repeated cost, not a one-time problem.",
+    "Ask of each finding: would a one-quarter cleanup project fix it for good?"
+  ],
+  "explanation": "Forked components, 64 greys and a steady stream of requests are all symptoms of a shared need with no owner. A one-off project would fix them once and then watch them return. A single app with a single team, or a launch announcement, is not evidence of a cross-team need.",
+  "options": {
+    "forks": { "text": "Six teams have copied the 2021 Button into their own repos to fix bugs locally.", "why": "Correct. Forks prove teams need shared components but have nobody upstream to fix them, which is an ownership problem." },
+    "greys": { "text": "The audit found 64 distinct grey values across the dispatch app and marketing site.", "why": "Correct. Drift at this scale comes from many teams making the same decision independently, again and again." },
+    "one-app": { "text": "The dispatch app's own team wants to rename its CSS classes.", "why": "That's one team's internal refactor; it doesn't need a shared system or a dedicated team." },
+    "requests": { "text": "Every month, about five teams ask in Slack whether a date picker or data table already exists.", "why": "Correct. Recurring demand from many teams is exactly the user base a product team serves." },
+    "launch": { "text": "Leadership wants a design system announcement for the company all-hands next month.", "why": "A launch date is a project milestone; it says nothing about the ongoing need that justifies a permanent team." }
+  }
+}

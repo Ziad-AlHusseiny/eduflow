@@ -1,0 +1,16 @@
+{
+  "title": "Lift the filter",
+  "prompt": "The filter buttons highlight correctly, but the list never changes, because `FilterBar` keeps the filter to itself.\n\nLift the filter state into `App`. Pass the current value and a way to change it down to `FilterBar` (it should have no state of its own), and give `MovieList` only the movies that match:\n\n- **All**: every movie\n- **To watch**: `watched` is `false`\n- **Watched**: `watched` is `true`\n\nKeep `aria-pressed` on the buttons working.",
+  "hints": [
+    "Move `const [filter, setFilter] = useState('all')` from FilterBar into App.",
+    "Give FilterBar two props, for example `value` and `onChange`, and use them in place of its old state.",
+    "In App, derive the list: `MOVIES.filter((m) => filter === 'all' ? true : filter === 'watched' ? m.watched : !m.watched)`."
+  ],
+  "explanation": "State is private to the component that declares it, so a sibling can never read it. Moving `filter` to `App`, the closest common parent, gives it one owner. `FilterBar` becomes a controlled component that shows `value` and reports clicks through `onChange`, and `App` derives the visible movies from `MOVIES` and `filter` on every render instead of storing a filtered copy.",
+  "checks": {
+    "starts-all": "Starts on All, showing all three movies",
+    "to-watch": "To watch shows Past Lives and Dune: Part Two, and is pressed",
+    "watched": "Watched shows only Arrival, and is pressed",
+    "back-to-all": "All shows every movie again"
+  }
+}

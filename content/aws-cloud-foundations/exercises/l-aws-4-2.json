@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "js",
+  "code": "import { DynamoDBClient } from \"@aws-sdk/client-dynamodb\";\nimport { DynamoDBDocumentClient, PutCommand, ScanCommand } from \"@aws-sdk/lib-dynamodb\";\n\nconst db = DynamoDBDocumentClient.from(new DynamoDBClient({\n  credentials: { accessKeyId: \"AKIAIOSFODNN7EXAMPLE\", secretAccessKey: process.env.SECRET },\n}));\nconst TABLE = process.env.TABLE_NAME;\n\nconst reply = (statusCode, data) => ({\n  statusCode,\n  headers: { \"content-type\": \"application/json\" },\n  body: JSON.stringify(data),\n});\n\nexport const handler = async (event) => {\n  const eventId = event.pathParameters?.eventId;\n\n  if (event.requestContext.http.method === \"GET\") {\n    const res = await db.send(new ScanCommand({\n      TableName: TABLE,\n      FilterExpression: \"eventId = :e\",\n      ExpressionAttributeValues: { \":e\": eventId },\n    }));\n    return reply(200, { eventId, count: res.Items.length });\n  }\n\n  const { email, name } = JSON.parse(event.body ?? \"{}\");\n  if (typeof email !== \"string\" || !email.includes(\"@\")) {\n    return reply(400, { error: \"A valid email is required\" });\n  }\n\n  try {\n    await db.send(new PutCommand({\n      TableName: TABLE,\n      Item: { eventId, email: email.toLowerCase(), name },\n      ConditionExpression: \"attribute_exists(email)\",\n    }));\n  } catch (err) {\n    if (err.name === \"ConditionalCheckFailedException\") {\n      return reply(409, { error: \"You have already RSVPed to this event\" });\n    }\n    throw err;\n  }\n  return reply(201, { eventId, email });\n};",
+  "bugLines": [
+    5,
+    19,
+    36
+  ]
+}

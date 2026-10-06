@@ -1,0 +1,10 @@
+{
+  "title": "The extension that won't compile",
+  "prompt": "A teammate moved `Budget`'s behaviour into an extension, and now the project doesn't build. Select the line the compiler rejects.",
+  "hints": [
+    "`Budget` is a struct. Which line in the extension changes one of its stored properties?",
+    "Computed properties only read `limit` and `spent`. Look for an assignment.",
+    "Methods on structs that change `self` need a keyword in front of `func`."
+  ],
+  "explanation": "Line 12 changes `spent` from a plain method, and struct methods can't modify `self` unless they're marked `mutating`. The compiler reports \"left side of mutating operator isn't mutable: 'self' is immutable\". Moving code into an extension doesn't change the rules:\n\n```swift\nmutating func record(_ amount: Decimal) { spent += amount }\n```\n\nThe call site already uses `var food`, so it compiles once the method is `mutating`. With `let food` it would fail again, for the reason you saw in the structs lesson."
+}

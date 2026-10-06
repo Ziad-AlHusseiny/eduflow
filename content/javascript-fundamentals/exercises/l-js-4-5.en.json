@@ -1,0 +1,17 @@
+{
+  "title": "Load data asynchronously",
+  "prompt": "The sandbox has no network, so the starter gives you `fakeFetch(url)`, which behaves like `fetch`: it returns a promise of a response with `ok`, `status` and an async `json()` method. Write four `async` functions:\n\n- `getJson(url)` returns the parsed body, and **throws** an `Error` whose message includes the status (such as `404`) when `response.ok` is false.\n- `loadCategoryNames()` returns `[\"food\", \"travel\", \"fun\"]`, the `name` of each item from `/api/categories`.\n- `toEuroCents(cents)` returns the amount converted with the `EUR` rate from `/api/rates`, rounded to whole cents.\n- `safeGetJson(url, fallback)` returns the JSON from `url`, or `fallback` if loading fails.\n",
+  "hints": [
+    "The starter forgets `await`: `fakeFetch(url)` gives a promise, and a promise has no `json` method. Write `const response = await fakeFetch(url);`.",
+    "After awaiting, check `` if (!response.ok) { throw new Error(`HTTP ${response.status}`); } `` before returning `response.json()`.",
+    "`safeGetJson` needs `try { return await getJson(url); } catch { return fallback; }`. The `await` inside the `try` matters: without it, the rejection escapes the `catch`."
+  ],
+  "explanation": "Every function that waits for something is `async` and uses `await`, so the code reads top to bottom even though each step finishes later. `getJson` turns an HTTP error into a thrown `Error`, because `fetch` (and this fake) resolves successfully for a 404; after that, callers only need to handle one kind of failure. `toEuroCents` rounds after converting, keeping Pocket's whole-cents rule: 450 × 0.86 is 387.0, and 1000 × 0.86 is 860. In `safeGetJson`, `return await` inside `try` is deliberate: awaiting there lets the rejection be thrown inside the `try`, where the `catch` can turn it into the fallback.\n",
+  "checks": {
+    "get-json": "`getJson` returns the parsed body",
+    "get-json-error": "`getJson` throws an Error mentioning 404 for a missing URL",
+    "names": "`loadCategoryNames` returns the category names",
+    "euros": "`toEuroCents` converts with the EUR rate and rounds",
+    "safe": "`safeGetJson` returns the fallback when loading fails"
+  }
+}

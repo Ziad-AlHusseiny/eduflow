@@ -1,0 +1,10 @@
+{
+  "title": "جد ما يجعل هذا الاختبار متقلّبًا",
+  "prompt": "يفشل اختبار Playwright هذا مرة تقريبًا من كل عشر تشغيلات في CI، ولا يفشل أبدًا على حاسوب كاتبه. اختر **كل سطر** يجعله متقلّبًا أو غير موثوق. (افترض أن التطبيق نفسه يعمل.)",
+  "hints": [
+    "ابحث عن سطر لا يُنتظَر فعله أبدًا.",
+    "ابحث عن انتظار ثابت، وعن قيمة تُقرأ مرة واحدة بدل أن تُؤكَّد بـ matcher يعيد المحاولة.",
+    "فكّر في الاختبارات الأخرى التي قد تستخدم مجموعة بهذا الاسم بالضبط، في الوقت نفسه، على أربعة عمّال."
+  ],
+  "explanation": "خمسة أسطر تسبّب المشكلات، لأربعة أسباب.\n\n- **السطر 4** يفتح مجموعة مشتركة معبّأة مسبقًا، `lisbon-trip`. أي اختبار آخر يضيف إليها مصروفات، بالتوازي أو في وقت أبكر من التشغيل، يغيّر الأرصدة التي يراها هذا الاختبار. استخدم fixture تنشئ مجموعة جديدة لكل اختبار.\n- **السطر 8** بلا `await`، فيتسابق النقر مع السطر التالي. أحيانًا تحدث التسوية قبل قراءة الحالة، وأحيانًا بعدها.\n- **السطر 9** انتظار ثابت مدته ثانيتان: وقت ضائع في التشغيل السريع، وغير كافٍ في البطيء.\n- **السطران 10 و11** يقرآن الحالة مرة واحدة بـ `textContent()` ويقارنانها بـ `toBe` عادي، فلا شيء يعيد المحاولة إن تحدّثت الحالة بعد لحظة.\n\nالنسخة المصحّحة:\n\n```ts\ntest('settling up clears the balances', async ({ page, group }) => {\n  await page.goto(`/groups/${group.id}`);\n  await page.getByLabel('Description').fill('Dinner');\n  await page.getByLabel('Amount').fill('30.00');\n  await page.getByRole('button', { name: 'Add expense' }).click();\n  await page.getByRole('button', { name: 'Settle up' }).click();\n  await expect(page.getByRole('status')).toHaveText('Everyone is settled up');\n  await expect(page.getByRole('listitem')).toHaveCount(0);\n});\n```\n\nأما السطر 12 فكان صحيحًا أصلًا: `toHaveCount` assertion موجّه للويب يعيد المحاولة."
+}

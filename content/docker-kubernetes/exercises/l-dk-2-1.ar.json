@@ -1,0 +1,10 @@
+{
+  "title": "الـ multi-stage build الذي يشحن كل شيء",
+  "prompt": "كان الهدف من هذا الـ Dockerfile ذي المرحلتين إبقاء TypeScript واعتماديات التطوير خارج الإنتاج. لكن الـ image بالكاد أصغر من قبل، وما زال الماسح يُبلغ عن ثغرات CVE في أدوات الاختبار. اختر السطر الذي يُفسد الغرض من المرحلة الثانية.",
+  "hints": [
+    "انظر إلى ما تنسخه مرحلة التشغيل من مرحلة البناء.",
+    "المجلد `/app` في مرحلة البناء يحتوي على `src/` و`dist/` و`node_modules` فيه كل اعتماديات التطوير."
+  ],
+  "explanation": "السطر 12 ينسخ `/app` الكامل من مرحلة البناء إلى image التشغيل، فيُشحن `src/` واعتماديات التطوير وكل ما كان في الـ context. أضف مرحلة لاعتماديات الإنتاج فقط وانسخ مسارات مسمّاة:\n\n```dockerfile\nFROM node:24-slim AS deps\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci --omit=dev\n\nFROM node:24-slim AS runtime\nENV NODE_ENV=production\nWORKDIR /app\nCOPY package.json ./\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY --from=build /app/dist ./dist\n```",
+  "checks": {}
+}

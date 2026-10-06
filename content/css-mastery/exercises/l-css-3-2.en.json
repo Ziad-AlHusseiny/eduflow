@@ -1,0 +1,18 @@
+{
+  "title": "Make the card work right to left",
+  "prompt": "The card is written with physical properties, so it breaks when the wrapper switches to `dir=\"rtl\"`. Without changing the HTML:\n\n- Replace the left border, the left/right padding, the time's right margin, the `text-align` values and the arrow's left margin with **logical** equivalents, so English looks exactly the same.\n- In RTL, mirror the arrow icon horizontally (use `:dir(rtl)`).\n\nThe checks render the card in both directions.",
+  "hints": [
+    "`border-left` becomes `border-inline-start`; `margin-right` becomes `margin-inline-end`.",
+    "`text-align: left` becomes `start` and `right` becomes `end`. `padding-inline` takes a start and an end value.",
+    "For the icon: `.arrow:dir(rtl) { scale: -1 1; }` (or `transform: scaleX(-1)`)."
+  ],
+  "explanation": "Logical properties resolve against the element's direction, so `border-inline-start` is the left border in English and the right border in Arabic, and the same goes for `padding-inline`, `margin-inline-end` and `text-align: start/end`. The English rendering is unchanged, and switching `dir` mirrors the card with no extra rules. Directional icons are the exception: a glyph doesn't know which way it should point, so `:dir(rtl)` matches the arrow when its inherited direction is right to left and `scale: -1 1` mirrors it.",
+  "checks": {
+    "ltr-unchanged": "In English, the card looks exactly as before",
+    "rtl-border": "In RTL, the colored border is on the right",
+    "rtl-padding": "In RTL, the padding follows the text direction",
+    "rtl-time-gap": "In RTL, the space after the time is on its left",
+    "rtl-link-aligned": "In RTL, the link aligns to the end and the arrow's gap flips",
+    "rtl-arrow-flips": "In RTL, the arrow is mirrored"
+  }
+}

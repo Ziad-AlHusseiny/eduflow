@@ -1,0 +1,36 @@
+{
+  "title": "Why does the row jump instead of slide?",
+  "prompt": "When a habit is checked, Steady should slide its row down into the Done group. The prototype jumps straight from Frame A to Frame B instead. Here are the two frames, the connection and the layer paths of the Read row in each.\n\n:::figure Two frames that should smart animate\n<svg viewBox=\"0 0 520 300\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">Frame A shows the habit list with the Read row at the top under To do. Frame B shows the Read row moved down into a separate Done group. An arrow labelled On tap, Instant connects them. Layer names are shown under each frame.</title>\n  <rect class=\"d-box\" x=\"20\" y=\"20\" width=\"200\" height=\"200\" rx=\"16\"/>\n  <text class=\"d-label-strong\" x=\"36\" y=\"46\">Frame A</text>\n  <rect class=\"d-box-primary\" x=\"36\" y=\"60\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"48\" y=\"82\">Read</text>\n  <rect class=\"d-box\" x=\"36\" y=\"102\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"48\" y=\"124\">Water</text>\n  <rect class=\"d-box\" x=\"300\" y=\"20\" width=\"200\" height=\"200\" rx=\"16\"/>\n  <text class=\"d-label-strong\" x=\"316\" y=\"46\">Frame B</text>\n  <rect class=\"d-box\" x=\"316\" y=\"60\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"328\" y=\"82\">Water</text>\n  <rect class=\"d-box-success d-dashed\" x=\"310\" y=\"120\" width=\"180\" height=\"70\" rx=\"10\"/>\n  <rect class=\"d-box-primary\" x=\"316\" y=\"142\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"328\" y=\"164\">Read</text>\n  <path class=\"d-arrow\" d=\"M222 120 L298 120\" marker-end=\"url(#arrow)\"/>\n  <text class=\"d-label-muted\" x=\"260\" y=\"110\" text-anchor=\"middle\">On tap</text>\n  <text class=\"d-label-muted\" x=\"260\" y=\"140\" text-anchor=\"middle\">Instant</text>\n  <text class=\"d-code\" x=\"20\" y=\"250\">List / Read row</text>\n  <text class=\"d-code\" x=\"300\" y=\"250\">List / Done group /</text>\n  <text class=\"d-code\" x=\"300\" y=\"272\">  Habit row/Read</text>\n</svg>\n:::\n\nSelect **every** cause that stops the row from sliding.",
+  "hints": [
+    "Smart animate needs a matching layer: same name, same place in the hierarchy. Compare the two paths.",
+    "Look at the animation set on the connection too.",
+    "Three causes: the name, the parent, and the animation type."
+  ],
+  "explanation": "The connection uses **Instant**, so nothing could animate even with perfect layers; switch it to **Smart animate**. Then smart animate still needs a match: the row is called `Read row` in Frame A and `Habit row/Read` in Frame B (**different names**), and in Frame B it sits inside `Done group` (a **different parent**). Give it the same name and keep it in the same parent in both frames, for example by keeping one list and changing the row's position, or by moving the Done heading instead. Duration, easing and the On tap trigger are fine; they change how a match animates, not whether it exists.",
+  "options": {
+    "names-differ": {
+      "text": "The row is named differently in the two frames.",
+      "why": "Correct. Smart animate pairs layers by name, so `Read row` and `Habit row/Read` are two unrelated layers."
+    },
+    "parent-differs": {
+      "text": "In Frame B the row sits inside a different parent group.",
+      "why": "Correct. Matching also depends on the layer's place in the hierarchy. A new parent breaks the pairing."
+    },
+    "instant": {
+      "text": "The connection's animation is set to Instant.",
+      "why": "Correct. Instant never animates. Smart animate must be selected on the interaction."
+    },
+    "duration": {
+      "text": "The duration should be at least 1,000 ms.",
+      "why": "Duration only changes the speed of an animation that is already happening. 250 to 300 ms suits a row move."
+    },
+    "easing": {
+      "text": "The easing should be Linear instead of Ease out.",
+      "why": "Easing shapes the motion; it does not decide whether layers match. Ease out is a good default for things settling into place."
+    },
+    "trigger": {
+      "text": "The trigger should be On click instead of On tap.",
+      "why": "On click and On tap are the same trigger, labelled for desktop and mobile."
+    }
+  }
+}

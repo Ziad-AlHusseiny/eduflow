@@ -1,0 +1,10 @@
+{
+  "title": "أين يتسرّب الـ token",
+  "prompt": "هذه الـ image لأداة داخلية تثبّت حزمًا من registry خاص. يعتقد كاتبها أن حذف `.npmrc` في السطر 8 يُبقي الـ token آمنًا. اختر **السطرين** اللذين يضعان الـ token داخل الـ image حيث يستطيع أي شخص يسحبها استرجاعه.",
+  "hints": [
+    "كيف يدخل الـ token إلى البناء، وهل تُسجَّل تلك الآلية في أي مكان؟",
+    "الملف المكتوب في layer ما يبقى موجودًا في تلك الـ layer حتى لو حذفته layer لاحقة."
+  ],
+  "explanation": "السطر 3 يمرّر الـ token بوصفه وسيط بناء (build argument)، وهذا يُسجَّل في سجلّ بناء الـ image. والسطر 6 يكتبه في `.npmrc` داخل layer خاصة به؛ أما `rm` في السطر 8 فيخفي الملف في layer لاحقة فقط، فاستخراج layer السطر 6 يكشفه. استخدم secret mount، فهو لا يوجد إلا للخطوة الوحيدة التي تحتاج إليه:\n\n```dockerfile\nRUN --mount=type=secret,id=npmrc,target=/root/.npmrc \\\n    npm ci --omit=dev\n```\n```bash\ndocker build --secret id=npmrc,src=$HOME/.npmrc -t tool:1.0.0 .\n```\nثم دوّر الـ token، لأن كل نسخة من الـ image القديمة ما زالت تحتويه.",
+  "checks": {}
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Parse, flag and repair the dates",
+  "prompt": "Using `raw = messy[\"order_date\"]`: build `parsed` by parsing ISO (`%Y-%m-%d`), then day-first (`%d/%m/%Y`), then month-first (`%m/%d/%Y`) and combining them in that order. Add a boolean column `is_ambiguous` that is `True` where the day-first and month-first parses both succeed and give different dates. Set `truth` to each row's real date from `orders`, looked up by `order_id` with the time removed, and `n_wrong` to how many `parsed` dates disagree with it. Finally, set `messy[\"order_date\"]` to `parsed`, except on ambiguous rows, where it takes the value from `truth`.",
+  "hints": [
+    "Parse once per format with `pd.to_datetime(raw, format=..., errors=\"coerce\")`, then chain `.fillna()` in order of preference.",
+    "Ambiguous: `dmy.notna() & mdy.notna() & (dmy != mdy)`. For the truth: `orders.set_index(\"order_id\")[\"order_date\"].dt.normalize()` is a lookup Series; `messy[\"order_id\"].map(...)` uses it.",
+    "`parsed.where(condition, other)` keeps `parsed` where the condition is `True` and takes `other` elsewhere, so the condition is `~messy[\"is_ambiguous\"]`."
+  ],
+  "explanation": "Explicit formats with `errors=\"coerce\"` parse every row and record which rule matched. Thirty values fit both slash formats with different results; the day-first preference gets 25 of them right and 5 wrong, which you can only discover by checking against the order system. `Series.where(cond, other)` keeps values where the condition holds and substitutes elsewhere, so only the ambiguous rows are replaced, and the repaired column now matches the source of truth on all 168 rows. In real projects, keep the `is_ambiguous` flag even after repairing: it documents which values depended on an outside lookup.",
+  "checks": {
+    "parsed": "`parsed` is a datetime Series with no unparsed values",
+    "ambiguous": "`is_ambiguous` flags 30 rows",
+    "wrong": "`n_wrong` is 5",
+    "fixed-column": "Order 2401 is dated 8 February 2025, not 2 August",
+    "all-correct": "Every repaired date matches the order system"
+  }
+}

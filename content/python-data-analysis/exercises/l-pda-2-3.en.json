@@ -1,0 +1,17 @@
+{
+  "title": "Answer the product manager",
+  "prompt": "`products` is loaded with `product_id` as its index. Set `grinder_price` to the unit price of product 7. Set `subset` to products 11, 21 and 37 with only the `name` and `unit_cost` columns, in that order. Set `top5` to the five most expensive products with all their columns, most expensive first. Set `cheapest_name` to the name of the cheapest product.",
+  "hints": [
+    "Product 7 is a label, so use `.loc[7, \"unit_price\"]`.",
+    "`.loc` takes a list of row labels and a list of column names: `.loc[[11, 21, 37], [\"name\", \"unit_cost\"]]`.",
+    "Sort with `products.sort_values(\"unit_price\", ascending=False)`, then take positions with `.iloc[:5]`. The cheapest product is at position `-1` of that sorted table (or position 0 of an ascending sort)."
+  ],
+  "explanation": "Product ids are labels, so `.loc` is the right tool for questions 1 and 2, and it returns the columns in the order you list them. \"The five most expensive\" is about position after sorting, so `.iloc[:5]` on the sorted table is the natural fit; `nlargest(5, \"unit_price\")`, which you meet next lesson, also works. The cheapest product is the Jump Rope Pro at 18 dollars. Notice that `.loc[1:5]` on the sorted table would not give the top five: it would return whatever rows sit between labels 1 and 5 in their new positions, which has nothing to do with price.",
+  "checks": {
+    "grinder": "`grinder_price` is 129",
+    "subset": "`subset` has products 11, 21, 37 and the columns name, unit_cost",
+    "top5": "`top5` holds the five highest prices in descending order",
+    "top5-columns": "`top5` keeps all the columns",
+    "cheapest": "`cheapest_name` is Jump Rope Pro"
+  }
+}

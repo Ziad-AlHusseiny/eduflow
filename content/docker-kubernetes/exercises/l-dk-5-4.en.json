@@ -1,0 +1,33 @@
+{
+  "title": "First move for each symptom",
+  "prompt": "You're on call for notes-api. For each symptom below, a teammate proposes a first move. Select **every** pairing where the first move is the right one.",
+  "hints": [
+    "Ask of each: has a container actually run yet? If not, it has no logs.",
+    "Which moves gather evidence, and which ones destroy it?",
+    "Three pairings are right."
+  ],
+  "explanation": "A crash loop leaves its error in the previous container's output, so `logs --previous` comes first. A Pending Pod was never scheduled; `describe` shows the scheduler's reason. A Running Pod that isn't ready is failing its readiness probe; `describe` shows the failures and `/readyz` tells you which dependency is down. An image pull failure has no logs because no container ran; read the pull error in `describe`. Deleting a crashing Pod throws away its logs and events and the replacement crashes the same way.",
+  "options": {
+    "crash-logs": {
+      "text": "`CrashLoopBackOff` → `kubectl logs <pod> --previous`",
+      "why": "Correct. The crashed instance's output usually contains the error that killed it."
+    },
+    "pending-describe": {
+      "text": "`Pending` for five minutes → `kubectl describe pod <pod>` and read the scheduling events",
+      "why": "Correct. Events like `Insufficient memory` or an unmatched node selector explain why no node accepted it."
+    },
+    "pull-logs": {
+      "text": "`ImagePullBackOff` → `kubectl logs <pod>`",
+      "why": "The container never started, so there are no logs. `describe` shows the pull error."
+    },
+    "notready-probe": {
+      "text": "`Running` but `0/1` ready → `kubectl describe pod <pod>` for probe failures, then check what `/readyz` depends on",
+      "why": "Correct. Readiness failures are recorded as events, and the endpoint's dependencies are usually the cause."
+    },
+    "crash-delete": {
+      "text": "`CrashLoopBackOff` → `kubectl delete pod <pod>` so it restarts cleanly",
+      "why": "The replacement runs the same image and config and crashes the same way, and the old Pod's evidence is gone."
+    }
+  },
+  "checks": {}
+}

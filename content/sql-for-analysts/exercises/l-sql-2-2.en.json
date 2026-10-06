@@ -1,0 +1,11 @@
+{
+  "title": "Every Jordan customer, zeros included",
+  "prompt": "Huda is planning a win-back email for Jordan and needs **every customer in Jordan** with the number of **non-cancelled orders they placed in 2025**, showing 0 for customers who didn't order.\n\nReturn `customer_id`, `first_name` and `orders_2025`. Row order doesn't matter. Jordan has 32 customers, so expect 32 rows; the starter returns fewer.",
+  "hints": [
+    "Which customers are missing from the starter's result? What are their `o.status` and `o.order_date` values after the LEFT JOIN?",
+    "Conditions on the right table (`orders`) decide which orders match. They belong in the ON clause.",
+    "Keep `c.country = 'Jordan'` in WHERE (it's about the left table) and move the status and date tests into `ON ... AND ...`."
+  ],
+  "explanation": "For a Jordan customer with no 2025 orders, the LEFT JOIN produces one row with every `o.` column NULL. In the starter, `o.status <> 'cancelled'` is NULL for that row, so WHERE throws it away and the customer disappears. Moving the order conditions into ON means they only decide which orders attach; the customer row survives either way, and `COUNT(o.order_id)` counts 0 for it. Nine customers had no 2025 orders, exactly the ones a win-back email is for.",
+  "checks": {}
+}

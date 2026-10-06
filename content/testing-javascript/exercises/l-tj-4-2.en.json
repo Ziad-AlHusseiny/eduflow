@@ -1,0 +1,10 @@
+{
+  "title": "Complete a group fixture",
+  "prompt": "Finish this Playwright fixture so every test that asks for a `group` gets a **fresh** one created through the API, and the group is **deleted** after the test, pass or fail. Then finish the test so it receives the fixture and uses a web-first assertion.",
+  "hints": [
+    "Custom fixtures are defined by calling a method on the base `test` object that returns a new, extended `test`.",
+    "The fixture needs the built-in HTTP client fixture, the one the body calls `.post` on.",
+    "Hand the value to the test with the second parameter of the fixture function; afterwards, clean up with the HTTP method that removes a resource. The test lists the fixture by name in its parameters, and asserts with Playwright's retrying `expect`."
+  ],
+  "explanation": "`base.extend<{ group: Group }>({...})` returns a new `test` that knows about the `group` fixture. The fixture asks for the built-in `request` fixture, creates a group with a unique name, and passes it to the test with `await use(group)`. Everything after `use` runs when the test finishes, whatever the outcome, so `request.delete(...)` cleans up even after a failure. The test opts in by destructuring `group` next to `page`; tests that don't mention it never create one. Finally, `await expect(locator).toHaveText(...)` retries until the status appears, so the test doesn't race the page load."
+}

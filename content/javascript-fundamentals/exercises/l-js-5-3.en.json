@@ -1,0 +1,18 @@
+{
+  "title": "Throw what users can fix, rethrow the rest",
+  "prompt": "1. Finish `ValidationError` so instances have `name` set to `\"ValidationError\"` and a `field` property.\n2. Make `parseAmount(text)` return whole cents, or throw a `ValidationError` with field `\"amount\"` when the text is empty, not a finite number, or not greater than 0.\n3. Fix `tryAdd(list, label, amountText)`. For a valid entry it returns `{ ok: true, list }` with the new expense (trimmed label, amount in cents) added. An empty label throws a `ValidationError` with field `\"label\"`. Validation errors become `{ ok: false, field, message }`. **Any other error must be rethrown**, not swallowed.\n",
+  "hints": [
+    "In the constructor, after `super(message)`: `this.name = \"ValidationError\"; this.field = field;`.",
+    "`Number(\"\")` is 0 and `Number(\"Infinity\")` is Infinity, so check `text.trim() === \"\"` and `Number.isFinite(dollars) && dollars > 0`.",
+    "In the `catch`: `if (error instanceof ValidationError) { return { ok: false, field: error.field, message: error.message }; } throw error;`."
+  ],
+  "explanation": "`ValidationError` extends `Error`, so it keeps a message and a stack trace, and adds the `field` the form needs to place the message. `parseAmount` throws instead of returning a special value, so callers cannot accidentally treat a bad amount as a number. In `tryAdd`, the `catch` checks `instanceof ValidationError` and turns only those into a friendly result; anything else, such as the `TypeError` from spreading `null`, is a bug in the calling code and is rethrown so it shows up in the console instead of disappearing.\n",
+  "checks": {
+    "error-class": "`ValidationError` is an Error with a name and a field",
+    "parse-ok": "`parseAmount` returns whole cents for valid text",
+    "parse-throws": "`parseAmount` throws a ValidationError for empty, non-numeric, zero, negative or infinite input",
+    "try-add-ok": "`tryAdd` adds a valid expense",
+    "try-add-invalid": "`tryAdd` returns { ok: false, field, message } for invalid input",
+    "rethrows": "`tryAdd` rethrows errors that are not ValidationErrors"
+  }
+}

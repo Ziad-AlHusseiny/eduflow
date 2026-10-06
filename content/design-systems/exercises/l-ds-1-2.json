@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<article class=\"card\">\n  <h3 class=\"card-title\">Shipment NW-4471</h3>\n  <p class=\"card-meta\">Rotterdam to Hamburg · 2 pallets</p>\n  <p class=\"card-status\">In transit</p>\n  <footer class=\"card-footer\">Updated 4 min ago</footer>\n</article>",
+    "css": "/* Seven greys found in the audit. Collapse them into three tokens. */\n.card {\n  max-width: 320px;\n  padding: 16px;\n  border: 1px solid #dadfe4;\n  border-radius: 8px;\n}\n.card-title { margin: 0 0 4px; color: #1f2933; }\n.card-meta { margin: 0 0 12px; color: #5f6b7a; }\n.card-status {\n  margin: 0;\n  padding-top: 12px;\n  color: #222b35;\n  border-top: 1px solid #d7dce1;\n}\n.card-footer {\n  margin-top: 12px;\n  padding-top: 8px;\n  font-size: 14px;\n  color: #66737f;\n  border-top: 1px solid #dde1e6;\n}\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<article class=\"card\">\n  <h3 class=\"card-title\">Shipment NW-4471</h3>\n  <p class=\"card-meta\">Rotterdam to Hamburg · 2 pallets</p>\n  <p class=\"card-status\">In transit</p>\n  <footer class=\"card-footer\">Updated 4 min ago</footer>\n</article>",
+    "css": ":root {\n  --nw-gray-900: #1f2933;\n  --nw-gray-600: #616e7c;\n  --nw-gray-200: #d9dee3;\n}\n.card {\n  max-width: 320px;\n  padding: 16px;\n  border: 1px solid var(--nw-gray-200);\n  border-radius: 8px;\n}\n.card-title { margin: 0 0 4px; color: var(--nw-gray-900); }\n.card-meta { margin: 0 0 12px; color: var(--nw-gray-600); }\n.card-status {\n  margin: 0;\n  padding-top: 12px;\n  color: var(--nw-gray-900);\n  border-top: 1px solid var(--nw-gray-200);\n}\n.card-footer {\n  margin-top: 12px;\n  padding-top: 8px;\n  font-size: 14px;\n  color: var(--nw-gray-600);\n  border-top: 1px solid var(--nw-gray-200);\n}\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "root-tokens",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText); const root = rules.filter((r) => r.selectorText.trim() === ':root'); const names = new Set(); for (const r of root) for (const p of r.style) if (p.startsWith('--')) names.add(p); return names.size >= 3;"
+    },
+    {
+      "id": "no-raw-colors",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText); const own = rules.filter((r) => /card/.test(r.selectorText)); return own.length > 0 && own.every((r) => !/#[0-9a-f]{3,8}\\b|rgba?\\(|hsla?\\(/i.test(r.style.cssText));"
+    },
+    {
+      "id": "three-greys",
+      "test": "const used = new Set(); for (const el of [$('.card'), ...$$('.card *')]) { const cs = getComputedStyle(el); if (el !== $('.card')) used.add(cs.color); if (parseFloat(cs.borderTopWidth) > 0) used.add(cs.borderTopColor); } return used.size <= 3;"
+    },
+    {
+      "id": "hierarchy",
+      "test": "const lum = (c) => { const [r, g, b] = c.match(/[\\d.]+/g).map(Number); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const t = lum(style('.card-title', 'color')); return t < lum(style('.card-meta', 'color')) && t < lum(style('.card-footer', 'color')) && lum(style('.card-meta', 'color')) < lum(style('.card-status', 'border-top-color'));"
+    }
+  ]
+}

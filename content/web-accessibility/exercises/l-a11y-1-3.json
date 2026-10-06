@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["seat-drag", "focus-hidden", "tiny-qty", "focus-thin", "reverse-code", "inline-link"], "correct": ["seat-drag", "focus-hidden", "tiny-qty", "reverse-code"] }

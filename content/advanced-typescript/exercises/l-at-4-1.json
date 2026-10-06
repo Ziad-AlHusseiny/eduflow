@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "// Brand these three so they stop being interchangeable numbers.\ntype OrderId = number;\ntype CustomerId = number;\ntype Cents = number;\n\nfunction toOrderId(n: number): OrderId {\n  if (!Number.isInteger(n) || n < 1000) throw new Error(`Invalid order id: ${n}`);\n  return n;\n}\n\nfunction toCustomerId(n: number): CustomerId {\n  if (!Number.isInteger(n) || n < 1) throw new Error(`Invalid customer id: ${n}`);\n  return n;\n}\n\nfunction toCents(n: number): Cents {\n  if (!Number.isSafeInteger(n)) throw new Error(`Cents must be a whole number, got ${n}`);\n  return n;\n}\n\ntype Currency = 'USD' | 'EUR' | 'EGP';\ntype Money<C extends Currency = Currency> = { cents: Cents; currency: C };\n\nfunction money<C extends Currency>(cents: number, currency: C): Money<C> {\n  return { cents: toCents(cents), currency };\n}\n\nfunction add<C extends Currency>(a: Money<C>, b: Money<C>): Money<C> {\n  return { cents: toCents(a.cents + b.cents), currency: a.currency };\n}\n\ntype PaymentMethod =\n  | { kind: 'card'; last4: string }\n  | { kind: 'wallet'; provider: 'apple' | 'google' }\n  | { kind: 'cash-on-delivery' };\n\nfunction describePayment(p: PaymentMethod): string {\n  switch (p.kind) {\n    case 'card': return `Card ending ${p.last4}`;\n    case 'wallet': return `${p.provider === 'apple' ? 'Apple' : 'Google'} wallet`;\n  }\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<NotEqual<OrderId, number>>;\ntype T2 = Expect<NotEqual<OrderId, CustomerId>>;\ntype T3 = Expect<Equal<OrderId extends number ? true : false, true>>;\n\nfunction typeTests(customer: CustomerId, usd: Money<'USD'>, eur: Money<'EUR'>) {\n  // @ts-expect-error: a customer id is not an order id\n  const fromCustomer: OrderId = customer;\n  // @ts-expect-error: plain numbers must go through toOrderId\n  const fromNumber: OrderId = 1042;\n  // @ts-expect-error: dollars and euros cannot be added\n  add(usd, eur);\n  const total = add(usd, usd);\n  type T4 = Expect<Equal<typeof total, Money<'USD'>>>;\n}\n\nconsole.log(add(money(18900, 'USD'), money(499, 'USD')), describePayment({ kind: 'cash-on-delivery' }));\n"
+  },
+  "solution": {
+    "ts": "declare const brand: unique symbol;\ntype Brand<T, B extends string> = T & { readonly [brand]: B };\n\ntype OrderId = Brand<number, 'OrderId'>;\ntype CustomerId = Brand<number, 'CustomerId'>;\ntype Cents = Brand<number, 'Cents'>;\n\nfunction toOrderId(n: number): OrderId {\n  if (!Number.isInteger(n) || n < 1000) throw new Error(`Invalid order id: ${n}`);\n  return n as OrderId;\n}\n\nfunction toCustomerId(n: number): CustomerId {\n  if (!Number.isInteger(n) || n < 1) throw new Error(`Invalid customer id: ${n}`);\n  return n as CustomerId;\n}\n\nfunction toCents(n: number): Cents {\n  if (!Number.isSafeInteger(n)) throw new Error(`Cents must be a whole number, got ${n}`);\n  return n as Cents;\n}\n\ntype Currency = 'USD' | 'EUR' | 'EGP';\ntype Money<C extends Currency = Currency> = { cents: Cents; currency: C };\n\nfunction money<C extends Currency>(cents: number, currency: C): Money<C> {\n  return { cents: toCents(cents), currency };\n}\n\nfunction add<C extends Currency>(a: Money<C>, b: Money<NoInfer<C>>): Money<C> {\n  return { cents: toCents(a.cents + b.cents), currency: a.currency };\n}\n\ntype PaymentMethod =\n  | { kind: 'card'; last4: string }\n  | { kind: 'wallet'; provider: 'apple' | 'google' }\n  | { kind: 'cash-on-delivery' };\n\nfunction assertNever(value: never): never {\n  throw new Error(`Unhandled value: ${JSON.stringify(value)}`);\n}\n\nfunction describePayment(p: PaymentMethod): string {\n  switch (p.kind) {\n    case 'card': return `Card ending ${p.last4}`;\n    case 'wallet': return `${p.provider === 'apple' ? 'Apple' : 'Google'} wallet`;\n    case 'cash-on-delivery': return 'Cash on delivery';\n    default: return assertNever(p);\n  }\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<NotEqual<OrderId, number>>;\ntype T2 = Expect<NotEqual<OrderId, CustomerId>>;\ntype T3 = Expect<Equal<OrderId extends number ? true : false, true>>;\n\nfunction typeTests(customer: CustomerId, usd: Money<'USD'>, eur: Money<'EUR'>) {\n  // @ts-expect-error: a customer id is not an order id\n  const fromCustomer: OrderId = customer;\n  // @ts-expect-error: plain numbers must go through toOrderId\n  const fromNumber: OrderId = 1042;\n  // @ts-expect-error: dollars and euros cannot be added\n  add(usd, eur);\n  const total = add(usd, usd);\n  type T4 = Expect<Equal<typeof total, Money<'USD'>>>;\n}\n\nconsole.log(add(money(18900, 'USD'), money(499, 'USD')), describePayment({ kind: 'cash-on-delivery' }));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "validates",
+      "test": "let threw = false; try { toOrderId(999); } catch { threw = true; } return threw && toOrderId(1042) === 1042;"
+    },
+    {
+      "id": "adds",
+      "test": "const t = add(money(18900, 'USD'), money(499, 'USD')); return t.cents === 19399 && t.currency === 'USD';"
+    },
+    {
+      "id": "cash",
+      "test": "return describePayment({ kind: 'cash-on-delivery' }) === 'Cash on delivery';"
+    },
+    {
+      "id": "throws-unknown",
+      "test": "try { describePayment({ kind: 'crypto' }); return false; } catch { return true; }"
+    }
+  ]
+}

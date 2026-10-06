@@ -1,0 +1,17 @@
+{
+  "title": "Mocks for remindDebtors",
+  "prompt": "`remindDebtors(balances, sendReminder)` calls `sendReminder(name, message)` for each person who owes at least $1.00, warns with `console.warn` when a reminder fails, and returns how many it sent. Positive balances are owed money; negative balances owe. The rules are in the subject's comment.\n\nThe starter already spies on `console.warn` (and restores it after each test). Use `vi.fn()` for `sendReminder` and add tests until your suite catches four hidden bugs: one reminds people who are **owed** money, one **swaps** the two arguments, one skips a debt of **exactly** $1.00, and one **stops** at the first failed reminder.",
+  "hints": [
+    "Pass a `vi.fn()` and check it with `toHaveBeenCalledWith('Ben', 'You owe $5.00 to the group')` and `toHaveBeenCalledTimes(1)`. The exact argument order matters.",
+    "Boundary: a balance of -100 must be reminded, -99 must not.",
+    "For the failure case, make the mock throw for one name: `vi.fn().mockImplementation((name) => { if (name === 'Ben') throw new Error('Mailbox full'); })`, then assert that the next debtor was still called and that `warn` was called with the message."
+  ],
+  "explanation": "`toHaveBeenCalledWith` checks the arguments in order, so it catches the swapped version, and `toHaveBeenCalledTimes(1)` with a creditor in the balances catches the version that reminds everyone. The boundary test uses -100 and -99, one on each side of the limit; -100, exactly on it, is the input that tells `<` from `<=`. The failure test makes the mock throw for one person and checks that the **next** person was still reminded; the version that rethrows never gets there and the test fails. The `console.warn` spy turns a side effect you would normally ignore into something you can assert, and restoring it in `afterEach` keeps it from leaking into other tests.",
+  "checks": {
+    "passes": "All your tests pass against the real remindDebtors",
+    "catches-reminds-creditors": "Catches the version that reminds people who are owed money",
+    "catches-swapped-args": "Catches the version that swaps name and message",
+    "catches-skips-exact-minimum": "Catches the version that skips a debt of exactly $1.00",
+    "catches-stops-on-failure": "Catches the version that stops at the first failed reminder"
+  }
+}

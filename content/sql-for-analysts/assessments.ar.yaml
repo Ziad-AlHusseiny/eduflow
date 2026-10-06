@@ -1,0 +1,363 @@
+checkpoints:
+  s-sql-1:
+    - q: "تريد هدى طلبات الويب التي قُدّمت في ديسمبر 2025 واستخدمت أي كوبون. أي عبارة WHERE صحيحة؟"
+      options:
+        - text: "channel = 'web' AND coupon_code <> NULL AND order_date BETWEEN '2025-12-01' AND '2025-12-31'"
+          why: "المقارنة مع NULL باستخدام <> غير معروفة النتيجة دائمًا، فلا يمرّ أي صف، كما أن حدّ BETWEEN سيُسقط كل طلب في 31 ديسمبر بعد منتصف الليل."
+        - text: "channel = 'web' AND coupon_code IS NOT NULL AND order_date BETWEEN '2025-12-01' AND '2025-12-31'"
+          why: "اختبار NULL صحيح، لكن '2025-12-31' يأتي في الترتيب قبل أي وقت في ذلك اليوم، فتضيع طلبات 31 ديسمبر."
+        - text: "channel = 'web' AND coupon_code IS NOT NULL AND order_date >= '2025-12-01' AND order_date < '2026-01-01'"
+          why: "صحيح. يجد IS NOT NULL الطلبات التي لها كوبون، ويشمل النطاق نصف المفتوح كل لحظة في ديسمبر."
+        - text: "channel = 'web' OR coupon_code IS NOT NULL AND order_date >= '2025-12-01' AND order_date < '2026-01-01'"
+          why: "AND يرتبط أقوى من OR، فيعيد هذا كل طلب ويب على الإطلاق، إضافةً إلى طلبات الكوبونات في ديسمبر من القنوات الأخرى."
+      answer: 2
+    - q: "يعيد `SELECT COUNT(*), COUNT(closed_at) FROM support_tickets` القيمتين 873 و817. ماذا تمثّل التذاكر الـ 56 الناقصة؟"
+      options:
+        - text: "التذاكر التي ما زالت مفتوحة، لأن closed_at يبقى NULL حتى تُغلق التذكرة."
+          why: "صحيح. COUNT(column) يتخطّى قيم NULL، فالفرق هو بالضبط الصفوف التي قيمة closed_at فيها NULL."
+        - text: "التذاكر التي أُغلقت في اليوم نفسه الذي فُتحت فيه."
+          why: "تذاكر اليوم نفسه لها قيمة في closed_at، فيعدّها COUNT(closed_at)."
+        - text: "تذاكر مكرّرة يزيلها COUNT(closed_at)."
+          why: "COUNT(column) لا يزيل التكرار؛ ذلك يحتاج إلى COUNT(DISTINCT closed_at)."
+        - text: "التذاكر التي ليس لها تقييم رضا."
+          why: "الرضا عمود مختلف؛ وقيم NULL فيه لا تؤثّر في COUNT(closed_at)."
+      answer: 0
+    - q: |
+        ماذا يعيد هذا التعبير لتذكرة قيمة `satisfaction` فيها NULL؟
+        ```sql
+        CASE
+          WHEN satisfaction >= 4 THEN 'happy'
+          WHEN satisfaction <= 2 THEN 'unhappy'
+        END
+        ```
+      options:
+        - text: "'happy'"
+          why: "قيمة NULL >= 4 غير معروفة لا TRUE، فلا يُختار الفرع الأول."
+        - text: "'unhappy'"
+          why: "قيمة NULL <= 2 غير معروفة أيضًا، فلا يُختار الفرع الثاني كذلك."
+        - text: "خطأ، لأن CASE لا يستطيع التعامل مع مدخلات قيمتها NULL"
+          why: "يتعامل CASE مع NULL دون مشكلة؛ الفرع الذي يكون شرطه غير معروف يُتخطّى ببساطة."
+        - text: "NULL، لأن لا WHEN قيمته TRUE ولا يوجد ELSE"
+          why: "صحيح. بدون ELSE تحصل الصفوف غير المطابقة على NULL. أضف ELSE 'unrated' (وتسمية للتقييم 3) لتغطية كل حالة عن قصد."
+      answer: 3
+    - q: "لا يعيد `WHERE strftime('%w', opened_at) = 0` أي تذكرة، مع أن كثيرًا منها فُتح أيام الأحد. لماذا؟"
+      options:
+        - text: "في SQLite يعدّ '%w' يوم الاثنين 0."
+          why: "يستخدم '%w' في SQLite الرقم 0 ليوم الأحد، فترقيم الأيام ليس المشكلة."
+        - text: "تعيد strftime نصًا، فيجب أن تكون المقارنة مع '0' لا مع الرقم 0."
+          why: "صحيح. تعيد strftime نصًا دائمًا، والنص '0' لا يساوي العدد الصحيح 0 في هذه المقارنة."
+        - text: "لا تستطيع strftime قراءة جزء الوقت في opened_at."
+          why: "تقبل strftime القيم الكاملة بالصيغة 'YYYY-MM-DD HH:MM:SS'؛ وجزء الوقت ليس عائقًا."
+        - text: "شروط يوم الأسبوع تحتاج إلى julianday() بدلًا منها."
+          why: "تعيد julianday عددًا من الأيام؛ أما strftime مع '%w' فهي الأداة الصحيحة بعد إصلاح نوع المقارنة."
+      answer: 1
+    - q: "تقرير يعرض أحدث الطلبات 25 في كل صفحة. أي ORDER BY يعطي صفحات ثابتة؟"
+      options:
+        - text: "ORDER BY order_date DESC LIMIT 25 OFFSET 25"
+          why: "الصفوف التي تتشارك order_date قد تعود بترتيب مختلف في كل query، فيظهر صف في صفحتين."
+        - text: "ORDER BY channel, order_date DESC LIMIT 25 OFFSET 25"
+          why: "هذا يرتّب حسب القناة أولًا، فلا تكون الصفحات الأولى هي الطلبات الأحدث، ويبقى التعادل ممكنًا."
+        - text: "ORDER BY order_date DESC, order_id DESC LIMIT 25 OFFSET 25"
+          why: "صحيح. order_id فريد، فيكسر كل تعادل ويكون الترتيب واحدًا في كل تشغيل."
+        - text: "LIMIT 25 OFFSET 25 بلا ORDER BY، لأن الجدول مرتّب حسب التاريخ أصلًا"
+          why: "بدون ORDER BY لا يوجد أي ترتيب مضمون إطلاقًا؛ ترتيب التخزين ليس وعدًا."
+      answer: 2
+  s-sql-2:
+    - q: "يطلب كريم متوسط رسوم الشحن لكل طلب حسب القناة. يربط زميلك orders بـ order_items ويستخدم AVG(o.shipping_fee). ما الخطأ؟"
+      options:
+        - text: "رسوم كل طلب تظهر مرة لكل سطر عنصر، فيكون للطلبات ذات السطور الكثيرة وزن أكبر في المتوسط."
+          why: "صحيح. غيّر الـ JOIN مستوى التفصيل إلى السطور. احسب AVG(shipping_fee) من orders وحده، حيث كل طلب صف واحد."
+        - text: "لا يمكن استخدام AVG مع JOIN."
+          why: "دوال التجميع تعمل على أي عبارة FROM؛ المشكلة فيما يمثّله كل صف بعد الـ JOIN."
+        - text: "لا شيء؛ المتوسط لا يتأثّر بتكرار الصفوف."
+          why: "المتوسط يتأثّر كلما تكرّرت الصفوف بشكل غير متساوٍ، وهذا بالضبط ما يفعله الـ fan-out."
+        - text: "يجب قسمة الرسوم على عدد العناصر أولًا."
+          why: "تقسيم الرسوم ثم حساب المتوسط يجيب عن سؤال مختلف، أي الرسوم لكل سطر."
+      answer: 0
+    - q: "أي query يعرض العملاء الذين لديهم 5 طلبات غير ملغاة على الأقل؟"
+      options:
+        - text: "SELECT customer_id FROM orders WHERE COUNT(*) >= 5 AND status <> 'cancelled' GROUP BY customer_id"
+          why: "يعمل WHERE قبل التجميع، فلا يمكن استخدام COUNT(*) فيه؛ هذا خطأ."
+        - text: "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(*) >= 5"
+          why: "هذا يعدّ الطلبات الملغاة أيضًا، لأن لا شيء يزيلها قبل التجميع."
+        - text: "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(*) >= 5 AND status <> 'cancelled'"
+          why: "status ليس ضمن التجميع، فهو في SQLite عمود مجرّد من صف اعتباطي؛ والشرط بلا معنى."
+        - text: "SELECT customer_id FROM orders WHERE status <> 'cancelled' GROUP BY customer_id HAVING COUNT(*) >= 5"
+          why: "صحيح. شرط الصفوف في WHERE قبل التجميع؛ والشرط على العدد في HAVING."
+      answer: 3
+    - q: "يجب أن تظهر كل فئة مع عدد منتجاتها النشطة، بما فيها الصفر. أي JOIN صحيح؟"
+      options:
+        - text: "categories c JOIN products p ON p.category_id = c.category_id WHERE p.is_active = 1، ثم COUNT(*)"
+          why: "الـ inner join يُسقط الفئات التي بلا منتجات، فلا تظهر الأصفار أبدًا."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id AND p.is_active = 1، ثم COUNT(p.product_id)"
+          why: "صحيح. شرط النشاط على الجدول الأيمن، فمكانه ON، وعدّ مفتاح من الجدول الأيمن يعطي 0 حين لا يوجد تطابق."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id WHERE p.is_active = 1، ثم COUNT(*)"
+          why: "اختبار WHERE قيمته NULL للفئات غير المطابقة، فيحذفها؛ وهذا يتصرّف كـ inner join."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id AND p.is_active = 1، ثم COUNT(*)"
+          why: "الـ JOIN صحيح، لكن COUNT(*) يعدّ الصف غير المطابق، فتظهر الفئات الفارغة بـ 1 بدل 0."
+      answer: 1
+    - q: "أي query يجد المنتجات التي لم تُرتجع قط؟"
+      options:
+        - text: "SELECT p.name FROM products p LEFT JOIN returns r ON r.order_item_id = p.product_id WHERE r.return_id IS NULL"
+          why: "هذا يربط معرّف منتج بمعرّف عنصر طلب، وهما مفتاحان لا علاقة بينهما، فالنتيجة بلا معنى."
+        - text: "SELECT p.name FROM products p JOIN order_items oi ON oi.product_id = p.product_id JOIN returns r ON r.order_item_id = oi.order_item_id WHERE r.return_id IS NULL"
+          why: "الـ inner joins لا تُبقي إلا السطور المرتجعة، فلا يمكن أن يكون اختبار IS NULL صحيحًا أبدًا."
+        - text: "SELECT p.name FROM products p WHERE NOT EXISTS (SELECT 1 FROM order_items oi JOIN returns r ON r.order_item_id = oi.order_item_id WHERE oi.product_id = p.product_id)"
+          why: "صحيح. يبحث الـ subquery عن أي إرجاع لهذا المنتج عبر سطور طلباته؛ ويُبقي NOT EXISTS المنتجات التي لا إرجاع لها."
+      answer: 2
+    - q: "لعرض الموظفين الذين عُيّنوا قبل مديرهم، أي شرط يناسب `employees e JOIN employees m ON m.employee_id = e.manager_id`؟"
+      options:
+        - text: "WHERE e.hire_date < m.hire_date"
+          why: "صحيح. e هو الموظف وm هو المدير، فيجب أن يكون تاريخ الموظف أسبق من تاريخ المدير."
+        - text: "WHERE m.hire_date < e.hire_date"
+          why: "هذه هي الحالة المعتادة، أي تعيين المديرين أولًا؛ وهي تعيد المجموعة المعاكسة."
+        - text: "WHERE e.hire_date < e.manager_id"
+          why: "هذا يقارن تاريخًا بمعرّف، وهذا بلا معنى؛ تاريخ المدير موجود عند الاسم المستعار m."
+        - text: "WHERE e.employee_id < m.employee_id"
+          why: "المعرّفات تعكس ترتيب الإدراج في أحسن الأحوال، لا تواريخ التعيين، فهذا يجيب عن سؤال مختلف."
+      answer: 0
+  s-sql-3:
+    - q: "تحتاج إلى أحدث طلب لكل عميل. أي طريقة صحيحة؟"
+      options:
+        - text: "SELECT customer_id, MAX(order_date), order_id FROM orders GROUP BY customer_id"
+          why: "صادف أن SQLite يملأ الأعمدة المجرّدة من صف MAX، لكن PostgreSQL يرفض هذا الـ query، والتعادل يتركه ملتبسًا، فليس نمطًا يُعتمد عليه."
+        - text: "صفِّ بـ WHERE ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) = 1"
+          why: "لا يمكن أن تظهر دوال النافذة في WHERE، لأنها تُحسب بعده."
+        - text: "استخدم RANK() OVER (PARTITION BY customer_id ORDER BY order_date DESC) وأبقِ الترتيب 1"
+          why: "طلبان في الطابع الزمني نفسه سيحصلان كلاهما على الترتيب 1، فيعود صفّان لعميل واحد."
+        - text: "احسب ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, order_id DESC) في CTE، ثم أبقِ rn = 1"
+          why: "صحيح. صف واحد لكل partition، مع عمود فريد لكسر التعادل، والتصفية في الـ query الخارجي."
+      answer: 3
+    - q: "أي تعبير يعطي مجموعًا تراكميًا للإيراد اليومي يبدأ من جديد في بداية كل شهر؟"
+      options:
+        - text: "SUM(revenue) OVER (PARTITION BY day ORDER BY day)"
+          why: "كل partition يحتوي على يوم واحد، فيعرض كل صف إيراده هو فقط."
+        - text: "SUM(revenue) OVER (PARTITION BY strftime('%Y-%m', day) ORDER BY day)"
+          why: "صحيح. الـ partition حسب الشهر يجعله يبدأ من جديد، وORDER BY day يجعله يتراكم."
+        - text: "SUM(revenue) OVER (ORDER BY day)"
+          why: "هذا لا يبدأ من جديد أبدًا؛ إنه يتراكم عبر الفترة كلها."
+        - text: "SUM(revenue) OVER (PARTITION BY strftime('%Y-%m', day))"
+          why: "بدون ORDER BY داخل OVER، يعرض كل يوم المجموع الكامل للشهر لا مجموعًا تراكميًا."
+      answer: 1
+    - q: "يبني CTE تكراري شجرة الفئات، بدءًا من الفئات التي قيمة parent_id فيها NULL. على ماذا يجب أن ترتبط الخطوة التكرارية؟"
+      options:
+        - text: "c.category_id = tree.parent_id"
+          why: "هذا يسير صعودًا، من الفئة إلى أبيها، لكن الارتكاز يبدأ من القمة أصلًا."
+        - text: "c.parent_id IS NULL"
+          why: "هذا يكرّر شرط الارتكاز، فسيظل يضيف الفئات العليا مرة بعد مرة."
+        - text: "c.parent_id = tree.category_id"
+          why: "صحيح. كل تكرار يضيف الفئات التي وُجد أبوها في التكرار السابق، نزولًا في الشجرة."
+        - text: "c.category_id = tree.category_id"
+          why: "هذا يطابق كل صف مع نفسه، فلن يضيف التكرار شيئًا جديدًا أبدًا."
+      answer: 2
+    - q: "جلسات 2025: معدل إتمام الشراء (المشتريات لكل سلة) على الحاسوب المكتبي 56% وعلى الجوال 37%، والجوال لديه أكبر عدد من الجلسات. أي استنتاج يدعمه ذلك؟"
+      options:
+        - text: "متسوّقو الجوال الذين يبلغون السلة يتخلّون عنها أكثر بكثير، فعملية الدفع على الجوال هي أول ما يستحق التحقيق."
+          why: "صحيح. معدل الخطوة يعزل خطوة الانتقال من السلة إلى الشراء، وحجم زيارات الجوال الكبير يجعل الفجوة ثمينة."
+        - text: "زيارات الجوال أقل جودة ويجب حذفها من ميزانية الإعلانات."
+          why: "فجوة إتمام الشراء لا تقول شيئًا عن الخطوات السابقة، وقطع أكبر قناة يتجاهل مشكلة يمكن إصلاحها."
+        - text: "مستخدمو الحاسوب المكتبي ينفقون أكثر في كل طلب."
+          why: "معدل إتمام الشراء يعدّ المشتريات لا قيمتها؛ قيمة الطلب تحتاج إلى بيانات الإيراد."
+        - text: "لا بد أن بيانات القمع خاطئة لأن المعدلات مختلفة."
+          why: "الأجهزة المختلفة تتحوّل بمعدلات مختلفة فعلًا؛ الاختلاف ليس خطأً في البيانات."
+      answer: 0
+    - q: "يعرض جدول cohorts معدل احتفاظ 130% في الشهر 1 لأحد الـ cohorts. ما السبب الأرجح؟"
+      options:
+        - text: "الـ cohort أصغر من أن تُحسب له نسب مئوية."
+          why: "الـ cohorts الصغيرة مشوّشة، لكن معدل الاحتفاظ الصحيح لا يمكن أن يتجاوز 100%."
+        - text: "حُسبت أرقام الأشهر بـ julianday بدل مؤشّر الشهر."
+          why: "قد يضع ذلك الطلبات في أشهر خاطئة، لكنه لا يدفع وحده نسبة من الأشخاص فوق 100%."
+        - text: "البسط يعدّ الطلبات بدل عدّ العملاء دون تكرار."
+          why: "صحيح. العملاء الذين لديهم عدة طلبات في الشهر 1 يُحسبون عدة مرات. اعدد العملاء دون تكرار (DISTINCT) في البسط والمقام كليهما."
+        - text: "استُخدم LEFT JOIN بدل INNER JOIN."
+          why: "نوع الـ JOIN يغيّر العملاء الذين يظهرون، لا عدد مرات حساب كل منهم في الشهر."
+      answer: 2
+  s-sql-4:
+    - q: "أي query فحص صحيح لجودة البيانات للقاعدة «لكل طلب عنصر واحد على الأقل»؟"
+      options:
+        - text: "SELECT COUNT(DISTINCT order_id) FROM order_items"
+          why: "هذا يعدّ الطلبات التي لها عناصر، دون أن يسمّي الطلبات التي ليس لها."
+        - text: "SELECT o.* FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE oi.order_item_id IS NULL"
+          why: "الـ inner join حذف بالفعل الطلبات التي بلا عناصر، فهذا لا يعيد شيئًا دائمًا."
+        - text: "SELECT * FROM order_items WHERE order_id IS NULL"
+          why: "هذا يفحص العناصر التي بلا طلب، وهي قاعدة مختلفة، كما أن order_id لا يقبل NULL أصلًا."
+        - text: "SELECT o.* FROM orders o WHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id = o.order_id)"
+          why: "صحيح. يعيد بالضبط الطلبات التي تخالف القاعدة؛ والنتيجة الفارغة تعني نجاح الفحص."
+      answer: 3
+    - q: "يعرض `EXPLAIN QUERY PLAN` كلمة SCAN للـ query `SELECT * FROM orders WHERE customer_id + 0 = 42`، مع وجود index على customer_id. ما الإصلاح؟"
+      options:
+        - text: "أضف index ثانيًا على customer_id."
+          why: "الـ index الموجود سليم؛ التعبير المحيط بالعمود هو ما يمنع استخدامه."
+        - text: "اكتب WHERE customer_id = 42 حتى يقف العمود المفهرس وحده."
+          why: "صحيح. أي عملية حسابية أو دالة على العمود تخفيه عن الـ index؛ والمقارنة المجرّدة تصبح SEARCH."
+        - text: "أضف ORDER BY customer_id."
+          why: "الترتيب لا يغيّر طريقة تقييم الشرط."
+        - text: "شغّل ANALYZE حتى يلاحظ SQLite الـ index."
+          why: "الإحصاءات تساعد المُحسِّن على الاختيار بين خطط قابلة للاستخدام، لكن لا إحصاءات تجعل تعبيرًا يطابق index على عمود عادي."
+      answer: 1
+    - q: "query في SQLite يعدّ الطلبات المرتجعة بـ SUM(status = 'returned'). ويجب نقله إلى PostgreSQL. ما إعادة الكتابة القابلة للنقل؟"
+      options:
+        - text: "COUNT(*) FILTER (WHERE status = 'returned')"
+          why: "صحيح. يعمل FILTER في المحرّكين، بينما يفشل جمع قيمة منطقية في PostgreSQL."
+        - text: "SUM(IIF(status = 'returned', 1, 0))"
+          why: "IIF دالة في SQLite لا يملكها PostgreSQL."
+        - text: "COUNT(status = 'returned')"
+          why: "يعدّ COUNT كل قيمة ليست NULL، والمقارنة لا تكون NULL هنا أبدًا، فهذا يعدّ كل الصفوف."
+        - text: "أبقِه كما هو؛ PostgreSQL يعامل القيم المنطقية كـ 0 و1."
+          why: "القيم المنطقية في PostgreSQL نوع مستقل، وSUM(boolean) خطأ هناك."
+      answer: 0
+    - q: "أثناء مراجعة query لزميل، أي تغيير يقلّل أكثر من غيره خطر الحصول على رقم خاطئ؟"
+      options:
+        - text: "تحويل كل الكلمات المفتاحية إلى أحرف كبيرة."
+          why: "حالة الأحرف المتّسقة تساعد على القراءة، لكنها لا تستطيع تغيير النتيجة."
+        - text: "استبدال GROUP BY 1 باسم العمود."
+          why: "الأسماء أصمد أمام التعديلات، لكن النتيجة الحالية واحدة في الحالتين."
+        - text: "حذف JOIN مع جدول لا يُستخدم أي عمود منه."
+          why: "صحيح. الـ JOIN غير المستخدم ما زال قادرًا على مضاعفة الصفوف أو إسقاطها، فحذفه يزيل مصدرًا حقيقيًا للخطأ."
+        - text: "إضافة تعليق فوق كل سطر."
+          why: "التعليقات التي تكرّر ما يقوله الـ SQL تضيف ضجيجًا؛ لا يساعد المراجعين إلا التعليقات التي تشرح القرارات."
+      answer: 2
+    - q: "يجد فحصك منتجات طُلبت قبل تاريخ launched_on الخاص بها. ما أفضل طريقة للتعامل مع ذلك في تحليل لإطلاق المنتجات مطلوب غدًا؟"
+      options:
+        - text: "احذف سطور الطلبات المخالفة من التحليل دون ذكر ذلك."
+          why: "حذف الصفوف بصمت يغيّر المجاميع ولا يترك لأحد قدرة على إعادة إنتاج أرقامك."
+        - text: "اجعل launched_on في الـ query الخاص بك يساوي تاريخ أول طلب ولا تقل شيئًا."
+          why: "هذا يستبدل القيمة المسجّلة بتخمينك ويخفي التعارض."
+        - text: "تجاهله، لأن تواريخ الإطلاق لا تؤثّر في الإيراد."
+          why: "تواريخ الإطلاق هي جوهر أي تحليل للإطلاق، فتجاهل تناقض فيها يقوّضه."
+        - text: "أبلغ عن التعارض، واذكر كيف تعاملت مع تلك المنتجات، واسأل فريق المنتج عمّا يسجّله launched_on فعلًا."
+          why: "صحيح. صاحب البيانات يستطيع شرح الحقل، والافتراض المصرَّح به يُبقي تحليلك صادقًا وقابلًا لإعادة الإنتاج."
+      answer: 3
+final:
+  - q: "يعيد `SELECT COUNT(*) FROM support_tickets WHERE agent_id NOT IN (SELECT manager_id FROM employees)` القيمة 0. لماذا؟"
+    options:
+      - text: "كل وكيل دعم هو أيضًا مدير لشخص ما."
+        why: "أخصائيو الدعم لا يديرون أحدًا؛ للصفر سبب آخر."
+      - text: "قيمة manager_id للمديرة التنفيذية NULL، وNOT IN مقابل قائمة فيها NULL لا يكون TRUE أبدًا."
+        why: "صحيح. قيمة NULL واحدة في الـ subquery تجعل كل اختبار NOT IN غير معروف. استخدم NOT EXISTS أو استبعد قيم NULL."
+      - text: "قيمة agent_id هي NULL في كل التذاكر."
+        why: "لكل تذكرة في بيانات Cartwheel وكيل؛ الـ NULL في الطرف الآخر."
+      - text: "لا يمكن استخدام NOT IN مع subquery."
+        why: "يقبل NOT IN الـ subquery؛ لكنه يتصرّف بشكل سيئ حين يعيد ذلك الـ subquery قيمة NULL."
+    answer: 1
+  - q: "اتجاه شهري يجمّع حسب `strftime('%m', order_date)`. يعرض يناير قرابة ضعف الطلبات المتوقعة. ماذا حدث؟"
+    options:
+      - text: "التسمية بلا سنة، فدُمج يناير 2024 ويناير 2025 في مجموعة واحدة."
+        why: "صحيح. جمّع حسب strftime('%Y-%m', order_date) حتى يكون لكل شهر تقويمي صف خاص به."
+      - text: "عدّت strftime كل طلب مرتين."
+        why: "تحوّل strftime قيمة لكل صف؛ ولا تستطيع تكرار الصفوف."
+      - text: "في يناير أيام أكثر من الأشهر الأخرى."
+        why: "في يناير 31 يومًا مثل عدة أشهر أخرى؛ وهذا لا يمكن أن يضاعف العدد."
+      - text: "كان الـ query يحتاج إلى ORDER BY ليجمّع بشكل صحيح."
+        why: "ORDER BY يرتّب النتيجة؛ ولا يغيّر الصفوف التي تقع في كل مجموعة."
+    answer: 0
+  - q: "يُعرض `SELECT c.country, COUNT(*) FROM customers c JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.country` على أنه «العملاء لكل دولة». ما الخطأ؟"
+    options:
+      - text: "يجب أن يستخدم LEFT JOIN."
+        why: "الـ LEFT JOIN سيضيف العملاء الذين بلا طلبات لكنه سيظل يعدّ الطلبات لكل من سواهم."
+      - text: "يجب أن يذكر GROUP BY العمود customer_id."
+        why: "سيعطي ذلك صفًا لكل عميل، لا لكل دولة."
+      - text: "لا شيء؛ كل صف عميل."
+        why: "بعد الـ JOIN يصبح كل صف طلبًا، فيُعدّ العملاء الذين لديهم طلبات كثيرة مرات كثيرة."
+      - text: "إنه يعدّ الطلبات؛ استخدم COUNT(DISTINCT c.customer_id)، أو استعلم من customers وحده إن كان يجب حساب كل عميل."
+        why: "صحيح. جعل الـ JOIN مستوى التفصيل صفًا لكل طلب، فالتسمية والرقم لا يتفقان."
+    answer: 3
+  - q: "query يربط orders وorder_items وreturns ليعرض النتائج لكل دولة. أي مجموع آمن في هذا الـ JOIN؟"
+    options:
+      - text: "SUM(o.shipping_fee)"
+        why: "الرسوم موجودة في orders، وهو الجدول الأخشن هنا، فتتكرّر مرة لكل سطر عنصر."
+      - text: "COUNT(*) كعدد للطلبات"
+        why: "كل صف سطر عنصر (أو سطر مرتجع)، فيعدّ COUNT(*) السطور لا الطلبات."
+      - text: "SUM(r.refund_amount)"
+        why: "صحيح. كل إرجاع ينتمي إلى سطر عنصر واحد، وهو مستوى التفصيل الأدق في الـ JOIN، فيظهر كل مبلغ استرداد مرة واحدة."
+      - text: "SUM(DISTINCT o.shipping_fee)"
+        why: "DISTINCT يزيل القيم المتساوية، فيدمج طلبات مختلفة صادف أن تشاركت الرسوم نفسها."
+    answer: 2
+  - q: "يجب أن يعرض تقرير كل منتج مع إجمالي المبالغ المستردة له في 2025، وصفرًا للمنتجات التي لم يُسترد ثمنها قط. يستخدم LEFT JOINs من products إلى order_items إلى returns، ثم WHERE r.return_date >= '2025-01-01'. ماذا يحدث؟"
+    options:
+      - text: "يعمل؛ الـ LEFT JOIN يُبقي كل منتج بغض النظر عن WHERE."
+        why: "يعمل WHERE بعد الـ JOIN ويُسقط الصفوف التي قيمة r.return_date فيها NULL، بما فيها كل منتج بلا مرتجعات."
+      - text: "تختفي المنتجات التي ليس لها مرتجعات في 2025؛ يجب نقل اختبار التاريخ إلى عبارة ON في الربط مع returns."
+        why: "صحيح. الشرط على الجدول الأيمن في WHERE يحوّل الـ LEFT JOIN إلى inner join."
+      - text: "يفشل الـ query لأن الـ LEFT JOIN لا يمكن تسلسله."
+        why: "تتسلسل الـ LEFT JOINs دون أي مشكلة؛ المسألة في موضع الشرط."
+      - text: "تتضاعف إجماليات المبالغ المستردة بسبب شرط التاريخ."
+        why: "الشرط يحذف صفوفًا؛ ولا يستطيع تكرارها."
+    answer: 1
+  - q: "الإيراد لكل عميل مطلوب في خطوتين لاحقتين من تحليل ما. ما أفضل بنية؟"
+    options:
+      - text: "عرّفه مرة واحدة كـ CTE وأشِر إليه في الخطوتين."
+        why: "صحيح. التعريف الواحد يُبقي الخطوتين متّسقتين ويجعل التعديلات اللاحقة آمنة."
+      - text: "انسخ الـ subquery نفسه في الموضعين."
+        why: "المنطق المكرّر ينجرف: يحدّث أحدهم نسخة وينسى الأخرى."
+      - text: "استخدم subquery مترابطًا لكل صف بدلًا من ذلك."
+        why: "هذا يعيد حساب الإيراد لكل صف ويظل يكرّر المنطق؛ وهو أصعب قراءة وأبطأ عادةً."
+      - text: "أنشئ جدولًا دائمًا بالنتائج."
+        why: "ممكن في مستودع البيانات، لكنه يضيف عبء صيانة ويصبح قديمًا؛ الـ CTE هو الأداة الأولى الصحيحة."
+    answer: 0
+  - q: "تريد هدى أعلى 3 منتجات من حيث الوحدات في كل فئة، مع إبقاء أي منتج متعادل على المركز الثالث. أي دالة تناسب؟"
+    options:
+      - text: "ROW_NUMBER() OVER (PARTITION BY category ORDER BY units DESC)"
+        why: "يكسر ROW_NUMBER التعادل اعتباطيًا، فقد يُستبعد منتج متعادل على المركز الثالث."
+      - text: "NTILE(3) OVER (PARTITION BY category ORDER BY units DESC)"
+        why: "تقسم NTILE كل فئة إلى ثلاث شرائح من الصفوف، وهذه ليست قائمة بأعلى 3."
+      - text: "RANK() OVER (PARTITION BY category ORDER BY units DESC)، مع إبقاء الترتيب 3 أو أفضل"
+        why: "صحيح. يعطي RANK المنتجات المتعادلة الموضع نفسه، فيبقى كل من يتعادل على المركز الثالث."
+      - text: "DENSE_RANK() OVER (ORDER BY units DESC)"
+        why: "بدون PARTITION BY يمتد الترتيب عبر كل الفئات دفعة واحدة."
+    answer: 2
+  - q: "يستخدم النمو السنوي LAG(revenue, 12) OVER (ORDER BY month)، لكن شهرًا واحدًا لم تكن فيه أي طلبات. ما الخطر وما الإصلاح؟"
+    options:
+      - text: "لا خطر؛ يبحث LAG عن الشهر الذي قبل 12 شهرًا حسب التاريخ."
+        why: "يعدّ LAG الصفوف لا الأشهر التقويمية، فلا يستطيع تخطّي شهر مفقود."
+      - text: "يعيد LAG القيمة 0 للشهر المفقود، وهذا صحيح."
+        why: "الشهر المفقود لا صف له أصلًا، فلا يعيد LAG شيئًا من أجله؛ بل تنزاح الصفوف اللاحقة."
+      - text: "استخدم LEAD بدل LAG."
+        why: "LEAD ينظر إلى الأمام، وهذا لا يصلح الصف المفقود ويقارن بالمستقبل."
+      - text: "كل مقارنة بعد الفجوة تنزاح شهرًا؛ ولّد تقويمًا للأشهر واربط به الإيراد بـ LEFT JOIN أولًا."
+        why: "صحيح. مع ضمان صف واحد لكل شهر، يكون الرجوع 12 صفًا هو دائمًا الشهر نفسه في السنة الماضية."
+    answer: 3
+  - q: "على جدول إيرادات شهري فيه صف واحد لكل شهر، أي إطار يعطي متوسطًا متحركًا لثلاثة أشهر؟"
+    options:
+      - text: "AVG(revenue) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)"
+        why: "صحيح. صفّان سابقان مع الصف الحالي يصنعان ثلاثة أشهر."
+      - text: "AVG(revenue) OVER (ORDER BY month ROWS BETWEEN 3 PRECEDING AND CURRENT ROW)"
+        why: "هذه أربعة صفوف، الشهر الحالي مع الثلاثة التي قبله."
+      - text: "AVG(revenue) OVER (PARTITION BY month)"
+        why: "كل partition شهر واحد، فيكون المتوسط هو إيراد ذلك الشهر وحده."
+      - text: "AVG(revenue) OVER (ORDER BY month)"
+        why: "بلا إطار، يحسب هذا متوسط كل شيء من الشهر الأول حتى الحالي، أي متوسطًا تراكميًا."
+    answer: 0
+  - q: "الشرط `WHERE strftime('%Y', order_date) = '2025'` بطيء على جدول طلبات كبير عليه index على order_date. أي إعادة كتابة تعيد الصفوف نفسها وتستطيع استخدام الـ index؟"
+    options:
+      - text: "WHERE order_date LIKE '2025%'"
+        why: "يطابق الصفوف نفسها، لكن SQLite لا يستخدم index مع LIKE إلا بإعدادات collation خاصة، فيبقى هذا مسحًا في الإعداد الافتراضي."
+      - text: "WHERE order_date >= '2025-01-01' AND order_date < '2026-01-01'"
+        why: "صحيح. العمود المجرّد المقارَن بثوابت يعطي نطاقًا يستطيع الـ index الانتقال إليه مباشرةً."
+      - text: "WHERE date(order_date) BETWEEN '2025-01-01' AND '2025-12-31'"
+        why: "إحاطة العمود بـ date() تظل تخفيه عن الـ index، فيبقى هذا مسحًا."
+      - text: "WHERE CAST(strftime('%Y', order_date) AS INTEGER) = 2025"
+        why: "إضافة تحويل تُبقي الدالة حول العمود، فلا يتحسّن شيء."
+    answer: 1
+  - q: "query في SQLite يجد عملاء دبي بـ `WHERE city LIKE 'dubai'`. بعد الانتقال إلى PostgreSQL لا يعيد أي صف. لماذا؟"
+    options:
+      - text: "لا يدعم PostgreSQL المعامل LIKE."
+        why: "يدعم PostgreSQL المعامل LIKE؛ الفرق في طريقة تعامله مع حالة الأحرف."
+      - text: "حُوّل العمود city إلى رقم."
+        why: "لا شيء في الانتقال يغيّر نوع العمود؛ ما يختلف هو دلالة المقارنة."
+      - text: "يحتاج PostgreSQL إلى علامات تنصيص مزدوجة حول القيم النصية."
+        why: "علامات التنصيص المزدوجة للمعرّفات في PostgreSQL؛ والقيم النصية تستخدم علامات مفردة، كما هنا."
+      - text: "LIKE في PostgreSQL حسّاس لحالة الأحرف، فلا تطابق 'dubai' القيمة 'Dubai'؛ استخدم ILIKE أو القيمة الدقيقة."
+        why: "صحيح. LIKE في SQLite يتجاهل حالة الأحرف الإنجليزية افتراضيًا، وهذا ما أخفى عدم التطابق."
+    answer: 3
+  - q: "تعرض المراجعة النهائية cohort ديسمبر 2025 بمعدل احتفاظ 0% في الشهر 1، والأردن بنمو +627% في الربع الرابع. كيف يجب عرض الاثنين؟"
+    options:
+      - text: "اعرضهما كما هما؛ فالأرقام جاءت من قاعدة البيانات."
+        why: "الحساب الدقيق قد يظل مضلّلًا حين يفتقد القارئ سياق ما تستطيع الأرقام إظهاره."
+      - text: "احذف cohort ديسمبر والأردن من الشرائح."
+        why: "حذفهما يخفي معلومات حقيقية ويغيّر المجاميع؛ الحل هو السياق، لا الحذف."
+      - text: "اعرض الشهر 1 لديسمبر على أنه لم يُرصد بعد، واعرض نمو الأردن بجانب قيمه المطلقة الصغيرة."
+        why: "صحيح. الفترات غير المرصودة قيمتها غير معروفة لا صفر، والنسبة المئوية تحتاج إلى أساسها لتُفسَّر."
+      - text: "احسب متوسطهما مع الـ cohorts والدول الأخرى لتنعيمهما."
+        why: "حساب المتوسط يستبدل القيم الحقيقية بقيم مخترعة ويخفي أسباب غرابتها."
+    answer: 2

@@ -1,0 +1,36 @@
+{
+  "title": "Which flags would have caught these bugs?",
+  "prompt": "Cartwheel's checkout already compiles with `strict: true`. These three bugs still reached production last quarter:\n\n1. **Empty cart crash.** The order summary read `cart.lines[0].sku` to show a thumbnail. For an empty cart, the page crashed with *Cannot read properties of undefined*.\n2. **Coupons vanishing.** A form sent `{ couponCode: formValue.coupon }` to the PATCH endpoint. `formValue.coupon` is typed `string | undefined` (the field is optional); when it was empty, the value was `undefined`, and the API treats a present-but-undefined `couponCode` as \"remove the coupon\", so customers lost coupons they had applied earlier.\n3. **Silent tax bug.** `PriceCalculator.applyTax()` was renamed to `addTax()` in the base class. The subclass `GulfPriceCalculator` still defined `applyTax()`, which now overrode nothing, so Gulf orders were taxed with the default rate.\n\nSelect **every** compiler flag that, added to `strict`, would have turned at least one of these bugs into a compile error.",
+  "hints": [
+    "Think about what type `cart.lines[0]` has today, and which flag changes it.",
+    "One flag distinguishes `{}` from `{ couponCode: undefined }` for an optional property.",
+    "One flag requires the `override` keyword on every method that overrides a base-class method, so a stale override stops compiling."
+  ],
+  "explanation": "`noUncheckedIndexedAccess` types `cart.lines[0]` as `Line | undefined`, forcing a check before `.sku` (bug 1). `exactOptionalPropertyTypes` rejects assigning `undefined` to `couponCode?: string`, so the form would have had to omit the key or declare `string | undefined` explicitly (bug 2). `noImplicitOverride` requires `override applyTax()` in the subclass; once the base method is renamed, `override` on a method that overrides nothing is an error (bug 3). `skipLibCheck` reduces checking, `verbatimModuleSyntax` is about how imports are emitted, and `allowJs` lets JavaScript files into the program; none of them catches these bugs.",
+  "options": {
+    "unchecked-index": {
+      "text": "`noUncheckedIndexedAccess`",
+      "why": "Correct. It makes `cart.lines[0]` possibly `undefined`, so reading `.sku` without a check is an error (bug 1)."
+    },
+    "exact-optional": {
+      "text": "`exactOptionalPropertyTypes`",
+      "why": "Correct. It forbids writing `undefined` into `couponCode?: string`, which is exactly the value that removed coupons (bug 2)."
+    },
+    "implicit-override": {
+      "text": "`noImplicitOverride`",
+      "why": "Correct. With it, the subclass must mark `override applyTax()`, and that marker fails once the base method is renamed (bug 3)."
+    },
+    "skip-lib-check": {
+      "text": "`skipLibCheck`",
+      "why": "It skips type-checking declaration files, mostly in `node_modules`. It makes checking faster and looser, never stricter."
+    },
+    "verbatim-modules": {
+      "text": "`verbatimModuleSyntax`",
+      "why": "It controls which imports are kept in the emitted JavaScript. It is valuable for bundlers, but it does not check property access or overrides."
+    },
+    "allow-js": {
+      "text": "`allowJs`",
+      "why": "It lets `.js` files join the program. It is a migration tool and adds no checks to existing TypeScript code."
+    }
+  }
+}

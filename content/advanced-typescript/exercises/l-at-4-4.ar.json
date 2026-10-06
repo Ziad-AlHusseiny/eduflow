@@ -1,0 +1,16 @@
+{
+  "title": "حدّد أنواع ناقل الأحداث وبنّاء الاستعلامات",
+  "prompt": "اجعل الأداتين في Cartwheel محدَّدتي الأنواع بالكامل دون تغيير سلوكهما وقت التشغيل:\n\n1. `Emitter<Events>`: يجب ألّا تقبل `on(event, handler)` إلا أسماء أحداث من `Events` وأن تعطي الـ handler نوع حمولة ذلك الحدث؛ ويجب أن تفحص `emit(event, payload)` الحمولة، وأن تُطلَق الأحداث التي حمولتها `undefined` دون وسيط حمولة.\n2. `OrderQuery`: كل استدعاء لـ `select(...fields)` يضيف إلى الحقول المختارة، و`run(rows)` تُعيد `Pick<Order, …>[]` من الحقول المختارة بالضبط.\n\nأبقِ أي تحويل داخل الصنفين، في مكان واحد مشروح بتعليق لكلٍّ منهما.",
+  "hints": [
+    "أعطِ `on` و`emit` معامل نوع `K extends keyof Events` وابحث عن الحمولة بـ `Events[K]`. وقيّد الصنف: `Emitter<Events extends Record<string, unknown>>`.",
+    "للأحداث التي لا حمولة لها، استخدم معامل بقية شرطيًا: `type EventArgs<P> = [P] extends [undefined] ? [] : [payload: P];` و`emit<K …>(event: K, ...args: EventArgs<Events[K]>)`.",
+    "أعطِ `OrderQuery` معامل نوع `Selected extends keyof Order = never`؛ تُعيد `select<K extends keyof Order>(...fields: K[])` القيمة `new OrderQuery<Selected | K>(…)`، وتُعيد `run` النوع `Pick<Order, Selected>[]` بتحويل واحد."
+  ],
+  "explanation": "خريطة الأحداث هي المكان الوحيد الذي تُكتب فيه أنواع الحمولات؛ يُستنتج `K` من اسم الحدث ويربطه بـ `Events[K]` للـ handler وللحمولة معًا. معامل البقية الشرطي ينتج صفرًا من الوسائط للحمولات `undefined`، والأقواس تمنعه من التوزيع على الـ unions. وفي الداخل، لا تستطيع `Map` ربط المفاتيح بأنواع القيم، فتُخزَّن الـ handlers بشكل فضفاض وتُستدعى عبر تحويل واحد. أما الـ builder فيحمل المفاتيح المختارة في معامل نوعه: كل `select` تُعيد نسخة جديدة بـ union أوسع، وتحوّل `run` ذلك الـ union إلى `Pick`.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها كل اختبارات الأنواع",
+    "delivers": "`emit` تستدعي فقط الـ handlers الخاصة بذلك الحدث، مع الحمولة",
+    "unsubscribes": "الدالة التي تُعيدها `on` تُزيل الـ handler",
+    "selects": "`run` تُعيد الحقول المختارة فقط، عبر عدة استدعاءات لـ `select`"
+  }
+}

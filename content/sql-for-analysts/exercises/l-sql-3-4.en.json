@@ -1,0 +1,11 @@
+{
+  "title": "Three-month repeat rate by cohort",
+  "prompt": "Rania wants one number per cohort: of the customers whose **first order** was in a given month, what percentage ordered again **in any of the next three months** (month numbers 1, 2 or 3)?\n\nReturn `cohort` ('YYYY-MM'), `customers` (cohort size) and `repeat_3m_pct` (rounded to 1 decimal) for the cohorts from 2025-01 to 2025-09, which have all three months observed. Sort by `cohort`. Order matters.\n\nThe CTEs are correct. The final SELECT counts the wrong thing.",
+  "hints": [
+    "What is the grain of `activity`? One row per order, so a customer with five orders appears five times.",
+    "Both the cohort size and the repeat count are about people. Count `DISTINCT customer_id`, not rows.",
+    "`COUNT(DISTINCT customer_id) FILTER (WHERE month_number BETWEEN 1 AND 3)` counts each returning customer once, however many times they ordered."
+  ],
+  "explanation": "`activity` has one row per order, so `COUNT(*)` counted orders: the cohort size included every order its customers ever placed, and a customer who ordered in months 1, 2 and 3 counted three times in the numerator. Counting distinct customers in both places puts numerator and denominator at the same grain, people. Repeat rates range from about 31% (February) to 67% (June); with cohorts of 16 to 29 customers, a difference of one or two people moves the rate by several points, so report the cohort size alongside it.",
+  "checks": {}
+}

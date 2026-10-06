@@ -1,0 +1,14 @@
+{
+  "title": "سُدّ ثغرة الـ listener",
+  "prompt": "يعرّف `CheckoutListener` الدالة `onEvent` بصيغة الـ method، فيفحص TypeScript معاملها فحصًا ثنائي التغاير (bivariant) ويقبل بلا تردّد `failuresOnly`، وهو listener سينهار أمام حدث `OrderShipped`. غيّر طريقة تعريف `onEvent` (لا نوع معاملها) بحيث يصبح إسناد `failuresOnly` إلى `CheckoutListener` خطأ نوع، مع بقاء استدعاءَي `subscribe` الموجودين يمرّان في الترجمة ووصول حدث الشحن إليهما.",
+  "hints": [
+    "الإصلاح سطر واحد داخل الـ interface.",
+    "صيغة الـ method هي `name(arg: T): void`. وصيغة الخاصية هي `name: (arg: T) => void`.",
+    "اكتب `onEvent: (event: CheckoutEvent) => void;`."
+  ],
+  "explanation": "مع صيغة الـ method لا ينطبق `strictFunctionTypes`، فيمرّ listener لا يقبل إلا `PaymentFailed` على أنه listener يقبل كل `CheckoutEvent`. وحين تُعرَّف كخاصية من نوع دالة، يُفحص المعامل بتغاير معاكس: على الـ listener أن يقبل على الأقل كل ما يمكن أن يرسله الناقل. أما `(e) => …` فتأخذ نوع معاملها من السياق، و`() => …` تتجاهل الوسيط، فتبقى كلتاهما تمرّان. وصار لسطر `@ts-expect-error` خطأ حقيقي يتوقّعه.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ: الـ listener غير الآمن مرفوض",
+    "still-delivers": "كلا الـ listeners الآمنَين ما زال يستقبل حدث الشحن"
+  }
+}

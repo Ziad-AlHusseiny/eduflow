@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import StratifiedKFold, cross_validate, train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\n\n# 1. Cross-validate both models on the TRAINING data with the same `cv`,\n#    scoring both \"accuracy\" and \"roc_auc\"\nlogistic = make_pipeline(StandardScaler(), LogisticRegression())\nknn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=15))\n\n# 2. Mean ROC AUC for each model, and the standard deviation of k-NN's fold AUCs\nlogistic_auc = None\nknn_auc = None\nknn_auc_std = None\n\n# 3. Fit the model with the higher mean AUC on all training data; score accuracy on the test set once\nfinal_test_acc = None\n",
+  "solution": "import pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import StratifiedKFold, cross_validate, train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\n\nlogistic = make_pipeline(StandardScaler(), LogisticRegression())\nknn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=15))\n\nr_log = cross_validate(logistic, X_train, y_train, cv=cv, scoring=[\"accuracy\", \"roc_auc\"])\nr_knn = cross_validate(knn, X_train, y_train, cv=cv, scoring=[\"accuracy\", \"roc_auc\"])\n\nlogistic_auc = r_log[\"test_roc_auc\"].mean()\nknn_auc = r_knn[\"test_roc_auc\"].mean()\nknn_auc_std = r_knn[\"test_roc_auc\"].std()\n\nwinner = logistic if logistic_auc >= knn_auc else knn\nfinal_test_acc = winner.fit(X_train, y_train).score(X_test, y_test)\nprint(round(logistic_auc, 3), round(knn_auc, 3), round(knn_auc_std, 3), final_test_acc)\n",
+  "checks": [
+    {
+      "id": "logistic-auc",
+      "test": "logistic_auc is not None and abs(float(logistic_auc) - 0.807) < 0.002"
+    },
+    {
+      "id": "knn-auc",
+      "test": "knn_auc is not None and abs(float(knn_auc) - float(__import__('sklearn.model_selection', fromlist=['x']).cross_val_score(__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.neighbors', fromlist=['x']).KNeighborsClassifier(n_neighbors=15)), X_train, y_train, cv=__import__('sklearn.model_selection', fromlist=['x']).StratifiedKFold(n_splits=5, shuffle=True, random_state=42), scoring='roc_auc').mean())) < 1e-6"
+    },
+    {
+      "id": "knn-std",
+      "test": "knn_auc_std is not None and abs(float(knn_auc_std) - float(__import__('sklearn.model_selection', fromlist=['x']).cross_val_score(__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.neighbors', fromlist=['x']).KNeighborsClassifier(n_neighbors=15)), X_train, y_train, cv=__import__('sklearn.model_selection', fromlist=['x']).StratifiedKFold(n_splits=5, shuffle=True, random_state=42), scoring='roc_auc').std())) < 1e-6"
+    },
+    {
+      "id": "final",
+      "test": "final_test_acc is not None and abs(float(final_test_acc) - 0.72) < 0.005"
+    }
+  ]
+}

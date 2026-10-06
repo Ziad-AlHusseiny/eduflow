@@ -1,0 +1,20 @@
+{
+  "title": "From kubectl apply to a running container",
+  "prompt": "You run `kubectl apply -f deployment.yaml` for notes-api with 3 replicas on a fresh cluster. Put what happens next in order.",
+  "hints": [
+    "Nothing happens anywhere until the object is stored.",
+    "A Deployment doesn't create Pods itself; it manages something that does.",
+    "A Pod has to be assigned to a node before any kubelet will act on it."
+  ],
+  "explanation": "kubectl sends the object to the API server, which validates it and stores it in etcd. The Deployment controller sees a new Deployment and creates a ReplicaSet; the ReplicaSet controller creates three Pod objects. The scheduler assigns each unscheduled Pod to a node. The kubelet on each chosen node pulls the image and starts the containers, then reports the Pod's status back through the API server. Each step is a separate component reacting to a change it watched for.",
+  "items": {
+    "send": "kubectl sends the Deployment to the API server",
+    "store": "The API server validates it and stores it in etcd",
+    "rs": "The Deployment controller creates a ReplicaSet",
+    "pods": "The ReplicaSet controller creates three Pod objects",
+    "schedule": "The scheduler assigns each Pod to a node",
+    "start": "Each node's kubelet pulls the image and starts the containers",
+    "report": "The kubelet reports Pod status back to the API server"
+  },
+  "checks": {}
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Refactor the card into an architecture",
+  "prompt": "Refactor this slice of the old stylesheet. Keep the HTML as it is.\n\n1. Declare layers including **`reset`, `tokens`, `components`, `utilities`** in that order (you may add `layouts` or others in between), and put every rule in a layer.\n2. No ID selectors and no `!important` anywhere.\n3. The card's accent border reads a **`--card-accent`** token that defaults to `#6d28d9`; `.theme-sponsor` sets it to **`#0e7490`**.\n4. `.u-hidden` still hides the Draft badge.\n5. Cards have **no margins of their own**; the `.schedule` layout puts **16px** between them.",
+  "hints": [
+    "Start with the layer statement, then move each existing rule into the layer that matches its job.",
+    "Tokens: `:root { --card-accent: #6d28d9; }` and `.theme-sponsor { --card-accent: #0e7490; }`. The card uses `border-inline-start: 6px solid var(--card-accent);`.",
+    "Spacing: delete the card's margin and give `.schedule` `display: grid; gap: 16px;`. Put `.u-hidden` in the utilities layer, without `!important`."
+  ],
+  "explanation": "The layer statement moves conflict resolution out of selectors: `.u-hidden` in the last layer beats the component's `display: inline-block` with plain (0,1,0) specificity, so neither IDs nor `!important` are needed. The card reads `--card-accent` instead of a hard-coded color, so `.theme-sponsor` re-themes every card inside it with one custom property, and any future part of the card that uses the accent follows automatically. Moving spacing to `.schedule { gap: 16px; }` lets the same card drop into a sidebar or carousel without fighting a built-in margin.",
+  "checks": {
+    "layer-order": "Layers reset, tokens, components, utilities are declared in order",
+    "no-ids-or-important": "No ID selectors and no !important",
+    "accent-token": "Regular cards use the violet --card-accent token",
+    "sponsor-theme": "Sponsor cards are teal through the token",
+    "token-drives-card": "Changing --card-accent re-themes the card",
+    "utility-wins": "The u-hidden utility still hides the Draft badge",
+    "layout-owns-spacing": "Cards have no margins; the layout spaces them 16px apart"
+  }
+}

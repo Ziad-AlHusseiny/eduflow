@@ -1,0 +1,17 @@
+{
+  "title": "Return failures, don't throw them",
+  "prompt": "Turn Cartwheel's coupon step into typed, expected failures:\n\n1. Define `Result<T, E>` as a discriminated union on `ok`, with `ok(value)` and `err(error)` helpers.\n2. Make `findCoupon` return `Result<Coupon, CouponError>`: `coupon-unknown` when the code does not exist, `coupon-expired` (with `expiredOn`) when `expiresOn` is before `today`.\n3. Make `checkout` return `Result<PricedCart, CheckoutError>`: check stock first, then the coupon (when `couponCode` is not `null`), then return the cart with `totalCents` (subtotal minus the coupon's percentage, rounded).\n4. Make `errorMessage` return a message for each error type that includes its data (the code, the expiry date, or the SKU).",
+  "hints": [
+    "`type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };` and `const ok = <T>(value: T): { ok: true; value: T } => ({ ok: true, value });`.",
+    "In `checkout`, use early returns: `const stocked = checkStock(cart); if (!stocked.ok) return stocked;`. The narrowed failure fits the wider `CheckoutError` union.",
+    "Annotate `checkout`'s return type explicitly, and switch on `e.type` in `errorMessage` with a `: string` return type so a missed case is a compile error."
+  ],
+  "explanation": "With `Result` as a discriminated union, `value` simply does not exist until a caller checks `ok`, which is what the `@ts-expect-error` line proves. `findCoupon` now declares both of its expected failures in its signature instead of hiding them in `throw`. Early returns keep `checkout` flat: each narrowed failure is assignable to `CheckoutError`, so it is returned unchanged. Because errors are a union with a `type` discriminant, `errorMessage` can use each failure's own data, and adding a new error type later flags this function automatically.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "valid-coupon": "A valid coupon reduces the total (10% off 10000 is 9000)",
+    "expired": "An expired coupon returns a `coupon-expired` failure with its expiry date",
+    "stock-first": "Stock is checked before the coupon",
+    "messages": "`errorMessage` includes each failure's data"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "review-search",
+    "refund-forecast",
+    "ticket-topic-feature",
+    "llm-churn-score",
+    "review-summary",
+    "coupon-ab"
+  ],
+  "correct": [
+    "review-search",
+    "ticket-topic-feature",
+    "review-summary"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "python",
+  "starter": "from sklearn.datasets import load_digits\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neural_network import MLPClassifier\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_digits(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\n\n# 1. Pipeline: StandardScaler, then an MLPClassifier with ONE hidden layer of 32 neurons,\n#    max_iter=500, random_state=42. Fit it on the training data.\nnet = MLPClassifier(hidden_layer_sizes=(32, 32), max_iter=500, random_state=42)\n\n# 2. Facts about the trained network\nn_params = None      # total number of weights + biases\nepochs = None        # epochs actually run\ntest_acc = None      # test accuracy\n",
+  "solution": "from sklearn.datasets import load_digits\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neural_network import MLPClassifier\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_digits(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\n\nnet = make_pipeline(StandardScaler(),\n                    MLPClassifier(hidden_layer_sizes=(32,), max_iter=500, random_state=42))\nnet.fit(X_train, y_train)\n\nmlp = net[-1]\nn_params = sum(w.size for w in mlp.coefs_) + sum(b.size for b in mlp.intercepts_)\nepochs = mlp.n_iter_\ntest_acc = net.score(X_test, y_test)\nprint(n_params, epochs, round(test_acc, 3))\n",
+  "checks": [
+    {
+      "id": "pipeline",
+      "test": "hasattr(net, 'steps') and type(net[0]).__name__ == 'StandardScaler' and type(net[-1]).__name__ == 'MLPClassifier'"
+    },
+    {
+      "id": "architecture",
+      "test": "tuple(net[-1].hidden_layer_sizes) == (32,) and [w.shape for w in net[-1].coefs_] == [(64, 32), (32, 10)]"
+    },
+    {
+      "id": "params",
+      "test": "n_params is not None and int(n_params) == 64 * 32 + 32 + 32 * 10 + 10"
+    },
+    {
+      "id": "trained",
+      "test": "epochs is not None and int(epochs) == net[-1].n_iter_ and net[-1].loss_curve_[-1] < net[-1].loss_curve_[0]"
+    },
+    {
+      "id": "accuracy",
+      "test": "test_acc is not None and 0.95 < float(test_acc) <= 1.0"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: notes-api\nspec:\n  replicas: 3\n  # …selector and template labels as before\n  template:\n    spec:\n      containers:\n        - name: api\n          image: ghcr.io/skylane/notes-api:1.4.0\n          resources:\n            limits:\n              memory: 512Mi\n---\napiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: notes-api\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: notes-api\n  minReplicas: 3\n  maxReplicas: 12\n  metrics:\n    - type: Resource\n      resource:\n        name: cpu\n        target:\n          type: Utilization\n          averageUtilization: 70",
+  "bugLines": [6, 14]
+}

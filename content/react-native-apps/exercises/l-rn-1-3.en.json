@@ -1,0 +1,10 @@
+{
+  "title": "Find the two crashes in the hike summary",
+  "prompt": "This `HikeSummary` component is shown for every hike in Trailhead. It works for some hikes and shows the red error screen for others, always with **Text strings must be rendered within a <Text> component**. Select the **two** lines that can cause that error.",
+  "hints": [
+    "Look for anything that could end up as a raw string or number directly inside a `View` or `ScrollView`.",
+    "One problem happens for every hike; the other only for hikes with a particular value.",
+    "What does `0 && anything` evaluate to?"
+  ],
+  "explanation": "Line 13 puts `{hike.elevationM} m up` directly inside a `View`, so it fails for every hike: wrap it as `<Text>{hike.elevationM} m up</Text>`. Line 15 fails only for hikes with no photos: `0 && \u2026` evaluates to `0`, which React tries to render as text inside the ScrollView. Use a real boolean: `{hike.photoCount > 0 && <Text>{hike.photoCount} photos</Text>}`. The network `Image` is fine because it has an explicit width and height."
+}

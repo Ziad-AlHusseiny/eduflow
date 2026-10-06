@@ -1,0 +1,13 @@
+{
+  "title": "ابنِ Exclude وExtract ورفاقهما",
+  "prompt": "نفّذ هذه الأنواع بالـ conditional types (لا تستخدم `Exclude` أو `Extract` أو `ReturnType` أو `Awaited` المدمجة):\n\n- `MyExclude<T, U>`: أعضاء `T` غير القابلة للإسناد إلى `U`.\n- `MyExtract<T, U>`: أعضاء `T` القابلة للإسناد إلى `U`.\n- `MyReturnType<F>`: نوع إرجاع نوع دالة.\n- `UnwrapPromise<T>`: القيمة داخل `Promise`، أو `T` نفسه إن لم يكن promise.\n- `OrderWithStatus<S>`: شكل (أو أشكال) `Order` الذي يكون `status` فيه هو `S`.\n- `KeysOfType<T, V>`: مفاتيح `T` التي تكون قيمها قابلة للإسناد إلى `V`.",
+  "hints": [
+    "`MyExclude` و`MyExtract` شرطان توزيعيان من سطر واحد: أحدهما يُعيد `never` في الفرع الصادق، والآخر في الفرع الكاذب.",
+    "استخدم `infer` لالتقاط جزء من نوع: `F extends (...args: any[]) => infer R ? R : never`.",
+    "`OrderWithStatus` هو `MyExtract<Order, { status: S }>`. وفي `KeysOfType`، حوّل كل مفتاح إلى نفسه أو إلى `never`، ثم افهرس النتيجة بـ `[keyof T]`."
+  ],
+  "explanation": "تعتمد `MyExclude` و`MyExtract` على التوزيع: `T` معامل نوع مجرّد، فيُختبر كل عضو في الـ union منفردًا وتختفي نتائج `never`. والتوزيع نفسه يجعل `OrderWithStatus<'delivered' | 'returned'>` يعطي الشكلين كليهما، ولهذا تعمل `['deliveredAt']` عليه. وتلتقط `infer` نوع الإرجاع وقيمة الـ promise. أما `KeysOfType` فتبني كائنًا قيمه أسماء مفاتيح أو `never`، ثم تقرأ كل قيمه دفعة واحدة بـ `[keyof T]`.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ: اختبارات الأنواع العشرة كلها ناجحة"
+  }
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "supervised-learning",
+    "term": "Supervised learning",
+    "definition": "Learning a mapping from features to a known target using labelled examples, so the model can predict the target for new cases. Classification and regression are its two main forms.",
+    "lesson": "l-ml-1-1"
+  },
+  {
+    "id": "unsupervised-learning",
+    "term": "Unsupervised learning",
+    "definition": "Finding structure in data that has no target column, such as groups of similar rows (clustering) or a compact summary of many columns (dimensionality reduction).",
+    "lesson": "l-ml-1-1"
+  },
+  {
+    "id": "feature",
+    "term": "Feature",
+    "definition": "An input column the model uses to make a prediction, such as days since last order. Features must be known at the moment the prediction is made.",
+    "lesson": "l-ml-1-2"
+  },
+  {
+    "id": "target",
+    "term": "Target (label)",
+    "definition": "The column a supervised model learns to predict, such as whether a customer churned. In scikit-learn it is usually called y.",
+    "lesson": "l-ml-1-2"
+  },
+  {
+    "id": "train-test-split",
+    "term": "Train/test split",
+    "definition": "Holding back part of the labelled data, never used during training or model choice, to measure how well the final model works on unseen cases.",
+    "lesson": "l-ml-1-2"
+  },
+  {
+    "id": "estimator",
+    "term": "Estimator",
+    "definition": "Any scikit-learn object that learns from data with fit. Models, scalers and encoders are all estimators, and models add predict and score.",
+    "lesson": "l-ml-1-3"
+  },
+  {
+    "id": "hyperparameter",
+    "term": "Hyperparameter",
+    "definition": "A setting chosen before training that controls how a model learns, such as max_depth or C, as opposed to parameters the model learns during fit.",
+    "lesson": "l-ml-1-3"
+  },
+  {
+    "id": "overfitting",
+    "term": "Overfitting",
+    "definition": "When a model learns noise in its training data, so it scores far better on training rows than on new ones. The cure is less flexibility, more data or regularisation.",
+    "lesson": "l-ml-1-3"
+  },
+  {
+    "id": "baseline",
+    "term": "Baseline",
+    "definition": "A simple reference model, such as predicting the majority class or a one-line business rule, that any real model must clearly beat to be worth its cost.",
+    "lesson": "l-ml-1-4"
+  },
+  {
+    "id": "residual",
+    "term": "Residual",
+    "definition": "The difference between an actual value and the model's prediction for it. Regression metrics such as MAE and RMSE summarise residuals.",
+    "lesson": "l-ml-2-1"
+  },
+  {
+    "id": "r-squared",
+    "term": "R² (coefficient of determination)",
+    "definition": "The share of the target's variance a regression explains compared with always predicting the mean: 1 is perfect, 0 is no better than the mean, and it can be negative.",
+    "lesson": "l-ml-2-1"
+  },
+  {
+    "id": "gradient-descent",
+    "term": "Gradient descent",
+    "definition": "An optimisation method that repeatedly computes the slope of the loss for each parameter and moves the parameters a small step downhill, scaled by the learning rate.",
+    "lesson": "l-ml-2-2"
+  },
+  {
+    "id": "feature-scaling",
+    "term": "Feature scaling",
+    "definition": "Rescaling columns to comparable ranges, typically mean 0 and standard deviation 1 with StandardScaler, fitted on training data only. Needed for distance-based, gradient-trained and penalised models.",
+    "lesson": "l-ml-2-2"
+  },
+  {
+    "id": "regularisation",
+    "term": "Regularisation",
+    "definition": "Adding a penalty on coefficient size to the loss so the model prefers simpler fits. Ridge uses squared coefficients; Lasso uses absolute values and can set some to zero.",
+    "lesson": "l-ml-2-4"
+  },
+  {
+    "id": "logistic-regression",
+    "term": "Logistic regression",
+    "definition": "A linear classification model that passes a weighted sum of features through the sigmoid function to output a probability between 0 and 1.",
+    "lesson": "l-ml-3-1"
+  },
+  {
+    "id": "decision-tree",
+    "term": "Decision tree",
+    "definition": "A model that predicts by asking a sequence of yes/no questions about single features, chosen to make the resulting groups as pure as possible.",
+    "lesson": "l-ml-3-2"
+  },
+  {
+    "id": "gradient-boosting",
+    "term": "Gradient boosting",
+    "definition": "An ensemble that adds shallow trees one at a time, each fitted to the errors of the trees before it, with a learning rate controlling each tree's contribution.",
+    "lesson": "l-ml-3-3"
+  },
+  {
+    "id": "confusion-matrix",
+    "term": "Confusion matrix",
+    "definition": "A table counting true negatives, false positives, false negatives and true positives. In scikit-learn, rows are the actual classes and columns the predicted ones.",
+    "lesson": "l-ml-3-4"
+  },
+  {
+    "id": "precision-recall",
+    "term": "Precision and recall",
+    "definition": "Precision is the share of flagged cases that are truly positive; recall is the share of truly positive cases that get flagged. Raising one usually lowers the other.",
+    "lesson": "l-ml-3-4"
+  },
+  {
+    "id": "roc-auc",
+    "term": "ROC AUC",
+    "definition": "A threshold-free measure of ranking quality: the probability that a randomly chosen positive gets a higher score than a randomly chosen negative. 0.5 is random, 1.0 perfect.",
+    "lesson": "l-ml-3-4"
+  },
+  {
+    "id": "decision-threshold",
+    "term": "Decision threshold",
+    "definition": "The probability cut-off above which a classifier labels a case positive. The default is 0.5, but it should be chosen from the costs of each kind of mistake.",
+    "lesson": "l-ml-3-5"
+  },
+  {
+    "id": "cross-validation",
+    "term": "Cross-validation",
+    "definition": "Splitting the training data into k folds and training k models, each validated on a different fold, to get a steadier performance estimate and a sense of its spread.",
+    "lesson": "l-ml-4-1"
+  },
+  {
+    "id": "pipeline",
+    "term": "Pipeline",
+    "definition": "A scikit-learn object that chains preprocessing steps and a final model into one estimator, so every step is fitted on training data only and applied identically later.",
+    "lesson": "l-ml-4-2"
+  },
+  {
+    "id": "one-hot-encoding",
+    "term": "One-hot encoding",
+    "definition": "Turning a categorical column into one 0/1 column per category so models can use it. OneHotEncoder with handle_unknown set to ignore copes with unseen categories.",
+    "lesson": "l-ml-4-2"
+  },
+  {
+    "id": "data-leakage",
+    "term": "Data leakage",
+    "definition": "Information available during training or evaluation that will not be available at prediction time, such as features recorded after the prediction date or preprocessing fitted on validation rows.",
+    "lesson": "l-ml-4-4"
+  },
+  {
+    "id": "k-means",
+    "term": "k-means",
+    "definition": "A clustering algorithm that alternates between assigning each point to its nearest centre and moving each centre to the mean of its points, for a chosen number of clusters k.",
+    "lesson": "l-ml-5-1"
+  },
+  {
+    "id": "pca",
+    "term": "PCA (principal component analysis)",
+    "definition": "A technique that finds new axes, each a weighted mix of the original columns, ordered by how much of the data's variance they capture, so a few can summarise many.",
+    "lesson": "l-ml-5-1"
+  },
+  {
+    "id": "epoch",
+    "term": "Epoch",
+    "definition": "One complete pass of a neural network's training algorithm over the whole training set. Training usually runs for many epochs while the loss falls.",
+    "lesson": "l-ml-5-2"
+  },
+  {
+    "id": "embedding",
+    "term": "Embedding",
+    "definition": "A fixed-length vector produced by a model to represent a text or other item, arranged so that items with similar meaning have nearby vectors.",
+    "lesson": "l-ml-5-3"
+  },
+  {
+    "id": "data-drift",
+    "term": "Data drift",
+    "definition": "A change over time in the distribution of a model's inputs compared with its training data, which can make predictions less reliable and should be monitored.",
+    "lesson": "l-ml-5-4"
+  }
+]

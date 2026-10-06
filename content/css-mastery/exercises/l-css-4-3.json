@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"progress\" aria-hidden=\"true\"></div>\n<h2>Speakers</h2>\n<section class=\"speakers\">\n  <article class=\"speaker\">Ana Ortiz</article>\n  <article class=\"speaker\">Kenji Watanabe</article>\n  <article class=\"speaker\">Layla Haddad</article>\n  <article class=\"speaker\">Tom Becker</article>\n  <article class=\"speaker\">Priya Nair</article>\n  <article class=\"speaker\">Marcus Lee</article>\n</section>",
+    "css": ".progress {\n  position: fixed;\n  inset: 0 0 auto;\n  height: 4px;\n  background: #6d28d9;\n  transform-origin: 0 50%;\n}\n.speakers { display: grid; gap: 16px; }\n.speaker {\n  padding: 40px 16px;\n  border-radius: 12px;\n  background: #f5f3ff;\n}\n\n@keyframes grow {\n  from { scale: 0 1; }\n  to { scale: 1 1; }\n}\n@keyframes reveal {\n  from { opacity: 0; translate: 0 24px; }\n  to { opacity: 1; translate: 0 0; }\n}\n\n/* A first attempt: why doesn't the bar move? */\n.progress {\n  animation-timeline: scroll(root);\n  animation: grow linear both;\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"progress\" aria-hidden=\"true\"></div>\n<h2>Speakers</h2>\n<section class=\"speakers\">\n  <article class=\"speaker\">Ana Ortiz</article>\n  <article class=\"speaker\">Kenji Watanabe</article>\n  <article class=\"speaker\">Layla Haddad</article>\n  <article class=\"speaker\">Tom Becker</article>\n  <article class=\"speaker\">Priya Nair</article>\n  <article class=\"speaker\">Marcus Lee</article>\n</section>",
+    "css": ".progress {\n  position: fixed;\n  inset: 0 0 auto;\n  height: 4px;\n  background: #6d28d9;\n  transform-origin: 0 50%;\n}\n.speakers { display: grid; gap: 16px; }\n.speaker {\n  padding: 40px 16px;\n  border-radius: 12px;\n  background: #f5f3ff;\n}\n\n@keyframes grow {\n  from { scale: 0 1; }\n  to { scale: 1 1; }\n}\n@keyframes reveal {\n  from { opacity: 0; translate: 0 24px; }\n  to { opacity: 1; translate: 0 0; }\n}\n\n@supports (animation-timeline: view()) {\n  @media (prefers-reduced-motion: no-preference) {\n    .progress {\n      animation: grow linear both;\n      animation-timeline: scroll(root);\n    }\n    .speaker {\n      animation: reveal linear both;\n      animation-timeline: view();\n      animation-range: entry 0% cover 30%;\n    }\n  }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "progress-scroll-timeline",
+      "test": "const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join('\\n'); const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || !CSS.supports('animation-timeline', 'view()'); if (reduced) return /animation-timeline:\\s*scroll\\(/.test(src); return style('.progress', 'animation-timeline').startsWith('scroll(') && style('.progress', 'animation-name') === 'grow';"
+    },
+    {
+      "id": "progress-linear",
+      "test": "const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join('\\n'); const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || !CSS.supports('animation-timeline', 'view()'); if (reduced) return /grow\\s+linear/.test(src); return style('.progress', 'animation-timing-function') === 'linear' && ['both', 'forwards'].includes(style('.progress', 'animation-fill-mode'));"
+    },
+    {
+      "id": "speaker-view-timeline",
+      "test": "const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join('\\n'); const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || !CSS.supports('animation-timeline', 'view()'); if (reduced) return /animation-timeline:\\s*view\\(/.test(src); return $$('.speaker').every((el) => style(el, 'animation-timeline').startsWith('view(') && style(el, 'animation-name') === 'reveal');"
+    },
+    {
+      "id": "speaker-range",
+      "test": "const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join('\\n'); const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || !CSS.supports('animation-timeline', 'view()'); if (reduced) return /animation-range:\\s*entry/.test(src); return style('.speaker', 'animation-range-start').startsWith('entry') && style('.speaker', 'animation-range-end') === 'cover 30%';"
+    },
+    {
+      "id": "guarded",
+      "test": "const src = [...document.querySelectorAll('style')].map((s) => s.textContent).join('\\n'); if (!CSS.supports('animation-timeline', 'view()')) return /@supports\\s*\\(\\s*animation-timeline/.test(src); const all = []; const walk = (rules, ctx) => { for (const r of rules) { all.push({ r, ctx }); if (r.cssRules) walk(r.cssRules, ctx + ' ' + (r.conditionText || '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); return all.some(({ r, ctx }) => r.selectorText === '.speaker' && /view\\(/.test(r.cssText) && ctx.includes('animation-timeline'));"
+    }
+  ]
+}

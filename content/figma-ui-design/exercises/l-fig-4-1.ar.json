@@ -1,0 +1,36 @@
+{
+  "title": "لماذا يقفز الصف بدل أن ينزلق؟",
+  "prompt": "حين تُعلَّم عادة، يجب أن ينزلق صفّها في Steady إلى الأسفل داخل مجموعة Done. لكن الـ prototype يقفز مباشرة من Frame A إلى Frame B. هذان هما الـ frame-ان، والوصلة، ومسار طبقة صف Read في كلٍّ منهما.\n\n:::figure frame-ان يجب أن يتحرّك بينهما Smart animate\n<svg viewBox=\"0 0 520 300\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">‏Frame A يعرض قائمة العادات وصف Read في أعلاها تحت To do. ‏Frame B يعرض صف Read وقد نزل إلى مجموعة Done منفصلة. سهم عليه On tap وInstant يصل بينهما. وأسماء الطبقات معروضة تحت كل frame.</title>\n  <rect class=\"d-box\" x=\"20\" y=\"20\" width=\"200\" height=\"200\" rx=\"16\"/>\n  <text class=\"d-label-strong\" x=\"36\" y=\"46\">Frame A</text>\n  <rect class=\"d-box-primary\" x=\"36\" y=\"60\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"48\" y=\"82\">Read</text>\n  <rect class=\"d-box\" x=\"36\" y=\"102\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"48\" y=\"124\">Water</text>\n  <rect class=\"d-box\" x=\"300\" y=\"20\" width=\"200\" height=\"200\" rx=\"16\"/>\n  <text class=\"d-label-strong\" x=\"316\" y=\"46\">Frame B</text>\n  <rect class=\"d-box\" x=\"316\" y=\"60\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"328\" y=\"82\">Water</text>\n  <rect class=\"d-box-success d-dashed\" x=\"310\" y=\"120\" width=\"180\" height=\"70\" rx=\"10\"/>\n  <rect class=\"d-box-primary\" x=\"316\" y=\"142\" width=\"168\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-label\" x=\"328\" y=\"164\">Read</text>\n  <path class=\"d-arrow\" d=\"M222 120 L298 120\" marker-end=\"url(#arrow)\"/>\n  <text class=\"d-label-muted\" x=\"260\" y=\"110\" text-anchor=\"middle\">On tap</text>\n  <text class=\"d-label-muted\" x=\"260\" y=\"140\" text-anchor=\"middle\">Instant</text>\n  <text class=\"d-code\" x=\"20\" y=\"250\">List / Read row</text>\n  <text class=\"d-code\" x=\"300\" y=\"250\">List / Done group /</text>\n  <text class=\"d-code\" x=\"300\" y=\"272\">  Habit row/Read</text>\n</svg>\n:::\n\nاختر **كل** سبب يمنع الصف من الانزلاق.",
+  "hints": [
+    "الـ Smart animate يحتاج طبقة مطابقة: الاسم نفسه، والموضع نفسه في شجرة الطبقات. قارن المسارين.",
+    "انظر أيضًا إلى الحركة المضبوطة على الوصلة.",
+    "ثلاثة أسباب: الاسم، والأب، ونوع الحركة."
+  ],
+  "explanation": "الوصلة تستخدم **Instant**، فلا شيء يمكن أن يتحرّك حتى لو كانت الطبقات مثالية؛ غيّرها إلى **Smart animate**. ثم يظلّ الـ Smart animate بحاجة إلى تطابق: الصف اسمه `Read row` في Frame A و`Habit row/Read` في Frame B (**اسمان مختلفان**)، وفي Frame B يقع داخل `Done group` (**أب مختلف**). أعطه الاسم نفسه وأبقِه في الأب نفسه في الـ frame-ين، مثلًا بالإبقاء على قائمة واحدة وتغيير موضع الصف، أو بتحريك عنوان Done بدلًا منه. المدّة والـ easing والـ trigger ‏On tap كلها سليمة؛ فهي تغيّر طريقة تحريك الطبقات المتطابقة، لا وجود التطابق نفسه.",
+  "options": {
+    "names-differ": {
+      "text": "الصف له اسمان مختلفان في الـ frame-ين.",
+      "why": "صحيح. الـ Smart animate يطابق الطبقات بالاسم، فـ `Read row` و`Habit row/Read` طبقتان لا علاقة بينهما."
+    },
+    "parent-differs": {
+      "text": "في Frame B يقع الصف داخل group أب مختلف.",
+      "why": "صحيح. التطابق يعتمد أيضًا على موضع الطبقة في شجرة الطبقات. والأب الجديد يكسر المطابقة."
+    },
+    "instant": {
+      "text": "حركة الوصلة مضبوطة على Instant.",
+      "why": "صحيح. ‏Instant لا يحرّك شيئًا أبدًا. يجب اختيار Smart animate في التفاعل."
+    },
+    "duration": {
+      "text": "يجب أن تكون المدّة 1,000 ms على الأقل.",
+      "why": "المدّة تغيّر سرعة حركة تحدث بالفعل فقط. ومدّة بين 250 و300 ms تناسب تحريك صف."
+    },
+    "easing": {
+      "text": "يجب أن يكون الـ easing ‏Linear بدل Ease out.",
+      "why": "الـ easing يشكّل الحركة؛ ولا يحدّد هل تتطابق الطبقات. ‏Ease out خيار افتراضي جيد للعناصر التي تستقرّ في مكانها."
+    },
+    "trigger": {
+      "text": "يجب أن يكون الـ trigger ‏On click بدل On tap.",
+      "why": "On click وOn tap هما الـ trigger نفسه، بتسميتين لسطح المكتب والجوّال."
+    }
+  }
+}

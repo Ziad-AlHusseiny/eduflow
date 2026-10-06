@@ -1,0 +1,33 @@
+{
+  "kind": "fill",
+  "language": "js",
+  "template": "export default {\n  include: ['tokens/primitives.tokens.json'],\n  source: ['tokens/semantic-dark.tokens.json'],\n  platforms: {\n    css: {\n      transformGroup: 'css',\n      prefix: '{{0}}',\n      buildPath: 'dist/css/',\n      files: [{\n        destination: 'theme-dark.css',\n        format: '{{1}}',\n        filter: (token) => token.{{2}},\n        options: {\n          selector: '{{3}}',\n          outputReferences: {{4}},\n        },\n      }],\n    },\n  },\n};",
+  "blanks": [
+    {
+      "answers": [
+        "nw"
+      ]
+    },
+    {
+      "answers": [
+        "css/variables"
+      ]
+    },
+    {
+      "answers": [
+        "isSource"
+      ]
+    },
+    {
+      "answers": [
+        "[data-theme=\"dark\"]",
+        "[data-theme=dark]"
+      ]
+    },
+    {
+      "answers": [
+        "true"
+      ]
+    }
+  ]
+}

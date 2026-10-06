@@ -1,0 +1,17 @@
+{
+  "title": "Bring a date picker into the system",
+  "prompt": "The dispatch team built a good date range picker locally. Now the billing and reporting teams want one too. Put the steps that take it into Northwind UI in order, following the contribution model from the lesson.",
+  "hints": [
+    "Triage starts by checking whether the need is already covered.",
+    "The RFC needs evidence before anyone reviews it, and review comes before building the system version."
+  ],
+  "explanation": "Triage first confirms that no existing component covers the need, then gathers evidence that several teams share it, which is what moves a component from local to system. The RFC turns that evidence into an API sketch, state matrix and accessibility plan, and the open API review produces a recorded decision. Only then does the dispatch team build the system version with a core pair, and it ships like any other change: stories, docs, a changeset and contributor credit in the release notes.",
+  "items": {
+    "search": "Confirm that no existing component, or better docs for one, already covers range selection",
+    "evidence": "Collect the use cases from the dispatch, billing and reporting teams",
+    "rfc": "Write an RFC with the API sketch, state matrix and accessibility plan",
+    "review": "Discuss it at the weekly API review and record the decision and its reasons",
+    "build": "Rebuild the picker in the system repository with a core designer and engineer pairing",
+    "release": "Ship it with stories, docs and a changeset, crediting the dispatch team in the release notes"
+  }
+}

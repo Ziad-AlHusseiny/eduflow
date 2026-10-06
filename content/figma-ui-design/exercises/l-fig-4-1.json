@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "names-differ",
+    "parent-differs",
+    "instant",
+    "duration",
+    "easing",
+    "trigger"
+  ],
+  "correct": [
+    "names-differ",
+    "parent-differs",
+    "instant"
+  ]
+}

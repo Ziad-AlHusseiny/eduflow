@@ -1,0 +1,18 @@
+{
+  "title": "Inspect the customers table",
+  "prompt": "Load `customers.csv` into `customers`, parsing `signup_date` as a date while loading. Then answer five questions with code: `n_rows` (number of rows), `n_countries` (number of distinct countries), `top_country` (the country with the most customers), `missing_referrals` (how many rows have no `referred_by`), and `first_signup` (the earliest signup date).",
+  "hints": [
+    "`pd.read_csv(\"customers.csv\", parse_dates=[\"signup_date\"])` loads and converts in one step.",
+    "`nunique()` counts distinct values; `value_counts()` sorts by count, so its first label is the most common.",
+    "`customers[\"referred_by\"].isna().sum()` counts blanks: `True` counts as 1. `customers[\"signup_date\"].min()` gives the earliest date."
+  ],
+  "explanation": "`len(df)` counts rows, and `nunique()` confirms Cartwheel sells to exactly eight countries, so there are no spelling variants hiding in this clean table (the messy export is a different story). `value_counts().idxmax()` returns the label with the highest count: the United States, with 104 customers. Summing a boolean Series counts its `True` values, which is the standard way to count blanks. Because `signup_date` was parsed, `min()` compares real dates rather than text and returns a `Timestamp`, pandas' date-and-time type.",
+  "checks": {
+    "loaded": "`customers` has 600 rows and 9 columns",
+    "dates-parsed": "`signup_date` is a datetime column",
+    "counts": "600 rows and 8 countries",
+    "top-country": "The top country is the United States",
+    "missing": "503 customers have no referral",
+    "first-signup": "The first signup was on 2024-01-01"
+  }
+}

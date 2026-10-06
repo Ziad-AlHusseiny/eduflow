@@ -1,0 +1,42 @@
+{
+  "title": "Git & GitHub",
+  "tagline": "Make Git's model visible, then use it like a professional team does.",
+  "description": [
+    "Most people learn Git as a list of spells: type these words, hope nothing breaks, delete the folder when it does. This course takes the other route. You learn what a commit, a branch and HEAD actually are, so every command becomes a predictable move on a graph you can draw, and a scary message becomes a situation you can read.",
+    "You practise on one real thing: your own portfolio site. It starts as a folder with git init, picks up branches, a merge conflict and a GitHub remote, and finishes as a protected main branch where every change arrives through a pull request that GitHub Actions has checked. Along the way you learn to undo almost anything safely."
+  ],
+  "audience": "Career switchers and junior developers who use Git a little, fear it a lot, and want to work confidently on a team.",
+  "prerequisites": "Comfort with a terminal (cd, ls, opening files) and a free GitHub account; no Git experience needed.",
+  "learnItems": [
+    "Explain commits, branches and HEAD as a graph you can draw",
+    "Stage and commit deliberately, and read history with log, diff and show",
+    "Merge, rebase and resolve conflicts without panic",
+    "Push, pull and review code through GitHub pull requests",
+    "Undo mistakes safely with restore, revert, reset and the reflog",
+    "Ship a CI-checked, protected main branch with Actions and rulesets"
+  ],
+  "sections": {
+    "s-git-1": "Git's Model",
+    "s-git-2": "Branching and Merging",
+    "s-git-3": "Collaborating on GitHub",
+    "s-git-4": "Professional Habits"
+  },
+  "lessons": {
+    "l-git-1-1": "Why Version Control, and How Git Thinks",
+    "l-git-1-2": "Install, Configure, and Make Your First Commit",
+    "l-git-1-3": "The Three Areas: Working Tree, Index, Repository",
+    "l-git-1-4": "Reading History: Commits as a Graph",
+    "l-git-2-1": "Branches Are Pointers, HEAD Is You",
+    "l-git-2-2": "Merging: Fast-Forward and Merge Commits",
+    "l-git-2-3": "Resolving Merge Conflicts Step by Step",
+    "l-git-2-4": "Rebase vs Merge, and the Golden Rule",
+    "l-git-3-1": "Remotes: Push, Fetch, Pull and Tracking Branches",
+    "l-git-3-2": "Authenticating with SSH Keys or HTTPS",
+    "l-git-3-3": "Pull Requests and Code Review",
+    "l-git-3-4": "Issues, Projects, Forks and Open Source",
+    "l-git-4-1": "Undoing Safely: Revert, Reset and the Reflog",
+    "l-git-4-2": "Stash and .gitignore",
+    "l-git-4-3": "Commit Messages, Tags and Releases",
+    "l-git-4-4": "Guarding main: CI with Actions and Rulesets"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "‏Deployment يرفضه الـ API server",
+  "prompt": "اقتبس زميلك هذا الـ Deployment من مقالة في مدوّنة. يفشل `kubectl apply`، وبعد إصلاح الخطأ الأول يفشل مجددًا بخطأ مختلف. اختر السطرين **الاثنين** اللذين يجب إصلاحهما.",
+  "hints": [
+    "أي مجموعة API وأي إصدار تستخدمهما الـ Deployments في Kubernetes الحالي؟",
+    "قارن الـ labels في الـ selector بالـ labels التي يضبطها قالب الـ Pod، حرفًا بحرف."
+  ],
+  "explanation": "السطر 1 يستخدم `extensions/v1beta1`، الذي أُزيل منذ زمن بعيد؛ فيفشل apply برسالة `no matches for kind \"Deployment\"`. استخدم `apps/v1`.\n\nالسطر 13 يعطي الـ Pods الـ label ‏`notes`، بينما يطلب الـ selector ‏`notes-api`، فيرفض الـ API server الـ Deployment لأن الـ selector الخاص به لا يطابق قالبه. اجعلهما متطابقين:\n\n```yaml\napiVersion: apps/v1\n# …\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: notes-api\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: notes-api\n```",
+  "checks": {}
+}

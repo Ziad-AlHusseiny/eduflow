@@ -1,0 +1,20 @@
+{
+  "title": "Ship release 1.4.0",
+  "prompt": "Put the release steps for notes-api 1.4.0 in order, from source code to a verified deployment that every node runs byte-for-byte.",
+  "hints": [
+    "You can't test an image that doesn't exist, and you can't read a digest the registry hasn't seen.",
+    "The manifest should reference the digest, so the digest has to be known before you edit it.",
+    "Verification comes last, after the cluster has the new spec."
+  ],
+  "explanation": "Build the image, test it, push it with its version and SHA tags, read the digest the registry assigned, write that digest into the Deployment manifest, apply it, then verify the rollout. Testing before pushing keeps broken builds out of the registry, and deploying by digest means what you tested is exactly what runs.",
+  "items": {
+    "build": "`docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/skylane/notes-api:1.4.0 -t ghcr.io/skylane/notes-api:sha-9f2c1ab .`",
+    "test": "Run the test suite and a scan against the built image",
+    "push": "Push both tags to `ghcr.io`",
+    "digest": "`docker buildx imagetools inspect ghcr.io/skylane/notes-api:1.4.0` to read the digest",
+    "manifest": "Set `image: ghcr.io/skylane/notes-api:1.4.0@sha256:…` in the Deployment manifest",
+    "apply": "`kubectl apply -f k8s/`",
+    "verify": "`kubectl rollout status deployment/notes-api`"
+  },
+  "checks": {}
+}

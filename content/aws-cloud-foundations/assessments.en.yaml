@@ -1,0 +1,375 @@
+checkpoints:
+  s-aws-1:
+    - q: Lantern's first attempt copies the old server onto one EC2 instance in `eu-west-1a`, and a volunteer calls it "highly available because it's in the cloud". Which change actually lets the app survive the loss of an Availability Zone?
+      options:
+        - text: Move to a larger instance type in the same AZ.
+          why: A bigger machine handles more load, but it still lives in one AZ and fails with it.
+        - text: Run instances in at least two AZs, with data kept off the instances in a managed, multi-AZ service.
+          why: Correct. Resilience comes from independent copies in separate AZs, and from not storing the only copy of data on one server.
+        - text: Move everything to us-east-1 because it has more AZs.
+          why: More AZs in a Region help only if you actually use more than one of them, and the move may break Lantern's data rules.
+        - text: Turn on detailed monitoring for the instance.
+          why: Monitoring tells you sooner that the AZ failed. It does not keep the app running.
+      answer: 1
+    - q: You are signed in as Lantern's admin IAM user with `AdministratorAccess`, yet the Billing and Cost Management pages say you are not authorised. What is the most likely cause?
+      options:
+        - text: AdministratorAccess does not include any billing actions.
+          why: AdministratorAccess allows every action. The block comes from an account-level setting, not the policy.
+        - text: Billing data is only visible in us-east-1, and the console is in another Region.
+          why: Billing pages are global and do not depend on the Region selector.
+        - text: IAM users can never see billing data; only the root user can.
+          why: IAM users and roles can see billing once the account allows it. That is the recommended setup.
+        - text: The root user has not turned on IAM user and role access to billing information.
+          why: Correct. That account setting is a root-only task, and until it is on, IAM permissions alone cannot open billing pages.
+      answer: 3
+    - q: Under the shared responsibility model, which of these is AWS's job for Lantern's DynamoDB table?
+      options:
+        - text: Storing the table's data redundantly across Availability Zones in the Region.
+          why: Correct. DynamoDB is a regional managed service, and its replication across AZs is part of the service AWS runs.
+        - text: Deciding which IAM roles may call `dynamodb:Scan` on the table.
+          why: Who may access your data is always your decision, expressed in your policies.
+        - text: Deciding which attributes may contain personal data such as email addresses.
+          why: What you store, and whether you should, is customer data governance and stays with you.
+        - text: Turning on point-in-time recovery for the table.
+          why: AWS provides the feature, but enabling it is a configuration choice you make per table.
+      answer: 0
+    - q: A cleanup script ran `aws s3 rb s3://lantern-test --force` and the terminal also had production credentials active. What change best prevents the script from ever running in the wrong account?
+      options:
+        - text: Add `--dry-run` to the command.
+          why: The `aws s3 rb` command has no dry-run option, and a dry run would not check which account is active anyway.
+        - text: Run the script only as the root user so that every action is logged.
+          why: Root makes mistakes bigger, not smaller, and it does not choose the right account for you.
+        - text: Pass an explicit `--profile` and stop the script unless `aws sts get-caller-identity` returns the expected account ID.
+          why: Correct. An explicit profile removes ambiguity, and the identity check fails safely before anything destructive runs.
+        - text: Set `--output text` so that errors are easier to read.
+          why: Output format changes how results are printed, not which account the command targets.
+      answer: 2
+    - q: A learner on the Free account plan wants to practise buying a Savings Plan for a test instance. What happens?
+      options:
+        - text: The purchase goes through and is paid from the promotional credits.
+          why: Credits do not unlock features that the Free plan excludes. Commitment purchases are outside the plan.
+        - text: The purchase goes through but is cancelled automatically after six months.
+          why: There is no automatic cancellation; the purchase is simply not offered on the Free plan.
+        - text: Savings Plans are free during the first six months of any account.
+          why: Savings Plans are a discount in exchange for a spending commitment, never free.
+        - text: Savings Plans are not available on the Free plan; the account must upgrade to the Paid plan first.
+          why: Correct. The Free plan excludes services and features that could use up credits, such as Savings Plans and Reserved Instances.
+      answer: 3
+  s-aws-2:
+    - q: |-
+        This policy is attached to Sam, yet `aws s3 ls s3://lantern-posters/` returns AccessDenied. Why?
+        ```json
+        {
+          "Effect": "Allow",
+          "Action": "s3:ListBucket",
+          "Resource": "arn:aws:s3:::lantern-posters/*"
+        }
+        ```
+      options:
+        - text: "`s3:ListBucket` acts on the bucket, so the Resource must be `arn:aws:s3:::lantern-posters` without `/*`."
+          why: Correct. Listing is a bucket-level action; an object ARN pattern never matches it.
+        - text: Listing needs `s3:GetObject` as well.
+          why: GetObject downloads objects. Listing keys needs only ListBucket on the bucket ARN.
+        - text: The statement needs a Principal element.
+          why: Identity-based policies have no Principal; the identity they are attached to is the principal.
+        - text: S3 listing always requires MFA.
+          why: Only a policy condition can require MFA, and this policy has none.
+      answer: 0
+    - q: Lantern's GitHub Actions workflow deploys the site to S3. What is the recommended way to give it AWS permissions?
+      options:
+        - text: Store an IAM user's access key and secret as repository secrets.
+          why: That works, but it is a long-lived secret that can leak from the CI system and must be rotated by hand.
+        - text: Use the admin user's `aws login` session from a maintainer's laptop.
+          why: Login sessions are for people at a terminal and expire within hours, so a pipeline cannot rely on them.
+        - text: Make the site bucket public-write so the workflow needs no credentials.
+          why: A public-write bucket lets anyone on the internet replace Lantern's website.
+        - text: Add GitHub as an OpenID Connect identity provider in IAM and let the workflow assume a deploy role whose trust policy names the repository.
+          why: Correct. The workflow exchanges a short-lived token for temporary role credentials, so there is no stored secret at all.
+      answer: 3
+    - q: |-
+        A developer's policies include an Allow for `ec2:*` on `*` and this statement. What happens when they launch an instance in `us-east-1`?
+        ```json
+        {
+          "Effect": "Deny",
+          "Action": "ec2:*",
+          "Resource": "*",
+          "Condition": { "StringNotEquals": { "aws:RequestedRegion": "eu-west-1" } }
+        }
+        ```
+      options:
+        - text: It succeeds, because the Allow for `ec2:*` was written first.
+          why: Statement order does not matter in IAM. All applicable statements are evaluated together.
+        - text: It succeeds, because conditions only apply to Allow statements.
+          why: Conditions work on Deny statements too, and are a common way to build guardrails.
+        - text: It is denied, because the request's Region is not eu-west-1, so the explicit Deny matches.
+          why: Correct. The condition is true for us-east-1, the Deny applies, and an explicit deny always wins.
+        - text: It is denied, because `ec2:*` is not a valid action pattern.
+          why: Service-wide wildcards such as `ec2:*` are valid. The Deny statement is what blocks the request.
+      answer: 2
+    - q: A volunteer leaves Lantern. Everyone signs in through IAM Identity Center with permission sets in the dev and production accounts. What do you do?
+      options:
+        - text: Delete the IAM roles named after the volunteer in each account.
+          why: Identity Center roles are per permission set, not per person, and deleting them would lock out everyone using them.
+        - text: Disable or delete the volunteer's user in Identity Center, which removes their access to every assigned account.
+          why: Correct. One identity, one place to revoke it. Their existing sessions also stop being renewed.
+        - text: Rotate the access keys of every IAM user in both accounts.
+          why: With Identity Center, people have no access keys to rotate. That step belongs to the old shared-user world.
+        - text: Change the root user's password in both accounts.
+          why: The volunteer never had root access, so changing root passwords does not remove anything they had.
+      answer: 1
+    - q: A scanner reports that an active access key for Lantern's IAM user `export-bot` was pushed to a public GitHub repository an hour ago. What should you do first?
+      options:
+        - text: Delete the repository so nobody else can find the key.
+          why: Bots copy exposed keys within minutes, so hiding the repository does not stop someone who already has it.
+        - text: Check the key's last-used date and decide based on that.
+          why: That check is part of a planned retirement. A leaked key is an emergency, and waiting gives an attacker time.
+        - text: Open a support case and wait for AWS to revoke it.
+          why: AWS may help and may apply a quarantine policy, but disabling your own key is immediate and in your control.
+        - text: Deactivate the key immediately, then review CloudTrail for what it was used for and replace it with a role.
+          why: Correct. Deactivation stops further use at once. Investigation and the structural fix come after.
+      answer: 3
+  s-aws-3:
+    - q: Lantern adds an in-memory cache server that needs a lot of RAM but little CPU. Which instance family fits best?
+      options:
+        - text: "`c` (compute optimised)"
+          why: Compute-optimised types give more CPU per gigabyte of memory, the opposite of this workload's need.
+        - text: "`t` (burstable)"
+          why: Burstable types suit low, spiky CPU use with modest memory, not a memory-heavy cache.
+        - text: "`r` (memory optimised)"
+          why: Correct. The `r` family gives the most memory per vCPU among the common families.
+        - text: "`g` (GPU)"
+          why: GPU instances are for graphics and machine learning, and are expensive for a cache.
+      answer: 2
+    - q: Event posters are viewed constantly for the month around an event, then rarely, but old event pages must still load them instantly. Which setup keeps costs down without breaking old pages?
+      options:
+        - text: Keep new posters in S3 Standard and add a lifecycle rule moving them to S3 Glacier Instant Retrieval after 90 days.
+          why: Correct. Glacier Instant Retrieval keeps millisecond access at a lower storage price for rarely read objects.
+        - text: Move posters to S3 Glacier Deep Archive after 30 days.
+          why: Deep Archive objects must be restored before reading, which takes hours, so old pages would show broken images.
+        - text: Store all posters in S3 One Zone-IA from the start.
+          why: Fresh posters are read constantly, so retrieval fees would add up, and one AZ is a risk for the only copy.
+        - text: Store all posters in S3 Express One Zone.
+          why: Express One Zone is built for ultra-low-latency workloads and is not a cheaper home for rarely read files.
+      answer: 0
+    - q: Lantern creates a new DynamoDB table for a check-in feature whose traffic is near zero most days and huge on festival days. Which capacity mode should it start with?
+      options:
+        - text: Provisioned capacity sized for the festival peak.
+          why: You would pay for peak capacity every day of the year, including the many idle ones.
+        - text: Provisioned capacity sized for a normal day, with no auto scaling.
+          why: Festival traffic would exceed the provisioned capacity and requests would be throttled.
+        - text: Reserved capacity bought for one year.
+          why: Reserved capacity is a discount for steady provisioned throughput, which this spiky table does not have.
+        - text: On-demand capacity, paying per request.
+          why: Correct. On-demand follows the traffic up and down, and idle days cost almost nothing.
+      answer: 3
+    - q: A Lambda function in a private subnet reads posters from S3 and writes to DynamoDB. The VPC has no NAT gateway. What is the cheapest way to let it reach both services?
+      options:
+        - text: Add a NAT gateway in a public subnet.
+          why: It works, but a NAT gateway bills per hour and per gigabyte, which gateway endpoints avoid for these two services.
+        - text: Add gateway endpoints for S3 and DynamoDB to the private subnets' route table.
+          why: Correct. Gateway endpoints keep traffic to S3 and DynamoDB inside AWS and add no hourly or per-gigabyte charge.
+        - text: Move the function into a public subnet.
+          why: Lambda functions in a VPC do not get public IP addresses, so a public subnet alone does not give them internet access.
+        - text: Open outbound 443 in the function's security group.
+          why: Security groups allow all outbound traffic by default; the missing piece is a route, not a firewall rule.
+      answer: 1
+    - q: A Lambda function not attached to any VPC cannot connect to Lantern's RDS database in a private subnet. What is needed?
+      options:
+        - text: Make the RDS instance publicly accessible.
+          why: That exposes the database to the internet, which is what the private subnet was meant to prevent.
+        - text: Add `rds:*` to the function's execution role.
+          why: IAM controls RDS management API calls. A database connection is network traffic, which IAM actions do not open.
+        - text: Increase the function's timeout.
+          why: The connection does not fail because it is slow; there is no network path at all.
+        - text: Attach the function to the VPC's private subnets with a security group that the database's security group allows on port 5432.
+          why: Correct. The function then runs inside the VPC and the database's rule can name its security group as the source.
+      answer: 3
+  s-aws-4:
+    - q: Lantern's site bucket policy allows `s3:GetObject` to the `cloudfront.amazonaws.com` service principal but has no `AWS:SourceArn` condition. What is the risk?
+      options:
+        - text: Any CloudFront distribution, including one in another AWS account, could be pointed at the bucket and read it.
+          why: Correct. The SourceArn condition is what pins access to Lantern's own distribution.
+        - text: Visitors could upload files to the bucket through CloudFront.
+          why: The statement only allows GetObject, so there is no write access for anyone.
+        - text: CloudFront would stop caching the files.
+          why: Caching depends on cache policies and headers, not on conditions in the bucket policy.
+        - text: Block Public Access would be turned off automatically.
+          why: Block Public Access settings never change by themselves when you edit a bucket policy.
+      answer: 0
+    - q: After switching the distribution's origin to origin access control, every file returns 403 from CloudFront. The bucket is private and Block Public Access is on. What is the most likely cause?
+      options:
+        - text: Block Public Access must be turned off for OAC to work.
+          why: OAC is designed for private buckets with Block Public Access on. Turning it off is not needed or wanted.
+        - text: The certificate is not in us-east-1.
+          why: A certificate problem shows up as an HTTPS or setup error for the custom domain, not as 403 from S3 for every file.
+        - text: The bucket policy has no statement allowing this distribution to call `s3:GetObject`.
+          why: Correct. OAC signs requests, but S3 still needs a policy that allows the CloudFront principal for this distribution.
+        - text: The objects were uploaded with a no-cache header.
+          why: Cache headers affect how long copies are kept, not whether S3 allows the read.
+      answer: 2
+    - q: Why does Lantern set reserved concurrency on the RSVP function?
+      options:
+        - text: To keep warm copies running so there are no cold starts.
+          why: That is provisioned concurrency, a different setting that has its own charges.
+        - text: To make the function run faster under load.
+          why: Reserved concurrency limits how many copies run; it does not change how fast each one runs.
+        - text: To reduce the price per invocation.
+          why: Pricing per request and per GB-second is the same with or without reserved concurrency.
+        - text: To cap how many copies can run at once, limiting cost and protecting downstream services during a flood of requests.
+          why: Correct. Requests beyond the cap are throttled instead of scaling the bill and the load without limit.
+      answer: 3
+    - q: Lantern's error alarm uses `--treat-missing-data notBreaching`. What does that mean on a quiet night with no invocations?
+      options:
+        - text: The alarm fires, because missing data might hide an outage.
+          why: That would be `breaching`. With notBreaching, missing data counts as within the threshold.
+        - text: Periods with no data count as healthy, so the alarm stays in the OK state.
+          why: Correct. A function that is not invoked publishes no Errors data points, and that should not wake anyone.
+        - text: The alarm is deleted after a period with no data.
+          why: Alarms are never deleted automatically. This setting only decides how missing data is treated.
+        - text: The alarm switches to counting throttles instead.
+          why: An alarm watches the one metric you configured; this setting does not change the metric.
+      answer: 1
+    - q: A Well-Architected review notes that the RSVP table has no point-in-time recovery, so a bad script could wipe it with no way back. Which pillar does this finding belong to?
+      options:
+        - text: Reliability
+          why: Correct. Recovering from failures, including human error, is the heart of the reliability pillar.
+        - text: Performance efficiency
+          why: Backups do not change how efficiently the table serves requests.
+        - text: Sustainability
+          why: Sustainability is about reducing the environmental impact of the workload, not about recovery.
+        - text: Cost optimization
+          why: PITR adds a small cost. The risk being addressed is losing data, not spending money.
+      answer: 0
+final:
+  - q: A company in Brazil serves users across South America, but a contract requires all customer data to stay in the EU. Which Region choice follows the lesson's order of priorities?
+    options:
+      - text: sa-east-1, because it is closest to the users.
+        why: Latency matters, but it comes after hard data rules. This Region breaks the contract.
+      - text: us-east-1, because it usually gets new services first.
+        why: Service availability comes third, and this Region also fails the EU data requirement.
+      - text: Whichever Region is cheapest worldwide.
+        why: Price is the last tie-breaker, and the cheapest Region may be outside the EU.
+      - text: An EU Region that offers every service needed, accepting the extra latency and using a CDN for static content.
+        why: Correct. Data rules are a hard filter; inside it you reduce latency with tools like CloudFront.
+    answer: 3
+  - q: Lantern's RDS for PostgreSQL instance needs a minor engine security patch. Who applies it and when?
+    options:
+      - text: AWS applies it during the maintenance window that Lantern chose, or Lantern can apply it sooner.
+        why: Correct. Engine patching is AWS's work on RDS (with automatic minor version upgrades turned on, as they are by default), scheduled into a window you control.
+      - text: Lantern must SSH into the database host and install it.
+        why: RDS gives no OS-level access to the host. Patching is part of the managed service.
+      - text: Nobody; managed databases never need patches.
+        why: Every engine needs patches. The difference with RDS is who installs them.
+      - text: AWS applies it instantly at any time without notice.
+        why: Maintenance is scheduled, and you can see pending maintenance actions before they happen.
+    answer: 0
+  - q: Your shell has `AWS_PROFILE=lantern-dev` set, and you run `aws s3 ls --profile lantern-prod`. Which account does the command use?
+    options:
+      - text: lantern-dev, because environment variables always win.
+        why: Command-line options take precedence over environment variables in the AWS CLI.
+      - text: Neither; the CLI refuses conflicting settings.
+        why: The CLI resolves the conflict by precedence rather than failing.
+      - text: lantern-prod, because a command-line option overrides the environment variable.
+        why: Correct. Command-line options are highest in the CLI's precedence order, which is why explicit `--profile` is safest in scripts.
+      - text: Whichever profile is named `default` in `~/.aws/config`.
+        why: The default profile is only used when neither the option nor the environment variable names one.
+    answer: 2
+  - q: Sam's group policy allows `s3:GetObject` on `arn:aws:s3:::lantern-posters/*`. The bucket policy denies all S3 actions when `aws:SecureTransport` is false. Sam requests a poster with a plain HTTP URL. What happens?
+    options:
+      - text: It succeeds, because the identity-based allow matches.
+        why: The allow does match, but an explicit deny in any applicable policy overrides it.
+      - text: It is denied, because the request did not use TLS and the bucket policy's explicit deny applies.
+        why: Correct. SecureTransport is false for plain HTTP, the Deny matches, and explicit deny always wins.
+      - text: It succeeds, because bucket policies only apply to anonymous users.
+        why: Bucket policies apply to every principal they match, including users in the same account.
+      - text: It is denied, because Sam lacks `s3:ListBucket`.
+        why: Downloading a known key does not need ListBucket. The TLS guardrail is what blocks this request.
+    answer: 1
+  - q: Lantern's report function only reads the `lantern-events-archive` DynamoDB table in eu-west-1. Which policy statement is least privilege?
+    options:
+      - text: "`dynamodb:*` on `*`"
+        why: This allows every DynamoDB action on every table, including deleting them.
+      - text: "`dynamodb:GetItem`, `dynamodb:Query` and `dynamodb:Scan` on `*`"
+        why: The actions are read-only, but the Resource covers every table in every Region of the account.
+      - text: "`dynamodb:*` on the table's ARN"
+        why: The resource is right, but the actions include writes, deletes and table changes the function never makes.
+      - text: "`dynamodb:GetItem` and `dynamodb:Query` on `arn:aws:dynamodb:eu-west-1:111122223333:table/lantern-events-archive`"
+        why: Correct. Only the read actions the function uses, on exactly one table ARN.
+    answer: 3
+  - q: Which of these idle Lantern resources keeps adding to the bill every hour even when no traffic flows?
+    options:
+      - text: A NAT gateway left in a public subnet after the migration.
+        why: Correct. NAT gateways bill per hour whether or not any traffic passes, plus per gigabyte when it does.
+      - text: A Lambda function that nobody invokes.
+        why: Lambda charges per request and per GB-second of run time, so an idle function costs nothing to exist.
+      - text: A gateway endpoint for S3.
+        why: Gateway endpoints for S3 and DynamoDB carry no hourly or data processing charge.
+      - text: An IAM role with no attached policies.
+        why: IAM has no charge at all, whatever roles and policies you create.
+    answer: 0
+  - q: Versioning is on for the posters bucket, and someone runs `aws s3 rm s3://lantern-posters/posters/2026/festival.jpg`. How do you get the poster back?
+    options:
+      - text: You can't; `rm` permanently deletes objects.
+        why: With versioning on, a simple delete only adds a delete marker; the previous version is still stored.
+      - text: Restore it from S3 Glacier, where deleted objects go.
+        why: Deleted objects are not moved to another class. They stay as noncurrent versions in the same bucket.
+      - text: Delete the delete marker, or copy the previous version back as the current one.
+        why: Correct. Removing the delete marker makes the previous version current again.
+      - text: Ask AWS Support to undelete it.
+        why: AWS cannot recover data you deleted, and with versioning you do not need it to.
+    answer: 2
+  - q: The treasurer wants a monthly table of the most-RSVPed events, filterable by city and category, with new filters added whenever someone asks. RSVPs live in DynamoDB. What is the most practical approach?
+    options:
+      - text: Scan the RSVP table each month and filter in code.
+        why: Scans read and bill the whole table every time, and each new filter means more custom code.
+      - text: Load the monthly RSVP counts into the RDS for PostgreSQL database alongside events, and answer the questions with SQL.
+        why: Correct. Varied, changing questions with joins to events, cities and categories are what a relational database is for.
+      - text: Add a new DynamoDB global secondary index for every filter the treasurer invents.
+        why: Each index costs storage and writes, and ad-hoc combinations of filters quickly outgrow key design.
+      - text: Move all RSVPs into S3 Express One Zone.
+        why: Express One Zone is fast object storage. It does not run queries or aggregations.
+    answer: 1
+  - q: A security group allows inbound TCP 443 from anywhere and has had all its outbound rules removed. A visitor sends an HTTPS request to the instance. What happens to the response?
+    options:
+      - text: It is dropped, because there is no outbound rule.
+        why: That would be true for a stateless network ACL. Security groups track connections.
+      - text: It is sent only if the subnet's network ACL also has an inbound rule for 443.
+        why: The network ACL matters too, but this question is about what the security group does with the reply.
+      - text: It is sent only after AWS adds a default outbound rule back.
+        why: AWS does not re-add rules you removed. No outbound rule is needed for replies.
+      - text: It is sent, because security groups are stateful and allow replies to permitted inbound traffic.
+        why: Correct. Outbound rules only control new connections that the instance starts.
+    answer: 3
+  - q: After a deploy, a new hashed file `assets/index-9c2e1f.css` is uploaded and `index.html` is updated with a no-cache header. Which path needs a CloudFront invalidation?
+    options:
+      - text: Only `/index.html`, if CloudFront might still hold an old copy; the new CSS file has never been cached.
+        why: Correct. A new file name has nothing stale to invalidate, and the short-lived index.html picks up the new reference.
+      - text: "`/*`, to be safe on every deploy."
+        why: Invalidating everything empties the cache and sends the next wave of visitors to the origin at once.
+      - text: Only `/assets/index-9c2e1f.css`
+        why: The new CSS file has never been requested, so CloudFront has no stale copy to remove.
+      - text: No invalidation is ever possible for S3 origins.
+        why: Invalidations work for any origin type, including S3 buckets.
+    answer: 0
+  - q: Lantern must put AWS WAF in front of its RSVP API to block abusive traffic at the API itself. Which API Gateway type supports that directly?
+    options:
+      - text: An HTTP API
+        why: HTTP APIs leave out several features to stay cheap, and direct AWS WAF integration is one of them.
+      - text: A Lambda function URL
+        why: A function URL is a Lambda feature, not an API Gateway type, and has no WAF integration of its own.
+      - text: A REST API
+        why: Correct. REST APIs support AWS WAF, along with API keys, usage plans and request validation.
+      - text: A WebSocket API
+        why: WebSocket APIs serve two-way connections and are not the type that supports WAF for this use.
+    answer: 2
+  - q: Lantern's monthly bill doubled. Which first step shows where the increase came from?
+    options:
+      - text: Delete the newest resources until the forecast drops.
+        why: Deleting without evidence may remove something important and may not touch the real cause.
+      - text: Open AWS Cost Explorer and group costs by service, and by the `project` tag, comparing this month with last month.
+        why: Correct. Cost Explorer shows which service and which tagged project grew, which points straight at the cause.
+      - text: Lower the AWS Budgets limit so the alert fires sooner.
+        why: A lower threshold sends earlier emails. It does not explain what is costing more.
+      - text: Raise reserved concurrency on every Lambda function.
+        why: That would let functions scale further and could raise costs. It answers nothing about the bill.
+    answer: 1

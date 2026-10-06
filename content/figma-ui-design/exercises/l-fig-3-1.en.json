@@ -1,0 +1,36 @@
+{
+  "title": "What can an instance do without detaching?",
+  "prompt": "You are filling the Habit detail screen with instances of the **Habit row** component (it contains a Habit icon instance, a text stack with Habit name and Streak, and a Check button instance). The component has no slots. Select **every** edit you can make on an instance while keeping it linked to the main component.",
+  "hints": [
+    "Overrides change content and appearance. Structure belongs to the main component.",
+    "Hiding is allowed; deleting is not. Swapping a nested instance is allowed; adding a new layer is not.",
+    "Four of the six are overrides. The two that change the layer tree are not."
+  ],
+  "explanation": "Text, visibility, fills and nested instance swaps are **overrides**: they change what an instance shows, not how it is built, so the instance stays linked. Adding a layer or reordering children changes the **structure**, which only the main component controls (apart from slots, which this component does not have). If one use really needs an extra element, add it to the main component as an optional layer, then hide or show it per instance.",
+  "options": {
+    "edit-text": {
+      "text": "Change the habit name to \"Walk 8,000 steps\".",
+      "why": "Correct. Text is the most common override and keeps the link intact."
+    },
+    "hide-streak": {
+      "text": "Hide the Streak text layer for a brand-new habit.",
+      "why": "Correct. Visibility is an override. The layer still exists; it is just hidden on this instance."
+    },
+    "swap-icon": {
+      "text": "Swap the nested Habit icon instance for a different icon component.",
+      "why": "Correct. Swapping a nested instance is an override, and Lesson 3.2 shows how to curate the choices."
+    },
+    "change-fill": {
+      "text": "Change the row background fill for a mock-up of a highlighted row.",
+      "why": "Correct, it is allowed. Remember that this row will no longer follow the main component's fill."
+    },
+    "add-layer": {
+      "text": "Add a new \"Note\" text layer under the streak.",
+      "why": "Instances cannot gain layers outside a slot. Add an optional note layer to the main component instead."
+    },
+    "reorder": {
+      "text": "Move the Check button to the left of the icon.",
+      "why": "Reordering children changes the structure, which instances cannot do. A left-handed layout would be a component option."
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Q4 growth by channel, from a blank page",
+  "prompt": "Rania's follow-up question from the board: \"Which channel drove the growth?\" Write the query **from scratch**.\n\nReturn one row per `channel` with `revenue_q4_2024`, `revenue_q4_2025` (both rounded to 2 decimals) and `growth_pct` (percentage change from Q4 2024 to Q4 2025, rounded to 1 decimal). Use the capstone's definitions: Q4 is 1 October to 31 December, revenue is item revenue (`quantity * unit_price * (1 - discount)`), and every status except 'cancelled' counts. Row order doesn't matter.",
+  "hints": [
+    "Plan the steps first: revenue per order, then Q4 orders of both years labelled with their period, then one row per channel.",
+    "Label each order's period with a CASE on `order_date`, after filtering to the two Q4 ranges (watch the parentheses around the OR).",
+    "Use `SUM(revenue) FILTER (WHERE period = 'Q4 2024')` and the same for 2025, then `100.0 * (new - old) / NULLIF(old, 0)` for growth."
+  ],
+  "explanation": "Collapsing items to one row per order keeps the grain clean, the half-open ranges keep every Q4 day, and FILTER puts both years in one row per channel. The answer to the board: the web more than tripled (about 27.8k to 87.5k, +214.6%) and the app grew 168%, while the marketplace grew a slower 81%. Your own channels drove the growth. A query that labels periods by joining a small `periods` CTE, as in the lesson, is equally correct.",
+  "checks": {}
+}

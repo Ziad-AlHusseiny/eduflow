@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier, export_text\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ntree = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train, y_train)\nprint(export_text(tree, feature_names=features))\n\n# 1. Rewrite the printed tree as plain Python rules. Return 1 for churn, 0 for stay.\ndef rule_predict(row):\n    if row[\"days_since_last_order\"] <= 236.5:\n        return 1\n    return 1\n\nrule_preds = [rule_predict(row) for _, row in X_test.iterrows()]\n\n# 2. A tree limited by min_samples_leaf=20 (random_state=42), fitted on the training data\nleafy = None\n\n# 3. The name of the feature with the highest importance in `leafy`\ntop_feature = None\n",
+  "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier, export_text\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ntree = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train, y_train)\nprint(export_text(tree, feature_names=features))\n\ndef rule_predict(row):\n    if row[\"days_since_last_order\"] <= 236.5:\n        if row[\"orders\"] <= 3.5:\n            return 1\n        return 0\n    if row[\"tenure_days\"] <= 637.5:\n        return 1\n    return 0\n\nrule_preds = [rule_predict(row) for _, row in X_test.iterrows()]\n\nleafy = DecisionTreeClassifier(min_samples_leaf=20, random_state=42).fit(X_train, y_train)\nimportances = pd.Series(leafy.feature_importances_, index=features)\ntop_feature = importances.idxmax()\nprint(top_feature)\n",
+  "checks": [
+    {
+      "id": "rules-test",
+      "test": "list(map(int, rule_preds)) == tree.predict(X_test).tolist()"
+    },
+    {
+      "id": "rules-train",
+      "test": "[int(rule_predict(r)) for _, r in X_train.iterrows()] == tree.predict(X_train).tolist()"
+    },
+    {
+      "id": "leafy",
+      "test": "leafy is not None and hasattr(leafy, 'tree_') and leafy.min_samples_leaf == 20 and leafy.get_n_leaves() == __import__('sklearn.tree', fromlist=['x']).DecisionTreeClassifier(min_samples_leaf=20, random_state=42).fit(X_train, y_train).get_n_leaves()"
+    },
+    {
+      "id": "top-feature",
+      "test": "top_feature == 'days_since_last_order'"
+    }
+  ]
+}

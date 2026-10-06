@@ -1,0 +1,17 @@
+{
+  "title": "أضِف ما لا يستطيع HTML أن يمنحك إياه من ARIA",
+  "prompt": "أربع مهام صغيرة بـ ARIA على بطاقة التذكرة في Ticketly:\n\n1. علِّم رابط **Tickets** بأنه الصفحة الحالية باستخدام `aria-current=\"page\"`.\n2. اجعل **Save to wishlist** زر تبديل: يبدأ بـ `aria-pressed=\"false\"` ويتبدّل مع كل نقرة. أبقِ نص التسمية كما هو.\n3. اجعل `#basket-status` ‏live region **مهذّبة** لتُعلَن رسالة \"Ticket added…\".\n4. على زر Add to basket في الشريط الثابت `aria-hidden=\"true\"`، وهذا يترك محطة Tab صامتة. أصلحه دون حذف الزر (يمكنك تغيير نصه).",
+  "hints": [
+    "aria-current وaria-pressed خاصيتان عاديتان في HTML؛ وaria-pressed تحتاج أيضًا إلى تحديث في معالج النقر.",
+    "role=\"status\" هي live region مهذّبة. والعنصر موجود أصلًا عند التحميل، وهذا بالضبط ما تحتاجه الـ live regions.",
+    "احذف aria-hidden من الزر الثابت. وإن أزعجتك التسمية المكرّرة، فاجعلها أكثر تحديدًا، مثل \"Add Friday pass to basket\"."
+  ],
+  "explanation": "تضيف `aria-current=\"page\"` عبارة \"current page\" إلى إعلان رابط Tickets. ويُبقي زر قائمة الأمنيات تسميته ويكشف حالته عبر `aria-pressed`، التي يُبقيها معالج النقر متزامنة؛ ويمكن للـ CSS التنسيق انطلاقًا من الخاصية نفسها. و`role=\"status\"` على الفقرة الموجودة والفارغة تعني أن كل رسالة جديدة تُقرأ بتهذيب دون نقل التركيز. وعاد الزر الثابت مرئيًا وقابلًا للتركيز في شجرة إمكانية الوصول: لا يجوز أبدًا أن يقع عنصر قابل للتركيز داخل `aria-hidden=\"true\"`، لأن مستخدمي لوحة المفاتيح يصلون إليه بينما تبقى قارئات الشاشة صامتة.",
+  "checks": {
+    "current-page": "رابط Tickets وحده عليه aria-current=\"page\"",
+    "pressed-toggles": "يبدأ Save to wishlist بـ aria-pressed=\"false\" ويتبدّل مع كل نقرة",
+    "live-region": "‎#basket-status ‏live region وتُعلن عدد التذاكر في السلة",
+    "polite": "رسالة السلة مهذّبة، لا alert حازمة",
+    "no-hidden-focusable": "لا يوجد عنصر قابل للتركيز مخفي بـ aria-hidden"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "قيم مطلوبة وحلقة تعديل سريعة",
+  "prompt": "املأ الفراغات حتى يرفض Compose البدء حين يكون `POSTGRES_PASSWORD` مفقودًا، وتُنسخ تعديلات الكود إلى container الـ API الذي يعمل، وتعيد تغييرات الـ lockfile بناء الـ image، وتبدأ البيئة في وضع المراقبة.",
+  "hints": [
+    "عامل الاستبدال الذي يعني «مطلوب، مع رسالة خطأ» من حرفين: نقطتان وعلامة استفهام.",
+    "إجراء مراقبة واحد ينسخ الملفات إلى الـ container؛ وآخر يعيد بناء الـ image.",
+    "الأمر `docker compose up` يأخذ خيارًا يفعّل وضع المراقبة."
+  ],
+  "explanation": "```yaml\nPOSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}\n# …\n- action: sync\n  path: ./src\n  target: /app/src\n- action: rebuild\n  path: package-lock.json\n```\nثم `docker compose up --watch`. ‏`:?` تحوّل قيمةً كانت ستبقى فارغة دون أن ينتبه أحد إلى خطأ واضح عند البدء. و`sync` ينسخ ملفات الكود المعدّلة إلى الـ container الذي يعمل خلال ثانية تقريبًا، بينما يحتاج تغيير الاعتماديات إلى `rebuild` لأن الحزم الجديدة يجب أن تُثبَّت داخل الـ image.",
+  "checks": {}
+}

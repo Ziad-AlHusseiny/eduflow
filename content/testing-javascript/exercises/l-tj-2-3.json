@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Saves an expense through the API and resolves with the new id.\n// - Rejects with \"Description is required\" if the description is blank.\n// - Rejects with \"Amount must be positive\" unless amountCents is a\n//   positive integer. Invalid input never reaches the API.\n// - If api.post fails with an error that has { retryable: true },\n//   it tries exactly ONE more time.\n// - Any other API error is passed on: the promise rejects with it.\nasync function saveExpense(expense, api) {\n  if (!expense.description || !expense.description.trim()) {\n    throw new Error('Description is required');\n  }\n  if (!Number.isInteger(expense.amountCents) || expense.amountCents <= 0) {\n    throw new Error('Amount must be positive');\n  }\n  try {\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  } catch (error) {\n    if (!error.retryable) throw error;\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  }\n}\n",
+  "mutants": [
+    {
+      "id": "missing-await",
+      "code": "// Saves an expense through the API and resolves with the new id.\n// - Rejects with \"Description is required\" if the description is blank.\n// - Rejects with \"Amount must be positive\" unless amountCents is a\n//   positive integer. Invalid input never reaches the API.\n// - If api.post fails with an error that has { retryable: true },\n//   it tries exactly ONE more time.\n// - Any other API error is passed on: the promise rejects with it.\nasync function saveExpense(expense, api) {\n  if (!expense.description || !expense.description.trim()) {\n    throw new Error('Description is required');\n  }\n  if (!Number.isInteger(expense.amountCents) || expense.amountCents <= 0) {\n    throw new Error('Amount must be positive');\n  }\n  try {\n    const { id } = api.post('/expenses', expense);\n    return id;\n  } catch (error) {\n    if (!error.retryable) throw error;\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  }\n}\n"
+    },
+    {
+      "id": "swallows-error",
+      "code": "// Saves an expense through the API and resolves with the new id.\n// - Rejects with \"Description is required\" if the description is blank.\n// - Rejects with \"Amount must be positive\" unless amountCents is a\n//   positive integer. Invalid input never reaches the API.\n// - If api.post fails with an error that has { retryable: true },\n//   it tries exactly ONE more time.\n// - Any other API error is passed on: the promise rejects with it.\nasync function saveExpense(expense, api) {\n  if (!expense.description || !expense.description.trim()) {\n    throw new Error('Description is required');\n  }\n  if (!Number.isInteger(expense.amountCents) || expense.amountCents <= 0) {\n    throw new Error('Amount must be positive');\n  }\n  try {\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  } catch (error) {\n    if (!error.retryable) return null;\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  }\n}\n"
+    },
+    {
+      "id": "no-retry",
+      "code": "// Saves an expense through the API and resolves with the new id.\n// - Rejects with \"Description is required\" if the description is blank.\n// - Rejects with \"Amount must be positive\" unless amountCents is a\n//   positive integer. Invalid input never reaches the API.\n// - If api.post fails with an error that has { retryable: true },\n//   it tries exactly ONE more time.\n// - Any other API error is passed on: the promise rejects with it.\nasync function saveExpense(expense, api) {\n  if (!expense.description || !expense.description.trim()) {\n    throw new Error('Description is required');\n  }\n  if (!Number.isInteger(expense.amountCents) || expense.amountCents <= 0) {\n    throw new Error('Amount must be positive');\n  }\n  try {\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  } catch (error) {\n    throw error;\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  }\n}\n"
+    },
+    {
+      "id": "retries-everything",
+      "code": "// Saves an expense through the API and resolves with the new id.\n// - Rejects with \"Description is required\" if the description is blank.\n// - Rejects with \"Amount must be positive\" unless amountCents is a\n//   positive integer. Invalid input never reaches the API.\n// - If api.post fails with an error that has { retryable: true },\n//   it tries exactly ONE more time.\n// - Any other API error is passed on: the promise rejects with it.\nasync function saveExpense(expense, api) {\n  if (!expense.description || !expense.description.trim()) {\n    throw new Error('Description is required');\n  }\n  if (!Number.isInteger(expense.amountCents) || expense.amountCents <= 0) {\n    throw new Error('Amount must be positive');\n  }\n  try {\n    const { id } = await api.post('/expenses', expense);\n    return id;\n  } catch (error) {\n    \n    const { id } = await api.post('/expenses', expense);\n    return id;\n  }\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "const dinner = { description: 'Dinner', amountCents: 4500 };\n\n// A stub API: each call to post runs the next step in the list.\n// A step is either a value to resolve with or an Error to reject with.\nfunction stubApi(...steps) {\n  const api = {\n    calls: 0,\n    async post() {\n      const step = steps[api.calls];\n      api.calls += 1;\n      if (step instanceof Error) throw step;\n      return step;\n    },\n  };\n  return api;\n}\n\nconst retryable = (message) => Object.assign(new Error(message), { retryable: true });\n\ndescribe('saveExpense', () => {\n  test('rejects a blank description without calling the API', async () => {\n    const api = stubApi({ id: 'e1' });\n\n    await expect(saveExpense({ description: ' ', amountCents: 100 }, api)).rejects.toThrow('Description is required');\n    expect(api.calls).toBe(0);\n  });\n\n  // Add: the happy path, a retryable error followed by success,\n  // and a non-retryable error.\n});\n"
+  },
+  "solution": {
+    "js": "const dinner = { description: 'Dinner', amountCents: 4500 };\n\nfunction stubApi(...steps) {\n  const api = {\n    calls: 0,\n    async post() {\n      const step = steps[api.calls];\n      api.calls += 1;\n      if (step instanceof Error) throw step;\n      return step;\n    },\n  };\n  return api;\n}\n\nconst retryable = (message) => Object.assign(new Error(message), { retryable: true });\n\ndescribe('saveExpense', () => {\n  test('rejects a blank description without calling the API', async () => {\n    const api = stubApi({ id: 'e1' });\n\n    await expect(saveExpense({ description: ' ', amountCents: 100 }, api)).rejects.toThrow('Description is required');\n    expect(api.calls).toBe(0);\n  });\n\n  test('resolves with the id from the API', async () => {\n    const api = stubApi({ id: 'e1' });\n\n    await expect(saveExpense(dinner, api)).resolves.toBe('e1');\n    expect(api.calls).toBe(1);\n  });\n\n  test('retries once after a retryable error', async () => {\n    const api = stubApi(retryable('Timed out'), { id: 'e2' });\n\n    await expect(saveExpense(dinner, api)).resolves.toBe('e2');\n    expect(api.calls).toBe(2);\n  });\n\n  test('passes on a non-retryable error without retrying', async () => {\n    const api = stubApi(new Error('Amount too large'), { id: 'e3' });\n\n    await expect(saveExpense(dinner, api)).rejects.toThrow('Amount too large');\n    expect(api.calls).toBe(1);\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-missing-await",
+      "suite": "missing-await"
+    },
+    {
+      "id": "catches-swallows-error",
+      "suite": "swallows-error"
+    },
+    {
+      "id": "catches-no-retry",
+      "suite": "no-retry"
+    },
+    {
+      "id": "catches-retries-everything",
+      "suite": "retries-everything"
+    }
+  ]
+}

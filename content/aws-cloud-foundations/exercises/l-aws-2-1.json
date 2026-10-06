@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["sam-get", "sam-delete", "sam-scan", "role-get", "group-principal"], "correct": ["sam-get", "role-get"] }

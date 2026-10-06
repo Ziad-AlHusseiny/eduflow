@@ -1,0 +1,33 @@
+{
+  "title": "Pick the right mount",
+  "prompt": "You're reviewing storage choices in the notes-api Compose stack. Select **every** pairing of need and mount type that is correct.",
+  "hints": [
+    "Ask two questions of each: should the data survive the container, and does it come from your repository?",
+    "A named volume never reflects edits you make in your editor; a tmpfs never survives a stop.",
+    "Three pairings are correct."
+  ],
+  "explanation": "Postgres data belongs in a named volume: it survives `down` and avoids host permission and performance issues. Seed scripts live in the repo, so a read-only bind mount into `/docker-entrypoint-initdb.d` is right. Disposable scratch space is what tmpfs is for. A named volume for `src/` would freeze a copy of your code that never sees your edits, and tmpfs for data you want to keep loses it on every stop.",
+  "options": {
+    "pg-named": {
+      "text": "Postgres data that must survive restarts → named volume `pgdata:/var/lib/postgresql/data`",
+      "why": "Correct. Named volumes outlive containers and are Docker-managed."
+    },
+    "init-bind": {
+      "text": "SQL schema scripts from the repository → bind mount `./db/init:/docker-entrypoint-initdb.d:ro`",
+      "why": "Correct. The files live in your repo and the container only needs to read them."
+    },
+    "src-volume": {
+      "text": "Live-editing `src/` during development → named volume `src:/app/src`",
+      "why": "A named volume is filled once and then independent of your host folder, so edits never reach the container. Use Compose watch or a bind mount."
+    },
+    "pg-tmpfs": {
+      "text": "Postgres data you want to keep between workdays → `tmpfs: /var/lib/postgresql/data`",
+      "why": "tmpfs lives in memory; stopping the container erases it."
+    },
+    "tmpfs-scratch": {
+      "text": "Temporary files for a test run that should vanish afterwards → `tmpfs: /tmp/scratch`",
+      "why": "Correct. Fast, never written to disk, gone when the container stops."
+    }
+  },
+  "checks": {}
+}

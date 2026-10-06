@@ -1,0 +1,17 @@
+{
+  "title": "Add expenses with a validated form",
+  "prompt": "Make Pocket's form add expenses safely.\n\n1. Write `validateExpense({ label, amount })`. It returns an object with a `label` message when the label is empty or only spaces, and an `amount` message when the amount is not a finite number greater than 0. Valid values give `{}`.\n2. Fix the submit handler: stop the page from reloading, trim the label and convert the amount from dollars to whole cents, then validate.\n3. If there are errors, put a message in `#form-error`, set `aria-invalid=\"true\"` on the first invalid field and add nothing.\n4. If valid, add the expense, re-render, clear `#form-error` and reset the form.\n",
+  "hints": [
+    "The first line of the handler should be `event.preventDefault();`.",
+    "`data.get(\"amount\")` is a string. `Math.round(Number(data.get(\"amount\")) * 100)` gives cents; `Number(\"\")` is 0, which your amount rule rejects.",
+    "After validating: `const names = Object.keys(errors);`. If `names.length > 0`, show the messages, use `form.elements[names[0]].setAttribute(\"aria-invalid\", \"true\")` and `return`. Otherwise add, render, `form.reset()`."
+  ],
+  "explanation": "`preventDefault()` cancels the browser's own submission so the page stays put. The handler converts at the border: the label is trimmed and the amount becomes whole cents straight away, so everything after that line works with clean data. `validateExpense` is a pure function: values in, error messages out, nothing on the page touched, which is why the first check can call it directly. The handler only decides what to show. Returning early on errors keeps the success path flat and readable, and `form.reset()` plus clearing the message gets the form ready for the next expense. Clearing `aria-invalid` at the start of each submit means a fixed field stops being announced as invalid.\n",
+  "checks": {
+    "validate-fn": "`validateExpense` returns the right messages, and {} for valid values",
+    "empty-blocked": "An empty form shows an error, marks the label field invalid and adds nothing",
+    "prevents-default": "The submit handler calls preventDefault()",
+    "adds-valid": "A valid entry is added with a trimmed label and the amount in cents",
+    "resets": "After a successful add, the form and error message are cleared"
+  }
+}

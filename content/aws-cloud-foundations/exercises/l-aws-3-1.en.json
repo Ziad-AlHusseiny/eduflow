@@ -1,0 +1,18 @@
+{
+  "title": "Match workloads to compute and pricing",
+  "prompt": "A cost review of Lantern lists six proposals. Select every proposal that is a **sensible** match between the workload's shape and the compute or purchasing option.",
+  "hints": [
+    "Ask three questions per proposal: how long does it run, how steady is it, and what happens if it is interrupted?",
+    "Spot is cheap because it can disappear with two minutes' notice. Which workloads tolerate that?",
+    "A Lambda invocation has a hard 15-minute limit."
+  ],
+  "explanation": "Spot suits the archive job because it restarts safely, and the discount is large. A Savings Plan suits the baseline that runs every hour of the year, because a commitment is only good value when it is fully used. On-Demand is right for a three-week trial: no commitment for something that may not last. A 40-minute job cannot run in one Lambda invocation. A primary database on Spot would go down whenever AWS reclaims the capacity. And an always-on instance for an API that is idle most of the time pays for idle hours that Lambda would not charge for.",
+  "options": {
+    "spot-batch": { "text": "Run the nightly 40-minute poster archive, which can restart from a checkpoint, on Spot Instances.", "why": "Sensible. Interruptible batch work is exactly what Spot is for, and a restart costs only a few minutes." },
+    "sp-steady": { "text": "Cover the always-on migration server, which will run all year at steady load, with a one-year Compute Savings Plan.", "why": "Sensible. Steady, predictable use is where a commitment pays off, because every committed hour is used." },
+    "lambda-long": { "text": "Move the 40-minute archive job into a single Lambda invocation to stop paying for a server.", "why": "Not sensible. One Lambda invocation can run for at most 15 minutes, so the job would time out every night." },
+    "ondemand-trial": { "text": "Run a three-week trial of a new search feature on On-Demand instances.", "why": "Sensible. Short and uncertain usage should not carry a one- or three-year commitment." },
+    "spot-db": { "text": "Host the primary PostgreSQL database on a Spot Instance to save money.", "why": "Not sensible. A database must not disappear on two minutes' notice; reclaimed capacity means an outage and possibly lost writes." },
+    "ec2-idle-api": { "text": "Run the RSVP API, idle most nights and busy during big events, on a large always-on instance.", "why": "Not sensible. You pay for idle hours and still risk running out of capacity in a spike. Lambda scales with requests and charges nothing when idle." }
+  }
+}

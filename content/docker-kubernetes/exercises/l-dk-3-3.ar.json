@@ -1,0 +1,10 @@
+{
+  "title": "سليم على الورق",
+  "prompt": "مع ملف `compose.yaml` هذا، تظهر `db` بحالة `(unhealthy)` إلى الأبد رغم أن `psql` يعمل جيدًا، وما زال الـ API ينهار عند الإقلاع البارد برسالة `ECONNREFUSED`. اختر السطرين **الاثنين** اللذين يجب إصلاحهما.",
+  "hints": [
+    "في صيغة exec ‏(`CMD`)، كم معاملًا يرى Docker في تلك القائمة؟",
+    "أي صيغة من `depends_on` لا تنتظر إلا بدء الـ container؟"
+  ],
+  "explanation": "السطر 15 يستخدم صيغة exec مع نصّ واحد، فيبحث Docker عن برنامج اسمه حرفيًا `pg_isready -U notes -d notes` ولا ينجح الفحص أبدًا. استخدم `CMD-SHELL` مع النصّ، أو قسّم المعاملات.\n\nالسطر 5 يستخدم الصيغة المختصرة لـ `depends_on`، التي لا تنتظر إلا بدء `db`. انتظر الـ healthcheck بدلًا من ذلك:\n\n```yaml\n  api:\n    depends_on:\n      db:\n        condition: service_healthy\n  db:\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U notes -d notes\"]\n```",
+  "checks": {}
+}

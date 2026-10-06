@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["pg-named", "init-bind", "src-volume", "pg-tmpfs", "tmpfs-scratch"],
+  "correct": ["pg-named", "init-bind", "tmpfs-scratch"]
+}

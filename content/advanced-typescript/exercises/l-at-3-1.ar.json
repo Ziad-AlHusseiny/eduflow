@@ -1,0 +1,15 @@
+{
+  "title": "اشتقّ أنواع الشحن",
+  "prompt": "استبدل الأنواع الخمسة المكتوبة يدويًا بأنواع **مشتقّة** من `SHIPPING_ZONES` و`CheckoutResponse`، بحيث تتحدّث تلقائيًا عند إضافة منطقة أو تغيير نوع الـ API:\n\n- `Zone`: أسماء المناطق.\n- `ShippingCountry`: كل دولة في كل منطقة.\n- `FeeCents`: رسوم كل منطقة، كأرقام حرفية.\n- `LineItem`: عنصر واحد من `CheckoutResponse['lines']`.\n- `CheckoutStatus`: نوع `status` في الطلب.\n\nثم اجعل `zoneFor` و`feeFor` تمرّان في الترجمة بالأنواع الجديدة (بلا `any`).",
+  "hints": [
+    "ابدأ من `typeof SHIPPING_ZONES`؛ و`keyof` عليه تعطي أسماء المناطق.",
+    "افهرس بالـ union من أسماء المناطق لتصل إلى كل الإعدادات دفعة واحدة: `ShippingZones[Zone]['feeCents']`. والمصفوفات تُفهرس بـ `number`.",
+    "`Object.entries` و`Object.keys` تعطيانك مفاتيح من نوع `string`. ولأن `SHIPPING_ZONES` كائنك الخاص المعرَّف بـ `as const`، فإن `Object.keys(SHIPPING_ZONES) as Zone[]` تحويل محلّي صادق."
+  ],
+  "explanation": "تُدخل `typeof` كائن الإعداد إلى عالم الأنواع، وتسرد `keyof` أسماء مناطقه، والوصول بالفهرس بالـ union المسمّى `Zone` يصل إلى كل المناطق دفعة واحدة، فيجمع `ShippingZones[Zone]['countries'][number]` كل الدول. ويسمّي `CheckoutResponse['lines'][number]` نوع البند دون نسخ حقوله. تُعيد `Object.keys` النوع `string[]` لأن الكائنات قد تحمل مفاتيح إضافية وقت التشغيل؛ أما مع كائن const عرّفته أنت، فالتحويل إلى `Zone[]` آمن، ويجلس التحويل بجوار تعليق يشرح السبب.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها كل اختبارات الأنواع",
+    "zone": "`zoneFor` تجد المنطقة الصحيحة لدولة ما",
+    "fee": "`feeFor` تُعيد رسوم المنطقة"
+  }
+}

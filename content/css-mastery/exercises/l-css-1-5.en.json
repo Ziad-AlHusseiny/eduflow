@@ -1,0 +1,17 @@
+{
+  "title": "Nest the card and filter with :has()",
+  "prompt": "Three jobs, all in CSS:\n\n1. Rewrite the three `.session-card` rules (base, `h2`, `:hover`) as **one nested rule** on `.session-card`.\n2. When the `#hide-full` checkbox is checked, hide (`display: none`) every `.session-card` that contains a `.badge-full`.\n3. When a card's `.save` checkbox is checked, give that card a `#6d28d9` border color.\n\nDon't add JavaScript or change the HTML.",
+  "hints": [
+    "Inside the `.session-card` rule, `h2 { … }` and `&:hover { … }` replace the separate rules.",
+    "For the filter, start from the ancestor that contains both the checkbox and the cards: `.schedule:has(#hide-full:checked)`.",
+    "`.schedule:has(#hide-full:checked) .session-card:has(.badge-full) { display: none; }` and, nested in the card, `&:has(.save:checked) { border-color: #6d28d9; }`."
+  ],
+  "explanation": "Nesting keeps every state of the card in one block: `h2` becomes a descendant rule and `&:hover` attaches the pseudo-class to the card itself. The filter works because `.schedule` contains both the checkbox and the cards: `:has(#hide-full:checked)` turns the checkbox state into a condition on that shared ancestor, and `.session-card:has(.badge-full)` picks out sold-out cards. The save highlight is the same idea one level down: the card matches `:has(.save:checked)` as soon as its own checkbox is ticked, and the browser re-evaluates both rules on every change, with no JavaScript.",
+  "checks": {
+    "uses-nesting": "The card styles use native nesting",
+    "all-visible": "All cards are visible before filtering",
+    "hides-sold-out": "Checking the filter hides only the sold-out card",
+    "shows-again": "Unchecking the filter shows it again",
+    "saved-highlight": "A saved card gets a violet border"
+  }
+}

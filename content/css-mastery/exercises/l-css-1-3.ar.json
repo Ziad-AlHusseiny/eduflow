@@ -1,0 +1,17 @@
+{
+  "title": "دع الـ utility تفوز بالـ layers",
+  "prompt": "يجب أن تكون شارة **Sold out** صفراء (`#fde68a`) لأنها تحمل الـ utility `.bg-accent`، لكن selector الـ component `.schedule .session-card .badge` يتفوّق عليها في الدرجة. ضع القواعد في طبقات cascade (`reset` و`components` و`utilities` بهذا الترتيب) لتفوز الـ utilities. أبقِ كل selector كما هو تمامًا ولا تستخدم `!important`. ويجب أن تحتفظ شارة **Layout** العادية بنمط الـ component الخزامي (lavender).",
+  "hints": [
+    "ابدأ ملف الأنماط بتعليمة واحدة تعلن أسماء الـ layers الثلاث بترتيب أولويتها.",
+    "غلّف كل مجموعة قواعد بـ `@layer name { … }`. الترتيب داخل الملف لا يهم بعد أن تثبّته التعليمة.",
+    "`@layer reset, components, utilities;` ثم `@layer components { … }` و`@layer utilities { .bg-accent { … } }`."
+  ],
+  "explanation": "تعليمة `@layer reset, components, utilities;` تثبّت الترتيب، فيتغلّب أيّ تصريح عادي في `utilities` على أيّ تصريح في `components`، قبل مقارنة الـ specificity. يحتفظ selector الشارة بوزنه (0,3,0)، وهو وزن ما زال مهمًا داخل layer الـ components، لكنه لم يعد يتنافس مع الـ utility. ترك `.bg-accent` خارج الـ layers سيجعلها تفوز أيضًا، لأن الأنماط خارج الـ layers تتغلّب على ما بداخلها، لكن تسمية الـ layer تُبقي النيّة واضحة لمن يأتي بعدك.",
+  "checks": {
+    "utility-wins": "شارة Sold out صفراء",
+    "component-kept": "شارة Layout تحتفظ بنمط الـ component الخزامي",
+    "uses-layers": "الـ CSS تستخدم كتل @layer",
+    "selector-unchanged": "selector الـ component لم يتغيّر",
+    "no-important": "لا توجد !important في أيّ مكان من الـ CSS"
+  }
+}

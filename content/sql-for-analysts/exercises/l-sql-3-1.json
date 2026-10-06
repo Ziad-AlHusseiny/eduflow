@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Everyone below Mark Evans (employee 2), at any depth\nWITH RECURSIVE org AS (\n  SELECT employee_id, first_name, 1 AS depth\n  FROM employees\n  WHERE manager_id = 2\n)\nSELECT employee_id, first_name, depth\nFROM org\nORDER BY depth, employee_id;",
+  "solution": "WITH RECURSIVE org AS (\n  SELECT employee_id, first_name, 1 AS depth\n  FROM employees\n  WHERE manager_id = 2\n  UNION ALL\n  SELECT e.employee_id, e.first_name, org.depth + 1\n  FROM employees AS e\n  JOIN org ON e.manager_id = org.employee_id\n)\nSELECT employee_id, first_name, depth\nFROM org\nORDER BY depth, employee_id;",
+  "orderMatters": true
+}

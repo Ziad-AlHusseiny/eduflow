@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<nav aria-label=\"Site\">\n  <a href=\"#home\">Home</a>\n  <a href=\"#tickets\" class=\"active\">Tickets</a>\n  <a href=\"#faq\">FAQ</a>\n</nav>\n\n<article class=\"pass\">\n  <h2>Friday pass</h2>\n  <button type=\"button\" id=\"add\">Add to basket</button>\n  <button type=\"button\" class=\"fav\" id=\"fav\">Save to wishlist</button>\n</article>\n\n<p id=\"basket-status\"></p>\n\n<div class=\"sticky-bar\">\n  <button type=\"button\" id=\"add-sticky\" aria-hidden=\"true\">Add to basket</button>\n</div>",
+    "css": "nav { display: flex; gap: 12px; margin-block-end: 12px; }\n.active { font-weight: 700; }\n.pass { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }\n.pass h2 { margin: 0; flex-basis: 100%; font-size: 1.2rem; }\nbutton { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #5b3cc4; background: #fff; color: #5b3cc4; }\n.fav.on, .fav[aria-pressed=\"true\"] { background: #5b3cc4; color: #fff; }\n.sticky-bar { margin-block-start: 16px; padding: 8px; background: #f1eefb; }\n",
+    "js": "let count = 0;\nconst status = document.querySelector('#basket-status');\nconst fav = document.querySelector('#fav');\n\nfunction addToBasket() {\n  count += 1;\n  status.textContent = `Ticket added. ${count} tickets in your basket.`;\n}\ndocument.querySelector('#add').addEventListener('click', addToBasket);\ndocument.querySelector('#add-sticky').addEventListener('click', addToBasket);\n\nfav.addEventListener('click', () => {\n  fav.classList.toggle('on');\n});\n"
+  },
+  "solution": {
+    "html": "<nav aria-label=\"Site\">\n  <a href=\"#home\">Home</a>\n  <a href=\"#tickets\" class=\"active\" aria-current=\"page\">Tickets</a>\n  <a href=\"#faq\">FAQ</a>\n</nav>\n\n<article class=\"pass\">\n  <h2>Friday pass</h2>\n  <button type=\"button\" id=\"add\">Add to basket</button>\n  <button type=\"button\" class=\"fav\" id=\"fav\" aria-pressed=\"false\">Save to wishlist</button>\n</article>\n\n<p id=\"basket-status\" role=\"status\"></p>\n\n<div class=\"sticky-bar\">\n  <button type=\"button\" id=\"add-sticky\">Add Friday pass to basket</button>\n</div>",
+    "css": "nav { display: flex; gap: 12px; margin-block-end: 12px; }\n.active { font-weight: 700; }\n.pass { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }\n.pass h2 { margin: 0; flex-basis: 100%; font-size: 1.2rem; }\nbutton { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #5b3cc4; background: #fff; color: #5b3cc4; }\n.fav.on, .fav[aria-pressed=\"true\"] { background: #5b3cc4; color: #fff; }\n.sticky-bar { margin-block-start: 16px; padding: 8px; background: #f1eefb; }\n",
+    "js": "let count = 0;\nconst status = document.querySelector('#basket-status');\nconst fav = document.querySelector('#fav');\n\nfunction addToBasket() {\n  count += 1;\n  status.textContent = `Ticket added. ${count} tickets in your basket.`;\n}\ndocument.querySelector('#add').addEventListener('click', addToBasket);\ndocument.querySelector('#add-sticky').addEventListener('click', addToBasket);\n\nfav.addEventListener('click', () => {\n  const saved = fav.getAttribute('aria-pressed') === 'true';\n  fav.setAttribute('aria-pressed', String(!saved));\n  fav.classList.toggle('on', !saved);\n});\n"
+  },
+  "checks": [
+    {
+      "id": "current-page",
+      "test": "const links = $$('nav a'); const cur = links.filter((a) => a.hasAttribute('aria-current')); return cur.length === 1 && cur[0].textContent.trim() === 'Tickets' && cur[0].getAttribute('aria-current') === 'page';"
+    },
+    {
+      "id": "pressed-toggles",
+      "test": "const fav = $('#fav'); if (fav.tagName !== 'BUTTON' || fav.getAttribute('aria-pressed') !== 'false') return false; await click(fav); const on = fav.getAttribute('aria-pressed') === 'true'; await click(fav); return on && fav.getAttribute('aria-pressed') === 'false' && fav.textContent.trim() === 'Save to wishlist';"
+    },
+    {
+      "id": "live-region",
+      "test": "const s = $('#basket-status'); const role = s.getAttribute('role'); const live = s.getAttribute('aria-live'); const isLive = role === 'status' || role === 'alert' || live === 'polite' || live === 'assertive'; if (!isLive) return false; await click('#add'); return /tickets? in your basket/.test(s.textContent);"
+    },
+    {
+      "id": "polite",
+      "test": "const s = $('#basket-status'); return s.getAttribute('role') !== 'alert' && s.getAttribute('aria-live') !== 'assertive';"
+    },
+    {
+      "id": "no-hidden-focusable",
+      "test": "const focusable = $$('a[href], button, input, select, textarea, [tabindex]').filter((el) => el.tabIndex >= 0 && !el.inert && !el.closest('[inert]')); return focusable.every((el) => !el.closest('[aria-hidden=\"true\"]')) && $$('button').length >= 3;"
+    }
+  ]
+}

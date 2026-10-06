@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Merge a React Native style value into one plain object.\n// A style can be an object, a falsy value, or an array of styles (arrays can nest).\nfunction flattenStyle(style) {\n  if (Array.isArray(style)) {\n    return Object.assign(style[0], ...style.slice(1));\n  }\n  return style;\n}\n\nconst card = { padding: 12, borderRadius: 12 };\nconsole.log(flattenStyle([card, false, { padding: 8 }]));\n"
+  },
+  "solution": {
+    "js": "function flattenStyle(style) {\n  if (!style) return {};\n  if (!Array.isArray(style)) return { ...style };\n  const result = {};\n  for (const entry of style) {\n    Object.assign(result, flattenStyle(entry));\n  }\n  return result;\n}\n\nconst card = { padding: 12, borderRadius: 12 };\nconsole.log(flattenStyle([card, false, { padding: 8 }]));\n"
+  },
+  "checks": [
+    {
+      "id": "single-object",
+      "test": "const eq = (a, b) => a !== null && typeof a === 'object' && JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort()); return typeof flattenStyle === 'function' && eq(flattenStyle({ padding: 4 }), { padding: 4 });"
+    },
+    {
+      "id": "later-wins",
+      "test": "const eq = (a, b) => a !== null && typeof a === 'object' && JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort()); return eq(flattenStyle([{ padding: 12, color: 'green' }, { padding: 8 }]), { padding: 8, color: 'green' });"
+    },
+    {
+      "id": "skips-falsy",
+      "test": "const eq = (a, b) => a !== null && typeof a === 'object' && JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort()); return eq(flattenStyle([{ a: 1 }, false, null, undefined, { b: 2 }]), { a: 1, b: 2 });"
+    },
+    {
+      "id": "nested-arrays",
+      "test": "const eq = (a, b) => a !== null && typeof a === 'object' && JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort()); return eq(flattenStyle([{ a: 1 }, [{ b: 2 }, [false, { a: 3 }]]]), { a: 3, b: 2 });"
+    },
+    {
+      "id": "no-mutation",
+      "test": "const base = { padding: 12 }; const extra = { padding: 8 }; flattenStyle([base, extra]); flattenStyle(base).padding = 99; return base.padding === 12 && extra.padding === 8;"
+    },
+    {
+      "id": "falsy-input",
+      "test": "const eq = (a, b) => a !== null && typeof a === 'object' && JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort()); return eq(flattenStyle(null), {}) && eq(flattenStyle(false), {}) && eq(flattenStyle([]), {});"
+    }
+  ]
+}

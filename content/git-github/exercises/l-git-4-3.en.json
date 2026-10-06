@@ -1,0 +1,11 @@
+{
+  "title": "Review the commit messages",
+  "prompt": "These are the commit subjects on a pull request to your portfolio, a repository that follows Conventional Commits (`type(optional scope): description`, imperative, one change per commit). Select the three lines a reviewer should ask to be rewritten.",
+  "hints": [
+    "Every subject needs a type followed by a colon.",
+    "Check the mood of the verbs, and count how many changes a single line describes.",
+    "In Conventional Commits, `style` means code formatting, not CSS work, and it still needs a colon."
+  ],
+  "explanation": "Line 3, `Updated stuff`, has no type and says nothing; something like `refactor: rename nav classes to BEM` would. Line 5 uses past tense and bundles three changes (contact form, nav, colours) into one commit; split it into `feat(contact): add contact form`, `fix(nav): …` and a separate commit for the colours, such as `feat(theme): …` (not `style:`, which is for formatting only). Line 8 is missing the colon, so tools can't parse it, and `style` in Conventional Commits means formatting-only changes; spacing in the grid is a visible change, so `fix(projects): tighten grid spacing on mobile` fits better. The other lines are well-formed: type, optional scope, colon, and a specific imperative description.",
+  "checks": {}
+}

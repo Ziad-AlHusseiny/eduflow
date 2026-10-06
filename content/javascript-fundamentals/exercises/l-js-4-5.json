@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// A stand-in for fetch: the sandbox has no network. It returns a promise\n// of a response with ok, status and json(), after a short delay.\nfunction fakeFetch(url) {\n  const routes = {\n    \"/api/rates\": { EUR: 0.86, GBP: 0.75 },\n    \"/api/categories\": [{ name: \"food\" }, { name: \"travel\" }, { name: \"fun\" }],\n  };\n  return new Promise((resolve) => {\n    setTimeout(() => {\n      const ok = url in routes;\n      const body = ok ? routes[url] : { error: \"Not found\" };\n      resolve({ ok, status: ok ? 200 : 404, json: async () => body });\n    }, 30);\n  });\n}\n\n// Return the parsed JSON body, or throw an Error mentioning the status\nasync function getJson(url) {\n  const response = fakeFetch(url);\n  return response.json();\n}\n\n// [\"food\", \"travel\", \"fun\"], from /api/categories\nasync function loadCategoryNames() {\n  const categories = getJson(\"/api/categories\");\n  return categories.map((c) => c.name);\n}\n\n// The amount converted to euro cents (rounded), using /api/rates\nasync function toEuroCents(cents) {\n}\n\n// The JSON from url, or `fallback` if anything goes wrong\nasync function safeGetJson(url, fallback) {\n  return getJson(url);\n}\n"
+  },
+  "solution": {
+    "js": "// A stand-in for fetch: the sandbox has no network. It returns a promise\n// of a response with ok, status and json(), after a short delay.\nfunction fakeFetch(url) {\n  const routes = {\n    \"/api/rates\": { EUR: 0.86, GBP: 0.75 },\n    \"/api/categories\": [{ name: \"food\" }, { name: \"travel\" }, { name: \"fun\" }],\n  };\n  return new Promise((resolve) => {\n    setTimeout(() => {\n      const ok = url in routes;\n      const body = ok ? routes[url] : { error: \"Not found\" };\n      resolve({ ok, status: ok ? 200 : 404, json: async () => body });\n    }, 30);\n  });\n}\n\nasync function getJson(url) {\n  const response = await fakeFetch(url);\n  if (!response.ok) {\n    throw new Error(`HTTP ${response.status} for ${url}`);\n  }\n  return response.json();\n}\n\nasync function loadCategoryNames() {\n  const categories = await getJson(\"/api/categories\");\n  return categories.map((c) => c.name);\n}\n\nasync function toEuroCents(cents) {\n  const rates = await getJson(\"/api/rates\");\n  return Math.round(cents * rates.EUR);\n}\n\nasync function safeGetJson(url, fallback) {\n  try {\n    return await getJson(url);\n  } catch {\n    return fallback;\n  }\n}\n\nloadCategoryNames().then((names) => console.log(names));\n"
+  },
+  "checks": [
+    {
+      "id": "get-json",
+      "test": "const rates = await getJson('/api/rates');\nreturn rates && rates.EUR === 0.86;\n"
+    },
+    {
+      "id": "get-json-error",
+      "test": "try { await getJson('/api/missing'); return false; } catch (e) { return e instanceof Error && e.message.includes('404'); }\n"
+    },
+    {
+      "id": "names",
+      "test": "const names = await loadCategoryNames();\nreturn Array.isArray(names) && names.join() === 'food,travel,fun';\n"
+    },
+    {
+      "id": "euros",
+      "test": "return (await toEuroCents(1000)) === 860 && (await toEuroCents(450)) === 387;\n"
+    },
+    {
+      "id": "safe",
+      "test": "const fallback = [];\nconst bad = await safeGetJson('/api/nope', fallback);\nconst good = await safeGetJson('/api/rates', null);\nreturn bad === fallback && good && good.GBP === 0.75;\n"
+    }
+  ]
+}

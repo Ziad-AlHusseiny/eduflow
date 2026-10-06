@@ -1,0 +1,29 @@
+{
+  "title": "Contribute a fix you can't push",
+  "prompt": "You cloned `open-themes/vite-themes` directly, fixed a typo on a branch called `fix-readme-typo`, and ran `git push -u origin fix-readme-typo`. GitHub answers:\n\n```text\nERROR: Permission to open-themes/vite-themes.git denied to maya-okafor.\nfatal: Could not read from remote repository.\n```\n\nWhat's the right way to get your fix to the maintainers without redoing the work?",
+  "hints": [
+    "The error isn't about your SSH key; GitHub knows exactly who you are.",
+    "You need a copy of the repository on GitHub that you are allowed to push to.",
+    "Your existing clone can talk to more than one remote."
+  ],
+  "explanation": "You don't have write access to `open-themes/vite-themes`, so no credential will make that push work. Fork it on GitHub, which creates `maya-okafor/vite-themes`. In your existing clone, rename the current `origin` to `upstream` (`git remote rename origin upstream`) and add your fork as `origin` (`git remote add origin git@github.com:maya-okafor/vite-themes.git`). Then `git push -u origin fix-readme-typo` and open a pull request from your fork's branch to the original's `main`. Your commit is reused as is.",
+  "options": {
+    "a": {
+      "text": "Generate a new SSH key and add it to your account, then push again.",
+      "why": "The message names your username, so authentication worked. The problem is permission: you aren't a collaborator on that repository."
+    },
+    "b": {
+      "text": "Run `git push --force -u origin fix-readme-typo`.",
+      "why": "Forcing changes how a branch is overwritten, not whether you're allowed to write. The push is still denied."
+    },
+    "c": {
+      "text": "Email the maintainers and ask them to add you as a collaborator so you can push your branch.",
+      "why": "Maintainers don't grant write access for a typo fix. Forks exist so anyone can contribute without it."
+    },
+    "d": {
+      "text": "Fork it on GitHub, make the original `upstream` and your fork `origin` in this clone, push the branch to your fork, and open a pull request to the original.",
+      "why": "Correct. Your fork is a repository you can push to, and a pull request from it is how changes reach a project you don't own."
+    }
+  },
+  "checks": {}
+}

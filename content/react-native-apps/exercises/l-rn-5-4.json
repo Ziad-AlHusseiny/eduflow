@@ -1,0 +1,19 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "copy-fix",
+    "reducer-bug",
+    "new-screen",
+    "add-sdk-module",
+    "icon",
+    "permission-text",
+    "new-image"
+  ],
+  "correct": [
+    "copy-fix",
+    "reducer-bug",
+    "new-screen",
+    "new-image"
+  ]
+}

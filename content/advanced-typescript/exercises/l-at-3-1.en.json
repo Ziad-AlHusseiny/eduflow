@@ -1,0 +1,15 @@
+{
+  "title": "Derive the shipping types",
+  "prompt": "Replace the five hand-written types with types **derived** from `SHIPPING_ZONES` and `CheckoutResponse`, so that adding a zone or changing the API type updates them automatically:\n\n- `Zone`: the zone names.\n- `ShippingCountry`: every country in every zone.\n- `FeeCents`: every zone's fee, as literal numbers.\n- `LineItem`: one element of `CheckoutResponse['lines']`.\n- `CheckoutStatus`: the type of the order's `status`.\n\nThen make `zoneFor` and `feeFor` compile with the new types (no `any`).",
+  "hints": [
+    "Start from `typeof SHIPPING_ZONES`; `keyof` of that gives the zone names.",
+    "Index with the union of zone names to reach every config at once: `ShippingZones[Zone]['feeCents']`. Arrays are indexed with `number`.",
+    "`Object.entries` and `Object.keys` give you `string` keys. Since `SHIPPING_ZONES` is your own `as const` object, `Object.keys(SHIPPING_ZONES) as Zone[]` is an honest, local cast."
+  ],
+  "explanation": "`typeof` brings the config object into the type world, `keyof` lists its zone names, and indexed access with the union `Zone` reaches into every zone at once, so `ShippingZones[Zone]['countries'][number]` collects all countries. `CheckoutResponse['lines'][number]` names the line-item type without copying its fields. `Object.keys` returns `string[]` because objects can carry extra keys at runtime; for a const object you defined, casting to `Zone[]` is safe, and the cast sits next to a comment saying why.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "zone": "`zoneFor` finds the right zone for a country",
+    "fee": "`feeFor` returns the zone's fee"
+  }
+}

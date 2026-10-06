@@ -1,0 +1,374 @@
+checkpoints:
+  s-git-1:
+    - q: You run `git add index.html`, edit `index.html` again, then run `git commit -m "Update intro"`. Which version of the file goes into the commit?
+      options:
+        - text: The version you saved most recently.
+          why: "`git commit` records the index, not your files on disk. The second edit was never staged."
+        - text: Both versions, as two separate commits.
+          why: One `git commit` always makes one commit. Git doesn't split edits by when you saved them.
+        - text: The version as it was when you ran `git add`.
+          why: Correct. `git add` copied that version into the index, and the commit records the index. The later edit is still unstaged.
+        - text: Neither; Git refuses to commit a file that changed after staging.
+          why: Git allows it and shows the file as both staged and modified. That's normal while you build a commit.
+      answer: 2
+    - q: |-
+        `git status -s` shows:
+        ```text
+        A  contact.html
+        ?? notes.txt
+        ```
+        What does `git commit -m "Add contact page"` record?
+      options:
+        - text: Only `contact.html`.
+          why: Correct. `A` in the left column means it's staged as a new file; `??` means `notes.txt` is untracked and stays out.
+        - text: Both files, because they're both new.
+          why: Being new isn't enough. Only staged content goes into a commit, and `notes.txt` was never added.
+        - text: Nothing, because untracked files block a commit.
+          why: Untracked files never block commits. Git ignores them unless you stage them.
+        - text: Only `notes.txt`, because `??` means it's ready.
+          why: "`??` means Git has never tracked the file. Nothing about it is staged."
+      answer: 0
+    - q: Which statement about commit IDs is true?
+      options:
+        - text: IDs are numbered in order, so a higher ID is always a newer commit.
+          why: IDs are hashes, not counters. Their order says nothing about time.
+        - text: You can edit a commit's message and keep its ID.
+          why: The message is part of what's hashed. Changing it creates a different commit with a new ID.
+        - text: Two people who commit identical files always get the same ID.
+          why: The author, time and parent are hashed too, so their commits differ.
+        - text: A commit's ID depends on its content, author, date, message and parent, so the same change committed twice gets two IDs.
+          why: Correct. That's also why amending, rebasing or reverting always produces new IDs.
+      answer: 3
+    - q: |-
+        Here is the output of `git log --oneline --graph`:
+        ```text
+        *   9d1f0a2 (HEAD -> main) Merge branch 'contact'
+        |\
+        | * 6b2c8e1 (contact) Add contact form
+        * | 3e7a4d9 Fix header spacing
+        |/
+        * 1f0c5b8 Add home page
+        ```
+        Which commit is `HEAD~1`?
+      options:
+        - text: "`6b2c8e1`, because it's the most recent commit before the merge."
+          why: "`~` follows the first parent, which for a merge is the branch you were on (`main`), not the merged branch."
+        - text: "`3e7a4d9`, the merge's first parent."
+          why: Correct. You were on `main` when you merged, so `main`'s previous tip is the first parent. `HEAD^2` would be `6b2c8e1`.
+        - text: "`1f0c5b8`, because it's where the two lines meet."
+          why: That's the merge base, two steps back. `HEAD~1` is one step.
+        - text: None; `HEAD~1` is an error on a merge commit.
+          why: It works fine. Git always follows the first parent for `~`.
+      answer: 1
+    - q: You want to review exactly what your next commit will contain before running `git commit`. Which command shows it?
+      options:
+        - text: "`git diff --staged`"
+          why: Correct. It compares the index with the last commit, which is precisely the change the next commit records.
+        - text: "`git diff`"
+          why: That shows changes you have *not* staged yet, which won't be in the commit.
+        - text: "`git log -p`"
+          why: That shows past commits and their diffs, not what's about to be committed.
+        - text: "`git show HEAD`"
+          why: That shows the last commit you already made.
+      answer: 0
+  s-git-2:
+    - q: On `main`, you run `git switch -c hero-image`, edit `index.html` without committing, then run `git switch main`. Both branches point at the same commit. What happens to your edit?
+      options:
+        - text: It's lost, because switching resets the working tree.
+          why: Switching keeps uncommitted changes whenever it can. It refuses rather than lose them.
+        - text: It comes with you to `main` as an uncommitted change.
+          why: Correct. Both branches have the same `index.html`, so nothing needs overwriting and the edit carries over.
+        - text: Git always refuses to switch while you have uncommitted changes.
+          why: It only refuses when the switch would overwrite your changes. Here it wouldn't.
+        - text: It's committed to `hero-image` automatically before the switch.
+          why: Git never commits for you. Uncommitted work stays uncommitted until you commit it.
+      answer: 1
+    - q: "`git branch -d old-layout` fails with `error: the branch 'old-layout' is not fully merged`. What does that mean?"
+      options:
+        - text: You're currently on `old-layout`, so it can't be deleted.
+          why: That's a different error (you can't delete the branch you're on). This one is about unmerged commits.
+        - text: The branch doesn't exist locally.
+          why: A missing branch gives a 'not found' error, not 'not fully merged'.
+        - text: GitHub is unreachable, so Git can't check the branch.
+          why: "`git branch -d` works entirely locally and never contacts a remote."
+        - text: Some of its commits aren't merged into your current branch; merge them, or use `-D` if you're sure they're unwanted.
+          why: Correct. `-d` protects unmerged work. `-D` deletes anyway, and the reflog can still rescue it for a while.
+      answer: 3
+    - q: You're three commits into `git rebase main` on your branch when a conflict makes you realise you'd rather merge. How do you return to exactly where you were before the rebase?
+      options:
+        - text: "`git merge --abort`"
+          why: There's no merge in progress. Each operation has its own abort.
+        - text: "`git reset --hard main`"
+          why: That points your branch at `main`, dropping your branch's commits from it. Recoverable via the reflog, but the opposite of what you want.
+        - text: "`git rebase --abort`"
+          why: Correct. It stops the rebase and puts the branch back on its original commits.
+        - text: "`git rebase --skip`"
+          why: That drops the conflicting commit and carries on rebasing, so you'd lose work and still be rebasing.
+      answer: 2
+    - q: You and a teammate both push to the shared `redesign` branch on GitHub. It's fallen behind `main`. How should you bring it up to date?
+      options:
+        - text: Merge `main` into `redesign` and push.
+          why: Correct. A merge adds a commit without rewriting anything your teammate already has.
+        - text: Rebase `redesign` onto `main` and `git push --force`.
+          why: That rewrites commits your teammate has built on, which is exactly what the golden rule forbids.
+        - text: Delete `redesign` and recreate it from `main`.
+          why: That throws away the branch's work instead of updating it.
+        - text: Run `git reset --hard main` on `redesign`.
+          why: That discards the branch's commits from the branch. Nothing is integrated.
+      answer: 0
+    - q: During a merge, `styles.css` conflicts, and you know the incoming branch's version is right for the whole file. What's the quickest correct resolution?
+      options:
+        - text: "`git restore --ours styles.css`, then `git add styles.css`"
+          why: "`--ours` keeps your current branch's version, the opposite of what you want."
+        - text: "`git merge --abort`"
+          why: That cancels the whole merge rather than resolving it.
+        - text: Delete `styles.css` and run `git commit`.
+          why: That commits the file's deletion, breaking the site.
+        - text: "`git restore --theirs styles.css`, then `git add styles.css` and `git commit`"
+          why: Correct. `--theirs` takes the incoming branch's version of the conflicted file; staging marks it resolved.
+      answer: 3
+  s-git-3:
+    - q: "`git status` says `Your branch is up to date with 'origin/main'`, but GitHub shows a commit on `main` you don't have. Why?"
+      options:
+        - text: GitHub's page is cached and the commit isn't really there.
+          why: GitHub's page is accurate. Your repository's information is the stale one.
+        - text: "`git status` ignores commits older than a day."
+          why: There's no such cut-off. Status compares against whatever `origin/main` currently records.
+        - text: The commit was pushed to a different remote.
+          why: It's on `origin`'s `main`, as you can see on GitHub. The issue is when you last asked.
+        - text: Status compares with your last-known `origin/main`, which only updates when you fetch; run `git fetch` and check again.
+          why: Correct. Git doesn't contact GitHub for `git status`. After a fetch, it will report that you're behind.
+      answer: 3
+    - q: "You push a new branch with `git push` and get `fatal: The current branch contact-form has no upstream branch.` What's going on?"
+      options:
+        - text: The remote `origin` hasn't been added yet.
+          why: With no remote at all, Git would complain about the missing repository, not the missing upstream.
+        - text: The branch has never been pushed, so it has no upstream; run `git push -u origin contact-form`.
+          why: Correct. `-u` pushes and records the upstream, so later bare `git push` and `git pull` work.
+        - text: Your credentials have expired.
+          why: Authentication errors mention access or authentication. This one is about tracking.
+        - text: You need to `git pull` before pushing a new branch.
+          why: "There's nothing to pull: the branch doesn't exist on GitHub yet."
+      answer: 1
+    - q: Your team wants `main` to get exactly one commit per pull request, titled after the pull request. Which merge method fits?
+      options:
+        - text: Squash and merge
+          why: Correct. All the branch's commits become a single new commit on `main`.
+        - text: Create a merge commit
+          why: That keeps every branch commit plus a merge commit, so `main` gets several commits per pull request.
+        - text: Rebase and merge
+          why: That replays every commit individually onto `main`, with no single summary commit.
+        - text: Close the pull request and push the changes directly
+          why: That skips review and, with protection rules, is blocked anyway.
+      answer: 0
+    - q: You cloned your fork of a project. `git remote -v` lists only `origin`, pointing at your fork. How do you get the original project's latest commits?
+      options:
+        - text: "`git pull origin main`"
+          why: Your fork doesn't have the original's newest commits until you sync it, so this pulls stale history.
+        - text: "`git clone` the original into the same folder."
+          why: Clone creates a new repository; it can't merge into an existing one.
+        - text: "`git remote add upstream <original-url>`, then `git fetch upstream` and merge `upstream/main`."
+          why: Correct. A second remote for the original lets you fetch it directly while still pushing to your fork.
+        - text: Delete your fork and fork again.
+          why: That works once, at the cost of your branches and any open pull requests. A remote does it every time.
+      answer: 2
+    - q: "Your pull request says `Fixes #31` and was merged into the `develop` branch, but issue 31 is still open. The repository's default branch is `main`. Why?"
+      options:
+        - text: "`Fixes` isn't a recognised keyword; only `Closes` works."
+          why: "`fixes`, `closes` and `resolves` all work, along with their variants."
+        - text: Closing keywords take effect only when the pull request is merged into the default branch.
+          why: Correct. The issue will close when the change reaches `main`, or you can close it by hand.
+        - text: The keyword must be in the pull request title, not the description.
+          why: The description is the normal place for closing keywords.
+        - text: Issues can only be closed by the person who opened them.
+          why: Anyone with write access can close an issue, and merging can close it automatically.
+      answer: 1
+  s-git-4:
+    - q: "You made three local commits on your branch: `wip 1`, `wip 2`, `wip 3`. None are pushed. You want one clean commit instead. What's the most direct way?"
+      options:
+        - text: '`git reset --soft HEAD~3`, then `git commit -m "Add contact validation"`'
+          why: Correct. The branch moves back three commits while all their changes stay staged, ready to commit once.
+        - text: "`git revert HEAD~3..HEAD`"
+          why: That adds three more commits undoing the first three, the opposite of what you want.
+        - text: "`git reset --hard HEAD~3`, then commit"
+          why: "`--hard` discards the changes too, so there'd be nothing to commit."
+        - text: "`git commit --amend` three times"
+          why: Amend only replaces the last commit each time; it doesn't combine earlier ones.
+      answer: 0
+    - q: "`git stash list` shows three entries. You want to apply the middle one, `stash@{1}`, and keep it in the list in case you need it again. Which command?"
+      options:
+        - text: "`git stash pop stash@{1}`"
+          why: Pop applies the stash and then deletes it, so it wouldn't stay in the list.
+        - text: "`git stash show stash@{1}`"
+          why: That shows what's in the stash without applying anything.
+        - text: "`git stash apply stash@{1}`"
+          why: Correct. `apply` restores the changes and leaves the stash entry in place.
+        - text: "`git stash push stash@{1}`"
+          why: "`push` creates a new stash from your current changes; it doesn't apply one."
+      answer: 2
+    - q: Which `.gitignore` ignores every `.log` file in the project except `logs/keep.log`?
+      options:
+        - text: "`logs/` on one line, then `!logs/keep.log`"
+          why: Once the `logs/` folder is ignored, Git never looks inside it, so the `!` line can't re-include the file.
+        - text: "`*.log` on one line, then `!logs/keep.log`"
+          why: Correct. Only files are excluded, the folder isn't, so the later `!` line can re-include that one file.
+        - text: "`!logs/keep.log` on one line, then `*.log`"
+          why: Later lines win. `*.log` comes last and ignores `keep.log` again.
+        - text: "`*.log # except logs/keep.log`"
+          why: "`#` only starts a comment at the beginning of a line; this pattern matches a file with that whole name."
+      answer: 1
+    - q: Your pull request shows a red cross next to `CI / check`. What should you do?
+      options:
+        - text: Click Re-run until it turns green.
+          why: If the check fails for a real reason, re-running gives the same result. Re-run only for genuinely flaky failures.
+        - text: Ask a repository admin to bypass the rule and merge.
+          why: Bypassing defeats the check. Find out why it fails first.
+        - text: Close the pull request and open a new one.
+          why: A new pull request runs the same check on the same code and fails the same way.
+        - text: Open Details, read the failing step's log, reproduce it locally with `npm test`, then fix, commit and push to the same branch.
+          why: Correct. The new push reruns the workflow on the updated pull request.
+      answer: 3
+    - q: The commit currently deployed should be published as version 1.2.0 on GitHub. Which commands do it?
+      options:
+        - text: "`git branch v1.2.0`, then `git push origin v1.2.0`"
+          why: A branch moves as you commit, so it's the wrong tool for marking a fixed version.
+        - text: "`git tag v1.2.0`, then `git push`"
+          why: This creates a lightweight tag and then doesn't push it, because a plain push doesn't send tags.
+        - text: '`git tag -a v1.2.0 -m "Release 1.2.0"`, then `git push origin v1.2.0`'
+          why: Correct. An annotated tag records who marked the release and why, and the tag must be pushed explicitly.
+        - text: "`git commit --tag v1.2.0`"
+          why: "`git commit` has no `--tag` option. Tags are created with `git tag`."
+      answer: 2
+final:
+  - q: Which description of a Git branch is accurate?
+    options:
+      - text: A full copy of the project's files stored in its own folder.
+        why: That's how some older systems worked. In Git, creating a branch copies nothing.
+      - text: A named, movable pointer to one commit; the history comes from following parents.
+        why: Correct. That's why branches are cheap to make, switch and delete.
+      - text: A folder inside `.git` holding every commit made on that branch.
+        why: Commits aren't filed by branch. A branch file holds a single commit ID.
+      - text: The copy of the repository that lives on GitHub.
+        why: That's a remote. Branches exist both locally and on remotes.
+    answer: 1
+  - q: You made two commits on `main` that were meant for a new branch. Nothing is pushed yet. What's the cleanest fix?
+    options:
+      - text: "`git revert HEAD~2..HEAD`, then redo the work on a branch."
+        why: Reverting adds undo commits to `main` for work nobody else has seen, and you'd redo the work by hand.
+      - text: "`git switch -c contact-form` and carry on."
+        why: The new branch has the commits, but `main` still has them too.
+      - text: "`git push`, then fix it on GitHub."
+        why: That publishes the mistake first, which turns an easy local fix into a shared-history problem.
+      - text: "`git branch contact-form`, `git reset --hard origin/main`, then `git switch contact-form`."
+        why: Correct. The new branch keeps the commits, and `main` goes back to match GitHub.
+    answer: 3
+  - q: Which command lists the commits on `feature` that are not on `main`?
+    options:
+      - text: "`git log --oneline main..feature`"
+        why: Correct. `A..B` means commits reachable from B but not from A.
+      - text: "`git log --oneline feature..main`"
+        why: "That's the reverse: commits on `main` that `feature` lacks."
+      - text: "`git diff main feature`"
+        why: That compares two snapshots line by line. It doesn't list commits.
+      - text: "`git log --oneline --all`"
+        why: That lists every commit on every branch, without separating them.
+    answer: 0
+  - q: With `pull.rebase` set to `true`, `git pull` stops with a conflict in `index.html`. You've fixed the file. What finishes the job?
+    options:
+      - text: "`git add index.html`, then `git merge --continue`"
+        why: No merge is in progress. With `pull.rebase true`, the pull is rebasing.
+      - text: '`git commit -am "Fix conflict"`'
+        why: During a rebase, Git makes the commits itself. A manual commit adds an extra one.
+      - text: "`git add index.html`, then `git rebase --continue`"
+        why: Correct. Stage the resolution and let the rebase replay your remaining commits.
+      - text: Run `git pull` again.
+        why: A rebase is already in progress, so Git won't start another operation until you finish or abort it.
+    answer: 2
+  - q: You force-deleted `experiment` with `git branch -D` and then remembered it had a commit you need. How do you get it back?
+    options:
+      - text: Restore it from the Trash; Git moves deleted branches there.
+        why: Git doesn't use your system's Trash. The commit is still inside `.git`.
+      - text: Run `git revert experiment`.
+        why: The branch name no longer exists, and revert creates undo commits anyway.
+      - text: Find the commit in `git reflog`, then `git switch -c experiment <commit-id>`.
+        why: Correct. Deleting a branch removes a pointer; the reflog remembers where HEAD was, so you can point a new branch at it.
+      - text: It's gone for good; `-D` deletes commits permanently.
+        why: "`-D` deletes only the branch label. Unreachable commits stay recoverable for weeks."
+    answer: 2
+  - q: Your team agrees that nobody pushes to `main` directly and every pull request must pass CI. What enforces that?
+    options:
+      - text: A branch ruleset on `main` with Require a pull request and Require status checks to pass.
+        why: Correct. GitHub then rejects direct pushes and keeps merge disabled until the required check is green.
+      - text: A note in CONTRIBUTING.md.
+        why: Documentation explains the rule but can't stop anyone from breaking it.
+      - text: A workflow that reverts any direct push to `main`.
+        why: That reacts after the damage, and adds noise to history. Rules prevent it up front.
+      - text: Adding `main` to `.gitignore`.
+        why: "`.gitignore` controls which files Git tracks. It has nothing to do with branches or pushes."
+    answer: 0
+  - q: Which of these is safe to do on a branch your teammates have already pulled?
+    options:
+      - text: "`git commit --amend` on the latest commit, then force-push."
+        why: Amending replaces a commit they already have, so their history and yours no longer match.
+      - text: "`git rebase -i` to squash old commits, then force-push."
+        why: Rebasing rewrites shared commits, which breaks the golden rule.
+      - text: "`git reset --hard HEAD~2`, then force-push."
+        why: That deletes commits from a branch others have built on.
+      - text: "`git revert <commit>` and a normal push."
+        why: Correct. Revert adds a new commit and rewrites nothing, so teammates just pull it.
+    answer: 3
+  - q: "`styles.css` has two unrelated changes: a colour fix and the start of a new layout. You want to commit only the colour fix. What do you use?"
+    options:
+      - text: "`git commit -a`"
+        why: That commits every tracked change, including the unfinished layout.
+      - text: "`git add -p styles.css`, staging only the colour hunk"
+        why: Correct. Patch mode lets you stage individual hunks, so the commit contains just the fix.
+      - text: "`git stash`, then commit"
+        why: Stashing removes both changes, leaving nothing to commit.
+      - text: "`git restore styles.css`, then commit"
+        why: That discards both changes from the file.
+    answer: 1
+  - q: Which statement about SSH authentication with GitHub is true?
+    options:
+      - text: You paste your private key into GitHub so it can verify you.
+        why: The private key must never leave your machine. GitHub only needs the public key.
+      - text: SSH keys expire every 30 days and must be regenerated.
+        why: GitHub SSH keys have no expiry date (GitHub only removes a key after a year without use). You delete them when a device is retired.
+      - text: Once SSH is set up, every remote uses it automatically.
+        why: The remote URL decides. `https://` URLs keep using HTTPS until you change them.
+      - text: You add the `.pub` public key to GitHub, and the private key stays on your machine.
+        why: Correct. GitHub checks that you hold the private key matching the public key on your account.
+    answer: 3
+  - q: "`main` hasn't moved since you created `footer`, but you want `main`'s history to show the footer work as one grouped feature. Which command?"
+    options:
+      - text: "`git merge footer`"
+        why: With `main` unmoved, this fast-forwards, so there's no merge commit and no grouping.
+      - text: "`git merge --no-ff footer`"
+        why: Correct. It forces a merge commit even when a fast-forward was possible.
+      - text: "`git merge --ff-only footer`"
+        why: That allows only a fast-forward, the opposite of what you want.
+      - text: "`git rebase footer`"
+        why: Rebasing `main` onto `footer` gives you a straight line, with no grouping either.
+    answer: 1
+  - q: In a fork workflow, where does your feature branch go before you open the pull request?
+    options:
+      - text: Directly to the original repository (`upstream`).
+        why: Without write access, that push is rejected. That's why the fork exists.
+      - text: Nowhere; GitHub reads branches from your laptop.
+        why: GitHub can only see what's been pushed to a repository on GitHub.
+      - text: To your fork (`origin`), then the pull request goes from your fork's branch to the original's `main`.
+        why: Correct. You push where you have write access, and propose the change back to the original.
+      - text: To your fork's `main` branch.
+        why: Keeping `main` as a mirror of upstream and using a separate branch per contribution avoids messy pull requests.
+    answer: 2
+  - q: A workflow at `.github/workflow/ci.yml` never runs on pull requests, and the Actions tab shows nothing. What's the most likely cause?
+    options:
+      - text: The folder must be named `.github/workflows` (plural).
+        why: Correct. GitHub only reads workflow files from `.github/workflows/`.
+      - text: The file must be called `main.yml`.
+        why: Workflow files can have any name ending in `.yml` or `.yaml`.
+      - text: Actions only run on private repositories.
+        why: Actions run on public and private repositories alike.
+      - text: Workflows only run after a ruleset requires them.
+        why: Rulesets can require a check, but workflows run on their own triggers regardless.
+    answer: 0

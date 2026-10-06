@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\n\npipe = Pipeline([(\"scale\", StandardScaler()), (\"knn\", KNeighborsClassifier())])\n\n# 1. Grid: n_neighbors in [5, 15, 25, 35, 51] and weights in [\"uniform\", \"distance\"]\ngrid = {\"n_neighbors\": [5, 15, 25, 35, 51], \"weights\": [\"uniform\", \"distance\"]}\n\n# 2. Search with the provided cv, scoring ROC AUC, fitted on the training data\nsearch = None\n\n# 3. Results\nbest_params = None\nbest_cv_auc = None\ntest_auc = None   # ROC AUC of the refit best model on the test set\n",
+  "solution": "import pandas as pd\nfrom sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\n\npipe = Pipeline([(\"scale\", StandardScaler()), (\"knn\", KNeighborsClassifier())])\n\ngrid = {\"knn__n_neighbors\": [5, 15, 25, 35, 51], \"knn__weights\": [\"uniform\", \"distance\"]}\n\nsearch = GridSearchCV(pipe, grid, cv=cv, scoring=\"roc_auc\")\nsearch.fit(X_train, y_train)\n\nbest_params = search.best_params_\nbest_cv_auc = search.best_score_\ntest_auc = search.score(X_test, y_test)\nprint(best_params, round(best_cv_auc, 3), round(test_auc, 3))\n",
+  "checks": [
+    {
+      "id": "grid-names",
+      "test": "set(grid) == {'knn__n_neighbors', 'knn__weights'}"
+    },
+    {
+      "id": "searched",
+      "test": "search is not None and len(search.cv_results_['params']) == 10 and search.scoring == 'roc_auc' and search.cv is cv and hasattr(search, 'best_estimator_')"
+    },
+    {
+      "id": "best",
+      "test": "best_params is not None and best_params == search.best_params_ and best_params['knn__n_neighbors'] in [15, 25, 35, 51] and abs(float(best_cv_auc) - float(search.best_score_)) < 1e-9 and 0.77 < float(best_cv_auc) < 0.82"
+    },
+    {
+      "id": "test-auc",
+      "test": "test_auc is not None and abs(float(test_auc) - float(search.score(X_test, y_test))) < 1e-9 and 0.75 < float(test_auc) < 0.82"
+    }
+  ]
+}

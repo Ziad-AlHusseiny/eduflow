@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Total distance of a recorded route in km, rounded to 2 decimals.\n// Ignore points whose accuracy (meters) is worse than maxAccuracyM.\nfunction trackDistanceKm(points, maxAccuracyM = 25) {\n  let total = 0;\n  for (let i = 1; i < points.length; i++) {\n    const dLat = points[i].latitude - points[i - 1].latitude;\n    const dLon = points[i].longitude - points[i - 1].longitude;\n    total += Math.sqrt(dLat * dLat + dLon * dLon);\n  }\n  return total;\n}\n\nconst route = [\n  { latitude: 46.5, longitude: 7.9, accuracy: 8 },\n  { latitude: 46.51, longitude: 7.9, accuracy: 12 },\n  { latitude: 46.53, longitude: 7.95, accuracy: 90 },\n  { latitude: 46.51, longitude: 7.92, accuracy: 10 },\n];\nconsole.log(trackDistanceKm(route), 'km');\n"
+  },
+  "solution": {
+    "js": "const EARTH_RADIUS_KM = 6371;\nconst toRad = (deg) => (deg * Math.PI) / 180;\n\nfunction haversineKm(a, b) {\n  const dLat = toRad(b.latitude - a.latitude);\n  const dLon = toRad(b.longitude - a.longitude);\n  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2;\n  return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(h));\n}\n\nfunction trackDistanceKm(points, maxAccuracyM = 25) {\n  const good = points.filter((p) => p.accuracy == null || p.accuracy <= maxAccuracyM);\n  let total = 0;\n  for (let i = 1; i < good.length; i++) total += haversineKm(good[i - 1], good[i]);\n  return Math.round(total * 100) / 100;\n}\n\nconst route = [\n  { latitude: 46.5, longitude: 7.9, accuracy: 8 },\n  { latitude: 46.51, longitude: 7.9, accuracy: 12 },\n  { latitude: 46.53, longitude: 7.95, accuracy: 90 },\n  { latitude: 46.51, longitude: 7.92, accuracy: 10 },\n];\nconsole.log(trackDistanceKm(route), 'km');\n"
+  },
+  "checks": [
+    {
+      "id": "one-step",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return typeof trackDistanceKm === 'function' && trackDistanceKm([p(0, 0), p(0.01, 0)]) === 1.11;"
+    },
+    {
+      "id": "sums-route",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return trackDistanceKm([p(46.5, 7.9), p(46.51, 7.9), p(46.51, 7.92)]) === 2.64;"
+    },
+    {
+      "id": "drops-inaccurate",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return trackDistanceKm([p(46.5, 7.9, 8), p(46.51, 7.9, 12), p(46.53, 7.95, 90), p(46.51, 7.92, 10)]) === 2.64;"
+    },
+    {
+      "id": "custom-threshold",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return trackDistanceKm([p(0, 0, 5), p(0.01, 0, 40), p(0.02, 0, 5)], 50) === 2.22 && trackDistanceKm([p(0, 0, 5), p(0.01, 0, 40), p(0.02, 0, 5)], 30) === 2.22;"
+    },
+    {
+      "id": "short-input",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return trackDistanceKm([]) === 0 && trackDistanceKm([p(1, 1)]) === 0 && trackDistanceKm([p(1, 1, 99), p(1.01, 1, 99)]) === 0;"
+    },
+    {
+      "id": "null-accuracy",
+      "test": "const p = (latitude, longitude, accuracy = 5) => ({ latitude, longitude, accuracy }); return trackDistanceKm([p(0, 0, null), p(0.01, 0, null)]) === 1.11;"
+    }
+  ]
+}

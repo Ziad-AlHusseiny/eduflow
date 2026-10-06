@@ -1,0 +1,11 @@
+{
+  "title": "Shipping by country, counted once",
+  "prompt": "Karim wants the same breakdown **by customer country** for 2025 (non-cancelled orders): `country`, `orders` (number of orders), `shipping_total` (sum of `shipping_fee`, rounded to 2 decimals) and `item_revenue` (rounded to 2 decimals). Row order doesn't matter.\n\nThe starter's item revenue is right, but its order counts and shipping totals are inflated. Fix the grain.",
+  "hints": [
+    "Which table is the many side? After joining it, what does one row represent, and how often does each order's `shipping_fee` appear?",
+    "Replace the join to `order_items` with a join to a subquery that returns one row per `order_id` with its revenue.",
+    "Inside the subquery: `SELECT order_id, SUM(quantity * unit_price * (1 - discount)) AS revenue FROM order_items GROUP BY order_id`. Then sum `i.revenue` outside."
+  ],
+  "explanation": "Joining `order_items` turns each order into one row per line, so `COUNT(*)` counted lines and `SUM(o.shipping_fee)` counted each fee once per line. Collapsing items to one row per order first makes every join one-to-one at the order grain, so orders and fees are counted once while item revenue stays the same. The UK leads with 241 orders and about 58,000 in item revenue. `COUNT(DISTINCT o.order_id)` would also fix the count, but no DISTINCT trick fixes the shipping sum.",
+  "checks": {}
+}

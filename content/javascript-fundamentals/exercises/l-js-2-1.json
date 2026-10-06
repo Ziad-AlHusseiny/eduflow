@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// The function wrapper is written for you (functions get their own lesson soon).\n// spentCents and budgetCents arrive as numbers. Use if / else if / else\n// and `return` the status string.\nfunction budgetStatus(spentCents, budgetCents) {\n  return \"ok\";\n}\n\n// Use a ternary to pick the label for one value\nfunction amountLabel(amountCents) {\n  return \"\";\n}\n\nconsole.log(budgetStatus(1750, 2000));\nconsole.log(amountLabel(12500));\n"
+  },
+  "solution": {
+    "js": "function budgetStatus(spentCents, budgetCents) {\n  if (spentCents > budgetCents) {\n    return \"over\";\n  } else if (spentCents >= budgetCents * 0.8) {\n    return \"close\";\n  } else {\n    return \"ok\";\n  }\n}\n\nfunction amountLabel(amountCents) {\n  return amountCents >= 10000 ? \"big\" : \"small\";\n}\n\nconsole.log(budgetStatus(1750, 2000));\nconsole.log(amountLabel(12500));\n"
+  },
+  "checks": [
+    {
+      "id": "over",
+      "test": "return budgetStatus(2001, 2000) === 'over' && budgetStatus(5000, 2000) === 'over';\n"
+    },
+    {
+      "id": "close",
+      "test": "return budgetStatus(1600, 2000) === 'close' && budgetStatus(2000, 2000) === 'close' && budgetStatus(1750, 2000) === 'close';\n"
+    },
+    {
+      "id": "ok",
+      "test": "return budgetStatus(1599, 2000) === 'ok' && budgetStatus(0, 2000) === 'ok';\n"
+    },
+    {
+      "id": "label",
+      "test": "return amountLabel(12500) === 'big' && amountLabel(10000) === 'big' && amountLabel(9999) === 'small' && amountLabel(0) === 'small';\n"
+    }
+  ]
+}

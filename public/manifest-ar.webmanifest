@@ -1,0 +1,24 @@
+{
+  "name": "EduFlow — تعلّم المهارات التقنية",
+  "short_name": "EduFlow",
+  "description": "دروس حقيقية وأكواد تعمل واختبارات قصيرة وبطاقات مراجعة، مع سلسلة أيام وتقدّم يشجّعك على الاستمرار. يعمل دون اتصال.",
+  "id": "/ar",
+  "start_url": "/ar/learning",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fafaff",
+  "theme_color": "#7c3aed",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "تعلّمي", "url": "/ar/learning" },
+    { "name": "مراجعة البطاقات", "url": "/ar/review" },
+    { "name": "كل الدورات", "url": "/ar/courses" }
+  ]
+}

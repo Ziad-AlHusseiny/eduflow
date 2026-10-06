@@ -1,0 +1,11 @@
+{
+  "title": "Complete the dark theme build",
+  "prompt": "Fill in the Style Dictionary config that generates Northwind's dark theme. The output must:\n\n- name every variable with the `nw` prefix (`--nw-…`),\n- use Style Dictionary's built-in CSS custom properties format,\n- contain only the dark semantic tokens, not the primitives loaded through `include`,\n- wrap them in the attribute selector that switches any element to dark, written with double quotes inside the single-quoted string,\n- keep `var()` references instead of resolved values.",
+  "hints": [
+    "The format name is the same one used in the lesson's build script.",
+    "Tokens loaded through `source` are marked differently from tokens loaded through `include`. Which property tells them apart?",
+    "The selector is the one from the themes lesson: an attribute selector on its own, without `html`."
+  ],
+  "explanation": "`prefix: 'nw'` adds the namespace to every name. `css/variables` writes custom properties inside the given selector. Filtering on `token.isSource` keeps the dark semantic tokens and drops the primitives, which were only included so references could resolve. `[data-theme=\"dark\"]` lets any element start a dark subtree, and `outputReferences: true` keeps lines like `--nw-color-action-bg: var(--nw-color-blue-400);` so the tier structure survives into the browser.",
+  "checks": {}
+}

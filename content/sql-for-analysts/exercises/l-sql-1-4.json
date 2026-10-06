@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- November 2025 tickets and how long they took to close\nSELECT\n  ticket_id,\n  priority,\n  ROUND(julianday(closed_at) - julianday(opened_at), 1) AS hours_to_close\nFROM support_tickets\nWHERE opened_at BETWEEN '2025-11-01' AND '2025-11-30'\nORDER BY ticket_id;",
+  "solution": "SELECT\n  ticket_id,\n  priority,\n  ROUND((julianday(closed_at) - julianday(opened_at)) * 24, 1) AS hours_to_close\nFROM support_tickets\nWHERE opened_at >= '2025-11-01'\n  AND opened_at < '2025-12-01'\nORDER BY ticket_id;",
+  "orderMatters": true
+}

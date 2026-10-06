@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Return an object with one message per invalid field. {} means the draft is valid.\n// `today` is the current date as 'YYYY-MM-DD', passed in so the function stays pure.\nfunction validateHikeForm(draft, today) {\n  const errors = {};\n  if (draft.name === '') errors.name = 'Give the hike a name.';\n  return errors;\n}\n\nconst draft = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' };\nconsole.log(validateHikeForm(draft, '2026-10-05'));\n"
+  },
+  "solution": {
+    "js": "function isRealDate(text) {\n  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(text)) return false;\n  const [y, m, d] = text.split('-').map(Number);\n  const date = new Date(Date.UTC(y, m - 1, d));\n  return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;\n}\n\nfunction validateHikeForm(draft, today) {\n  const errors = {};\n  const name = draft.name.trim();\n  if (!name) errors.name = 'Give the hike a name.';\n  else if (name.length > 60) errors.name = 'Keep the name under 60 characters.';\n\n  if (!isRealDate(draft.date)) errors.date = 'Use a real date like 2026-10-04.';\n  else if (draft.date > today) errors.date = \"That date hasn't happened yet.\";\n\n  const cleaned = draft.distance.trim().replace(',', '.');\n  const km = Number(cleaned);\n  if (!/^\\d+(\\.\\d+)?$/.test(cleaned) || km <= 0 || km > 200) errors.distance = 'Enter a distance in km, like 8.4.';\n\n  const duration = draft.duration.trim();\n  if (duration && (!/^\\d+$/.test(duration) || Number(duration) < 1 || Number(duration) > 1440)) {\n    errors.duration = 'Enter whole minutes between 1 and 1440.';\n  }\n\n  if (draft.notes.length > 500) errors.notes = 'Notes are limited to 500 characters.';\n  return errors;\n}\n\nconst draft = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' };\nconsole.log(validateHikeForm(draft, '2026-10-05'));\n"
+  },
+  "checks": [
+    {
+      "id": "valid-draft",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return typeof validateHikeForm === 'function' && keys({}) === '' && keys({ duration: '135', notes: 'Windy.' }) === '';"
+    },
+    {
+      "id": "name",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return keys({ name: '   ' }) === 'name' && keys({ name: 'x'.repeat(61) }) === 'name';"
+    },
+    {
+      "id": "date",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return keys({ date: '04/10/2026' }) === 'date' && keys({ date: '2026-02-30' }) === 'date' && keys({ date: '2026-10-06' }) === 'date' && keys({ date: '2026-10-05' }) === '';"
+    },
+    {
+      "id": "distance",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return keys({ distance: '' }) === 'distance' && keys({ distance: 'far' }) === 'distance' && keys({ distance: '0' }) === 'distance' && keys({ distance: '12.5' }) === '';"
+    },
+    {
+      "id": "duration",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return keys({ duration: '2h' }) === 'duration' && keys({ duration: '0' }) === 'duration' && keys({ duration: '1441' }) === 'duration';"
+    },
+    {
+      "id": "several",
+      "test": "const ok = { name: 'Ridge Loop', date: '2026-10-04', distance: '8,4', duration: '', notes: '' }; const T = '2026-10-05'; const keys = (d) => Object.keys(validateHikeForm({ ...ok, ...d }, T)).sort().join(); return keys({ name: '', distance: 'x', notes: 'n'.repeat(501) }) === 'distance,name,notes';"
+    }
+  ]
+}

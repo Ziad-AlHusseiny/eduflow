@@ -1,0 +1,16 @@
+{
+  "title": "Segments and a compressed view",
+  "prompt": "1. Fix `segments` so the customers are scaled before k-means (4 clusters, `n_init=10`, `random_state=42`), and get one label per customer in `labels`.\n2. `churn_by_cluster`: the churn rate of each cluster, as a Series indexed by cluster label. `highest_rate`: the largest of those rates.\n3. `wine_var_2`: the share of variance that the first two principal components keep for the wine dataset's 13 features, after standard scaling.",
+  "hints": [
+    "Put `StandardScaler()` before `KMeans(...)` in `make_pipeline`.",
+    "`churn.groupby(labels)[\"churned\"].mean()` groups by the label array directly.",
+    "Fit `make_pipeline(StandardScaler(), PCA(n_components=2))` on `X_wine` and sum `pipe[-1].explained_variance_ratio_`."
+  ],
+  "explanation": "Scaled k-means finds the four segments from the lesson (129, 41, 79 and 149 customers), and the lapsed occasionals churn at 79% even though the target was never used for clustering. Unscaled, `total_spent` would have dominated and the segments would mostly sort customers by spend. On the wine data, two components keep about 55% of the variance in 13 measurements: enough for a useful map, not enough to replace the original columns.",
+  "checks": {
+    "scaled": "segments scales before clustering",
+    "clusters": "labels hold the four expected segments",
+    "churn-rates": "churn_by_cluster and highest_rate are correct",
+    "pca": "wine_var_2 is the variance kept by two components"
+  }
+}

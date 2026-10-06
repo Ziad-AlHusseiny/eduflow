@@ -1,0 +1,463 @@
+checkpoints:
+  s-tj-1:
+    - q: A user reports that splitting a $100.00 dinner between three people leaves the balances one cent off. Which test do you write first?
+      options:
+        - text: A Playwright test that adds the dinner in the browser and reads the balances.
+          why: It would reproduce the bug, but slowly and with the whole stack in play; when it fails you still have to find the rounding code.
+        - text: A screenshot test of the balances screen.
+          why: A screenshot can show the wrong number but says nothing about which calculation produced it, and it breaks on any visual change.
+        - text: A stricter TypeScript type for the amount parameter.
+          why: The values are already numbers; a type cannot tell 3333 from 3334 cents.
+        - text: A unit test that splits 10000 cents between 3 people and checks the shares add up to 10000.
+          why: Correct. The bug is in pure logic, so the cheapest test that fails exactly when it is wrong is a millisecond unit test with the sum invariant.
+      answer: 3
+    - q: |-
+        Assuming the imports are in place, what happens when this test runs?
+        ```js
+        test('formats cents', () => {
+          expect(formatMoney(1234)).toEqual('$12.34');
+          expect(formatMoney(5)).toBe('$0.05');
+        });
+        ```
+      options:
+        - text: "It passes if `formatMoney` is correct: `toEqual` compares primitives by value, just like `toBe`."
+          why: Correct. The difference between the two matchers only shows up for objects and arrays.
+        - text: It fails, because `toEqual` can only be used with objects.
+          why: "`toEqual` works with any value; for strings it behaves like `toBe`."
+        - text: It fails, because a test may contain only one `expect`.
+          why: There is no such rule; one behaviour per test is the guideline, and both lines here check formatting.
+        - text: "It only runs when `globals: true` is set in the config."
+          why: With explicit imports from `vitest`, globals are not needed.
+      answer: 0
+    - q: 'Your `package.json` has `"test": "vitest"`, and the GitHub Actions job runs `npm test`. What happens after the tests finish in CI?'
+      options:
+        - text: The job hangs in watch mode until it hits the runner timeout.
+          why: That is what would happen without CI detection; Vitest checks the `CI` environment variable.
+        - text: Vitest exits with an error asking for the `--run` flag.
+          why: Vitest does not require the flag in CI; it chooses run mode itself.
+        - text: Vitest notices the `CI` environment variable, runs once and exits with the result.
+          why: Correct. Watch mode is only the default in an interactive local terminal.
+        - text: Vitest skips the tests because no terminal is attached.
+          why: Tests run normally in CI; only the watching is turned off.
+      answer: 2
+    - q: |-
+        A test fails with this output. What is the most likely bug?
+        ```text
+        FAIL  src/tip.test.js > withTip > adds a 15% tip
+        AssertionError: expected { tipCents: 300, totalCents: 2000 }
+          to deeply equal { tipCents: 300, totalCents: 2300 }
+        ```
+      options:
+        - text: The tip is rounded the wrong way.
+          why: The received `tipCents` is 300, exactly as expected, so the tip calculation is fine.
+        - text: The test should use `toBe` instead of `toEqual`.
+          why: "`toBe` would fail even for a correct result, because the function returns a new object."
+        - text: The percent is divided by 1000 instead of 100.
+          why: Then the tip would be 30, not 300; the tip in the received object is right.
+        - text: The total is returned without adding the tip.
+          why: Correct. `totalCents` equals the subtotal (2000), so the function forgot to add `tipCents`.
+      answer: 3
+    - q: Your project has 300 tests of pure money logic and 5 test files that render DOM. How should you configure the environment?
+      options:
+        - text: "Set `environment: 'jsdom'` globally so every test can use the DOM."
+          why: All 300 pure tests then pay for building a fake browser, and accidental DOM use in pure code goes unnoticed.
+        - text: Keep the default Node environment and add `// @vitest-environment jsdom` to the top of the 5 DOM test files.
+          why: Correct. Opt in per file where a DOM is needed and keep the rest fast and honest.
+        - text: Stub `document` with a plain object in a setup file.
+          why: A hand-made stub misses most DOM behaviour; jsdom or happy-dom exist precisely to provide it.
+        - text: Move the 5 DOM tests to Playwright.
+          why: End-to-end tests are far slower; DOM behaviour like rendering a list is well served by jsdom.
+      answer: 1
+  s-tj-2:
+    - q: Splitwise-lite gives free premium to groups that spend $50.00 (5000 cents) or more. Which two inputs best test the rule?
+      options:
+        - text: 4999 and 5000
+          why: Correct. They sit on either side of the boundary, the only pair that can tell `>=` from `>`.
+        - text: 1000 and 10000
+          why: Both are far from the boundary, so an off-by-one in the comparison passes both.
+        - text: 0 and 5000
+          why: Zero is a useful extra case, but without 4999 you cannot tell whether the cut-off is in the right place.
+        - text: 5000 and 5001
+          why: Both should qualify, so a bug that accepts 4999 too would not be caught.
+      answer: 0
+    - q: |-
+        What should change in this test?
+        ```js
+        test('rejects a negative amount', async () => {
+          expect(saveExpense({ description: 'Taxi', amountCents: -100 }, api))
+            .rejects.toThrow('positive');
+        });
+        ```
+      options:
+        - text: Nothing; it is correct as written.
+          why: The `rejects` assertion is never awaited, so the test does not wait for it; Vitest 4 marks such tests as failed.
+        - text: Replace `toThrow` with `toThrowError`.
+          why: They are aliases; the missing `await` is the problem.
+        - text: Wrap the call in `try/catch` and assert in the `catch`.
+          why: That works only with `expect.assertions(1)`, and it is clumsier than awaiting `rejects`.
+        - text: Put `await` in front of `expect(...)` so the test waits for the rejection.
+          why: Correct. Every `resolves` or `rejects` assertion should be awaited.
+      answer: 3
+    - q: While testing `computeBalances`, a test replaces `splitEvenly` with `vi.fn().mockReturnValue([500, 500])`. Later `splitEvenly` gets a rounding bug. What happens to that test?
+      options:
+        - text: It fails, because `computeBalances` now gets wrong shares.
+          why: "`computeBalances` never calls the real `splitEvenly` in that test, so it never sees the bug."
+        - text: It stays green, because the real `splitEvenly` never runs in it.
+          why: Correct. Mocking your own pure code removes exactly the integration that would catch this.
+        - text: Vitest warns that the mock no longer matches the implementation.
+          why: Vitest does not compare mocks with real code; a mock is whatever you tell it to be.
+        - text: The test errors because mocks of internal modules are not allowed.
+          why: Vitest allows them, which is why the judgement is yours.
+      answer: 1
+    - q: |-
+        The second row of this table fails. What test name does Vitest report?
+        ```js
+        test.each([
+          { total: 1000, people: 3, first: 334 },
+          { total: 1001, people: 4, first: 251 },
+        ])('splits $total between $people', ({ total, people, first }) => {
+          expect(splitEvenly(total, people)[0]).toBe(first);
+        });
+        ```
+      options:
+        - text: "`splits $total between $people`"
+          why: The `$field` placeholders are filled from each row object.
+        - text: "`splits 1001 between 4 (row 2)`"
+          why: Vitest does not append the row number unless you use `%#` in the name.
+        - text: "`splits 1001 between 4`"
+          why: Correct. Each row becomes its own test with the values substituted, so the failure names the input.
+        - text: "`splits [object Object] between undefined`"
+          why: "`$total` and `$people` read those properties from each row object, so the real values appear in the name."
+      answer: 2
+    - q: A reminder is scheduled with `setTimeout` to go out 24 hours after an expense is added. With `vi.useFakeTimers()` active, which line makes the reminder fire in the test?
+      options:
+        - text: "`await new Promise((r) => setTimeout(r, 86_400_000))`"
+          why: Under fake timers this `setTimeout` is fake too, so it never fires and the test times out.
+        - text: "`vi.useRealTimers()`"
+          why: Switching back to real timers would mean waiting a real day.
+        - text: "`vi.setSystemTime(tomorrow)`"
+          why: It moves the clock that `Date` reads, but it does not run timers that are due.
+        - text: "`vi.advanceTimersByTime(24 * 60 * 60 * 1000)`"
+          why: Correct. Advancing the fake clock runs every timer due in that window, instantly.
+      answer: 3
+  s-tj-3:
+    - q: The form shows validation errors in `<p role="alert">Amount must be greater than zero</p>`. Which query fits best?
+      options:
+        - text: "`screen.getByRole('alert')`"
+          why: Correct. The role is what screen readers announce, so the test fails if the message stops being announced.
+        - text: "`container.querySelector('.error-text')`"
+          why: A class is styling; renaming it breaks the test without breaking anything users see.
+        - text: "`screen.getByTestId('amount-error')`"
+          why: Test ids are the last resort and prove nothing about how the message reaches users.
+        - text: "`screen.getByDisplayValue('Amount must be greater than zero')`"
+          why: Display value queries match the current value of form fields, not paragraph text.
+      answer: 0
+    - q: |-
+        `load` resolves with `{ Ben: -500 }`. This test fails with "Unable to find an element with the text". What is the fix?
+        ```jsx
+        test('shows balances', () => {
+          render(<BalancePanel loadBalances={load} />);
+          expect(screen.getByText('Ben owes $5.00')).toBeInTheDocument();
+        });
+        ```
+      options:
+        - text: Wrap `render` in `waitFor`.
+          why: "`waitFor` retries assertions; rendering repeatedly inside it does not help and causes side effects."
+        - text: Raise Vitest's test timeout.
+          why: "The test fails immediately, not after a timeout: `getByText` checks once, before the promise resolves."
+        - text: Make the test `async` and use `expect(await screen.findByText('Ben owes $5.00')).toBeInTheDocument()`.
+          why: Correct. `findByText` waits for the text to appear after the data loads.
+        - text: Use `screen.queryByText('Ben owes $5.00')` instead.
+          why: "`queryBy` also checks only once; it would return `null` and the assertion would still fail."
+      answer: 2
+    - q: "Component tests use MSW with `server.listen({ onUnhandledRequest: 'error' })`. A refactor accidentally changes the request URL from `/groups/:id` to `/group/:id`. What happens?"
+      options:
+        - text: The tests pass, because MSW answers every request with an empty 200.
+          why: MSW only answers requests that match a handler; it has no catch-all success response.
+        - text: The tests fail, because the request matches no handler and unhandled requests are errors.
+          why: Correct. That option turns a wrong URL into a loud failure instead of a silent hang or a real network call.
+        - text: MSW silently forwards the request to the real network.
+          why: "With `onUnhandledRequest: 'error'`, unmatched requests are reported as errors, not passed through quietly."
+        - text: Vitest skips the affected tests.
+          why: Nothing is skipped; the failing request surfaces as a test failure.
+      answer: 1
+    - q: Which use of `waitFor` is appropriate?
+      options:
+        - text: "`await waitFor(() => user.click(screen.getByRole('button', { name: 'Save' })))`"
+          why: A click inside a retried callback may happen several times; interactions belong outside `waitFor`.
+        - text: "`await waitFor(() => screen.findByText('Saved'))`"
+          why: "`findBy` already waits; wrapping it in `waitFor` doubles the waiting and muddles the timeout."
+        - text: "`await waitFor(() => {})`"
+          why: An empty callback passes immediately and waits for nothing in particular.
+        - text: "`await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1))`"
+          why: Correct. An assertion that is not about an element appearing, retried until it holds.
+      answer: 3
+    - q: "`ExpenseList` has a \"Hide settled\" checkbox. What's the best test for it?"
+      options:
+        - text: Click the checkbox with user-event and assert which list items are still on screen.
+          why: Correct. It tests what the user sees and survives any change to how the state is stored.
+        - text: Assert that `useState` was called with `false` initially.
+          why: That checks React internals, not behaviour; the list could still render wrongly.
+        - text: Take a snapshot before and after clicking.
+          why: Snapshots record everything and explain nothing; reviewers cannot tell what should have changed.
+        - text: Call the component as a function and inspect the returned JSX.
+          why: Calling components directly skips React rendering and hooks rules; render it instead.
+      answer: 0
+  s-tj-4:
+    - q: The amount field is `<label for="amount">Amount</label><input id="amount" name="amount" placeholder="0.00">`. Which Playwright locator is best?
+      options:
+        - text: "`page.locator('input[name=amount]')`"
+          why: It works, but depends on an attribute users never see and checks nothing about the label.
+        - text: "`page.getByPlaceholder('0.00')`"
+          why: Placeholders are a weaker signal than labels and often change or disappear.
+        - text: "`page.getByLabel('Amount')`"
+          why: Correct. It finds the field by its label, the way users and assistive tech do.
+        - text: "`page.locator('#amount')`"
+          why: Ids are implementation details that can change in a refactor.
+      answer: 2
+    - q: Logging in takes 3 seconds. Forty tests need a logged-in user but never change the account. What is the best approach?
+      options:
+        - text: Log in through the UI in a `beforeEach`.
+          why: That adds 2 minutes of logins and hammers the auth service for no extra confidence.
+        - text: Let one test log in and run the others after it with serial mode.
+          why: Chained tests cannot run in parallel or alone, and one failure cascades.
+        - text: Share one `page` object between all tests in a module-level variable.
+          why: Sharing a page breaks isolation; one test can leave state that changes another.
+        - text: Log in once in a setup project, save the storage state, and let the tests reuse it.
+          why: Correct. Each test still gets its own context, already authenticated.
+      answer: 3
+    - q: In a failed test's trace, the click on "Settle up" succeeded, and the DOM snapshot right after it shows a "Session expired, please sign in" toast. What should you investigate first?
+      options:
+        - text: The test's authentication setup, for example a stale saved storage state.
+          why: Correct. The page did respond; it rejected the session, so the problem is in how the test logs in.
+        - text: Adding `page.waitForTimeout(2000)` before the assertion.
+          why: Waiting longer will not revive an expired session.
+        - text: Changing the Settle up locator.
+          why: The trace shows the click landed on the right button.
+        - text: Upgrading Playwright, since this looks like a tool bug.
+          why: The snapshot shows the app behaving correctly for an expired session; the test setup is the suspect.
+      answer: 0
+    - q: You want to test that the group page shows "Could not load this group" when the API answers 503. What do you do?
+      options:
+        - text: Stop the backend server in CI before running that test.
+          why: That breaks every other test running in parallel against the same server.
+        - text: "Call `page.route('**/api/groups/*', (route) => route.fulfill({ status: 503 }))` before `page.goto`."
+          why: Correct. Routing produces the rare response for this one test without touching the real server.
+        - text: Replace `fetch` with `vi.fn()` inside the Playwright test.
+          why: "`vi` is Vitest; Playwright tests run in Node while the page runs in a real browser."
+        - text: Throw an error inside a `beforeEach` hook.
+          why: That fails the test before it starts instead of simulating the server response.
+      answer: 1
+    - q: A test always passes with `--workers=1` and sometimes fails with `--workers=4`. What is the first suspect?
+      options:
+        - text: Timeouts that are too short for parallel runs.
+          why: Possible, but the classic cause of order and parallelism sensitivity is shared state.
+        - text: A browser version mismatch between workers.
+          why: All workers use the same installed browsers.
+        - text: Tests sharing data on the server, so parallel tests change what another one sees.
+          why: Correct. Give each test its own data, for example through a fixture with unique names.
+        - text: Too many assertions in one test.
+          why: The number of assertions does not interact with the number of workers.
+      answer: 2
+  s-tj-5:
+    - q: Test-first, you have `parseAmount('12')` passing with `return Number(input) * 100;`. Which next test forces the smallest useful step?
+      options:
+        - text: A 500-row table of every format you can think of.
+          why: Writing many tests at once forces a big leap; TDD moves one small failing test at a time.
+        - text: "`expect(() => parseAmount('abc')).toThrow()`"
+          why: "Correct. It fails today (the code returns `NaN`) and needs one small change: reject non-numbers."
+        - text: "`expect(parseAmount('12')).toBe(1200)` under a different name."
+          why: It already passes, so it forces nothing new.
+        - text: A Playwright test of the whole expense form.
+          why: Far too big a step, and slow feedback for a parsing rule.
+      answer: 1
+    - q: "`src/money/settle-up.js` has no tests, but it does not appear in the Vitest coverage report at all. Why?"
+      options:
+        - text: The v8 provider cannot measure that file.
+          why: v8 measures any JavaScript the tests load; the file was never loaded.
+        - text: The file is fully covered, so it is hidden.
+          why: Covered files are listed too; nothing hides them.
+        - text: Coverage thresholds filter out files below the limit.
+          why: Thresholds fail the run; they do not remove files from the report.
+        - text: "`coverage.include` is not set, so only files loaded by the tests are reported."
+          why: Correct. Set `include` (for example `src/**/*.js`) so untested files show up at 0%.
+      answer: 3
+    - q: "Stryker reports `EqualityOperator: amountCents <= 0 → amountCents < 0` as Survived in `saveExpense`'s validation. Which test kills it?"
+      options:
+        - text: "Saving an expense with `amountCents: 0` must reject."
+          why: Correct. Zero is the only value where `<= 0` and `< 0` disagree.
+        - text: "Saving an expense with `amountCents: -100` must reject."
+          why: Both versions reject -100, so the mutant survives.
+        - text: "Saving an expense with `amountCents: 4500` must resolve."
+          why: Both versions accept 4500, so the mutant survives this test.
+        - text: "Saving an expense with `amountCents: 12.5` must reject."
+          why: The integer check rejects 12.5 in both versions.
+      answer: 0
+    - q: In the GitHub Actions workflow, the Playwright report artifact is missing every time the tests fail. What is the upload step missing?
+      options:
+        - text: "`needs: e2e`"
+          why: "`needs` orders jobs; the problem is a step being skipped inside the same job."
+        - text: "`retention-days: 30`"
+          why: Retention controls how long an artifact is kept, not whether it is uploaded.
+        - text: "`if: ${{ !cancelled() }}`, so it runs even after a failed test step."
+          why: Correct. Steps are skipped after a failure by default; the condition makes the upload run anyway.
+        - text: "`--shard=1/1` on the test command."
+          why: Sharding splits the suite; it has nothing to do with uploading reports.
+      answer: 2
+    - q: Which of these tests is worth writing?
+      options:
+        - text: That lodash's `sortBy` sorts expenses by date.
+          why: That tests the library, which its maintainers already do.
+        - text: That the error message has the class `text-red-600`.
+          why: Styling details make tests brittle without catching behaviour bugs.
+        - text: That a private helper is called exactly twice.
+          why: It locks in the implementation and passes on real bugs.
+        - text: That one leftover cent goes to the first person in the split.
+          why: Correct. It is documented money behaviour that a plausible bug would break.
+      answer: 3
+final:
+  - q: A form parses the amount and sends it through an API client. Which test gives the most confidence per minute of CI for that form?
+    options:
+      - text: A component test that renders the form with the real parser and a faked network.
+        why: Correct. It exercises the form, the parsing and the request together, in milliseconds, without a browser or server.
+      - text: A unit test of the API client alone.
+        why: Useful, but it says nothing about whether the form uses the parser and the client correctly.
+      - text: An end-to-end test for every validation message.
+        why: Each message is cheaper and more precise to check at the component level; save end-to-end for the main flow.
+      - text: Stricter TypeScript types on the form props.
+        why: Types catch shape errors, not whether 12.5 becomes 1250 cents.
+    answer: 0
+  - q: |-
+      What is the main problem with this test?
+      ```js
+      test('withTip', () => {
+        expect(withTip(2000, 15).tipCents).toBe(300);
+        expect(() => withTip(2000, -1)).toThrow();
+        expect(withTip(2000, 0).totalCents).toBe(2000);
+      });
+      ```
+    options:
+      - text: "`toBe` cannot compare numbers reliably."
+        why: For integers like these, `toBe` is exactly right.
+      - text: It checks three behaviours, so a failure in the first hides the others, and the name does not say what broke.
+        why: Correct. Split it into three tests named after the rules they check.
+      - text: A test may contain only one `expect` call.
+        why: Several assertions about one behaviour are fine; the issue is three behaviours.
+      - text: "`withTip` must be awaited."
+        why: "`withTip` is synchronous; there is nothing to await."
+    answer: 1
+  - q: A group must have between 2 and 12 members. Which inputs test the rule best?
+    options:
+      - text: 5, 6 and 7
+        why: All in the middle of the valid range; boundary bugs pass every one.
+      - text: 2 and 12
+        why: They test the valid edges but not the invalid side of either boundary.
+      - text: 0 and 100
+        why: Far from both boundaries, so an off-by-one would not be noticed.
+      - text: 1, 2, 12 and 13
+        why: Correct. Just outside, and on, each boundary.
+    answer: 3
+  - q: "`await expect(loadGroup('x', fetchMock)).rejects.toThrow()` passes both for the correct code and for a version that crashes with a `TypeError` before it checks the status. How do you make the test meaningful?"
+    options:
+      - text: Use `resolves` instead of `rejects`.
+        why: The promise should reject; switching to `resolves` would make the correct code fail.
+      - text: Add more `await` keywords around the call.
+        why: The assertion is already awaited; what is missing is precision.
+      - text: Match the expected message, for example `.rejects.toThrow('HTTP 404')`.
+        why: Correct. Only the version that really checks the status produces that message.
+      - text: Replace `toThrow` with `toThrowError`.
+        why: They are aliases with identical behaviour.
+    answer: 2
+  - q: Tests pass one by one but fail in the full run. An earlier test does `vi.spyOn(Math, 'random').mockReturnValue(0)`. What is the fix?
+    options:
+      - text: "Restore mocks after each test, with `vi.restoreAllMocks()` in `afterEach` or `restoreMocks: true` in the config."
+        why: Correct. The spy replaced a method on a shared object and leaked into later tests.
+      - text: Run the test files one at a time.
+        why: That hides the leak instead of removing it, and makes the suite slower.
+      - text: Raise Vitest's test timeout.
+        why: The failures are about leaked state, not time.
+      - text: Stop using `Math.random` in production code.
+        why: The production code is fine; the test forgot to clean up after itself.
+    answer: 0
+  - q: An icon-only button is rendered as `<button aria-label="Delete expense"><svg>…</svg></button>`. Which query should a Testing Library test use?
+    options:
+      - text: "`screen.getByText('Delete expense')`"
+        why: There is no visible text; the name comes from `aria-label`, which text queries do not read.
+      - text: "`screen.getByRole('button', { name: 'Delete expense' })`"
+        why: Correct. The accessible name comes from `aria-label`, so the role query finds it the way a screen reader does.
+      - text: "`screen.getByTestId('delete')`"
+        why: There is a perfectly good accessible name; a test id would be a step down.
+      - text: "`container.querySelector('svg').closest('button')`"
+        why: It couples the test to the icon markup and ignores the accessible name.
+    answer: 1
+  - q: A "Saved" toast appears after saving and disappears a moment later. How do you assert that it disappears?
+    options:
+      - text: "`expect(screen.getByText('Saved')).toBeNull()`"
+        why: "`getByText` throws while the toast is still there and never returns `null`."
+      - text: "`expect(await screen.findByText('Saved')).toBeNull()`"
+        why: "`findByText` resolves with the element when it appears; it never resolves to `null`."
+      - text: Sleep 5 seconds, then `expect(screen.queryByText('Saved')).toBeNull()`
+        why: A fixed sleep is slow and still races on a busy machine.
+      - text: "`await waitForElementToBeRemoved(() => screen.queryByText('Saved'))`"
+        why: Correct. It waits exactly until the toast is gone, or fails after the timeout.
+    answer: 3
+  - q: |-
+      This Playwright check fails now and then in CI. What is the fix?
+      ```ts
+      const rows = await page.getByRole('listitem').all();
+      expect(rows.length).toBe(3);
+      ```
+    options:
+      - text: Add `await page.waitForLoadState('networkidle')` before it.
+        why: Network idle is a poor proxy for the list being rendered, and the assertion still does not retry.
+      - text: Use `await page.getByRole('listitem').count()` instead of `.all()`.
+        why: Still a one-time read followed by a non-retrying assertion.
+      - text: "`await expect(page.getByRole('listitem')).toHaveCount(3)`"
+        why: Correct. The web-first assertion re-counts until there are three items or the timeout passes.
+      - text: "Set `retries: 3` in the config."
+        why: Retries hide the race instead of fixing it.
+    answer: 2
+  - q: End-to-end tests share one seeded group, and one of them deletes an expense from it. Other tests fail depending on the order. What is the best fix?
+    options:
+      - text: A fixture that creates a uniquely named group per test through the API and deletes it afterwards.
+        why: Correct. Each test owns its data, so order and parallelism stop mattering.
+      - text: Run the suite serially in a fixed order.
+        why: It hides the dependency, slows the suite and lets one failure cascade.
+      - text: Reseed the database once before the whole suite.
+        why: Tests still share and change the same data during the run.
+      - text: Enable three retries for those tests.
+        why: Retries mask the collision without removing it.
+    answer: 0
+  - q: Which tool tells you that no test would notice if a `<` in your code became `<=`?
+    options:
+      - text: Line coverage
+        why: Line coverage only shows that the line ran.
+      - text: Branch coverage
+        why: Branch coverage shows both sides of the condition ran, not that a test would fail if the boundary moved.
+      - text: The TypeScript compiler
+        why: "`<` and `<=` have the same types; the compiler cannot tell them apart."
+      - text: Mutation testing, for example StrykerJS
+        why: Correct. It makes exactly that change and reports whether any test failed.
+    answer: 3
+  - q: Pull requests keep getting merged while the end-to-end job is red. What is the right fix?
+    options:
+      - text: Rerun the job until it turns green, then merge.
+        why: That trains people to ignore failures, including real ones.
+      - text: Make the test jobs required status checks on the main branch.
+        why: Correct. A red required check blocks the merge, so the pipeline becomes a gate instead of a suggestion.
+      - text: Remove the end-to-end job to keep the pipeline green.
+        why: That throws away the only check that the pieces work together.
+      - text: Run the end-to-end job only after merging.
+        why: Then broken code reaches main before anyone learns about it.
+    answer: 1
+  - q: A component test mocks your own pure `formatMoney` so it always returns `'X'`. What is the best change?
+    options:
+      - text: Keep the mock and add a snapshot of the output.
+        why: The snapshot would record `X` and still never test real formatting.
+      - text: Replace the mock with `vi.mock` on the module.
+        why: It is the same idea with a different tool; the real function still never runs.
+      - text: "Use the real `formatMoney`: it is fast, pure code you own, and the test then checks the real output."
+        why: Correct. Mock at the boundaries; run your own pure logic for real.
+      - text: Delete the component test.
+        why: The component still needs a test; it should simply stop faking the formatter.
+    answer: 2

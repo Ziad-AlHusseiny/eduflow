@@ -1,0 +1,11 @@
+{
+  "title": "Find the fattest margins",
+  "prompt": "Rania liked the thin-margin list and now wants the opposite: the **5 products with the highest margin percent**, so marketing can feature them.\n\nReturn four columns in this order: `name`, `unit_price`, `margin` (`unit_price - unit_cost`, rounded to 2 decimals) and `margin_pct` (margin as a percentage of `unit_price`, rounded to 1 decimal). Sort by `margin_pct`, highest first. Order matters.\n\nThe starter sorts by margin in dollars, which favours expensive products. Fix it.",
+  "hints": [
+    "Add a fourth column that divides the margin by `unit_price` and multiplies by 100.",
+    "Wrap it in `ROUND(..., 1)` and give it the alias `margin_pct`.",
+    "Change the `ORDER BY` to `margin_pct DESC`; LIMIT stays last."
+  ],
+  "explanation": "Sorting by dollar margin puts the Standing Desk first, because a big price leaves a big gap even at an ordinary percentage. Margin percent compares products of any price on the same scale: the $19 Cable Management Kit keeps 61.5% of its price, the best in the catalogue. `ORDER BY` can use the alias defined in the SELECT list, and `LIMIT 5` then keeps the first five rows of that sorted result.",
+  "checks": {}
+}

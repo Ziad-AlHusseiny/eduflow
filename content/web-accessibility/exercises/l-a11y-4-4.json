@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<article class=\"card\" id=\"card-en\">\n  <h3><span class=\"badge\" aria-hidden=\"true\">★</span>Harbour Lights</h3>\n  <p>Two nights of music on the old harbour wall.</p>\n</article>\n\n<article class=\"card\" id=\"card-ar\">\n  <h3><span class=\"badge\" aria-hidden=\"true\">★</span>ليالي الطرب</h3>\n  <p>أمسية من الموسيقى العربية الكلاسيكية في الميناء القديم.</p>\n  <p class=\"note\">An evening of classic Arabic music at the old harbour.</p>\n</article>\n\n<form class=\"review\">\n  <label for=\"reviewer\">Your name</label>\n  <input id=\"reviewer\" name=\"reviewer\">\n  <label for=\"review-text\">Your review</label>\n  <textarea id=\"review-text\" name=\"review\"></textarea>\n</form>",
+    "css": ".card { border: 1px solid #c9c4dc; border-left: 4px solid #5b3cc4; border-radius: 8px; padding: 8px 12px; margin-block-end: 12px; text-align: left; }\n.card h3 { margin: 0 0 4px; }\n.card p { margin: 0 0 4px; }\n.badge { color: #5b3cc4; margin-right: 8px; }\n.note { color: #595959; font-size: 0.9rem; }\n.review { display: grid; gap: 4px; max-width: 320px; }\ninput, textarea { font: inherit; padding: 6px 8px; border: 1px solid #77708f; border-radius: 6px; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<article class=\"card\" id=\"card-en\">\n  <h3><span class=\"badge\" aria-hidden=\"true\">★</span>Harbour Lights</h3>\n  <p>Two nights of music on the old harbour wall.</p>\n</article>\n\n<article class=\"card\" id=\"card-ar\">\n  <div lang=\"ar\" dir=\"rtl\">\n    <h3><span class=\"badge\" aria-hidden=\"true\">★</span>ليالي الطرب</h3>\n    <p>أمسية من الموسيقى العربية الكلاسيكية في الميناء القديم.</p>\n  </div>\n  <p class=\"note\">An evening of classic Arabic music at the old harbour.</p>\n</article>\n\n<form class=\"review\">\n  <label for=\"reviewer\">Your name</label>\n  <input id=\"reviewer\" name=\"reviewer\" dir=\"auto\">\n  <label for=\"review-text\">Your review</label>\n  <textarea id=\"review-text\" name=\"review\" dir=\"auto\"></textarea>\n</form>",
+    "css": ".card { border: 1px solid #c9c4dc; border-inline-start: 4px solid #5b3cc4; border-radius: 8px; padding: 8px 12px; margin-block-end: 12px; text-align: start; }\n.card h3 { margin: 0 0 4px; }\n.card p { margin: 0 0 4px; }\n.badge { color: #5b3cc4; margin-inline-end: 8px; }\n.note { color: #595959; font-size: 0.9rem; }\n.review { display: grid; gap: 4px; max-width: 320px; }\ninput, textarea { font: inherit; padding: 6px 8px; border: 1px solid #77708f; border-radius: 6px; }\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "arabic-lang",
+      "test": "const arabicEls = () => { const out = new Set(); const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (/[\\u0600-\\u06FF]/.test(n.textContent) && !n.parentElement.closest('script, style')) out.add(n.parentElement); } return [...out]; }; const els = arabicEls(); return els.length >= 2 && els.every((el) => { const l = el.closest('[lang]'); return l && /^ar\\b/i.test(l.getAttribute('lang')); });"
+    },
+    {
+      "id": "arabic-dir",
+      "test": "const arabicEls = () => { const out = new Set(); const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (/[\\u0600-\\u06FF]/.test(n.textContent) && !n.parentElement.closest('script, style')) out.add(n.parentElement); } return [...out]; }; const els = arabicEls(); return els.length >= 2 && els.every((el) => getComputedStyle(el).direction === 'rtl' || el.matches(':dir(rtl)'));"
+    },
+    {
+      "id": "english-stays",
+      "test": "const note = $('#card-ar .note'); const l = note.closest('[lang]'); const en = !l || /^en\\b/i.test(l.getAttribute('lang')); return document.documentElement.lang === 'en' && en && getComputedStyle(note).direction === 'ltr' && getComputedStyle($('#card-en h3')).direction === 'ltr';"
+    },
+    {
+      "id": "user-text-auto",
+      "test": "return $('#reviewer').getAttribute('dir') === 'auto' && $('#review-text').getAttribute('dir') === 'auto';"
+    },
+    {
+      "id": "logical-css",
+      "test": "const en = getComputedStyle($('#card-en .badge')); const ar = getComputedStyle($('#card-ar .badge')); const enCard = getComputedStyle($('#card-en')); const arCard = getComputedStyle($('#card-ar h3').closest('.card')); return parseFloat(en.marginRight) > 0 && parseFloat(en.marginLeft) === 0 && parseFloat(ar.marginLeft) > 0 && parseFloat(ar.marginRight) === 0;"
+    }
+  ]
+}

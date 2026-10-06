@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["reassign-let", "increment-var", "literal-sum", "mixed-sum", "string-to-int", "annotated-double"],
+  "correct": ["increment-var", "literal-sum", "annotated-double"]
+}

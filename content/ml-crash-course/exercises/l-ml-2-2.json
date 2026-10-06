@@ -1,0 +1,23 @@
+{
+  "kind": "python",
+  "starter": "import numpy as np\nfrom sklearn.datasets import load_diabetes\nfrom sklearn.model_selection import train_test_split\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\nbmi = X_train[\"bmi\"]\nx = ((bmi - bmi.mean()) / bmi.std(ddof=0)).to_numpy()   # standardised feature\ntarget = y_train.to_numpy()\n\nw, b = 0.0, 0.0\nlearning_rate = 0.05\nlosses = []\n\nfor step in range(200):\n    error = (w * x + b) - target\n    losses.append(np.mean(error ** 2))\n    # Update w and b here: step against the gradient of the mean squared error\n    pass\n",
+  "solution": "import numpy as np\nfrom sklearn.datasets import load_diabetes\nfrom sklearn.model_selection import train_test_split\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\nbmi = X_train[\"bmi\"]\nx = ((bmi - bmi.mean()) / bmi.std(ddof=0)).to_numpy()   # standardised feature\ntarget = y_train.to_numpy()\n\nw, b = 0.0, 0.0\nlearning_rate = 0.05\nlosses = []\n\nfor step in range(200):\n    error = (w * x + b) - target\n    losses.append(np.mean(error ** 2))\n    w -= learning_rate * 2 * np.mean(error * x)\n    b -= learning_rate * 2 * np.mean(error)\n\nprint(round(w, 2), round(b, 2), round(losses[-1], 1))\n",
+  "checks": [
+    {
+      "id": "losses",
+      "test": "len(losses) == 200 and all(float(losses[i + 1]) <= float(losses[i]) + 1e-9 for i in range(199))"
+    },
+    {
+      "id": "loss-drops",
+      "test": "float(losses[-1]) < 0.2 * float(losses[0])"
+    },
+    {
+      "id": "w",
+      "test": "abs(float(w) - 45.97) < 0.5"
+    },
+    {
+      "id": "b",
+      "test": "abs(float(b) - 154.34) < 0.5"
+    }
+  ]
+}

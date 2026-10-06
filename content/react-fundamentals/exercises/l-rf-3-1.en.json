@@ -1,0 +1,16 @@
+{
+  "title": "Watched toggle and a rating",
+  "prompt": "This movie card has two broken features.\n\n1. **Mark as watched** (`#toggle`) does nothing. Make it toggle between **Mark as watched** and **Watched**, with `aria-pressed` following along.\n2. The rating: **+2** (`#plus-two`) only adds 1, and the rating can climb past 5. Make +2 add two, and never let the rating go above 5, whichever button is clicked.",
+  "hints": [
+    "A `let` variable is reset on every render and never triggers one. Store `watched` with `useState(false)`.",
+    "Both calls in `addTwo` read the same `rating` snapshot. Use an updater: `setRating((r) => …)`.",
+    "Clamp inside the updater: `setRating((r) => Math.min(r + 1, 5))`. Then `addTwo` can call `addOne()` twice."
+  ],
+  "explanation": "`watched` has to be state: a local variable neither survives the next render nor causes one. For the rating, each handler sees a snapshot, so `setRating(rating + 1)` twice asks for the same value twice. An updater function receives the latest queued value instead, and putting `Math.min(…, 5)` inside it applies the limit to every update, including both halves of +2.",
+  "checks": {
+    "toggle-on": "Clicking the toggle shows \"Watched\" and sets aria-pressed to true",
+    "toggle-off": "Clicking again shows \"Mark as watched\" and aria-pressed false",
+    "plus-two": "+2 raises the rating from 0 to 2",
+    "max-five": "The rating stops at 5"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"row\">\n  <button class=\"nw-button\" type=\"button\" id=\"b-default\">Cancel</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"primary\" id=\"b-primary\">Assign driver</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"danger\" id=\"b-danger\">Delete route</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"primary\" data-size=\"sm\" id=\"b-small\">Add stop</button>\n</div>",
+    "css": ":root {\n  --nw-color-surface: #ffffff;\n  --nw-color-text: #1f2933;\n  --nw-color-border: #c5ccd3;\n  --nw-color-action-bg: #1f5ae0;\n  --nw-color-action-text: #ffffff;\n  --nw-color-danger-bg: #c62828;\n  --nw-color-danger-text: #ffffff;\n}\n\n/* Base = the secondary variant */\n.nw-button {\n  --nw-button-bg: var(--nw-color-surface);\n  --nw-button-text: var(--nw-color-text);\n  --nw-button-border: var(--nw-color-border);\n  --nw-button-padding-y: 8px;\n  --nw-button-padding-x: 16px;\n\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 1px solid var(--nw-button-border);\n  padding: var(--nw-button-padding-y) var(--nw-button-padding-x);\n  border-radius: 6px;\n  font: inherit;\n}\n.row { display: flex; gap: 8px; flex-wrap: wrap; }\n\n/* Add the primary, danger and sm rules below.\n   Change component tokens only. */\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<div class=\"row\">\n  <button class=\"nw-button\" type=\"button\" id=\"b-default\">Cancel</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"primary\" id=\"b-primary\">Assign driver</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"danger\" id=\"b-danger\">Delete route</button>\n  <button class=\"nw-button\" type=\"button\" data-variant=\"primary\" data-size=\"sm\" id=\"b-small\">Add stop</button>\n</div>",
+    "css": ":root {\n  --nw-color-surface: #ffffff;\n  --nw-color-text: #1f2933;\n  --nw-color-border: #c5ccd3;\n  --nw-color-action-bg: #1f5ae0;\n  --nw-color-action-text: #ffffff;\n  --nw-color-danger-bg: #c62828;\n  --nw-color-danger-text: #ffffff;\n}\n\n/* Base = the secondary variant */\n.nw-button {\n  --nw-button-bg: var(--nw-color-surface);\n  --nw-button-text: var(--nw-color-text);\n  --nw-button-border: var(--nw-color-border);\n  --nw-button-padding-y: 8px;\n  --nw-button-padding-x: 16px;\n\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 1px solid var(--nw-button-border);\n  padding: var(--nw-button-padding-y) var(--nw-button-padding-x);\n  border-radius: 6px;\n  font: inherit;\n}\n.row { display: flex; gap: 8px; flex-wrap: wrap; }\n\n.nw-button[data-variant=\"primary\"] {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n  --nw-button-border: transparent;\n}\n.nw-button[data-variant=\"danger\"] {\n  --nw-button-bg: var(--nw-color-danger-bg);\n  --nw-button-text: var(--nw-color-danger-text);\n  --nw-button-border: transparent;\n}\n.nw-button[data-size=\"sm\"] {\n  --nw-button-padding-y: 4px;\n  --nw-button-padding-x: 12px;\n}\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "secondary-default",
+      "test": "return style('#b-default', 'background-color') === 'rgb(255, 255, 255)' && style('#b-default', 'border-top-color') === 'rgb(197, 204, 211)';"
+    },
+    {
+      "id": "primary",
+      "test": "const b = $('#b-primary'); return style(b, 'background-color') === 'rgb(31, 90, 224)' && style(b, 'color') === 'rgb(255, 255, 255)' && style(b, 'border-top-color') === 'rgba(0, 0, 0, 0)';"
+    },
+    {
+      "id": "danger",
+      "test": "const b = $('#b-danger'); return style(b, 'background-color') === 'rgb(198, 40, 40)' && style(b, 'color') === 'rgb(255, 255, 255)' && style(b, 'border-top-color') === 'rgba(0, 0, 0, 0)';"
+    },
+    {
+      "id": "small",
+      "test": "const b = $('#b-small'); return style(b, 'padding-top') === '4px' && style(b, 'padding-left') === '12px' && style(b, 'background-color') === 'rgb(31, 90, 224)' && style('#b-primary', 'padding-top') === '8px';"
+    },
+    {
+      "id": "tokens-only",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText && /data-(variant|size)/.test(r.selectorText)); return rules.length >= 3 && rules.every((r) => [...r.style].every((p) => p.startsWith('--nw-button-')));"
+    }
+  ]
+}

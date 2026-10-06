@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "orders_messy.csv"
+  ],
+  "starter": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\n# 1. A Series: number of missing values in each column\nmissing_by_col = None\n\n# 2. Replace missing channels with the label \"unknown\" (in messy itself)\n\n# 3. Convert quantity to the nullable integer dtype \"Int64\" (in messy itself)\n\n# 4. Average quantity of the rows where it is known, rounded to 2 decimals\navg_quantity = None\n",
+  "solution": "import pandas as pd\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\nmissing_by_col = messy.isna().sum()\nprint(missing_by_col)\n\nmessy[\"channel\"] = messy[\"channel\"].fillna(\"unknown\")\nmessy[\"quantity\"] = messy[\"quantity\"].astype(\"Int64\")\n\navg_quantity = round(float(messy[\"quantity\"].mean()), 2)\n",
+  "checks": [
+    {
+      "id": "missing-counts",
+      "test": "isinstance(missing_by_col, pd.Series) and int(missing_by_col['quantity']) == 9 and int(missing_by_col['channel']) == 7 and int(missing_by_col.sum()) == 16"
+    },
+    {
+      "id": "channel-labelled",
+      "test": "messy['channel'].isna().sum() == 0 and (messy['channel'] == 'unknown').sum() == 7"
+    },
+    {
+      "id": "quantity-int64",
+      "test": "str(messy['quantity'].dtype) == 'Int64' and int(messy['quantity'].isna().sum()) == 9"
+    },
+    {
+      "id": "avg",
+      "test": "round(float(avg_quantity), 2) == 1.43"
+    },
+    {
+      "id": "rows-kept",
+      "test": "len(messy) == 168"
+    }
+  ]
+}

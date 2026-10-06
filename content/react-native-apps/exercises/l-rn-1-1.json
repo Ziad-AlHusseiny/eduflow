@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["native-views", "js-thread", "css-file", "bridge-json", "react-skills"], "correct": ["native-views", "js-thread", "react-skills"] }

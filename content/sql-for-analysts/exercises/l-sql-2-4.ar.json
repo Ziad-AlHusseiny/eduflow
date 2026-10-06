@@ -1,0 +1,11 @@
+{
+  "title": "من لم يُحِل أحدًا؟",
+  "prompt": "تريد هدى أن تعرض برنامج الإحالة على حسابات الأعمال. اعرض كل عميل في شريحة `enterprise` أو `small_business` **لم يُحِل أحدًا قط** (لا يوجد عميل آخر يحمل معرّفه في `referred_by`).\n\nأعِد `customer_id` و`email` و`segment`. ترتيب الصفوف لا يهم. الكود المبدئي لا يعيد أي صف على الإطلاق؛ أعِد كتابة الـ anti-join حتى يعمل.",
+  "hints": [
+    "شغّل `SELECT referred_by FROM customers LIMIT 10`. ما القيمة التي يحملها معظم هذا العمود، وماذا يفعل NOT IN بها؟",
+    "أعِد كتابة الشرط بالصيغة `NOT EXISTS (SELECT 1 FROM customers AS r WHERE r.referred_by = c.customer_id)`، مع إعطاء الجدول الخارجي الاسم المستعار `c`.",
+    "أو أبقِ NOT IN لكن صفِّ الـ subquery: `SELECT referred_by FROM customers WHERE referred_by IS NOT NULL`."
+  ],
+  "explanation": "يعيد الـ subquery الذي يلي NOT IN قائمة من 600 قيمة، 503 منها NULL. لا يمكن لـ `x NOT IN (..., NULL)` أن يكون TRUE، لأن القيمة المجهولة قد تساوي x، فيُحذف كل صف. أما NOT EXISTS فيطرح سؤالًا بنعم أو لا لكل عميل (هل يوجد عميل قيمة `referred_by` لديه هي أنا؟)، وقيم NULL لا تطابق شيئًا أبدًا، فيتصرّف كما هو مقصود: 88 عميل أعمال، 21 من enterprise و67 من small business، لم يُحيلوا أحدًا قط.",
+  "checks": {}
+}

@@ -1,0 +1,36 @@
+{
+  "title": "أيّ الخيارات كانت ستلتقط هذه الأخطاء؟",
+  "prompt": "نظام الدفع في Cartwheel يُترجم أصلًا مع `strict: true`. ومع ذلك وصلت هذه الأخطاء الثلاثة إلى الإنتاج في الربع الماضي:\n\n1. **انهيار السلة الفارغة.** كان ملخّص الطلب يقرأ `cart.lines[0].sku` لعرض صورة مصغّرة. ومع سلة فارغة، انهارت الصفحة برسالة *Cannot read properties of undefined*.\n2. **اختفاء الكوبونات.** كان نموذج يرسل `{ couponCode: formValue.coupon }` إلى الـ endpoint الخاص بـ PATCH. ونوع `formValue.coupon` هو `string | undefined` (فالحقل اختياري)؛ وحين كان الحقل فارغًا، كانت قيمته `undefined`، والـ API يعامل `couponCode` الموجودة بقيمة undefined على أنها \"أزِل الكوبون\"، فخسر العملاء كوبونات كانوا قد طبّقوها سابقًا.\n3. **خطأ ضريبي صامت.** أُعيدت تسمية `PriceCalculator.applyTax()` إلى `addTax()` في الصنف الأساسي. وما زال الصنف الفرعي `GulfPriceCalculator` يعرّف `applyTax()`، التي لم تعد تتجاوز شيئًا، فطُبّقت على طلبات الخليج النسبة الافتراضية للضريبة.\n\nاختر **كل** خيار في الـ compiler كان سيحوّل، إذا أُضيف إلى `strict`، واحدًا على الأقل من هذه الأخطاء إلى خطأ ترجمة.",
+  "hints": [
+    "فكّر في نوع `cart.lines[0]` اليوم، وأيّ خيار يغيّره.",
+    "خيار واحد يميّز بين `{}` و`{ couponCode: undefined }` لخاصية اختيارية.",
+    "خيار واحد يتطلّب الكلمة المفتاحية `override` على كل method تتجاوز method في الصنف الأساسي، فيتوقّف التجاوز المتقادم عن المرور في الترجمة."
+  ],
+  "explanation": "`noUncheckedIndexedAccess` يجعل نوع `cart.lines[0]` هو `Line | undefined`، فيفرض فحصًا قبل `.sku` (الخطأ 1). و`exactOptionalPropertyTypes` يرفض إسناد `undefined` إلى `couponCode?: string`، فكان على النموذج أن يحذف المفتاح أو يعلن `string | undefined` صراحة (الخطأ 2). و`noImplicitOverride` يتطلّب `override applyTax()` في الصنف الفرعي؛ وما إن تُعاد تسمية الـ method الأساسية حتى يصبح `override` على method لا تتجاوز شيئًا خطأً (الخطأ 3). أما `skipLibCheck` فيقلّل الفحص، و`verbatimModuleSyntax` يتعلّق بطريقة توليد الـ imports، و`allowJs` يُدخل ملفات JavaScript إلى البرنامج؛ ولا يلتقط أيٌّ منها هذه الأخطاء.",
+  "options": {
+    "unchecked-index": {
+      "text": "`noUncheckedIndexedAccess`",
+      "why": "صحيح. يجعل `cart.lines[0]` قد تكون `undefined`، فتصبح قراءة `.sku` دون فحص خطأً (الخطأ 1)."
+    },
+    "exact-optional": {
+      "text": "`exactOptionalPropertyTypes`",
+      "why": "صحيح. يمنع كتابة `undefined` في `couponCode?: string`، وهي بالضبط القيمة التي أزالت الكوبونات (الخطأ 2)."
+    },
+    "implicit-override": {
+      "text": "`noImplicitOverride`",
+      "why": "صحيح. معه يجب أن يعلّم الصنف الفرعي `override applyTax()`، وتفشل تلك العلامة ما إن تُعاد تسمية الـ method الأساسية (الخطأ 3)."
+    },
+    "skip-lib-check": {
+      "text": "`skipLibCheck`",
+      "why": "يتخطّى فحص أنواع ملفات التصريحات، ومعظمها في `node_modules`. يجعل الفحص أسرع وأكثر تساهلًا، ولا يجعله أكثر صرامة أبدًا."
+    },
+    "verbatim-modules": {
+      "text": "`verbatimModuleSyntax`",
+      "why": "يتحكّم في الـ imports التي تُحفظ في JavaScript الناتجة. إنه قيّم للـ bundlers، لكنه لا يفحص الوصول إلى الخصائص ولا التجاوزات."
+    },
+    "allow-js": {
+      "text": "`allowJs`",
+      "why": "يتيح لملفات `.js` الانضمام إلى البرنامج. إنه أداة ترحيل ولا يضيف أي فحوص إلى كود TypeScript الموجود."
+    }
+  }
+}

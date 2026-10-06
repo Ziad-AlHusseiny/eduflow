@@ -1,0 +1,32 @@
+{
+  "id": "react-fundamentals",
+  "project": "Watchlist: a small React 19 app for the movies you want to see. You add titles, mark them watched, filter the list and keep it in localStorage, then style it with Tailwind CSS and deploy it to Vercel.",
+  "sections": [
+    { "id": "s-rf-1", "lessons": [
+      { "id": "l-rf-1-1", "minutes": 9 },
+      { "id": "l-rf-1-2", "minutes": 14 },
+      { "id": "l-rf-1-3", "minutes": 18 },
+      { "id": "l-rf-1-4", "minutes": 17 }
+    ] },
+    { "id": "s-rf-2", "lessons": [
+      { "id": "l-rf-2-1", "minutes": 16 },
+      { "id": "l-rf-2-2", "minutes": 21 },
+      { "id": "l-rf-2-3", "minutes": 19 },
+      { "id": "l-rf-2-4", "minutes": 14 },
+      { "id": "l-rf-2-5", "minutes": 22 }
+    ] },
+    { "id": "s-rf-3", "lessons": [
+      { "id": "l-rf-3-1", "minutes": 20 },
+      { "id": "l-rf-3-2", "minutes": 15 },
+      { "id": "l-rf-3-3", "minutes": 24 },
+      { "id": "l-rf-3-4", "minutes": 18 },
+      { "id": "l-rf-3-5", "minutes": 19 }
+    ] },
+    { "id": "s-rf-4", "lessons": [
+      { "id": "l-rf-4-1", "minutes": 26 },
+      { "id": "l-rf-4-2", "minutes": 17 },
+      { "id": "l-rf-4-3", "minutes": 12 },
+      { "id": "l-rf-4-4", "minutes": 19 }
+    ] }
+  ]
+}

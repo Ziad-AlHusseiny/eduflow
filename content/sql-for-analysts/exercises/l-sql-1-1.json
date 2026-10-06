@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Highest-margin products, by margin percent\nSELECT\n  name,\n  unit_price,\n  ROUND(unit_price - unit_cost, 2) AS margin\nFROM products\nORDER BY margin DESC\nLIMIT 5;",
+  "solution": "SELECT\n  name,\n  unit_price,\n  ROUND(unit_price - unit_cost, 2) AS margin,\n  ROUND((unit_price - unit_cost) / unit_price * 100, 1) AS margin_pct\nFROM products\nORDER BY margin_pct DESC\nLIMIT 5;",
+  "orderMatters": true
+}

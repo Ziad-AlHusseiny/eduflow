@@ -1,0 +1,33 @@
+{
+  "title": "True or false: what a container is",
+  "prompt": "A teammate is writing an onboarding doc for notes-api and asks you to review five claims about containers. Select **every** statement that is correct.",
+  "hints": [
+    "Ask of each claim: is this about what a process can see, what it can use, or what's on its disk?",
+    "Namespaces are about visibility; cgroups are about resource limits.",
+    "Three of the five are correct."
+  ],
+  "explanation": "Containers are host processes that share the host kernel, which is why they start fast and why isolation is weaker than a VM. Each container gets its own writable layer on top of the shared read-only image, and one image can back any number of containers. Docker on Linux does not create a VM per container, and cgroups limit resource *use*; it's namespaces that control what a process can *see*.",
+  "options": {
+    "shared-kernel": {
+      "text": "Every container on a Linux host uses the same kernel as the host.",
+      "why": "Correct. There is no guest kernel. That is the source of both the speed and the weaker isolation."
+    },
+    "own-writable": {
+      "text": "Each container gets its own writable layer; changes there vanish when the container is removed.",
+      "why": "Correct. That's why data that must survive goes in a volume."
+    },
+    "vm-each": {
+      "text": "Docker creates a small virtual machine for each container so they can't affect each other.",
+      "why": "Not on Linux. Docker Desktop uses one shared VM on macOS and Windows, but containers inside it are still processes on one kernel."
+    },
+    "cgroups-see": {
+      "text": "cgroups decide which files and processes a container is allowed to see.",
+      "why": "That's namespaces. cgroups cap and account for CPU, memory and I/O."
+    },
+    "image-many": {
+      "text": "One image can be the template for many running containers at once.",
+      "why": "Correct. Scaling to six replicas means six containers from one image."
+    }
+  },
+  "checks": {}
+}

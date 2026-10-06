@@ -1,0 +1,23 @@
+{
+  "kind": "python",
+  "starter": "from sklearn.datasets import load_diabetes\nfrom sklearn.linear_model import Lasso, Ridge\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import PolynomialFeatures, StandardScaler\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\n\n# 1. Pipeline: degree-2 PolynomialFeatures (include_bias=False) -> StandardScaler -> Lasso(alpha=1)\nlasso_model = make_pipeline(PolynomialFeatures(degree=2, include_bias=False), Lasso(alpha=1))\nlasso_model.fit(X_train, y_train)\n\n# 2. Test R2 and the number of coefficients that are exactly zero\nlasso_r2 = None\nn_zero = None\n\n# 3. Names of the generated columns Lasso kept (non-zero coefficient), as a list of strings\nkept = None\n",
+  "solution": "from sklearn.datasets import load_diabetes\nfrom sklearn.linear_model import Lasso, Ridge\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import PolynomialFeatures, StandardScaler\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)\n\nlasso_model = make_pipeline(PolynomialFeatures(degree=2, include_bias=False), StandardScaler(), Lasso(alpha=1))\nlasso_model.fit(X_train, y_train)\n\nlasso_r2 = lasso_model.score(X_test, y_test)\ncoefs = lasso_model[-1].coef_\nn_zero = int((coefs == 0).sum())\n\nnames = lasso_model[0].get_feature_names_out()\nkept = [name for name, c in zip(names, coefs) if c != 0]\nprint(round(lasso_r2, 3), n_zero, len(kept))\n",
+  "checks": [
+    {
+      "id": "scaled",
+      "test": "[type(s).__name__ for s in lasso_model] == ['PolynomialFeatures', 'StandardScaler', 'Lasso'] and lasso_model[-1].alpha == 1"
+    },
+    {
+      "id": "r2",
+      "test": "lasso_r2 is not None and abs(float(lasso_r2) - 0.515) < 0.005"
+    },
+    {
+      "id": "zeros",
+      "test": "n_zero is not None and int(n_zero) == int((lasso_model[-1].coef_ == 0).sum()) == 30"
+    },
+    {
+      "id": "kept",
+      "test": "kept is not None and len(kept) == 35 and 'bmi' in list(kept) and all(isinstance(k, str) for k in kept)"
+    }
+  ]
+}

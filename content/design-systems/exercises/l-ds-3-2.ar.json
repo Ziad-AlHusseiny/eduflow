@@ -1,0 +1,27 @@
+{
+  "title": "اختر الـ API الخاص بالـ Dialog",
+  "prompt": "تحتاج Northwind إلى Dialog. الاستخدامات المعروفة حتى الآن: تأكيد حذف (عنوان وجملة وزرّان)، ونموذج إسناد سائق فيه قائمة قابلة للبحث، ومعاينة مسار فيها خريطة ولوحة جانبية، ونموذج اشتراك في النشرة البريدية للتسويق. وصلت أربعة اقتراحات للـ API. اختر الاقتراح الذي توافق عليه.\n\n```tsx\n// A\n<Dialog title=\"Delete route?\" body=\"…\" confirmLabel=\"Delete\" confirmVariant=\"danger\"\n        cancelLabel=\"Cancel\" showSidePanel={false} onConfirm={…} />\n\n// B\n<Dialog open={open} onOpenChange={setOpen}>{anything}</Dialog>\n\n// C\n<Dialog open={open} onOpenChange={setOpen}>\n  <Dialog.Header><Dialog.Title>Delete route?</Dialog.Title></Dialog.Header>\n  <Dialog.Body>…</Dialog.Body>\n  <Dialog.Footer>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant=\"danger\" onClick={remove}>Delete</Button>\n  </Dialog.Footer>\n</Dialog>\n\n// D\n// No shared Dialog: each team builds its own on top of the native <dialog> element.\n```",
+  "hints": [
+    "عدّد مدى اختلاف الاستخدامات الأربعة المعروفة. أيّ API يستوعب خريطة مع لوحة جانبية دون props جديدة؟",
+    "ثم اسأل أيّ خيار ما زال يسمح للنظام بامتلاك إدارة التركيز والمسافات والاسم الذي يُعرِّف به العنوانُ النافذةَ لتقنيات الوصول."
+  ],
+  "explanation": "الاقتراح C يعتمد الـ composition: النظام يملك الطبقة المعتمة وإدارة التركيز والمسافات والعنوان الذي يسمّي النافذة، بينما ترتّب الفرق محتوى الترويسة والمتن والتذييل بحرية. أما A فيناسب تأكيد الحذف ويتحوّل إلى انفجار props من حالة الاستخدام الثانية. وB مرن لكنه يتخلّى عن البنية، فيحلّ كل فريق مسائل العناوين والمسافات والتذييلات بطريقته. وD يرمي عمل النظام في إمكانية الوصول بالكامل. ويمكن لاحقًا بناء مكوّن صغير مُعَدّ بالـ props باسم `ConfirmDialog` فوق C للحالة الأكثر شيوعًا.",
+  "options": {
+    "props": {
+      "text": "A: Dialog واحد يُعَدّ بالكامل عبر الـ props.",
+      "why": "يناسب التأكيد ويفشل في معاينة الخريطة؛ وكل استخدام جديد يصبح prop إضافيًا مثل `showSidePanel`."
+    },
+    "children-only": {
+      "text": "B: Dialog يعرض أيّ أبناء يستقبلهم.",
+      "why": "مرن إلى أقصى حدّ، لكن النظام لم يعد يملك العناوين والمسافات والتذييلات، فتتباعد النوافذ من جديد."
+    },
+    "compound": {
+      "text": "C: Dialog مركّب من قطع Header وTitle وBody وFooter.",
+      "why": "صحيح. يغطّي الاستخدامات الأربعة كلها بينما يحتفظ النظام بالسيطرة على البنية والأنماط وإمكانية الوصول."
+    },
+    "per-team": {
+      "text": "D: لا مكوّن مشترك؛ تستخدم الفرق عنصر `<dialog>` الأصلي مباشرة.",
+      "why": "العنصر الأصلي أساس جيد لـ Dialog الخاص بالنظام، لكن ترك كل فريق ينسّقه ويسمّيه بنفسه يعيد إنتاج التناقض الذي وُجد النظام لإزالته."
+    }
+  }
+}

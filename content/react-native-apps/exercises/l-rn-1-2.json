@@ -1,0 +1,12 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# 1. Create the project\nnpx {{0}}@latest trailhead\ncd trailhead\n\n# 2. Start the dev server (Metro)\nnpx expo {{1}}\n\n# 3. Add GPS support at the version that matches your SDK\nnpx expo {{2}} expo-location\n\n# 4. Check the project for version mismatches\nnpx {{3}}\n\n# 5. Build and run a development build on the iOS Simulator\nnpx expo {{4}}",
+  "blanks": [
+    { "answers": ["create-expo-app"] },
+    { "answers": ["start"] },
+    { "answers": ["install"] },
+    { "answers": ["expo-doctor", "expo-doctor@latest"] },
+    { "answers": ["run:ios"] }
+  ]
+}

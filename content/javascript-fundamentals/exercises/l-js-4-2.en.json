@@ -1,0 +1,17 @@
+{
+  "title": "Delete with one delegated listener",
+  "prompt": "Each expense has a Delete button. The starter attaches a listener to each button, but `renderExpenses` replaces the buttons after the first delete, so the second delete does nothing, and new expenses can never be deleted.\n\nReplace the loop at the bottom with **one** click listener on `#expense-list`. When a click lands on (or inside) a `.delete` button, remove that expense from `expenses` using the item's `data-id`, then call `renderExpenses()`. Clicks elsewhere in the list must do nothing.\n",
+  "hints": [
+    "Attach it to the list, which is never replaced: `list.addEventListener(\"click\", (event) => { … });`.",
+    "`event.target.closest(\".delete\")` gives the button, or `null` if the click was not on one. Return early when it is `null`.",
+    "The id is on the `<li>`: `button.closest(\"li\").dataset.id`. Then `expenses = expenses.filter((e) => e.id !== id);` and `renderExpenses();`."
+  ],
+  "explanation": "The list element is created once by the HTML and never replaced, so a listener on it survives every render. Clicks on any Delete button bubble up to it, including buttons for expenses that did not exist when the listener was added. `closest(\".delete\")` finds the button even if the click landed on something inside it, and returns `null` for clicks on the label, which the early `return` ignores. The handler changes only the data and then re-renders, so the list and the total always agree with `expenses`.\n",
+  "checks": {
+    "first-delete": "Deleting an expense removes it and updates the total",
+    "second-delete": "A second delete still works after the list re-rendered",
+    "new-items": "Expenses added later can be deleted too",
+    "ignore-other-clicks": "Clicking an item's label deletes nothing",
+    "data-updated": "The expenses array itself is updated, not just the page"
+  }
+}

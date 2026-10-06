@@ -1,0 +1,25 @@
+employee_id,first_name,last_name,title,department,manager_id,hire_date,salary
+1,Rania,Aziz,Chief Executive Officer,Executive,,2019-03-01,210000
+2,Mark,Evans,VP Operations,Operations,1,2019-06-15,165000
+3,Huda,Saleh,VP Marketing,Marketing,1,2020-01-06,158000
+4,Peter,Weber,VP Engineering,Engineering,1,2019-09-02,172000
+5,Samir,Khalil,Warehouse Manager,Operations,2,2020-04-20,82000
+6,Julia,Fischer,Customer Support Lead,Operations,2,2021-02-01,76000
+7,Aya,Mostafa,Support Specialist,Operations,6,2022-05-16,52000
+8,Tom,Hughes,Support Specialist,Operations,6,2023-01-09,50000
+9,Nadia,Ibrahim,Support Specialist,Operations,6,2024-03-04,49000
+10,Ben,Clarke,Logistics Coordinator,Operations,5,2021-08-23,58000
+11,Omar,Nasser,Growth Marketer,Marketing,3,2021-11-01,88000
+12,Lena,Schmidt,Content Lead,Marketing,3,2022-02-14,84000
+13,Yara,Hussein,Data Analyst,Marketing,3,2023-06-05,79000
+14,Chris,Walker,Data Analyst,Marketing,13,2024-09-02,71000
+15,Felix,Müller,Engineering Manager,Engineering,4,2020-07-13,145000
+16,Salma,Farouk,Senior Frontend Engineer,Engineering,15,2021-03-22,132000
+17,Ryan,Martin,Backend Engineer,Engineering,15,2022-10-10,118000
+18,Mona,Rahman,Mobile Engineer,Engineering,15,2023-04-17,121000
+19,Daniel,Roy,QA Engineer,Engineering,15,2024-01-15,96000
+20,Ivy,Gagnon,Product Designer,Engineering,4,2022-06-27,112000
+21,Karim,Youssef,Finance Manager,Finance,1,2020-11-02,118000
+22,Grace,Taylor,Accountant,Finance,21,2022-08-08,68000
+23,Adam,Smith,Buyer,Operations,2,2023-09-11,64000
+24,Reem,Haddad,Junior Data Analyst,Marketing,13,2025-07-01,58000

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "version-control",
+    "term": "التحكم في الإصدارات (Version control)",
+    "definition": "نظام يسجّل لقطات من المشروع عبر الزمن، فتستطيع أن ترى ما الذي تغيّر ومتى ولماذا، وأن تعود إلى نسخ سابقة، وأن تجمع عمل عدة أشخاص.",
+    "lesson": "l-git-1-1"
+  },
+  {
+    "id": "repository",
+    "term": "المستودع (Repository)",
+    "definition": "السجلّ الكامل للمشروع وإعداداته، مخزّنًا في مجلد .git المخفي؛ يحتوي كل commit وكل فرع وكل tag، ويُنشأ بـ git init أو git clone.",
+    "lesson": "l-git-1-2"
+  },
+  {
+    "id": "commit",
+    "term": "Commit",
+    "definition": "لقطة مسجّلة لكل ملف متتبَّع، مع المؤلف والتاريخ والرسالة ومؤشّر إلى الـ commit الأب. معرّفه hash مشتقّ من كل ذلك، لذا لا يتغيّر أبدًا.",
+    "lesson": "l-git-1-1"
+  },
+  {
+    "id": "working-tree",
+    "term": "مجلد العمل (Working tree)",
+    "definition": "ملفات المشروع على القرص التي تفتحها وتعدّلها. يقارنها Git بالـ index وبآخر commit ليبلّغك بما تغيّر.",
+    "lesson": "l-git-1-3"
+  },
+  {
+    "id": "index",
+    "term": "منطقة التجهيز (Index / staging area)",
+    "definition": "الـ commit التالي قيد التجميع. ينسخ git add المحتوى الحالي للملف إليه، ويحوّله git commit إلى commit، ويُخرج git restore --staged المحتوى منه.",
+    "lesson": "l-git-1-3"
+  },
+  {
+    "id": "untracked-file",
+    "term": "ملف غير متتبَّع (Untracked file)",
+    "definition": "ملف في مجلد العمل لم يسجّله Git قط وليس مجهّزًا. يبقى خارج الـ commits حتى تنفّذ git add له، ويستطيع .gitignore إخفاءه.",
+    "lesson": "l-git-1-2"
+  },
+  {
+    "id": "dag",
+    "term": "رسم الـ commits البياني (DAG)",
+    "definition": "سجلّ Git كرسم بياني موجَّه غير دوري: يشير كل commit إلى أبيه أو أبويه، وتتبّع هذه الروابط إلى الخلف من أي commit يعطيك سجلّه.",
+    "lesson": "l-git-1-4"
+  },
+  {
+    "id": "merge-commit",
+    "term": "Merge commit",
+    "definition": "commit له أبوان، يُنشأ حين يجمع Git فرعين تقدّم كلاهما. ولقطته تحتوي العمل من خطَّي السجلّ معًا.",
+    "lesson": "l-git-1-4"
+  },
+  {
+    "id": "branch",
+    "term": "الفرع (Branch)",
+    "definition": "مؤشّر مسمّى ومتحرّك إلى commit واحد. إنشاء commit وأنت على فرع يقدّمه إلى الـ commit الجديد؛ وإنشاء فرع لا ينسخ أي ملفات.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "head",
+    "term": "HEAD",
+    "definition": "مؤشّر Git إلى مكانك. يسمّي عادةً الفرع الحالي، والفرع يسمّي commit؛ و HEAD~1 تعني الـ commit الذي يسبق الـ commit الذي أنت عليه.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "detached-head",
+    "term": "Detached HEAD",
+    "definition": "الحالة التي يشير فيها الـ HEAD مباشرة إلى commit بدل فرع. الـ commits الجديدة المنشأة هناك لا تنتمي إلى أي فرع حتى تنشئ واحدًا بـ git switch -c.",
+    "lesson": "l-git-2-1"
+  },
+  {
+    "id": "fast-forward",
+    "term": "Fast-forward",
+    "definition": "دمج لم يتحرّك فيه الفرع الحالي منذ بدأ الفرع الآخر، فيقدّم Git المؤشّر إلى الأمام ببساطة ولا ينشئ merge commit.",
+    "lesson": "l-git-2-2"
+  },
+  {
+    "id": "merge-base",
+    "term": "Merge base",
+    "definition": "أحدث commit يتشاركه فرعان. يقارن Git طرف كل فرع به أثناء الدمج الثلاثي ليقرّر أيّ التغييرات يأخذ.",
+    "lesson": "l-git-2-2"
+  },
+  {
+    "id": "merge-conflict",
+    "term": "تعارض الدمج (Merge conflict)",
+    "definition": "ما يحدث حين يغيّر الفرعان الأسطر نفسها منذ الـ merge base. يكتب Git النسختين بين علامات وينتظر منك أن تحرّر الملف وتنفّذ git add وتكمل.",
+    "lesson": "l-git-2-3"
+  },
+  {
+    "id": "rebase",
+    "term": "Rebase",
+    "definition": "إعادة تشغيل commits فرع فوق commit آخر، فتنتج commits جديدة بمعرّفات جديدة وسجلّ خطّي. آمن فقط للـ commits التي لم يبنِ عليها أحد غيرك.",
+    "lesson": "l-git-2-4"
+  },
+  {
+    "id": "force-with-lease",
+    "term": "git push --force-with-lease",
+    "definition": "رفع بالقوة لا يكتب فوق الفرع البعيد إلا إن كان ما زال يشير إلى حيث رأيته آخر مرة، فلن تمحو بصمت commits رفعها شخص آخر منذ آخر fetch لك.",
+    "lesson": "l-git-2-4"
+  },
+  {
+    "id": "remote",
+    "term": "المستودع البعيد (Remote)",
+    "definition": "عنوان URL مسمّى لنسخة أخرى من الـ repository، على GitHub في الغالب. و origin هو الاسم المتعارف عليه للنسخة التي استنسخت منها أو ترفع إليها.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "remote-tracking-branch",
+    "term": "فرع تتبّع بعيد (Remote-tracking branch)",
+    "definition": "سجلّ محلي للقراءة فقط، مثل origin/main، لمكان فرع ما على الـ remote عند آخر fetch أو pull أو push. لا يتحرّك إلا حين تتواصل مع الـ remote.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "upstream-branch",
+    "term": "Upstream branch",
+    "definition": "الفرع البعيد الذي يتتبّعه فرع محلي، ويُضبط بـ git push -u. يجعل git push و git pull المجرّدين يعملان، ويتيح لـ git status عرض عدد الـ commits المتقدّمة والمتأخّرة.",
+    "lesson": "l-git-3-1"
+  },
+  {
+    "id": "ssh-key",
+    "term": "زوج مفاتيح SSH (SSH key pair)",
+    "definition": "مفتاحان مترابطان يُستخدمان لإثبات هويتك أمام GitHub: المفتاح الخاص يبقى على جهازك، والمفتاح العام ذو الامتداد .pub يُضاف إلى حسابك على GitHub.",
+    "lesson": "l-git-3-2"
+  },
+  {
+    "id": "pull-request",
+    "term": "طلب الدمج (Pull request)",
+    "definition": "اقتراح على GitHub لدمج فرع في آخر، يعلّق فيه المراجعون وتعمل فيه الفحوص الآلية، ثم يُدمج التغيير في النهاية. والرفع الجديد إلى الفرع يحدّثه.",
+    "lesson": "l-git-3-3"
+  },
+  {
+    "id": "fork",
+    "term": "Fork",
+    "definition": "نسختك الخاصة على GitHub من repository يملكه شخص آخر. ترفع إليها الفروع وتفتح منها pull requests عائدة إلى الأصل، الذي يُسمّى بحسب العُرف upstream.",
+    "lesson": "l-git-3-4"
+  },
+  {
+    "id": "revert",
+    "term": "git revert",
+    "definition": "أمر ينشئ commit جديدًا يطبّق العكس التام لـ commit سابق. يتراجع عن التغييرات دون إعادة كتابة السجلّ، لذا فهو آمن على الفروع المشتركة.",
+    "lesson": "l-git-4-1"
+  },
+  {
+    "id": "reflog",
+    "term": "Reflog",
+    "definition": "سجلّ محلي لكل موضع شغله الـ HEAD، مثل الـ commits وعمليات الـ reset والـ rebase والانتقال بين الفروع. يتيح لك العثور على commits لم يعد يشير إليها أي فرع واستعادتها.",
+    "lesson": "l-git-4-1"
+  },
+  {
+    "id": "stash",
+    "term": "Stash",
+    "definition": "مكان تركن فيه التغييرات غير المسجّلة لتحصل على مجلد عمل نظيف. يحفظها git stash push، ويعيدها git stash pop؛ أضف -u لتضمين الملفات غير المتتبَّعة.",
+    "lesson": "l-git-4-2"
+  },
+  {
+    "id": "gitignore",
+    "term": ".gitignore",
+    "definition": "ملف يسرد أنماط الملفات غير المتتبَّعة التي يجب ألّا يتتبّعها Git أبدًا، مثل node_modules/ وناتج البناء و .env. ولا يؤثّر في الملفات المتتبَّعة أصلًا.",
+    "lesson": "l-git-4-2"
+  },
+  {
+    "id": "conventional-commits",
+    "term": "Conventional Commits",
+    "definition": "صيغة لرسائل الـ commits، type(optional scope): description، تستخدم أنواعًا مثل feat و fix و docs، لكي تستطيع الأدوات توليد سجلّات التغيير وأرقام الإصدارات الدلالية.",
+    "lesson": "l-git-4-3"
+  },
+  {
+    "id": "annotated-tag",
+    "term": "Tag مشروح (Annotated tag)",
+    "definition": "علامة دائمة ومسمّاة على commit تخزّن أيضًا اسم الواسم والتاريخ ورسالة. يُنشأ بـ git tag -a، وهو الطريقة المعتادة لتعليم الإصدارات.",
+    "lesson": "l-git-4-3"
+  },
+  {
+    "id": "github-actions-workflow",
+    "term": "GitHub Actions workflow",
+    "definition": "ملف YAML في .github/workflows/ يشغّل jobs على آلات GitHub حين تقع أحداث مثل pull_request. وكل job يبلّغ عن status check على الـ pull request.",
+    "lesson": "l-git-4-4"
+  },
+  {
+    "id": "ruleset",
+    "term": "Ruleset",
+    "definition": "مجموعة مسمّاة من قواعد GitHub للفروع أو الـ tags، مثل اشتراط pull request، واشتراط نجاح الـ status checks، ومنع الرفع بالقوة إلى main.",
+    "lesson": "l-git-4-4"
+  }
+]

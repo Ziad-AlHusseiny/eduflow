@@ -1,0 +1,10 @@
+{
+  "title": "Where the token leaks",
+  "prompt": "This image for an internal tool installs packages from a private registry. The author believes deleting `.npmrc` on line 8 keeps the token safe. Select the **two** lines that put the token into the image where anyone who pulls it can recover it.",
+  "hints": [
+    "How does the token get into the build, and is that mechanism recorded anywhere?",
+    "A file written in one layer still exists in that layer even if a later layer deletes it."
+  ],
+  "explanation": "Line 3 passes the token as a build argument, which is recorded in the image's build history. Line 6 writes it into `.npmrc` in its own layer; line 8's `rm` only hides the file in a later layer, so extracting the line-6 layer reveals it. Use a secret mount, which exists only for the one step that needs it:\n\n```dockerfile\nRUN --mount=type=secret,id=npmrc,target=/root/.npmrc \\\n    npm ci --omit=dev\n```\n```bash\ndocker build --secret id=npmrc,src=$HOME/.npmrc -t tool:1.0.0 .\n```\nThen rotate the token, because every copy of the old image still contains it.",
+  "checks": {}
+}

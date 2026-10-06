@@ -1,0 +1,10 @@
+{
+  "title": "اعثر على قاتلَي الـ cache",
+  "prompt": "البناء في الـ CI لهذا الـ Dockerfile يستغرق ثماني دقائق حتى حين يغيّر الـ commit سطرًا واحدًا من TypeScript، وفي الأسبوع الماضي فشلت إضافة حزمة نظام ثانية برسالة `Unable to locate package`. اختر السطرين **الاثنين** المسؤولين.",
+  "hints": [
+    "أي سطر يتغيّر مفتاح الـ cache الخاص به مع كل commit، وما الذي يُنفَّذ بعده؟",
+    "أي `RUN` تُخزَّن في الـ cache حسب نصّها وحده، فقد يكون عمر نتيجتها أشهرًا؟"
+  ],
+  "explanation": "السطر 6 ينسخ الـ context كاملًا قبل `npm ci`، فأي تغيير في الكود يُخفق في الـ cache هناك ويعيد تثبيت كل الاعتماديات. انسخ ملفات التعريف وحدها أولًا، ثم ثبّت الاعتماديات، ثم انسخ الباقي.\n\nالسطر 3 يخزّن `apt-get update` وحده في الـ cache؛ فحين يتغيّر سطر التثبيت، يعمل اعتمادًا على فهرس من يوم إنشاء الـ cache. اجمع التحديث والتثبيت في `RUN` واحدة:\n\n```dockerfile\nRUN apt-get update \\\n && apt-get install -y --no-install-recommends ca-certificates \\\n && rm -rf /var/lib/apt/lists/*\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci\nCOPY . .\nRUN npm run build\n```",
+  "checks": {}
+}

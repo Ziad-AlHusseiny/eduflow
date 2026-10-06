@@ -1,0 +1,38 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"wrap\" dir=\"ltr\">\n  <article class=\"session-card\">\n    <span class=\"time\">09:30</span>\n    <h3>Logical Properties for Real Products</h3>\n    <a class=\"more\" href=\"#details\">Details <span class=\"arrow\" aria-hidden=\"true\">→</span></a>\n  </article>\n</div>",
+    "css": ".wrap { width: 360px; }\n.session-card {\n  padding-top: 12px;\n  padding-bottom: 12px;\n  border-radius: 12px;\n  background: #f8fafc;\n}\n.session-card h3 { margin: 8px 0; }\n\n.session-card {\n  border-left: 6px solid #6d28d9;\n  padding-left: 20px;\n  padding-right: 8px;\n  text-align: left;\n}\n.time {\n  display: inline-block;\n  margin-right: 12px;\n  color: #6b7280;\n}\n.more {\n  display: block;\n  text-align: right;\n}\n.arrow {\n  display: inline-block;\n  margin-left: 4px;\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"wrap\" dir=\"ltr\">\n  <article class=\"session-card\">\n    <span class=\"time\">09:30</span>\n    <h3>Logical Properties for Real Products</h3>\n    <a class=\"more\" href=\"#details\">Details <span class=\"arrow\" aria-hidden=\"true\">→</span></a>\n  </article>\n</div>",
+    "css": ".wrap { width: 360px; }\n.session-card {\n  padding-top: 12px;\n  padding-bottom: 12px;\n  border-radius: 12px;\n  background: #f8fafc;\n}\n.session-card h3 { margin: 8px 0; }\n\n.session-card {\n  border-inline-start: 6px solid #6d28d9;\n  padding-inline: 20px 8px;\n  text-align: start;\n}\n.time {\n  display: inline-block;\n  margin-inline-end: 12px;\n  color: #6b7280;\n}\n.more {\n  display: block;\n  text-align: end;\n}\n.arrow {\n  display: inline-block;\n  margin-inline-start: 4px;\n}\n.arrow:dir(rtl) {\n  scale: -1 1;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "ltr-unchanged",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('ltr'); return px('.session-card', 'border-left-width') === 6 && px('.session-card', 'border-right-width') === 0 && px('.session-card', 'padding-left') === 20 && px('.time', 'margin-right') === 12 && !flipped();"
+    },
+    {
+      "id": "rtl-border",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('rtl'); let ok = false; try { ok = (px('.session-card', 'border-right-width') === 6 && px('.session-card', 'border-left-width') === 0 && style('.session-card', 'border-right-color') === 'rgb(109, 40, 217)'); } finally { await setDir('ltr'); } return ok;"
+    },
+    {
+      "id": "rtl-padding",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('rtl'); let ok = false; try { ok = (px('.session-card', 'padding-right') === 20 && px('.session-card', 'padding-left') === 8); } finally { await setDir('ltr'); } return ok;"
+    },
+    {
+      "id": "rtl-time-gap",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('rtl'); let ok = false; try { ok = (px('.time', 'margin-left') === 12 && px('.time', 'margin-right') === 0); } finally { await setDir('ltr'); } return ok;"
+    },
+    {
+      "id": "rtl-link-aligned",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('rtl'); let ok = false; try { ok = (['end', 'left'].includes(style('.more', 'text-align')) && px('.arrow', 'margin-right') === 4); } finally { await setDir('ltr'); } return ok;"
+    },
+    {
+      "id": "rtl-arrow-flips",
+      "test": "const setDir = async (d) => { $('.wrap').setAttribute('dir', d); await tick(16); }; const px = (sel, p) => parseFloat(style(sel, p)); const flipped = () => style('.arrow', 'scale') === '-1 1' || style('.arrow', 'transform').startsWith('matrix(-1'); await setDir('rtl'); let ok = false; try { ok = (flipped()); } finally { await setDir('ltr'); } return ok;"
+    }
+  ]
+}

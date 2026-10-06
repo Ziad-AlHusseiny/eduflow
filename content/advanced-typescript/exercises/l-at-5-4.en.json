@@ -1,0 +1,18 @@
+{
+  "title": "Put the migration playbook in order",
+  "prompt": "Cartwheel's order-management app is 1,500 JavaScript files and must keep shipping every day. Put these migration steps in the order the lesson recommends, from the first pull request to the last.",
+  "hints": [
+    "The very first step changes nothing about how the app is built or run.",
+    "You can get type checking in JavaScript files before renaming any of them.",
+    "Converted files should import code that is already typed, and the extra strictness flags come once everything is TypeScript."
+  ],
+  "explanation": "First, a tsconfig with `allowJs` and `noEmit`, checked in CI, lets both languages coexist without touching the build. Next, `// @ts-check` and JSDoc on the boundaries (API client, domain models) give the most protection before any renaming. Then convert leaf modules, and work inward, so each converted file imports typed code. When no `.js` source remains, drop `allowJs`. Finally, ratchet up extra flags such as `noUncheckedIndexedAccess` one at a time, suppressing existing errors with `@ts-expect-error` and a ticket so new code meets the higher bar immediately.",
+  "items": {
+    "add-tsconfig": "Add a tsconfig with `allowJs`, `noEmit` and `strict`, and run `tsc --noEmit` in CI next to the existing build",
+    "check-boundaries": "Add `// @ts-check` and JSDoc types to the API client and domain model files",
+    "convert-leaves": "Rename leaf modules (helpers that import nothing internal) from `.js` to `.ts`",
+    "convert-inward": "Convert the modules that depend on already-converted ones, working toward the entry points",
+    "drop-allowjs": "Remove `allowJs` once no `.js` source files remain",
+    "ratchet-flags": "Turn on `noUncheckedIndexedAccess` and other extra flags one at a time, marking old errors with `@ts-expect-error`"
+  }
+}

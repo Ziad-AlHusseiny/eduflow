@@ -1,0 +1,37 @@
+{
+  "kind": "fill",
+  "language": "tsx",
+  "template": "const styles = StyleSheet.create({\n  screen: { {{0}}: 1, backgroundColor: '#f6f8f6' },\n  row: {\n    flexDirection: '{{1}}',\n    alignItems: '{{2}}',\n    gap: 12,\n    padding: 12,\n  },\n  thumb: { width: 56, height: 56, borderRadius: 8 },\n  body: { flex: {{3}} },\n  chips: { flexDirection: 'row', flexWrap: '{{4}}', gap: 8 },\n  badge: { position: '{{5}}', top: -4, right: -4 },\n});",
+  "blanks": [
+    {
+      "answers": [
+        "flex"
+      ]
+    },
+    {
+      "answers": [
+        "row"
+      ]
+    },
+    {
+      "answers": [
+        "center"
+      ]
+    },
+    {
+      "answers": [
+        "1"
+      ]
+    },
+    {
+      "answers": [
+        "wrap"
+      ]
+    },
+    {
+      "answers": [
+        "absolute"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Bring back the focus ring",
+  "prompt": "The prototype's reset removes every focus outline. Replace it so that:\n\n1. Any element with **visible focus** gets a `2px solid` outline in `var(--focus)` with an `outline-offset` of at least `2px` (and no ring when it isn't focused).\n2. When the card's link has visible focus, the **`.session-card`** shows the same ring (you may hide the link's own ring in that case).\n3. Focus scrolling stops below the **64px** sticky header.",
+  "hints": [
+    "Delete the `:focus { outline: none; }` reset; it's the cause, not something to work around.",
+    "`:focus-visible` is the selector for the ring; `:has(a:focus-visible)` lets the card react to its link.",
+    "Scroll padding goes on the scroll container, the root: `html { scroll-padding-top: 64px; }`."
+  ],
+  "explanation": "`:focus-visible` shows the outline when the browser judges an indicator helps (keyboard focus, text fields) and skips it after mouse clicks on buttons, which is what the reset was clumsily trying to achieve. An outline doesn't affect layout and survives forced-colors mode, and `outline-offset` keeps it clear of the element. `.session-card:has(a:focus-visible)` moves the ring to the card, so hiding the link's own outline is safe there. `scroll-padding-top: 64px` on the root tells the browser the top of the viewport is covered, so focus never lands under the sticky header.",
+  "checks": {
+    "button-ring": "A focused button gets a 2px solid ring in the focus color",
+    "ring-offset": "The ring has an offset of at least 2px",
+    "no-ring-unfocused": "No ring when nothing is focused",
+    "card-ring": "The card shows the ring when its link is focused",
+    "scroll-padding": "Focus scrolling clears the 64px header"
+  }
+}

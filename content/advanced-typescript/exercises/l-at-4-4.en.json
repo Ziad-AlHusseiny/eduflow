@@ -1,0 +1,16 @@
+{
+  "title": "Type the event bus and the query builder",
+  "prompt": "Make Cartwheel's two utilities fully typed without changing their runtime behaviour:\n\n1. `Emitter<Events>`: `on(event, handler)` must only accept event names from `Events` and give the handler that event's payload type; `emit(event, payload)` must check the payload, and events whose payload is `undefined` must be emitted with no payload argument.\n2. `OrderQuery`: each `select(...fields)` call adds to the selected fields, and `run(rows)` returns `Pick<Order, …>[]` of exactly the selected fields.\n\nKeep any cast inside the classes, in one commented place each.",
+  "hints": [
+    "Give `on` and `emit` a type parameter `K extends keyof Events` and look the payload up with `Events[K]`. Constrain the class: `Emitter<Events extends Record<string, unknown>>`.",
+    "For payload-less events, use a conditional rest parameter: `type EventArgs<P> = [P] extends [undefined] ? [] : [payload: P];` and `emit<K …>(event: K, ...args: EventArgs<Events[K]>)`.",
+    "Give `OrderQuery` a type parameter `Selected extends keyof Order = never`; `select<K extends keyof Order>(...fields: K[])` returns `new OrderQuery<Selected | K>(…)`, and `run` returns `Pick<Order, Selected>[]` with one cast."
+  ],
+  "explanation": "The event map is the only place payload types are written; `K` is inferred from the event name and links it to `Events[K]` for both the handler and the payload. The conditional rest parameter yields zero arguments for `undefined` payloads, and the brackets stop it from distributing over unions. Inside, a `Map` cannot relate keys to value types, so handlers are stored loosely and called through one cast. The builder carries the selected keys in its type parameter: each `select` returns a new instance with a wider union, and `run` turns that union into a `Pick`.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "delivers": "`emit` calls only the handlers for that event, with the payload",
+    "unsubscribes": "The function returned by `on` removes the handler",
+    "selects": "`run` returns only the selected fields, across several `select` calls"
+  }
+}

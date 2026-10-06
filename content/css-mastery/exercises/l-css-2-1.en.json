@@ -1,0 +1,18 @@
+{
+  "title": "Tame the runaway session title",
+  "prompt": "The row is 400px wide, and the long title pushes the **Save** button out of it. Using flexbox properties on the items:\n\n- make `.time` a fixed **5rem** column that never grows or shrinks,\n- let `.title` take all remaining space and truncate with an **ellipsis** instead of overflowing,\n- keep `.save` at its natural size at the end of the row.\n\nThe row must not overflow, and the layout should still hold when the title is short.",
+  "hints": [
+    "Something stops the title from shrinking below its text width. Which property sets that floor on flex items?",
+    "`flex: 0 0 5rem` gives a fixed column. `flex: 1` plus `min-width: 0` lets the title fill and shrink.",
+    "On `.title`: `flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;`. On `.save`: `flex: none;`."
+  ],
+  "explanation": "Flex items have `min-width: auto`, which keeps them at least as wide as their content; with `white-space: nowrap` that is the whole sentence. `min-width: 0` removes the floor so the title can shrink, and `overflow: hidden` with `text-overflow: ellipsis` turns the clipped text into `…`. `flex: 0 0 5rem` fixes the time column (a plain `width: 5rem` would still shrink), `flex: 1` makes the title absorb leftover space even when it's short, and `flex: none` stops the button from being squeezed.",
+  "checks": {
+    "time-fixed": "The time column is exactly 5rem wide",
+    "no-overflow": "Nothing overflows the row",
+    "save-at-end": "The Save button sits at the end of the row",
+    "title-fills": "The title fills the space up to the button",
+    "ellipsis": "The title truncates with an ellipsis",
+    "short-title-still-fills": "With a short title, the layout still holds"
+  }
+}

@@ -1,0 +1,16 @@
+category_id,name,parent_id
+1,Kitchen,
+2,Outdoor,
+3,Home Office,
+4,Home Decor,
+5,Fitness,
+6,Cookware,1
+7,Coffee & Tea,1
+8,Camping,2
+9,Garden,2
+10,Desks & Chairs,3
+11,Desk Accessories,3
+12,Lighting,4
+13,Textiles,4
+14,Yoga,5
+15,Strength,5

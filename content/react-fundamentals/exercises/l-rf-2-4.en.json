@@ -1,0 +1,17 @@
+{
+  "title": "Badges and an empty state",
+  "prompt": "`MovieList` has three bugs. Fix them so that:\n\n1. The **Watched** badge (`<span className=\"badge\">Watched</span>`) appears only on movies whose `watched` is `true`.\n2. When `movies` is empty, the list renders the message **Nothing to watch yet.** instead of a list.\n3. The empty case never shows a stray **0**.\n\n`App` renders the list twice, once with three movies and once with none. Don't change `App`.",
+  "hints": [
+    "Look at what `movies.length && …` evaluates to when the length is 0.",
+    "Handle the empty case first with an early return: `if (movies.length === 0) return <p>…</p>;`",
+    "For the badge, use `{movie.watched && <span className=\"badge\">Watched</span>}`."
+  ],
+  "explanation": "The early return handles the empty list completely, which removes the `movies.length && …` expression and its stray 0 in one move. For the badge, `movie.watched && <span>…</span>` is safe because `watched` is a boolean: when it's `false`, React renders nothing. Keep `&&` for booleans; when the left side is a number, compare it explicitly (`length > 0`).",
+  "checks": {
+    "full-list": "The full list still shows three movies",
+    "badge-watched": "Arrival (watched) shows the Watched badge",
+    "badge-hidden": "Past Lives and Paddington 2 don't show a badge",
+    "empty-message": "The empty list shows \"Nothing to watch yet.\" and no <ul>",
+    "no-zero": "No stray 0 appears for the empty list"
+  }
+}

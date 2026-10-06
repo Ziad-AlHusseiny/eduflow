@@ -1,0 +1,11 @@
+{
+  "title": "Is BLACKFRIDAY25 leaking?",
+  "prompt": "Huda's follow-up: \"BLACKFRIDAY25 was meant for November only. Show me every 2025 order that used it **outside November**, on **web or the app**, and that **wasn't cancelled**.\"\n\nReturn `order_id`, `order_date` and `channel`, sorted by `order_date` (oldest first). Order matters.\n\nThe starter runs, but it returns hundreds of rows. Fix its logic.",
+  "hints": [
+    "Count the ORs in the starter. Each one splits the whole WHERE clause in two because AND binds tighter.",
+    "Replace the channel OR with `channel IN ('web', 'mobile_app')`.",
+    "The date condition needs parentheses: `AND (order_date < '2025-11-01' OR order_date >= '2025-12-01')`, after the line that keeps only 2025."
+  ],
+  "explanation": "Without parentheses, each `OR` splits the filter into separate alternatives, so the starter kept every app order that matched the later conditions and every order from December onwards, coupon or not. Using `IN` for the channel removes one OR; wrapping the date alternatives in parentheses keeps the other one local. The result is 22 orders, mostly on the web: worth raising with Huda, because the code clearly still works year-round.",
+  "checks": {}
+}

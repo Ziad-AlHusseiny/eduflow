@@ -1,0 +1,34 @@
+{
+  "id": "testing-javascript",
+  "project": "Splitwise-lite: a bill-splitting module for a group trip. Pure money functions (parse, split, tip, balances, settle up), a small DOM and React UI, and a network layer, tested lesson by lesson with Vitest, Testing Library and Playwright, then checked with coverage, mutation testing and CI.",
+  "sections": [
+    { "id": "s-tj-1", "lessons": [
+      { "id": "l-tj-1-1", "minutes": 10 },
+      { "id": "l-tj-1-2", "minutes": 16 },
+      { "id": "l-tj-1-3", "minutes": 18 }
+    ] },
+    { "id": "s-tj-2", "lessons": [
+      { "id": "l-tj-2-1", "minutes": 18 },
+      { "id": "l-tj-2-2", "minutes": 20 },
+      { "id": "l-tj-2-3", "minutes": 18 },
+      { "id": "l-tj-2-4", "minutes": 20 }
+    ] },
+    { "id": "s-tj-3", "lessons": [
+      { "id": "l-tj-3-1", "minutes": 18 },
+      { "id": "l-tj-3-2", "minutes": 18 },
+      { "id": "l-tj-3-3", "minutes": 18 },
+      { "id": "l-tj-3-4", "minutes": 20 }
+    ] },
+    { "id": "s-tj-4", "lessons": [
+      { "id": "l-tj-4-1", "minutes": 20 },
+      { "id": "l-tj-4-2", "minutes": 20 },
+      { "id": "l-tj-4-3", "minutes": 20 }
+    ] },
+    { "id": "s-tj-5", "lessons": [
+      { "id": "l-tj-5-1", "minutes": 20 },
+      { "id": "l-tj-5-2", "minutes": 18 },
+      { "id": "l-tj-5-3", "minutes": 20 },
+      { "id": "l-tj-5-4", "minutes": 18 }
+    ] }
+  ]
+}

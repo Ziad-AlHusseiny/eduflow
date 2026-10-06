@@ -1,0 +1,17 @@
+{
+  "title": "مجموعة tokens واحدة وثلاثة ثيمات",
+  "prompt": "أعد كتابة الثيم بحيث:\n\n1. يعلن الجذر دعمه للنظامين اللونيين **كليهما**، وتُعرَّف كلٌّ من `--surface` و`--text` و`--card` **مرة واحدة** بـ `light-dark()` (القيم الفاتحة: `#ffffff` و`#1f2937` و`#f8fafc`؛ والداكنة: `#0f172a` و`#e5e7eb` و`#1e293b`). احذف الـ media query.\n2. `data-theme=\"light\"` أو `data-theme=\"dark\"` على `<html>` تفرض ذلك النظام؛ ودون السمة تتبع الصفحة إعداد النظام.\n3. يكون `.hero` داكنًا في كل الأوضاع، باستخدام الـ tokens نفسها (بلا ألوان خاصة بالـ hero).\n\nتضبط الفحوصات `data-theme` على `<html>` وتقرأ الألوان المحسوبة.",
+  "hints": [
+    "`light-dark()` لا تعمل إلا حين تسمح `color-scheme` بالداكن. ابدأ بـ `color-scheme: light dark` على `:root`.",
+    "قواعد مفتاح التبديل لا تغيّر إلا `color-scheme`: `:root[data-theme=\"dark\"] { color-scheme: dark; }`، والأمر نفسه للفاتح.",
+    "للـ hero أضف `color-scheme: dark;` إلى `.hero`. عندها تُحسم `var(--surface)` فيه و`var(--card)` في البطاقة المتداخلة إلى القيم الداكنة."
+  ],
+  "explanation": "تختار `light-dark()` قيمة بحسب النظام اللوني المستخدم في العنصر الذي يُستخدم فيه الـ token، و`color-scheme` هي التي تضبط ذلك النظام. `color-scheme: light dark` على الجذر تتبع نظام التشغيل؛ وقواعد `data-theme` تتجاوزها بخاصية واحدة، فيتبعها كل token دون مجموعة tokens ثانية. ولأن `light-dark()` تُحسم لكل عنصر و`color-scheme` موروثة، فإن `color-scheme: dark` على `.hero` تجعل الـ hero وبطاقة الـ keynote داخله داكنين بينما تبقى البطاقة العادية فاتحة.",
+  "checks": {
+    "forced-dark": "data-theme=\"dark\" تجعل الصفحة داكنة",
+    "forced-light": "data-theme=\"light\" تجعل الصفحة فاتحة",
+    "scheme-follows-toggle": "قيمة color-scheme على الجذر تتبع مفتاح التبديل",
+    "system-default": "دون data-theme يدعم الجذر النظامين كليهما",
+    "hero-always-dark": "الـ hero وبطاقته يبقيان داكنين في الوضع الفاتح"
+  }
+}

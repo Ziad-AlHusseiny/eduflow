@@ -1,0 +1,40 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<h2>Line-up</h2>\n<div class=\"tabs\">\n  <button type=\"button\" class=\"tab active\" id=\"tab-fri\" data-panel=\"panel-fri\">Friday</button>\n  <button type=\"button\" class=\"tab\" id=\"tab-sat\" data-panel=\"panel-sat\">Saturday</button>\n  <button type=\"button\" class=\"tab\" id=\"tab-sun\" data-panel=\"panel-sun\">Sunday</button>\n</div>\n<div class=\"panel\" id=\"panel-fri\">\n  <p>Nour Quartet, 8 pm. The Saltmarsh Band, 10 pm.</p>\n</div>\n<div class=\"panel\" id=\"panel-sat\" hidden>\n  <p>Layla &amp; the Tides, 7 pm. Harbour Brass, 9 pm.</p>\n</div>\n<div class=\"panel\" id=\"panel-sun\" hidden>\n  <p>Family matinee, 3 pm. Closing set by DJ Marwa, 8 pm.</p>\n</div>",
+    "css": ".tabs { display: flex; gap: 4px; border-block-end: 2px solid #5b3cc4; }\n.tab { font: inherit; padding: 8px 16px; border: 1px solid #c9c4dc; border-block-end: 0; border-radius: 8px 8px 0 0; background: #f4f2fb; color: #1b1830; }\n.tab.active, .tab[aria-selected=\"true\"] { background: #5b3cc4; color: #fff; }\n.panel { padding: 12px 4px; }\n:focus-visible { outline: 3px solid #1b1830; outline-offset: 2px; }\n",
+    "js": "const tabs = [...document.querySelectorAll('.tab')];\n\ntabs.forEach((tab) => {\n  tab.addEventListener('click', () => {\n    for (const t of tabs) {\n      const on = t === tab;\n      t.classList.toggle('active', on);\n      document.getElementById(t.dataset.panel).hidden = !on;\n    }\n  });\n});\n"
+  },
+  "solution": {
+    "html": "<h2>Line-up</h2>\n<div class=\"tabs\" role=\"tablist\" aria-label=\"Festival days\">\n  <button type=\"button\" class=\"tab active\" role=\"tab\" id=\"tab-fri\" aria-selected=\"true\" aria-controls=\"panel-fri\">Friday</button>\n  <button type=\"button\" class=\"tab\" role=\"tab\" id=\"tab-sat\" aria-selected=\"false\" aria-controls=\"panel-sat\" tabindex=\"-1\">Saturday</button>\n  <button type=\"button\" class=\"tab\" role=\"tab\" id=\"tab-sun\" aria-selected=\"false\" aria-controls=\"panel-sun\" tabindex=\"-1\">Sunday</button>\n</div>\n<div class=\"panel\" role=\"tabpanel\" id=\"panel-fri\" aria-labelledby=\"tab-fri\" tabindex=\"0\">\n  <p>Nour Quartet, 8 pm. The Saltmarsh Band, 10 pm.</p>\n</div>\n<div class=\"panel\" role=\"tabpanel\" id=\"panel-sat\" aria-labelledby=\"tab-sat\" tabindex=\"0\" hidden>\n  <p>Layla &amp; the Tides, 7 pm. Harbour Brass, 9 pm.</p>\n</div>\n<div class=\"panel\" role=\"tabpanel\" id=\"panel-sun\" aria-labelledby=\"tab-sun\" tabindex=\"0\" hidden>\n  <p>Family matinee, 3 pm. Closing set by DJ Marwa, 8 pm.</p>\n</div>",
+    "css": ".tabs { display: flex; gap: 4px; border-block-end: 2px solid #5b3cc4; }\n.tab { font: inherit; padding: 8px 16px; border: 1px solid #c9c4dc; border-block-end: 0; border-radius: 8px 8px 0 0; background: #f4f2fb; color: #1b1830; }\n.tab.active, .tab[aria-selected=\"true\"] { background: #5b3cc4; color: #fff; }\n.panel { padding: 12px 4px; }\n:focus-visible { outline: 3px solid #1b1830; outline-offset: 2px; }\n",
+    "js": "const tabs = [...document.querySelectorAll('[role=\"tab\"]')];\n\nfunction select(tab) {\n  for (const t of tabs) {\n    const on = t === tab;\n    t.classList.toggle('active', on);\n    t.setAttribute('aria-selected', String(on));\n    t.tabIndex = on ? 0 : -1;\n    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;\n  }\n  tab.focus();\n}\n\ntabs.forEach((tab) => tab.addEventListener('click', () => select(tab)));\n\ndocument.querySelector('[role=\"tablist\"]').addEventListener('keydown', (event) => {\n  const i = tabs.indexOf(event.target);\n  const moves = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };\n  if (i === -1 || !(event.key in moves)) return;\n  event.preventDefault();\n  select(tabs[(moves[event.key] + tabs.length) % tabs.length]);\n});\n"
+  },
+  "checks": [
+    {
+      "id": "roles",
+      "test": "const list = $$('[role=\"tablist\"]'); if (list.length !== 1) return false; const tabs = $$('[role=\"tab\"]'); return tabs.length === 3 && tabs.every((t) => list[0].contains(t)) && $$('[role=\"tabpanel\"]').length === 3;"
+    },
+    {
+      "id": "linked",
+      "test": "const tabs = $$('[role=\"tab\"]'); const byName = (n) => tabs.find((t) => t.textContent.trim() === n); const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls')); const shown = (p) => !!p && !p.hidden && getComputedStyle(p).display !== 'none'; const selectedIs = (n) => tabs.every((t) => t.getAttribute('aria-selected') === String(t === byName(n))) && tabs.every((t) => shown(panelOf(t)) === (t === byName(n))); return tabs.length === 3 && tabs.every((t) => { const p = panelOf(t); return p && p.getAttribute('role') === 'tabpanel' && (p.getAttribute('aria-labelledby') || '').split(/\\s+/).includes(t.id); });"
+    },
+    {
+      "id": "initial-state",
+      "test": "const tabs = $$('[role=\"tab\"]'); const byName = (n) => tabs.find((t) => t.textContent.trim() === n); const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls')); const shown = (p) => !!p && !p.hidden && getComputedStyle(p).display !== 'none'; const selectedIs = (n) => tabs.every((t) => t.getAttribute('aria-selected') === String(t === byName(n))) && tabs.every((t) => shown(panelOf(t)) === (t === byName(n))); return tabs.length === 3 && selectedIs('Friday');"
+    },
+    {
+      "id": "roving",
+      "test": "const tabs = $$('[role=\"tab\"]'); const byName = (n) => tabs.find((t) => t.textContent.trim() === n); const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls')); const shown = (p) => !!p && !p.hidden && getComputedStyle(p).display !== 'none'; const selectedIs = (n) => tabs.every((t) => t.getAttribute('aria-selected') === String(t === byName(n))) && tabs.every((t) => shown(panelOf(t)) === (t === byName(n))); const sel = tabs.find((t) => t.getAttribute('aria-selected') === 'true'); return tabs.length === 3 && !!sel && tabs.every((t) => t.tabIndex === (t === sel ? 0 : -1));"
+    },
+    {
+      "id": "click-selects",
+      "test": "const tabs = $$('[role=\"tab\"]'); const byName = (n) => tabs.find((t) => t.textContent.trim() === n); const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls')); const shown = (p) => !!p && !p.hidden && getComputedStyle(p).display !== 'none'; const selectedIs = (n) => tabs.every((t) => t.getAttribute('aria-selected') === String(t === byName(n))) && tabs.every((t) => shown(panelOf(t)) === (t === byName(n))); if (tabs.length !== 3) return false; await click(byName('Saturday')); return selectedIs('Saturday') && byName('Saturday').tabIndex === 0 && byName('Friday').tabIndex === -1;"
+    },
+    {
+      "id": "arrow-keys",
+      "test": "const tabs = $$('[role=\"tab\"]'); const byName = (n) => tabs.find((t) => t.textContent.trim() === n); const panelOf = (t) => document.getElementById(t.getAttribute('aria-controls')); const shown = (p) => !!p && !p.hidden && getComputedStyle(p).display !== 'none'; const selectedIs = (n) => tabs.every((t) => t.getAttribute('aria-selected') === String(t === byName(n))) && tabs.every((t) => shown(panelOf(t)) === (t === byName(n))); if (tabs.length !== 3) return false; await press(byName('Saturday'), 'ArrowRight'); if (!selectedIs('Sunday') || document.activeElement !== byName('Sunday')) return false; await press(byName('Sunday'), 'ArrowRight'); if (!selectedIs('Friday') || document.activeElement !== byName('Friday')) return false; await press(byName('Friday'), 'ArrowLeft'); return selectedIs('Sunday') && document.activeElement === byName('Sunday');"
+    }
+  ]
+}

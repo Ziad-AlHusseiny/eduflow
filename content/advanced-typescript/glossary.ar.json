@@ -1,0 +1,182 @@
+[
+  {
+    "id": "structural-typing",
+    "term": "التنميط البنيوي (Structural typing)",
+    "definition": "قاعدة TypeScript التي تجعل القيمة متوافقة مع نوع ما حين تملك الشكل المطلوب، أيًّا كان اسم ذلك النوع. فالنوعان المختلفان في الاسم المتطابقان في الخصائص قابلان للتبادل.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "assignability",
+    "term": "قابلية الإسناد (Assignability)",
+    "definition": "إمكانية استخدام قيمة من نوع ما حيث يُنتظر نوع آخر. تعمل مثل علاقة الاحتواء بين المجموعات: المجموعة الأضيق من القيم تقع داخل المجموعة الأوسع.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "excess-property-check",
+    "term": "فحص الخصائص الزائدة (Excess property check)",
+    "definition": "فحص يعلّم الخصائص المجهولة في كائن حرفي طازج مكتوب مباشرة حيث يُنتظر نوع. يلتقط الأخطاء الإملائية، لكن القيم الممرَّرة عبر متغيّر تتخطّاه.",
+    "lesson": "l-at-1-2"
+  },
+  {
+    "id": "control-flow-analysis",
+    "term": "تحليل تدفّق التحكّم (Control-flow analysis)",
+    "definition": "طريقة TypeScript في تتبّع نوع المتغيّر عبر الفروع وجمل العودة والإسنادات، بحيث يكون للاسم نفسه نوع أضيق بعد الفحص مما كان عليه قبله.",
+    "lesson": "l-at-1-3"
+  },
+  {
+    "id": "narrowing",
+    "term": "Narrowing",
+    "definition": "تضييق نوع واسع إلى نوع أكثر تحديدًا بفحص وقت التشغيل، مثل `typeof` أو `===` أو `in` أو `instanceof` أو type predicate.",
+    "lesson": "l-at-1-3"
+  },
+  {
+    "id": "discriminated-union",
+    "term": "Discriminated union",
+    "definition": "union من أنواع كائنات تتشارك خاصية بقيمة حرفية مختلفة في كل عضو، مثل `status`. وفحص تلك الخاصية يضيّق الكائن كله إلى عضو واحد.",
+    "lesson": "l-at-1-4"
+  },
+  {
+    "id": "const-assertion",
+    "term": "as const",
+    "definition": "تأكيد const يستنتج أضيق نوع ممكن للقيمة: القيم الحرفية تبقى حرفية، والمصفوفات تصبح tuples للقراءة فقط، والخصائص تصبح للقراءة فقط.",
+    "lesson": "l-at-1-5"
+  },
+  {
+    "id": "satisfies",
+    "term": "satisfies",
+    "definition": "عامل (operator) يفحص قيمة مقابل نوع دون أن يستبدل النوع المستنتَج للقيمة، فتحصل على التحقّق وتحتفظ في الوقت نفسه بالمفاتيح والقيم الحرفية الدقيقة.",
+    "lesson": "l-at-1-5"
+  },
+  {
+    "id": "type-parameter",
+    "term": "معامل النوع (Type parameter)",
+    "definition": "نوع نائب في دالة أو نوع generic، مثل `T`، يربط المدخلات بالمخرجات. ويجب أن يظهر مرتين على الأقل كي يضيف أمانًا حقيقيًا في الأنواع.",
+    "lesson": "l-at-2-1"
+  },
+  {
+    "id": "generic-constraint",
+    "term": "قيد الـ generic (Generic constraint)",
+    "definition": "جملة `extends` على معامل نوع تحدّ من الأنواع التي يقبلها، مثل `T extends { id: number }`، وتجعل تلك الخصائص قابلة للاستخدام داخل الدالة أيضًا.",
+    "lesson": "l-at-2-1"
+  },
+  {
+    "id": "inference-site",
+    "term": "موقع الاستنتاج (Inference site)",
+    "definition": "موضع في نوع معامل يظهر فيه معامل نوع. عند الاستدعاء، يجمع TypeScript مرشّحًا من كل موقع ليقرّر ما هو معامل النوع.",
+    "lesson": "l-at-2-2"
+  },
+  {
+    "id": "const-type-parameter",
+    "term": "معامل النوع const (const type parameter)",
+    "definition": "معامل نوع معرَّف بـ `const` (منذ TypeScript 5.0)، يستنتج الوسائط كأن المستدعي كتب `as const`، فيحتفظ بالقيم الحرفية والـ tuples للقراءة فقط.",
+    "lesson": "l-at-2-2"
+  },
+  {
+    "id": "noinfer",
+    "term": "NoInfer",
+    "definition": "نوع مدمج (منذ TypeScript 5.4) يجعل موضعًا ما للفحص فقط، فيُتحقَّق منه مقابل معامل نوع لكنه لا يساهم أبدًا بمرشّح في الاستنتاج.",
+    "lesson": "l-at-2-3"
+  },
+  {
+    "id": "indexed-access-type",
+    "term": "نوع الوصول بالفهرس (Indexed access type)",
+    "definition": "نوع مثل `Order['status']` أو `T[number]` يبحث عن نوع خاصية ما، أو عن نوع عناصر مصفوفة، باستخدام صياغة الأقواس المربّعة.",
+    "lesson": "l-at-3-1"
+  },
+  {
+    "id": "mapped-type",
+    "term": "Mapped type",
+    "definition": "نوع يمرّ على union من المفاتيح ويبني خاصية واحدة لكل مفتاح، كما في `{ [K in keyof T]?: T[K] }`، وهو تعريف `Partial`.",
+    "lesson": "l-at-3-2"
+  },
+  {
+    "id": "key-remapping",
+    "term": "إعادة تسمية المفاتيح (Key remapping)",
+    "definition": "جملة `as` في mapped type تعيد تسمية كل مفتاح، غالبًا بـ template literal. وتحويل مفتاح إلى `never` يحذفه، وهكذا يعمل `Omit`.",
+    "lesson": "l-at-3-2"
+  },
+  {
+    "id": "conditional-type",
+    "term": "Conditional type",
+    "definition": "نوع بالشكل `T extends U ? X : Y` يختار بين نوعين بحسب ما إذا كان `T` قابلًا للإسناد إلى `U`، ويُسمّى أيضًا النوع الشرطي.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "distributive-conditional-type",
+    "term": "النوع الشرطي التوزيعي (Distributive conditional type)",
+    "definition": "conditional type يكون النوع المفحوص فيه معامل نوع مجرّدًا. حين يُعطى union يُنفَّذ مرة لكل عضو ويجمع النتائج؛ وتغليف الطرفين بأقواس مربّعة يوقف ذلك.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "infer",
+    "term": "infer",
+    "definition": "كلمة مفتاحية تُستخدم داخل جملة `extends` في conditional type لالتقاط جزء من النوع المطابق، كما في `ReturnType` الذي يلتقط نوع إرجاع الدالة.",
+    "lesson": "l-at-3-3"
+  },
+  {
+    "id": "template-literal-type",
+    "term": "Template literal type",
+    "definition": "نوع نصي يُبنى بصياغة علامات الاقتباس المائلة من أنواع أخرى، مثل `` `order.${OrderStatus}` ``. والـ unions داخله تتوسّع إلى كل التركيبات الممكنة.",
+    "lesson": "l-at-3-4"
+  },
+  {
+    "id": "branded-type",
+    "term": "Branded type",
+    "definition": "تقاطع (intersection) بين نوع أولي وخاصية لا وجود لها إلا في نظام الأنواع، مثل `number & { readonly [brand]: 'OrderId' }`، فتتوقّف القيم ذات النوع نفسه وقت التشغيل عن التبادل.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "smart-constructor",
+    "term": "المُنشئ الذكي (Smart constructor)",
+    "definition": "دالة تتحقّق من قيمة خام ثم تُعيدها كـ branded type. وهي المكان الوحيد الذي يجب أن يظهر فيه تحويل إلى ذلك الوسم.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "exhaustiveness-check",
+    "term": "فحص الشمول (Exhaustiveness check)",
+    "definition": "ضمانة وقت الترجمة بأن كل عضو في union قد عولج، وتتحقّق عادةً بتمرير القيمة المتبقّية إلى معامل من نوع `never` في فرع `default`.",
+    "lesson": "l-at-4-1"
+  },
+  {
+    "id": "result-type",
+    "term": "نوع Result (Result type)",
+    "definition": "discriminated union مثل `{ ok: true; value: T } | { ok: false; error: E }` يُعيد الإخفاقات المتوقَّعة كقيم، فيُضطر المستدعون إلى معالجتها بدل نسيانها.",
+    "lesson": "l-at-4-2"
+  },
+  {
+    "id": "type-predicate",
+    "term": "Type predicate",
+    "definition": "نوع إرجاع دالة بالشكل `value is T`. حين تُعيد الدالة true يضيق الوسيط إلى `T` في موضع الاستدعاء؛ أما جسم الدالة نفسه فلا يُتحقَّق منه.",
+    "lesson": "l-at-4-3"
+  },
+  {
+    "id": "assertion-function",
+    "term": "دالة التأكيد (Assertion function)",
+    "definition": "دالة نوع إرجاعها `asserts value is T`. ترمي خطأً حين يفشل الفحص، وحين تعود بشكل طبيعي تضيّق القيمة لبقية النطاق.",
+    "lesson": "l-at-4-3"
+  },
+  {
+    "id": "using-declaration",
+    "term": "تصريح using (using declaration)",
+    "definition": "تصريح يستدعي `[Symbol.dispose]()` على القيمة حين تنتهي كتلته، بالعودة أو بالرمي، ويحرّر الموارد المتعددة بترتيب معكوس لترتيب تصريحها.",
+    "lesson": "l-at-5-2"
+  },
+  {
+    "id": "declaration-merging",
+    "term": "دمج التصريحات (Declaration merging)",
+    "definition": "القاعدة التي تجعل عدة تصريحات بالاسم نفسه، مثل تصريحَي interface، تتّحد في تصريح واحد. وهي طريقة توسيع أنواع الـ lib والـ interfaces الخاصة بالمكتبات.",
+    "lesson": "l-at-5-3"
+  },
+  {
+    "id": "module-augmentation",
+    "term": "توسيع الوحدات (Module augmentation)",
+    "definition": "الإضافة إلى الأنواع داخل وحدة باستخدام `declare module 'name' { … }` من ملف هو نفسه وحدة، مثلًا لتوسيع interface في مكتبة ما.",
+    "lesson": "l-at-5-3"
+  },
+  {
+    "id": "project-references",
+    "term": "مراجع المشاريع (Project references)",
+    "definition": "ميزة في tsconfig تقسم قاعدة الكود إلى مشاريع تُبنى منفصلة (`composite: true`، وتُبنى بـ `tsc -b`)، فلا يُعاد فحص الأجزاء التي لم تتغيّر.",
+    "lesson": "l-at-5-4"
+  }
+]

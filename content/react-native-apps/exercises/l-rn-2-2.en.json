@@ -1,0 +1,10 @@
+{
+  "title": "Style the hike row",
+  "prompt": "Complete Trailhead's list styles so that:\n\n1. the screen fills the whole display,\n2. each row lays out the thumbnail, text and chevron **side by side**, vertically centered,\n3. the text column takes the leftover width so long names don't push the chevron away,\n4. difficulty chips flow onto a second line when they run out of room,\n5. the \"NEW\" badge sits on the thumbnail's corner without affecting layout.",
+  "hints": [
+    "React Native's default direction is a column. Which value puts children side by side?",
+    "The property that makes a View take the remaining space takes a single number.",
+    "Chips that should flow onto the next line need a wrap value; an overlay is taken out of the flex flow by its position value."
+  ],
+  "explanation": "`flex: 1` on the screen fills the display. The row switches the main axis with `flexDirection: 'row'`, and `alignItems: 'center'` centers children across it (vertically). `flex: 1` on the body absorbs the leftover width, which matters because children don't shrink by default. `flexWrap: 'wrap'` lets chips flow, and `position: 'absolute'` places the badge relative to its parent without taking up space."
+}

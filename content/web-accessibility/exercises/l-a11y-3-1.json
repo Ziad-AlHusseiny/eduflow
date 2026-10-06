@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<header class=\"site-header\">\n  <a href=\"#\" class=\"logo\">Ticketly</a>\n  <nav aria-label=\"Site\">\n    <a href=\"#events\">Events</a>\n    <a href=\"#faq\">FAQ</a>\n    <a href=\"#account\">Account</a>\n  </nav>\n</header>\n<main id=\"main\">\n  <h1>Harbour Lights 2026</h1>\n  <div class=\"passes\">\n    <button tabindex=\"3\">Add Friday pass</button>\n    <button tabindex=\"1\">Add Saturday pass</button>\n    <button>Add weekend pass</button>\n  </div>\n</main>",
+    "css": ".site-header { display: flex; gap: 16px; align-items: center; }\nnav { display: flex; gap: 12px; }\n.passes { display: flex; flex-wrap: wrap; gap: 8px; }\nbutton { font: inherit; padding: 8px 14px; border: 0; border-radius: 8px; background: #5b3cc4; color: #fff; }\n\n/* \"Remove the ugly blue box\" (2019) */\n*:focus { outline: none; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<a class=\"skip-link\" href=\"#main\">Skip to main content</a>\n<header class=\"site-header\">\n  <a href=\"#\" class=\"logo\">Ticketly</a>\n  <nav aria-label=\"Site\">\n    <a href=\"#events\">Events</a>\n    <a href=\"#faq\">FAQ</a>\n    <a href=\"#account\">Account</a>\n  </nav>\n</header>\n<main id=\"main\">\n  <h1>Harbour Lights 2026</h1>\n  <div class=\"passes\">\n    <button>Add Friday pass</button>\n    <button>Add Saturday pass</button>\n    <button>Add weekend pass</button>\n  </div>\n</main>",
+    "css": ".site-header { display: flex; gap: 16px; align-items: center; }\nnav { display: flex; gap: 12px; }\n.passes { display: flex; flex-wrap: wrap; gap: 8px; }\nbutton { font: inherit; padding: 8px 14px; border: 0; border-radius: 8px; background: #5b3cc4; color: #fff; }\n\n:focus-visible {\n  outline: 3px solid #1b1830;\n  outline-offset: 2px;\n}\n\n.skip-link {\n  position: absolute;\n  inset-block-start: 8px;\n  inset-inline-start: 8px;\n  padding: 8px 12px;\n  background: #fff;\n  color: #1b1830;\n  transform: translateY(-150%);\n}\n.skip-link:focus {\n  transform: none;\n}\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "no-positive",
+      "test": "return $$('[tabindex]').every((el) => Number(el.getAttribute('tabindex')) <= 0);"
+    },
+    {
+      "id": "skip-first",
+      "test": "const focusable = $$('a[href], button, input, select, textarea, [tabindex]').filter((el) => el.tabIndex >= 0 && !el.disabled && getComputedStyle(el).display !== 'none' && getComputedStyle(el).visibility !== 'hidden'); const first = focusable[0]; return !!first && first.tagName === 'A' && /skip/i.test(first.textContent) && first.getAttribute('href') === '#' + $('main').id;"
+    },
+    {
+      "id": "skip-visible",
+      "test": "const link = $$('a').find((a) => /skip/i.test(a.textContent)); if (!link) return false; link.focus(); await tick(50); const r = link.getBoundingClientRect(); return document.activeElement === link && r.width > 1 && r.height > 1 && r.bottom > 0 && r.top < window.innerHeight;"
+    },
+    {
+      "id": "focus-ring",
+      "test": "const ok = (el) => { el.focus(); const cs = getComputedStyle(el); const outline = cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2; return outline; }; const items = [...$$('main button'), ...$$('nav a')]; const result = items.every(ok); document.activeElement.blur(); return result;"
+    }
+  ]
+}

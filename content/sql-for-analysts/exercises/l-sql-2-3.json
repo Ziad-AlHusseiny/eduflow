@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- grain: one row per country (2025, non-cancelled orders)\nSELECT\n  c.country,\n  COUNT(*) AS orders,\n  ROUND(SUM(o.shipping_fee), 2) AS shipping_total,\n  ROUND(SUM(oi.quantity * oi.unit_price * (1 - oi.discount)), 2) AS item_revenue\nFROM orders AS o\nJOIN customers AS c ON c.customer_id = o.customer_id\nJOIN order_items AS oi ON oi.order_id = o.order_id\nWHERE o.status <> 'cancelled'\n  AND o.order_date >= '2025-01-01'\n  AND o.order_date < '2026-01-01'\nGROUP BY c.country;",
+  "solution": "SELECT\n  c.country,\n  COUNT(*) AS orders,\n  ROUND(SUM(o.shipping_fee), 2) AS shipping_total,\n  ROUND(SUM(i.revenue), 2) AS item_revenue\nFROM orders AS o\nJOIN customers AS c ON c.customer_id = o.customer_id\nJOIN (\n  -- grain: one row per order\n  SELECT order_id, SUM(quantity * unit_price * (1 - discount)) AS revenue\n  FROM order_items\n  GROUP BY order_id\n) AS i ON i.order_id = o.order_id\nWHERE o.status <> 'cancelled'\n  AND o.order_date >= '2025-01-01'\n  AND o.order_date < '2026-01-01'\nGROUP BY c.country;",
+  "orderMatters": false
+}

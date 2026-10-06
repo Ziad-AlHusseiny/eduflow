@@ -1,0 +1,10 @@
+{
+  "title": "A Deployment the API server rejects",
+  "prompt": "A teammate adapted this Deployment from a blog post. `kubectl apply` fails, and after fixing the first error it fails again with a different one. Select the **two** lines to fix.",
+  "hints": [
+    "Which API group and version do Deployments use in current Kubernetes?",
+    "Compare the selector's labels with the labels the Pod template sets, character by character."
+  ],
+  "explanation": "Line 1 uses `extensions/v1beta1`, which was removed long ago; apply fails with `no matches for kind \"Deployment\"`. Use `apps/v1`.\n\nLine 13 labels the Pods `notes`, but the selector asks for `notes-api`, so the API server rejects the Deployment because its selector doesn't match its own template. Make them identical:\n\n```yaml\napiVersion: apps/v1\n# …\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: notes-api\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: notes-api\n```",
+  "checks": {}
+}

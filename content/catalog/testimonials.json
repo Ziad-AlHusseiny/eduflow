@@ -1,0 +1,29 @@
+[
+  {
+    "id": "t-1",
+    "name": "Jasmine Torres",
+    "role": { "en": "Junior Frontend Developer", "ar": "مطوّرة واجهات أمامية مبتدئة" },
+    "quote": {
+      "en": "The streak calendar sounds like a gimmick until it rewires your evenings. I finished two courses in six weeks.",
+      "ar": "يبدو تقويم الأيام المتتالية مجرد حيلة، إلى أن يعيد ترتيب أمسياتك. أنهيت دورتين في ستة أسابيع."
+    }
+  },
+  {
+    "id": "t-2",
+    "name": "Marcus Webb",
+    "role": { "en": "Career Switcher", "ar": "غيّر مساره المهني" },
+    "quote": {
+      "en": "EduFlow's curriculum view is the clearest I've used. I always know exactly what's next and how far I've come.",
+      "ar": "عرض المنهج في EduFlow هو الأوضح بين كل ما استخدمته. أعرف دائمًا ما الخطوة التالية بالضبط، وكم قطعت من الطريق."
+    }
+  },
+  {
+    "id": "t-3",
+    "name": "Priya Nair",
+    "role": { "en": "Data Analyst", "ar": "محلّلة بيانات" },
+    "quote": {
+      "en": "I landed my first data role three months after finishing Python for Data Analysis. The progress tracking kept me honest.",
+      "ar": "حصلت على أول وظيفة لي في مجال البيانات بعد ثلاثة أشهر من إنهاء دورة Python لتحليل البيانات. تتبّع التقدّم أبقاني صادقة مع نفسي."
+    }
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "title": "A fluid card title",
+  "prompt": "The card title uses `font-size: 5cqi`, which grows forever and ignores the user's font size. Replace it with a `clamp()` so the title is:\n\n- **16px (1rem)** when the slot is 320px wide,\n- **28px (1.75rem)** when the slot is 800px wide,\n- linear in between, and clamped outside that range.\n\nWrite the **limits in rem**: the last check sets the root font size to 20px, and the limits must scale with it (to 20px and 35px). The slot is already a size container, so `cqi` measures it.",
+  "hints": [
+    "Slope = (28 − 16) / (800 − 320) = 0.025, which is 2.5cqi.",
+    "Intercept = 16 − 0.025 × 320 = 8px. Write it in rem so it follows the user's font size.",
+    "`font-size: clamp(1rem, 0.5rem + 2.5cqi, 1.75rem);`"
+  ],
+  "explanation": "The preferred value is the straight line through the two design points: a slope of 12px over 480px is 0.025 (2.5cqi), and the intercept that puts 16px at 320px is 8px, or 0.5rem. `clamp()` holds the result between 1rem and 1.75rem. Because the limits and the intercept are in rem, a user who sets a 20px default gets a 20px to 35px range instead of being clamped back to the designer's sizes; px limits would have failed that last check.",
+  "checks": {
+    "min-at-320": "16px in a 320px slot",
+    "max-at-800": "28px in an 800px slot",
+    "linear-between": "22px halfway, at 560px",
+    "clamped-outside": "Stays at 16px below and 28px above the range",
+    "respects-user-size": "The limits follow the user's font size (rem, not px)"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Set up SSH for the portfolio",
+  "prompt": "You've decided to push the portfolio over SSH. Put the setup steps in the order that works, from no key at all to a successful `git push` over SSH. Finish all the local key work (create the key, load it into the agent) before you touch GitHub, and prove SSH works before you change the repository.",
+  "hints": [
+    "You can't add or copy a key that doesn't exist yet.",
+    "GitHub must know your public key before the connection test can greet you.",
+    "Changing the remote URL is the last step, once you know SSH works."
+  ],
+  "explanation": "First generate the pair with `ssh-keygen -t ed25519`, then load the private key into the agent so you don't retype the passphrase. Copy the public key (the `.pub` file) and add it to your GitHub account. `ssh -T git@github.com` proves the setup works before you change anything in the repository. Finally, `git remote set-url` switches `origin` to the SSH URL so Git uses the key on the next push.",
+  "items": {
+    "keygen": "Run `ssh-keygen -t ed25519 -C \"maya.okafor@example.com\"` and set a passphrase.",
+    "agent": "Start the agent and run `ssh-add ~/.ssh/id_ed25519`.",
+    "copy": "Copy the contents of `~/.ssh/id_ed25519.pub`.",
+    "github": "On GitHub, open Settings, SSH and GPG keys, New SSH key, and paste it.",
+    "test": "Run `ssh -T git@github.com` and check it greets you by username.",
+    "seturl": "Run `git remote set-url origin git@github.com:maya-okafor/portfolio.git`, then `git push`."
+  },
+  "checks": {}
+}

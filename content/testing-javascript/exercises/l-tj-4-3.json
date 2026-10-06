@@ -1,0 +1,12 @@
+{
+  "kind": "spot-bug",
+  "language": "ts",
+  "code": "import { test, expect } from '@playwright/test';\n\ntest('settling up clears the balances', async ({ page }) => {\n  await page.goto('/groups/lisbon-trip');\n  await page.getByLabel('Description').fill('Dinner');\n  await page.getByLabel('Amount').fill('30.00');\n  await page.getByRole('button', { name: 'Add expense' }).click();\n  page.getByRole('button', { name: 'Settle up' }).click();\n  await page.waitForTimeout(2000);\n  const status = await page.getByRole('status').textContent();\n  expect(status).toBe('Everyone is settled up');\n  await expect(page.getByRole('listitem')).toHaveCount(0);\n});",
+  "bugLines": [
+    4,
+    8,
+    9,
+    10,
+    11
+  ]
+}

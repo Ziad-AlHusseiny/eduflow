@@ -1,0 +1,16 @@
+{
+  "title": "الترويسة وبطاقات الأفلام",
+  "prompt": "ابنِ الشريحة الأولى من شاشة Watchlist.\n\n1. اجعل `Header` يُرجع `<header>` يحتوي على `<h1>` بالنص **My Watchlist** وعلى `<p>` بشعار من اختيارك.\n2. اجعل `MovieCard` يُرجع `<article>` فيه `<h2>` بالنص **Arrival** و`<p>` بالنص **2016**.\n3. في `App`، اعرض `Header` مرة واحدة و`MovieCard` مرتين داخل `<main>`.",
+  "hints": [
+    "الـ component يُرجع JSX، مثلًا `return (<header>…</header>);`. أبقِ الأقواس حتى لا تنقطع جملة الـ return.",
+    "استخدم الـ components كوسوم تبدأ بحرف كبير: `<Header />` و`<MovieCard />`.",
+    "يجب أن يحتوي App على `<Header />` و`<MovieCard />` و`<MovieCard />` داخل `<main>`."
+  ],
+  "explanation": "كل component دالة في المستوى الأعلى تُرجع عنصرًا جذرًا واحدًا. ويركّبها `App` كوسوم، فتستدعي React الدالة `Header` مرة و`MovieCard` مرتين، فينتج عنصرا `<article>` متطابقان. هذا التكرار مقصود: في القسم 2 ستمرّر لكل بطاقة فيلمها الخاص عبر الـ props.",
+  "checks": {
+    "header-heading": "يحتوي <header> على <h1> بالنص \"My Watchlist\"",
+    "header-tagline": "يحتوي <header> على <p> فيه شعار",
+    "two-cards": "يحتوي <main> على بطاقتين <article> بالضبط",
+    "card-content": "كل بطاقة فيها <h2> بالنص \"Arrival\" و<p> بالنص \"2016\""
+  }
+}

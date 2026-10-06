@@ -1,0 +1,17 @@
+{
+  "title": "Line up the session cards",
+  "prompt": "The three cards sit in a three-column grid, but their titles wrap to different numbers of lines, so the abstracts and room labels sit at different heights. Make each `.session-card` a **row subgrid** that spans the four parts (time, title, abstract, room), so that every abstract starts at the same height and every room label lines up. Keep the cards side by side and don't use fixed heights.",
+  "hints": [
+    "The card needs to occupy four rows of the parent grid before it can borrow them.",
+    "Two declarations on the card do most of the work: one span and one `subgrid`. The card also needs `display: grid`.",
+    "`.session-card { display: grid; grid-row: span 4; grid-template-rows: subgrid; }` (add `row-gap` if the spacing looks too wide)."
+  ],
+  "explanation": "`grid-row: span 4` makes each card occupy four rows of the `.sessions` grid, and `grid-template-rows: subgrid` makes the card use those rows instead of creating its own. Each parent row is now sized by the tallest item placed in it from all three cards, so the title row fits the longest title and every abstract and room label starts on the same line. Without the span, the card has one track to share, so its children would all be placed in that one row and overlap.",
+  "checks": {
+    "three-across": "The cards are still side by side",
+    "uses-subgrid": "Each card uses grid-template-rows: subgrid",
+    "abstracts-align": "All abstracts start at the same height",
+    "rooms-align": "All room labels line up",
+    "no-overlap": "Nothing inside a card overlaps"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Review Steady's color variables",
+  "prompt": "Here is an export of Steady's light-mode color variables. `{name}` means the variable aliases another variable. The kit's rules: semantic variables alias primitives (never raw values), are named by role (never by appearance), and every text color passes 4.5:1 on white. Select every line that breaks a rule.",
+  "hints": [
+    "Check each semantic line three ways: is it an alias, is the name a role, and does a text color pass contrast?",
+    "From Lesson 1.3: #6B7280 on white is 4.83:1, but #9CA3AF on white is only 2.54:1.",
+    "One line fails contrast, one hard-codes a value, and one names a color by its appearance."
+  ],
+  "explanation": "Line 12: `color/text/secondary` aliases `gray/400` (#9CA3AF), which is **2.54:1** on white and fails for text. Point it at `gray/500` (4.83:1). Line 15: `color/action/primary` holds a **raw hex** instead of aliasing `{teal/700}`, so a palette change will not reach it and it breaks the two-tier pattern. Line 16: `color/teal-checkbox` is **named by appearance and by one component**. Rename it to a role such as `color/action/primary` (it is the same meaning, so you can delete it and use that) or `color/control/checked` if checked controls need their own token.",
+  "checks": {}
+}

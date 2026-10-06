@@ -1,0 +1,414 @@
+checkpoints:
+  s-ds-1:
+    - q: A startup's design lead proposes a three-month 'design system sprint' with a launch party at the end and no owners afterwards. Based on Northwind's history, what is the strongest objection?
+      options:
+        - text: After launch nobody owns bugs, requests or releases, so teams start patching their own copies.
+          why: "Correct. The 2021 Northwind system failed this way: it was finished, and finished systems drift."
+        - text: Three months is too short to build any components.
+          why: Plenty of useful components can be built in three months; the problem is what happens after.
+        - text: Launch parties make adoption mandatory, which teams resent.
+          why: Announcements don't force adoption; the real gap is ownership after launch.
+        - text: Design systems should be built by product teams, not design leads.
+          why: Who starts it matters less than whether someone keeps it current.
+      answer: 0
+    - q: Your interface inventory found 9 table styles on 31 screens, 4 tooltip styles on 6 screens, and 52 greys used everywhere. In what order should the system own them?
+      options:
+        - text: Tooltips first, because they're the quickest win.
+          why: Quick wins on six screens don't address the most widespread drift.
+        - text: Tables first, because they're the hardest component.
+          why: Difficulty doesn't set priority; frequency times inconsistency does.
+        - text: All three at once to show the system's full scope.
+          why: Spreading a small team across everything delays the most valuable consolidation.
+        - text: Greys first, then tables, then tooltips.
+          why: Correct. Greys are everywhere and wildly inconsistent, tables are common and varied, tooltips are rare.
+      answer: 3
+    - q: Which proposed principle would best settle a debate about adding a fourth button variant for the marketing site?
+      options:
+        - text: Our UI is clean and modern.
+          why: Nobody argues for messy and dated UI, so it can't decide anything.
+        - text: We value collaboration between design and engineering.
+          why: A good value, but it gives no guidance on whether to add the variant.
+        - text: "Fewer, better components: extend an existing one before adding a near-duplicate."
+          why: Correct. It takes a side in a real trade-off and points directly to a decision.
+        - text: Every product team should feel ownership of the system.
+          why: Ownership is about process, not about whether this variant belongs.
+      answer: 2
+    - q: A company has eight product teams. Its design system is maintained by two designers on the dispatch team in their spare time, and the other seven teams copy what dispatch builds. Which team model is this, and what's its typical failure?
+      options:
+        - text: Centralized; the system team becomes a bottleneck.
+          why: There's no dedicated system team here; it lives inside one product team.
+        - text: Solitary; the system reflects one team's needs and others drift as they adapt copies.
+          why: Correct. A solitary model works for one team and frays as soon as several teams depend on it.
+        - text: Federated; contributions stall because nobody reviews them.
+          why: Federated means many teams contribute; here only one team builds.
+        - text: Hybrid; the core and contributors disagree about direction.
+          why: A hybrid model needs a dedicated core, which this company doesn't have.
+      answer: 1
+    - q: Your audit script reports `#1F2933`, `#1f2933` and `#222b35` as three greys. What should the audit report say?
+      options:
+        - text: Three distinct greys, exactly as typed.
+          why: The first two are the same value in different case; reporting them separately inflates the numbers.
+        - text: One grey, because they all look the same.
+          why: "`#222b35` is a different value; it should be shown as a near-duplicate, not silently merged."
+        - text: Nothing yet; greys don't matter until components exist.
+          why: Color drift is often the most widespread finding, and it shapes the token work that comes first.
+        - text: Two values after normalizing case, flagged as one near-duplicate cluster for designers to consolidate.
+          why: Correct. Normalize notation automatically; let designers decide which near-duplicates become one token.
+      answer: 3
+  s-ds-2:
+    - q: "A product team writes `.order-card { border-color: var(--nw-gray-200); }` in its own CSS. Dark mode ships next week. What will happen to that border?"
+      options:
+        - text: It adapts automatically, because all tokens change in dark mode.
+          why: Dark mode remaps semantic tokens; primitives keep their values.
+        - text: It turns transparent, because primitives are removed in dark mode.
+          why: Primitives stay defined; they just aren't remapped.
+        - text: The browser picks a dark equivalent through `color-scheme`.
+          why: "`color-scheme` affects browser-drawn UI, not your custom properties."
+        - text: It keeps the light grey, because it references a primitive that dark mode doesn't remap.
+          why: Correct. Using `--nw-color-border` instead would let the theme change it.
+      answer: 3
+    - q: Which of these is a correctly formed DTCG 2025.10 dimension token?
+      options:
+        - text: '`"inset-md": { "$type": "dimension", "$value": { "value": 1, "unit": "rem" } }`'
+          why: Correct. A dimension value is an object with a numeric `value` and a `unit` of `px` or `rem`.
+        - text: '`"inset-md": { "$type": "dimension", "$value": "16px" }`'
+          why: Earlier drafts used strings, but 2025.10 requires the object form with `value` and `unit`.
+        - text: '`"inset.md": { "$type": "dimension", "$value": { "value": 16, "unit": "px" } }`'
+          why: The value is fine, but periods aren't allowed in names because they separate reference paths.
+        - text: '`"inset-md": { "$type": "dimension", "$value": { "value": 1, "unit": "em" } }`'
+          why: Only `px` and `rem` are valid units for dimension tokens.
+      answer: 0
+    - q: "Northwind's generated CSS contains `--nw-color-action-bg: var(--nw-color-blue-600);` on `:root`. A campaign page's own stylesheet sets a brighter `--nw-color-blue-600` on `:root`, and every action button on that page follows. What made this possible?"
+      options:
+        - text: It works because primitives are always resolved last; no setting is involved.
+          why: Resolution order has nothing to do with it; the output had to keep references.
+        - text: References were kept in the generated CSS, so the semantic token still points at the primitive at runtime.
+          why: Correct. With `outputReferences`, the link from semantic to primitive survives into the browser, so overriding the primitive on the same element flows through.
+        - text: The pipeline generates one file per page.
+          why: Northwind generates per theme, not per page; the override happens in the browser.
+        - text: Style Dictionary watches the page and rebuilds when values change.
+          why: Build tools run at build time; the override works entirely in the browser's cascade.
+      answer: 1
+    - q: A designer names a new token `--nw-color-tidewater-teal-button`. What is the main problem?
+      options:
+        - text: It's too long for CSS.
+          why: Custom property names have no practical length limit; long names are fine if they're meaningful.
+        - text: It's missing the state part of the grammar.
+          why: Not every token needs a state; the issue is what the name describes.
+        - text: It bakes a brand, a color and a component into a semantic name, so it breaks when any of them changes.
+          why: Correct. A role-based name like `--nw-color-action-bg` lets each brand map its own color.
+        - text: Token names can't contain brand names in the DTCG format.
+          why: The format allows any name without `$`, `{`, `}` or `.`; this is a design problem, not a syntax one.
+      answer: 2
+    - q: The dark theme block is `[data-theme="dark"] { … }` and density is `[data-density="compact"] { … }`. A page sets both on `<html>`. What do you need to add for the combination to work?
+      options:
+        - text: Nothing, because each axis remaps different tokens and the cascade combines them.
+          why: Correct. Independent axes that own separate tokens compose without combined selectors.
+        - text: A combined `[data-theme="dark"][data-density="compact"]` block.
+          why: Only needed where two axes truly interact on the same tokens; theme and density don't.
+        - text: A JavaScript function that merges the two token sets.
+          why: The CSS cascade already merges declarations; no script is needed.
+        - text: A third attribute, such as `data-mode="dark-compact"`.
+          why: Combining modes into one attribute brings back the multiplication you were avoiding.
+      answer: 0
+  s-ds-3:
+    - q: A Select component API has `isSmall`, `isLarge` and `isCompact` booleans. What's the best redesign?
+      options:
+        - text: One `size` enum (`sm`, `md`, `lg`) matching the other components, with compactness left to the density mode.
+          why: Correct. Mutually exclusive sizes become one enum, and density belongs to the theme axis, not each component.
+        - text: Keep the booleans but document which combinations are invalid.
+          why: Docs don't stop invalid combinations; the type should.
+        - text: Replace them with a `className` prop so teams size it themselves.
+          why: That gives up the system's control of sizing and creates drift.
+        - text: Add `isMedium` so every size has a boolean.
+          why: More booleans means more impossible combinations.
+      answer: 0
+    - q: "`<Tabs>` passes the selected value to its triggers by cloning `children`. A team wraps one trigger in `<Tooltip>`. What happens, and what's the fix?"
+      options:
+        - text: The tooltip breaks; tooltips can't wrap buttons.
+          why: Tooltips wrap buttons all the time; the problem is how Tabs finds its triggers.
+        - text: Nothing; cloning reaches nested elements automatically.
+          why: Cloning only touches direct children, so the wrapped trigger is missed.
+        - text: The tab panel unmounts; add a `key` to the tooltip.
+          why: Keys control identity in lists, not how state reaches a nested trigger.
+        - text: The wrapped trigger no longer receives its props; share state through context instead.
+          why: Correct. Context reaches the trigger however deeply it's nested.
+      answer: 3
+    - q: A designer's mockups show a custom checkbox drawn with a `<div>`. What should the system's Checkbox be built on?
+      options:
+        - text: The `<div>` with `role="checkbox"`, `tabindex` and key handlers added.
+          why: Possible, but it rebuilds by hand what the native input already does correctly.
+        - text: An `<img>` that swaps between checked and unchecked pictures.
+          why: Images carry no state or keyboard behavior for assistive technology.
+        - text: A native `<input type="checkbox">`, visually styled, with its label associated.
+          why: Correct. Native elements bring focus, keyboard and state for free; style them rather than replace them.
+        - text: A `<button>` with `aria-pressed`.
+          why: That's a toggle button pattern, which is announced differently from a checkbox.
+      answer: 2
+    - q: The Dialog docs page lists every prop accurately, but teams keep using Dialog for success messages. Which part of the page is missing?
+      options:
+        - text: A more detailed props table.
+          why: The props table is already accurate; it can't tell people when not to use Dialog.
+        - text: A changelog link.
+          why: History doesn't help someone decide which component to use today.
+        - text: A longer description of the overlay animation.
+          why: Animation details don't address choosing the right component.
+        - text: "'When not to use' guidance with the alternative, Toast, and a do-and-don't example."
+          why: Correct. Misuse comes from missing judgment, which only written guidance provides.
+      answer: 3
+    - q: A Button is disabled with `aria-disabled="true"` so a tooltip can explain why. A tester clicks it and the form saves anyway. What was missed?
+      options:
+        - text: '`aria-disabled` should be `aria-disabled="disabled"`.'
+          why: The valid values are `true` and `false`; the value isn't the problem.
+        - text: "`aria-disabled` only announces the state; the component must block the action itself."
+          why: Correct. Unlike the `disabled` attribute, `aria-disabled` doesn't stop clicks.
+        - text: The tooltip intercepted the click.
+          why: Tooltips don't change click behavior; the button's handler ran because nothing stopped it.
+        - text: Screen readers ignore `aria-disabled` on buttons.
+          why: Screen readers announce it; the issue is the missing guard on the action.
+      answer: 1
+  s-ds-4:
+    - q: The tokens JSON is the source of truth, but a designer published a new action blue directly in the Figma library. What should happen next?
+      options:
+        - text: Copy the Figma value into the JSON so both match.
+          why: That accepts an unreviewed change and skips the contrast and naming checks.
+        - text: Leave both; small differences don't matter.
+          why: Small differences are how two products ended up with two blues.
+        - text: Revert the library to the released values and turn the change into a pull request against the JSON.
+          why: Correct. The change goes through the normal review and checks, then syncs back to Figma on release.
+        - text: Lock the Figma library so nobody can edit variables.
+          why: Designers need to explore in branches; the process, not a lock, prevents divergence.
+      answer: 2
+    - q: "`@northwind/tokens` is at 2.3.1. A release adds three new tokens and renames one existing token, keeping no alias. What's the correct version?"
+      options:
+        - text: 3.0.0, because the rename without an alias breaks anyone using the old name.
+          why: Correct. Additions alone would be 2.4.0, but the highest bump wins and a removal is major.
+        - text: 2.4.0, because most of the changes are additions.
+          why: The majority doesn't decide; one breaking change makes the release major.
+        - text: 2.3.2, because token changes are always patches.
+          why: Renames and removals change the public API, which is never a patch.
+        - text: 2.4.0 now, and 3.0.0 when teams complain.
+          why: Versions describe the change when it ships, not after the damage.
+      answer: 0
+    - q: Which change belongs in a major release of Northwind UI?
+      options:
+        - text: Fixing Tabs so Arrow keys move focus as documented.
+          why: Restoring documented behavior is a patch.
+        - text: Adding a `size` prop to Badge.
+          why: A backward-compatible addition is minor.
+        - text: Slightly darkening a token's value within its role.
+          why: A value refinement within the same role is a minor design update.
+        - text: Changing Dialog so it no longer closes on Escape by default.
+          why: Correct. Changing a default changes behavior for every existing use without any code change.
+      answer: 3
+    - q: A codemod renamed `kind` to `variant` in a repository, but the deprecation warning still appears in the console. What's the most likely reason?
+      options:
+        - text: The codemod didn't run on test files.
+          why: Possible, but tests rarely trigger warnings in the developer's running app.
+        - text: Some Buttons receive `kind` through spread props built elsewhere, which static rewriting can't see.
+          why: Correct. The runtime warning exists precisely to catch the cases codemods miss.
+        - text: The warning is cached by the browser.
+          why: Console warnings aren't cached; they're logged when the code runs.
+        - text: Codemods only work in production builds.
+          why: Codemods rewrite source files and have nothing to do with build mode.
+      answer: 1
+    - q: A visual test shows that a padding token change altered 3 Dialog stories and 40 Table stories. The pull request only meant to change Dialog. What does this tell the reviewer?
+      options:
+        - text: The token is used more widely than intended, so Dialog probably needs its own component token.
+          why: Correct. The diff revealed the change's real reach; a component token scopes it to Dialog.
+        - text: Visual tests are unreliable for padding changes.
+          why: A consistent diff across 40 stories is a real signal, not flakiness.
+        - text: Accept all 43 diffs, since padding changes are minor.
+          why: Accepting unintended changes to 40 Table stories ships a regression to every table.
+        - text: Delete the Table stories until Dialog ships.
+          why: Removing coverage hides the side effect instead of fixing it.
+      answer: 0
+  s-ds-5:
+    - q: A team proposes contributing its `FreightRateCalculator` to the system. No other team calculates rates. What's the right triage outcome?
+      options:
+        - text: Accept it, because contributions are free capacity.
+          why: A system component carries maintenance costs forever, even when someone else wrote it.
+        - text: Reject it and ask the team to delete it.
+          why: The component solves a real problem; it just isn't a shared one.
+        - text: Ask the core team to rebuild it properly first.
+          why: Core capacity should go to shared needs, not a one-team feature.
+        - text: Keep it local, built from system parts, and list it so a second team's need can trigger an RFC.
+          why: Correct. Local is a legitimate outcome, and the list keeps the option open.
+      answer: 3
+    - q: Tidewater's brand team wants its Tabs to use a different keyboard interaction than Northwind's. What should happen?
+      options:
+        - text: Accept it through a brand token that switches the key handling.
+          why: Tokens carry visual values; behavior hidden in tokens is untestable and surprising.
+        - text: Treat it as a product proposal for both brands, decided in API review against the WAI-ARIA tabs pattern.
+          why: Correct. Brands change personality, not behavior; if the interaction is better, both brands get it.
+        - text: Fork Tabs for Tidewater.
+          why: Forks diverge in fixes and accessibility, which defeats the shared system.
+        - text: Add a `brand` prop to Tabs.
+          why: Brand-aware components must change for every new brand, which doesn't scale.
+      answer: 1
+    - q: The DOM scan reports 88% Button adoption, but users still report three different button styles on the billing pages. What should you check first?
+      options:
+        - text: Whether the scan counts something teams can copy, such as the `nw-button` class, instead of the component's own marker.
+          why: Correct. Forked components with copied class names look like adoption to a naive scan.
+        - text: Whether users are using old browsers.
+          why: Old browsers don't create three distinct button designs.
+        - text: Whether the survey sample was too small.
+          why: The issue is the adoption measurement, not the satisfaction survey.
+        - text: Whether 88% is above the company target.
+          why: Hitting a target doesn't explain why the UI is inconsistent.
+      answer: 0
+    - q: Two senior engineers argue about whether Table should support inline editing. Which governance step makes the decision durable?
+      options:
+        - text: Let the engineer with more experience decide privately.
+          why: Private decisions by seniority get re-argued as soon as someone new joins.
+        - text: Ship inline editing as an experimental flag and see what happens.
+          why: Shipping to avoid deciding moves the decision onto every product team.
+        - text: Discuss it in the open API review using principles and usage evidence, then record the decision and reasons in the log.
+          why: Correct. A written decision with reasons can be revisited with new evidence instead of re-fought.
+        - text: Postpone it until the next annual planning cycle.
+          why: A year of 'maybe' is worse for teams than a clear answer either way.
+      answer: 2
+    - q: Reporting's adoption is 25%, far below other teams. Leadership wants to list team scores in the monthly all-hands. What's the better use of the number?
+      options:
+        - text: Publish the ranking so low teams feel pressure to improve.
+          why: Public ranking invites gaming, like relabeling local components, rather than better fit.
+        - text: Set Reporting a 90% target for next quarter.
+          why: A target without understanding why adoption is low pushes components into places they don't fit.
+        - text: Ignore it, because adoption metrics are unreliable.
+          why: The number is a useful signal; the question is how to use it.
+        - text: "Treat it as research: ask Reporting what the system lacks, and report organization-wide trends upward."
+          why: Correct. At Northwind, the answer was charts and dense tables, which became the next roadmap.
+      answer: 3
+final:
+  - q: Northwind wants Tidewater's marketing hero to be dark while the rest of the page stays light. Which setup achieves this with no component changes?
+    options:
+      - text: Set `data-theme="dark"` on the hero section, with dark tokens under a bare `[data-theme="dark"]` selector and component tokens declared on component selectors.
+        why: Correct. The attribute starts a dark subtree, and component tokens resolve against it on each element.
+      - text: Add a `.dark` class to every component inside the hero.
+        why: Per-component classes mean every component must know about themes.
+      - text: Load a second stylesheet for the hero section.
+        why: Stylesheets apply to the whole document; they can't be scoped to one section without selectors.
+      - text: "Use `filter: invert(1)` on the hero."
+        why: Inversion distorts brand colors and images, and produces untested contrast.
+    answer: 0
+  - q: Which file content would a DTCG 2025.10 tool reject?
+    options:
+      - text: 'A group with `"$type": "color"` containing tokens without their own `$type`.'
+        why: Tokens inherit `$type` from their group, so this is valid.
+      - text: A token whose `$value` is `"{color.blue.600}"` where `color.blue.600` is a token.
+        why: That's a valid alias to a token.
+      - text: A color token with `colorSpace`, `components` and an optional `hex`.
+        why: That is the 2025.10 color format.
+      - text: A token named `space.inset` inside a `space` group.
+        why: Correct. Periods are reserved for reference paths, so names can't contain them.
+    answer: 3
+  - q: A Button's API is `variant`, `size`, `loading`, `startIcon`, `endIcon`, plus all native button attributes. A team needs a Button that opens a menu. What should the system do?
+    options:
+      - text: Add a `menuItems` prop to Button.
+        why: Menu content as a Button prop starts prop explosion and mixes two components' jobs.
+      - text: Provide a composed MenuButton built from Button and a Menu, following the WAI-ARIA menu button pattern.
+        why: Correct. Composition keeps Button simple and gives the menu its own accessible behavior.
+      - text: Tell the team to build it from scratch with a `<div>`.
+        why: The system should cover a common pattern like this, and a `<div>` drops native behavior.
+      - text: Add a `isMenu` boolean to Button.
+        why: A boolean can't express menu content or keyboard behavior, and it grows the API.
+    answer: 1
+  - q: In Northwind's token pipeline, why is the dark theme built with primitives in `include` and only the dark semantic file in `source`, filtered on `isSource`?
+    options:
+      - text: Because `include` files are minified.
+        why: Style Dictionary doesn't minify include files; the difference is whether tokens count as source.
+      - text: Because Figma exports only dark modes.
+        why: Figma exports any mode; this is about the generated CSS.
+      - text: So references resolve against primitives while only the remapped semantic tokens are written under the dark selector.
+        why: Correct. Otherwise the dark file would repeat every primitive for no reason.
+      - text: Because dark mode doesn't use primitives.
+        why: Dark semantic tokens point at primitives; they just don't need to be re-emitted.
+    answer: 2
+  - q: Which situation calls for `aria-disabled="true"` rather than the `disabled` attribute?
+    options:
+      - text: A Submit button while the form is being sent, with no explanation needed.
+        why: "`disabled` (or a loading state) is fine when nobody needs to reach the control."
+      - text: A decorative button that never does anything.
+        why: A control that never works shouldn't be a button at all.
+      - text: A button hidden on mobile.
+        why: Hidden elements need neither attribute; they aren't reachable.
+      - text: A Save button that must stay focusable so keyboard users can reach the explanation of why it's unavailable.
+        why: Correct. `aria-disabled` keeps it in the tab order; the component blocks the action itself.
+    answer: 3
+  - q: The `light-dark()` CSS function is suggested as a replacement for Northwind's theme token blocks. What's the accurate assessment?
+    options:
+      - text: It handles two-mode color values well but can't express brands, density or more than two modes, so token remapping is still needed.
+        why: Correct. It's useful for simple light and dark colors, not for a multi-axis theming system.
+      - text: It replaces custom properties entirely.
+        why: It only picks between two colors (or images) by color scheme; it doesn't replace variables for spacing, radii or brands.
+      - text: It only works in Figma.
+        why: It's a CSS function supported by modern browsers.
+      - text: It requires JavaScript to switch modes.
+        why: It responds to the `color-scheme` in effect; no script is required.
+    answer: 0
+  - q: After 5.0.0 removes the deprecated `kind` prop, the billing team can't upgrade for two months. What does Northwind's deprecation policy give them?
+    options:
+      - text: Nothing; they must upgrade immediately.
+        why: Forcing an immediate upgrade is what led to forks in Northwind's first major.
+      - text: A private fork of 5.0.0 with `kind` restored.
+        why: Private forks are what the support policy is designed to prevent.
+      - text: Bug and security fixes on 4.x for six months, so they can upgrade on their own schedule.
+        why: Correct. A stated support window for the previous major keeps teams safe while they migrate.
+      - text: A new 5.0.1 that brings `kind` back.
+        why: Re-adding a removed API in a patch would make the version numbers meaningless.
+    answer: 2
+  - q: Visual baselines were generated on a designer's Mac and CI runs on Linux. Every text-heavy story fails by a few pixels. What's the right fix?
+    options:
+      - text: Raise the diff threshold until the tests pass.
+        why: A threshold loose enough to hide font rendering differences also hides real regressions.
+      - text: Generate and compare baselines in the same CI environment.
+        why: Correct. Comparable screenshots need the same browser, OS and fonts.
+      - text: Disable visual tests for text-heavy stories.
+        why: Those stories are where typography regressions, like the line-height one, appear.
+      - text: Run visual tests only on designers' machines.
+        why: Then CI can't block a regression, and machines still differ from each other.
+    answer: 1
+  - q: A contributor's new Combobox has stories only for its default and hover states. What should the review ask for?
+    options:
+      - text: Nothing more; two stories are enough to document it.
+        why: Missing states are where components fail, and they need visual and accessibility coverage.
+      - text: A longer description in the docs.
+        why: Docs are needed too, but the gap here is untested states.
+      - text: A screenshot of each state in the pull request description.
+        why: Screenshots in a description aren't re-checked on future changes; stories are.
+      - text: Stories for every cell of its state matrix, including focus, open, disabled and invalid.
+        why: Correct. Each state becomes documentation, an accessibility check and a visual test.
+    answer: 3
+  - q: Which description of the DTCG 2025.10 release is accurate?
+    options:
+      - text: The first stable version of a W3C Community Group report, implemented by tools such as Style Dictionary and Figma's variable import and export.
+        why: Correct. It's stable and widely implemented, but it isn't a W3C Recommendation.
+      - text: A W3C Recommendation that browsers implement natively.
+        why: Community Group reports aren't Recommendations, and browsers don't read token files.
+      - text: An early draft with no tool support yet.
+        why: 2025.10 is the stable release, with support in several tools.
+      - text: A proprietary Figma format.
+        why: The format is vendor-neutral and developed by a community group.
+    answer: 0
+  - q: The dispatch app shows Northwind and Tidewater sections side by side, and Tidewater sections still use Inter for headings even though `[data-brand="tidewater"]` sets `--nw-brand-font-heading`. What fixes it?
+    options:
+      - text: Add `!important` to the Tidewater font token.
+        why: Importance doesn't help; the semantic token was already resolved at the root.
+      - text: Load the Georgia font file.
+        why: Georgia is a system font here; the problem is which value the heading receives.
+      - text: Re-declare the semantic mappings, including `--nw-font-heading`, under `[data-brand]` as well as `:root`.
+        why: Correct. Then each brand section computes its semantic tokens from its own brand tier.
+      - text: Give Tidewater headings their own class.
+        why: Brand classes on components bypass the token architecture.
+    answer: 2
+  - q: Which combination of signals gives the most trustworthy picture of a design system's health?
+    options:
+      - text: Number of components in the library.
+        why: A big library can be unused or inconsistent; size isn't health.
+      - text: Stars on the documentation site's repository.
+        why: Popularity outside the company says little about internal adoption.
+      - text: Total pull requests merged per month.
+        why: Activity can be high while teams quietly fork; it measures the core team, not the users.
+      - text: Component adoption, token coverage, version lag and team satisfaction, tracked as trends together.
+        why: Correct. Several signals together resist gaming and show where the system fails its users.
+    answer: 3

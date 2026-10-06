@@ -1,0 +1,34 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv"
+  ],
+  "starter": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n\n# 1. One row per order_id with columns: revenue (sum), lines (number of rows), units (sum of quantity)\nper_order = None\n\n# 2. Average order value (mean revenue per order), rounded to 2 decimals\navg_order_value = None\n\n# 3. Share of orders with 2 or more lines, rounded to 3 decimals\nmulti_line_share = None\n\n# 4. product_id with the highest total revenue\ntop_product = None\n",
+  "solution": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n\nper_order = items.groupby(\"order_id\").agg(\n    revenue=(\"revenue\", \"sum\"),\n    lines=(\"order_item_id\", \"count\"),\n    units=(\"quantity\", \"sum\"),\n)\n\navg_order_value = round(per_order[\"revenue\"].mean(), 2)\nmulti_line_share = round((per_order[\"lines\"] >= 2).mean(), 3)\ntop_product = items.groupby(\"product_id\")[\"revenue\"].sum().idxmax()\nprint(per_order.head())\n",
+  "checks": [
+    {
+      "id": "shape",
+      "test": "isinstance(per_order, pd.DataFrame) and len(per_order) == 2066 and {'revenue', 'lines', 'units'} <= set(per_order.columns)"
+    },
+    {
+      "id": "order-1001",
+      "test": "(per_order.loc[1001, 'revenue'] if 1001 in per_order.index else per_order.set_index('order_id').loc[1001, 'revenue']).round(2) == 438.9"
+    },
+    {
+      "id": "lines-units",
+      "test": "int(per_order['lines'].sum()) == 3991 and int(per_order['units'].sum()) == int(items['quantity'].sum())"
+    },
+    {
+      "id": "aov",
+      "test": "round(float(avg_order_value), 2) == 228.43"
+    },
+    {
+      "id": "multi",
+      "test": "round(float(multi_line_share), 3) == 0.551"
+    },
+    {
+      "id": "top",
+      "test": "int(top_product) == 21"
+    }
+  ]
+}

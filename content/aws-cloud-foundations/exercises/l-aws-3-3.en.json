@@ -1,0 +1,17 @@
+{
+  "title": "Which data belongs in DynamoDB?",
+  "prompt": "Lantern is splitting its single PostgreSQL database. For each feature, decide whether Amazon DynamoDB is a **good fit**. Select every feature that should use DynamoDB; the rest stay in Amazon RDS for PostgreSQL.",
+  "hints": [
+    "DynamoDB is strongest when you can say in advance exactly which key every request will use.",
+    "Varied, changing questions and joins across several tables point to SQL.",
+    "Features with short-lived data can use DynamoDB's Time to Live (TTL) to delete items automatically at no extra cost."
+  ],
+  "explanation": "RSVPs, ticket lookups and rate-limit counters all have one known access pattern each, keyed by an ID, and they see sudden bursts of traffic, which is where DynamoDB's per-request pricing and consistent latency shine. Rate-limit counters also expire, and TTL deletes them for you (usually within a day or two of expiry, so the code still compares the expiry time itself). The treasurer's reports ask new questions every quarter with joins and aggregates, and the admin pages rely on foreign keys across organisers, venues and events; both are relational work that the existing SQL already does well in RDS.",
+  "options": {
+    "rsvps": { "text": "RSVPs: write one per person per event, list them by event, check for a duplicate.", "why": "Good fit. Every request uses `eventId`, plus `email` for the duplicate check, and writes spike when an event goes viral." },
+    "reports": { "text": "Quarterly reports that the treasurer redesigns each time, joining events, venues and organisers.", "why": "Not a good fit. Ad-hoc questions with joins are exactly what SQL handles and DynamoDB keys do not." },
+    "ticket-lookup": { "text": "Checking a ticket by its ticket ID at the festival gate, thousands of times per minute.", "why": "Good fit. A single-key `GetItem` at high volume with low latency is DynamoDB's core strength." },
+    "relational-admin": { "text": "The admin pages, which edit organisers, venues and events with foreign keys between them.", "why": "Not a good fit. Multi-table relationships and constraints are relational work, and the existing SQL code keeps working in RDS." },
+    "rate-limit": { "text": "Per-IP counters that limit RSVP spam, each expiring after ten minutes.", "why": "Good fit. One key per IP address, very frequent small writes, and TTL removes expired counters automatically." }
+  }
+}

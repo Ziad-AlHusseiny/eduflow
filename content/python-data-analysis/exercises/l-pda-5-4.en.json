@@ -1,0 +1,17 @@
+{
+  "title": "Make the quarterly report rerunnable",
+  "prompt": "Complete `quarter_summary(df, quarter)` so it returns a dictionary with the keys `quarter`, `revenue`, `orders` and `aov` for the given quarter (a string like `\"2025Q4\"`), using non-cancelled orders only, with `revenue` and `aov` rounded to 2 decimals. It must use its `df` argument, not a global, and `assert` that the quarter has at least one order. Then build `summary`, a DataFrame with one row per quarter in `QUARTERS`, and save it to `quarter_summary.csv` without the index.",
+  "hints": [
+    "Filter twice inside the function: drop cancelled orders, then keep rows where `df[\"order_date\"].dt.to_period(\"Q\") == quarter`.",
+    "Return a dict: `{\"quarter\": quarter, \"revenue\": round(in_q[\"revenue\"].sum(), 2), \"orders\": len(in_q), \"aov\": round(in_q[\"revenue\"].mean(), 2)}`.",
+    "`pd.DataFrame([quarter_summary(df, q) for q in QUARTERS])` turns a list of dicts into a table (the list-of-dicts shape from Lesson 1.3). Save with `summary.to_csv(\"quarter_summary.csv\", index=False)`."
+  ],
+  "explanation": "The function takes everything it needs as arguments, so the check that passes it a filtered table (orders before December only) gets a different, correct answer: 457 orders for a partial Q4. That is what makes a function safe to reuse. Comparing a `Period` column with a string like `\"2025Q4\"` works because pandas converts the string to a period. A list of dictionaries becomes a DataFrame directly, one row per dict, which closes the loop with the very first data structure you met in this course. `index=False` keeps the file clean: without it, the CSV gets an unnamed extra column of row numbers.",
+  "checks": {
+    "q4": "`quarter_summary(df, \"2025Q4\")` returns revenue 146,825.44, 642 orders and AOV 228.70",
+    "other-quarter": "It works for other quarters too, such as 2024Q4",
+    "uses-argument": "It uses the `df` it is given, not a global table",
+    "summary": "`summary` has one row per quarter in `QUARTERS`",
+    "saved": "`quarter_summary.csv` is saved with 3 rows and no index column"
+  }
+}

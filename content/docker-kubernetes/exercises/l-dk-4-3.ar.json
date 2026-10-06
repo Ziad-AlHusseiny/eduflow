@@ -1,0 +1,10 @@
+{
+  "title": "الـ endpoints موجودة، والطلبات تفشل",
+  "prompt": "الـ Service أدناه له ثلاثة endpoints، والـ Pods في حالتَي Running وReady، ومع ذلك يحصل `curl notes-api` من Pod آخر على `connection refused` في كل مرة. اختر السطر المسبّب.",
+  "hints": [
+    "وجد الـ Service الـ Pods، فالـ selector سليم. تتبّع أرقام المنافذ.",
+    "أين يستمع التطبيق داخل الـ Pod فعلًا؟"
+  ],
+  "explanation": "السطر 10 يرسل الحركة إلى المنفذ 80 على الـ Pods، لكن notes-api يستمع على 3000، فيُرفض كل اتصال. وجّه `targetPort` إلى منفذ الـ container، ويفضَّل بالاسم حتى لا ينحرف أحدهما عن الآخر:\n\n```yaml\n# Service\n  ports:\n    - port: 80\n      targetPort: http\n# Pod template\n    ports:\n      - name: http\n        containerPort: 3000\n```",
+  "checks": {}
+}

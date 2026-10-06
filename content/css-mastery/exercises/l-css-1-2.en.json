@@ -1,0 +1,17 @@
+{
+  "title": "Rescue the button from an ID selector",
+  "prompt": "The prototype rule `#schedule article a` turns the **Save to my schedule** button blue and underlined. Change the **base link rule only** so that `.btn` gets its white, non-underlined style back, while the normal `.abstract-link` stays blue (`#1d4ed8`) and underlined. Don't edit the `.btn` rule, don't touch the HTML, and don't use `!important`.",
+  "hints": [
+    "Score both selectors: `#schedule article a` is (1,0,2) and `.btn` is (0,1,0). Which column decides it?",
+    "You want the base rule to keep applying only inside `#schedule` articles, but with less weight.",
+    "Wrap the context in `:where()`: `:where(#schedule article) a { … }` scores (0,0,1)."
+  ],
+  "explanation": "`:where()` keeps the selector's reach but contributes zero specificity, so `:where(#schedule article) a` scores (0,0,1). The `.btn` rule scores (0,1,0) and now wins on color and text decoration, while plain links inside the article still match the base rule. Removing the ID entirely (for example `article a`) would also pass, but `:where()` lets you keep the scoping the prototype intended.",
+  "checks": {
+    "btn-white": "The button text is white",
+    "btn-no-underline": "The button is not underlined",
+    "link-still-blue": "The abstract link is still blue and underlined",
+    "no-important": "No !important anywhere in the CSS",
+    "markup-intact": "The HTML is unchanged"
+  }
+}

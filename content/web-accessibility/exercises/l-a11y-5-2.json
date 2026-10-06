@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["div-pay", "radio-group", "blank-field", "dialog-open", "file-name", "status-update", "no-state"], "correct": ["div-pay", "blank-field", "file-name", "no-state"] }

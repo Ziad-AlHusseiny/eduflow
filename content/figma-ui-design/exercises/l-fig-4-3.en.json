@@ -1,0 +1,20 @@
+{
+  "title": "Hand off the check-in flow",
+  "prompt": "The check-in flow is designed and tested. Put Sofia's handoff steps in order, from preparing the file to checking what was built.",
+  "hints": [
+    "Developers should never see a flow marked ready that still contains explorations or missing states.",
+    "Annotations describe the final frames, so they come after the states exist, and before the ready signal.",
+    "Clean, group, add states, annotate, mark ready, walk through, review the build."
+  ],
+  "explanation": "First **clean up** so only real designs remain, then **group the screens into a section** in flow order. Add the **missing states** (empty, error, long content) because annotations and developers both need them. **Annotate** behaviour and accessibility on those final frames. Only then **mark the section Ready for dev**, so the signal means \"stable\". **Walk the developers through** the flow, and finally **review the build** against the design. Marking ready earlier would trigger Changed badges for every later edit and teach developers to ignore them.",
+  "items": {
+    "clean": "Move explorations and old versions off the Screens page.",
+    "sections": "Group the remaining check-in screens into a section, arranged left to right in flow order.",
+    "states": "Add the missing states to that section: empty list, long habit name, error and loading.",
+    "annotate": "Annotate content rules, behaviour, accessible names and focus order.",
+    "ready": "Mark the section Ready for dev.",
+    "walkthrough": "Walk the developers through the prototype and annotations, and answer questions.",
+    "review": "Review the first build side by side with the design and file fixes."
+  },
+  "checks": {}
+}

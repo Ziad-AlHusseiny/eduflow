@@ -1,0 +1,182 @@
+[
+  {
+    "id": "grain",
+    "term": "مستوى التفصيل (grain)",
+    "definition": "ما يمثّله الصف الواحد في جدول أو في نتيجة query، مثل صف لكل طلب أو صف لكل دولة في كل شهر. تحديده قبل كتابة GROUP BY يمنع معظم أخطاء التجميع.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "operator-precedence",
+    "term": "أولوية المعاملات (AND قبل OR)",
+    "definition": "القاعدة التي يقيّم بها SQL المعامل AND قبل OR، فيجمّع الشرط الذي يخلط بينهما الشروط بطريقة غير متوقعة ما لم توضع كل مجموعة OR بين قوسين.",
+    "lesson": "l-sql-1-2"
+  },
+  {
+    "id": "three-valued-logic",
+    "term": "المنطق ثلاثي القيم (three-valued logic)",
+    "definition": "منطق SQL الذي يكون فيه الشرط TRUE أو FALSE أو NULL (غير معروف). أي مقارنة مع NULL نتيجتها غير معروفة، وWHERE لا يُبقي إلا الصفوف التي يكون شرطها TRUE.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "is-distinct-from",
+    "term": "IS DISTINCT FROM",
+    "definition": "مقارنة آمنة مع NULL تعامل NULL كقيمة عادية، فلا تُسقط الصفوف التي فيها NULL بصمت كما يفعل معامل «لا يساوي» العادي.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "coalesce",
+    "term": "COALESCE",
+    "definition": "دالة تعيد أول وسيط قيمته ليست NULL، وتُستخدم لإعطاء القيم المفقودة قيمة افتراضية عند العرض مثل 'none'. أما استبدال NULL بصفر في المتوسطات فيشوّه النتائج.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "case-expression",
+    "term": "تعبير CASE",
+    "definition": "تعبير يعيد نتيجة أول شرط WHEN قيمته TRUE، أو قيمة ELSE؛ وبدون ELSE تحصل الصفوف غير المطابقة على NULL.",
+    "lesson": "l-sql-1-3"
+  },
+  {
+    "id": "iso-date-text",
+    "term": "نص التاريخ بصيغة ISO-8601",
+    "definition": "تواريخ مخزّنة كنص بالشكل 'YYYY-MM-DD HH:MM:SS'. لأن الوحدة الأكبر تأتي أولًا، يطابق الترتيب الأبجدي الترتيب الزمني، فتعمل مقارنة النصوص كشرط على التاريخ.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "half-open-range",
+    "term": "نطاق التاريخ نصف المفتوح (half-open range)",
+    "definition": "شرط على فترة يشمل بدايتها ويستبعد بداية الفترة التالية، مثل order_date >= '2025-11-01' AND order_date < '2025-12-01'، فلا يُقتطع اليوم الأخير أبدًا.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "julianday",
+    "term": "julianday()",
+    "definition": "دالة في SQLite تحوّل التاريخ إلى عدد من الأيام مع كسوره. طرح قيمتين منها يعطي مدة بالأيام، وضرب الناتج في 24 يعطي الساعات.",
+    "lesson": "l-sql-1-4"
+  },
+  {
+    "id": "having",
+    "term": "HAVING",
+    "definition": "العبارة التي تصفّي المجموعات بعد التجميع، فتستطيع اختبار قيم مثل COUNT(*) أو SUM(revenue). أما الشروط على الصفوف فمكانها WHERE، الذي يعمل قبل التجميع.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "bare-column",
+    "term": "العمود المجرّد (bare column)",
+    "definition": "عمود مختار ليس ضمن التجميع ولا داخل دالة تجميع. يسمح به SQLite ويملؤه من صف اعتباطي في كل مجموعة، بينما يرفض PostgreSQL الـ query.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "filter-clause",
+    "term": "عبارة FILTER",
+    "definition": "إضافة قياسية في SQL إلى دالة التجميع، كما في COUNT(*) FILTER (WHERE channel = 'web')، تقصر دالة التجميع تلك وحدها على الصفوف المطابقة داخل كل مجموعة.",
+    "lesson": "l-sql-2-1"
+  },
+  {
+    "id": "left-join",
+    "term": "LEFT JOIN",
+    "definition": "ربط يُبقي كل صف من الجدول الأيسر ويملأ أعمدة الجدول الأيمن بـ NULL حيث لا يوجد تطابق. الشروط على الجدول الأيمن مكانها عبارة ON الخاصة به.",
+    "lesson": "l-sql-2-2"
+  },
+  {
+    "id": "fan-out",
+    "term": "الـ fan-out (تضاعف الصفوف)",
+    "definition": "تضاعف الصفوف الذي يحدث حين يتبع الـ JOIN علاقة واحد-إلى-متعدد. القيم المخزّنة في جانب «الواحد» تتكرّر مرة لكل تطابق، فيؤدي جمعها إلى تضخيم المجاميع.",
+    "lesson": "l-sql-2-3"
+  },
+  {
+    "id": "derived-table",
+    "term": "الجدول المشتق (derived table)",
+    "definition": "subquery داخل عبارة FROM يتصرّف كجدول مؤقت بمستوى تفصيل خاص به، ويُستخدم غالبًا لتجميع جدول تفصيلي قبل ربطه.",
+    "lesson": "l-sql-2-3"
+  },
+  {
+    "id": "self-join",
+    "term": "الـ self-join",
+    "definition": "ربط جدول بنفسه باستخدام اسمين مستعارين لدورين مختلفين، مثل الموظف والمدير، لتتبّع رابط مخزّن داخل الجدول نفسه.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "semi-join",
+    "term": "الـ semi-join",
+    "definition": "شرط يُبقي الصفوف التي لها تطابق واحد على الأقل في جدول آخر، ويُكتب بـ EXISTS أو IN (subquery). وعلى عكس الـ JOIN، لا يكرّر الصفوف أبدًا.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "anti-join",
+    "term": "الـ anti-join",
+    "definition": "شرط يُبقي الصفوف التي لا تطابق لها في جدول آخر، ويُكتب بـ NOT EXISTS أو LEFT JOIN ... WHERE right_key IS NULL. أما NOT IN فيفشل حين يحتوي الـ subquery على NULL.",
+    "lesson": "l-sql-2-4"
+  },
+  {
+    "id": "scalar-subquery",
+    "term": "scalar subquery",
+    "definition": "subquery يعيد صفًا واحدًا وعمودًا واحدًا بالضبط، مثل متوسط عام، ويمكن استخدامه في أي مكان يُسمح فيه بقيمة واحدة.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "cte",
+    "term": "الـ CTE (common table expression)",
+    "definition": "نتيجة وسيطة مسمّاة تُعرَّف بـ WITH name AS (...). تجعل الـ CTEs التحليل الطويل يُقرأ كخطوات مرتّبة، يمكن تشغيل كلٍّ منها وفحصها وحدها.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "recursive-cte",
+    "term": "الـ CTE التكراري (recursive CTE)",
+    "definition": "CTE فيه query ارتكاز، ثم UNION ALL، ثم خطوة ترتبط بالـ CTE نفسه، ويتكرّر حتى لا تظهر صفوف جديدة. يُستخدم لتتبّع التسلسلات الهرمية بأي عمق.",
+    "lesson": "l-sql-3-1"
+  },
+  {
+    "id": "window-function",
+    "term": "دالة النافذة (window function)",
+    "definition": "دالة يتبعها OVER (...) تحسب قيمة من مجموعة صفوف مترابطة مع إبقاء كل صف، على عكس GROUP BY الذي يضغطها في صف واحد.",
+    "lesson": "l-sql-3-2"
+  },
+  {
+    "id": "partition-by",
+    "term": "PARTITION BY",
+    "definition": "الجزء من تعريف النافذة الذي يقسم الصفوف إلى مجموعات، فيبدأ حساب النافذة، مثل الترتيب أو المجموع التراكمي، من جديد لكل مجموعة.",
+    "lesson": "l-sql-3-2"
+  },
+  {
+    "id": "lag-lead",
+    "term": "LAG وLEAD",
+    "definition": "دالتا نافذة تعيدان قيمة من الصف السابق (LAG) أو التالي (LEAD) بترتيب النافذة، وتُستخدمان للمقارنة بين فترة والفترة التي قبلها.",
+    "lesson": "l-sql-3-3"
+  },
+  {
+    "id": "window-frame",
+    "term": "إطار النافذة (window frame)",
+    "definition": "نطاق الصفوف حول الصف الحالي الذي تراه دالة التجميع كدالة نافذة، مثل ROWS BETWEEN 6 PRECEDING AND CURRENT ROW لمتوسط متحرك على 7 صفوف.",
+    "lesson": "l-sql-3-3"
+  },
+  {
+    "id": "funnel",
+    "term": "القمع (funnel)",
+    "definition": "سلسلة من الخطوات، مثل الجلسة ثم الإضافة إلى السلة ثم الشراء، تُعرض كأعداد ومعدلات تحويل من خطوة إلى التي تليها لإظهار أين يتسرّب الناس.",
+    "lesson": "l-sql-3-4"
+  },
+  {
+    "id": "cohort-retention",
+    "term": "معدل الاحتفاظ (retention) لكل cohort",
+    "definition": "نسبة العملاء من مجموعة بدأت في الفترة نفسها، مثل شهر الطلب الأول، الذين عادوا نشطين بعد عدد معيّن من الفترات.",
+    "lesson": "l-sql-3-4"
+  },
+  {
+    "id": "data-quality-check",
+    "term": "فحص جودة البيانات (data-quality check)",
+    "definition": "query يعيد الصفوف التي تخالف قاعدة محدّدة، مثل المراجع اليتيمة أو التواريخ المستحيلة، فتعني النتيجة الفارغة أن القاعدة صامدة.",
+    "lesson": "l-sql-4-1"
+  },
+  {
+    "id": "query-plan",
+    "term": "خطة التنفيذ (query plan)",
+    "definition": "وصف قاعدة البيانات لطريقة تنفيذها query ما، ويُعرض في SQLite بـ EXPLAIN QUERY PLAN. تعني SEARCH أن index ضيّق العمل، وتعني SCAN أن كل صف قد قُرئ.",
+    "lesson": "l-sql-4-2"
+  },
+  {
+    "id": "sargable",
+    "term": "Sargable",
+    "definition": "وصف لشرط تستطيع قاعدة البيانات الإجابة عنه باستخدام index، وهو عادةً عمود مجرّد يُقارَن بثابت. إحاطة العمود بدالة تجعل الشرط في الغالب غير sargable.",
+    "lesson": "l-sql-4-2"
+  }
+]

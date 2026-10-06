@@ -1,0 +1,58 @@
+{
+  "kind": "fill",
+  "language": "text",
+  "template": "Chip (auto layout)\n  Flow:                  {{0}}\n  Gap between items:     {{1}}\n  Padding left/right:    {{2}}\n  Padding top/bottom:    {{3}}\n  Align children:        {{4}}\n\nFrequency chips (auto layout)\n  Flow:                  {{5}}\n  Gap between items:     {{6}}",
+  "blanks": [
+    {
+      "answers": [
+        "Horizontal"
+      ]
+    },
+    {
+      "answers": [
+        "4",
+        "4px",
+        "4 px"
+      ]
+    },
+    {
+      "answers": [
+        "12",
+        "12px",
+        "12 px"
+      ]
+    },
+    {
+      "answers": [
+        "6",
+        "6px",
+        "6 px"
+      ]
+    },
+    {
+      "answers": [
+        "Center",
+        "Centre",
+        "Middle",
+        "Center vertically",
+        "Centered",
+        "Centred",
+        "Vertical center",
+        "Left center",
+        "Center left"
+      ]
+    },
+    {
+      "answers": [
+        "Horizontal"
+      ]
+    },
+    {
+      "answers": [
+        "8",
+        "8px",
+        "8 px"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Turn the order into a discriminated union",
+  "prompt": "Replace the bag-of-optionals `Order` with a discriminated union of five variants (one per `status`), where every field a state has is required and fields it does not have are absent:\n\n- `processing`: `id`\n- `shipped`: `id`, `trackingNumber`\n- `delivered`: `id`, `trackingNumber`, `deliveredAt`\n- `cancelled`: `id`, `cancelReason`\n- `returned`: `id`, `trackingNumber`, `deliveredAt`, `refundCents`\n\nThen change `ship` so it only accepts a processing order and returns a shipped one. The three `@ts-expect-error` lines must become real errors, and `describe` should no longer need `!`.",
+  "hints": [
+    "Write one object type per state, each with `status` set to a single string literal, and join them with `|`.",
+    "Naming the variants (`ProcessingOrder`, `ShippedOrder`…) lets you use them in `ship`'s signature.",
+    "`function ship(order: ProcessingOrder, trackingNumber: string): ShippedOrder`"
+  ],
+  "explanation": "Each variant now carries exactly the data its state has, so an object literal without `trackingNumber` cannot be a shipped order, and an excess `deliveredAt` on a cancelled order is flagged. Inside each `case`, the `status` check narrows `order` to one variant, so `refundCents` is a plain `number` and the `!` is unnecessary. Typing `ship` with `ProcessingOrder` in and `ShippedOrder` out moves the rule \"only processing orders ship\" from a code review comment into the compiler.",
+  "checks": {
+    "types": "The file type-checks with zero errors: all three impossible states are rejected",
+    "ships": "`ship` returns a shipped order with the tracking number and the same id",
+    "describes": "`describe` still describes returned and cancelled orders"
+  }
+}

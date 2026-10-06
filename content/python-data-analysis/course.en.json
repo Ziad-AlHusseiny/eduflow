@@ -1,0 +1,51 @@
+{
+  "title": "Python for Data Analysis",
+  "tagline": "Go from zero Python to answering real business questions with pandas.",
+  "description": [
+    "Spreadsheets break down when the data gets messy, the questions repeat every month, or someone asks how you got that number. This course teaches you Python and pandas from the first line of code, using the real tables of Cartwheel, an online store: orders, products, customers, returns and a deliberately messy export like the ones that land in your inbox.",
+    "You learn the habits working analysts rely on: inspect data before you trust it, clean it with code you can rerun, check every join, and explain a number in plain words. The course ends with a full case study, why Cartwheel's Q4 2025 revenue jumped, and a short guide to making your analysis reproducible."
+  ],
+  "audience": "Career switchers and spreadsheet users who want to analyse data with Python, starting from zero programming experience.",
+  "prerequisites": "None. Comfort with a spreadsheet (sums, filters, pivot tables) helps but is not required.",
+  "learnItems": [
+    "Write the core Python an analyst needs: types, lists, dicts, functions",
+    "Load, inspect and select data with pandas DataFrames",
+    "Clean missing values, text, money strings, dates and duplicates",
+    "Summarise and join tables with groupby, merge and pivot_table",
+    "Analyse trends over time with resample and the dt accessor",
+    "Answer a business question end to end and make it reproducible"
+  ],
+  "sections": {
+    "s-pda-1": "Python Essentials for Analysts",
+    "s-pda-2": "pandas Foundations",
+    "s-pda-3": "Cleaning Real Data",
+    "s-pda-4": "Analysis: Group, Join, Reshape",
+    "s-pda-5": "Answering Real Questions"
+  },
+  "lessons": {
+    "l-pda-1-1": "Why Analysts Use Python",
+    "l-pda-1-2": "Values, Types and Variables",
+    "l-pda-1-3": "Lists and Dictionaries",
+    "l-pda-1-4": "Loops, Conditions and Comprehensions",
+    "l-pda-1-5": "Functions, f-strings and Reading Errors",
+    "l-pda-2-1": "Series and DataFrames",
+    "l-pda-2-2": "Loading and Inspecting a CSV",
+    "l-pda-2-3": "Selecting with loc and iloc",
+    "l-pda-2-4": "Filtering and Sorting Rows",
+    "l-pda-2-5": "Adding and Changing Columns",
+    "l-pda-3-1": "Missing Values",
+    "l-pda-3-2": "Cleaning Text Columns",
+    "l-pda-3-3": "Turning Money Strings into Numbers",
+    "l-pda-3-4": "Parsing Messy Dates",
+    "l-pda-3-5": "Duplicates and a Repeatable Cleaning Function",
+    "l-pda-4-1": "groupby and Named Aggregation",
+    "l-pda-4-2": "Joining Tables with merge",
+    "l-pda-4-3": "Reshaping with pivot_table and melt",
+    "l-pda-4-4": "Time Series: resample and the dt Accessor",
+    "l-pda-4-5": "Ranking and Binning",
+    "l-pda-5-1": "Descriptive Statistics and Distributions",
+    "l-pda-5-2": "Charts with pandas and matplotlib",
+    "l-pda-5-3": "Case Study: Why Did Q4 2025 Revenue Jump?",
+    "l-pda-5-4": "Reproducible Analysis"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "units-async",
+    "log-sqlite",
+    "token-async",
+    "photo-secure",
+    "token-secure",
+    "log-async"
+  ],
+  "correct": [
+    "units-async",
+    "log-sqlite",
+    "token-secure"
+  ]
+}

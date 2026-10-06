@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<h1>Pocket</h1>\n<p id=\"total\">Total: $0.00</p>\n<ul id=\"expense-list\"></ul>\n",
+    "css": ".big { font-weight: 700; color: #b42318; }\n",
+    "js": "const expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450 },\n  { id: \"exp-2\", label: \"Flight\", amount: 18900 },\n  { id: \"exp-3\", label: \"Lunch\", amount: 1350 },\n];\n\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nfunction renderExpenses(expenses) {\n  // 1. Clear #expense-list\n  // 2. Add one <li> per expense: \"Coffee: $4.50\", with data-id set to its id,\n  //    and the class \"big\" when the amount is 10000 or more\n  // 3. Set #total to \"Total: $207.00\" (the sum, formatted)\n}\n\nrenderExpenses(expenses);\n"
+  },
+  "solution": {
+    "html": "<h1>Pocket</h1>\n<p id=\"total\">Total: $0.00</p>\n<ul id=\"expense-list\"></ul>\n",
+    "css": ".big { font-weight: 700; color: #b42318; }\n",
+    "js": "const expenses = [\n  { id: \"exp-1\", label: \"Coffee\", amount: 450 },\n  { id: \"exp-2\", label: \"Flight\", amount: 18900 },\n  { id: \"exp-3\", label: \"Lunch\", amount: 1350 },\n];\n\nconst formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;\n\nconst list = document.querySelector(\"#expense-list\");\nconst totalEl = document.querySelector(\"#total\");\n\nfunction renderExpenses(expenses) {\n  list.replaceChildren();\n  for (const expense of expenses) {\n    const li = document.createElement(\"li\");\n    li.textContent = `${expense.label}: ${formatMoney(expense.amount)}`;\n    li.dataset.id = expense.id;\n    if (expense.amount >= 10000) {\n      li.classList.add(\"big\");\n    }\n    list.append(li);\n  }\n  const total = expenses.reduce((sum, e) => sum + e.amount, 0);\n  totalEl.textContent = `Total: ${formatMoney(total)}`;\n}\n\nrenderExpenses(expenses);\n"
+  },
+  "checks": [
+    {
+      "id": "items",
+      "test": "const items = $$('#expense-list li');\nreturn items.length === 3 && items[0].textContent.trim() === 'Coffee: $4.50' && items[2].textContent.trim() === 'Lunch: $13.50';\n"
+    },
+    {
+      "id": "data-id",
+      "test": "return $$('#expense-list li').map((li) => li.dataset.id).join() === 'exp-1,exp-2,exp-3';\n"
+    },
+    {
+      "id": "big-class",
+      "test": "const items = $$('#expense-list li');\nreturn items.length === 3 && items[1].classList.contains('big') && !items[0].classList.contains('big') && !items[2].classList.contains('big');\n"
+    },
+    {
+      "id": "total",
+      "test": "return text('#total') === 'Total: $207.00';\n"
+    },
+    {
+      "id": "rerender",
+      "test": "renderExpenses([{ id: 'x', label: '<b>Tea</b>', amount: 300 }]);\nconst items = $$('#expense-list li');\nreturn items.length === 1 && items[0].textContent.trim() === '<b>Tea</b>: $3.00' && !$('#expense-list b') && text('#total') === 'Total: $3.00';\n"
+    }
+  ]
+}

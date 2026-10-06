@@ -1,0 +1,17 @@
+{
+  "title": "Add Tidewater to the comparison page",
+  "prompt": "The co-branded comparison page shows both brands side by side, each in a section with its own `data-brand`. Add the Tidewater brand **without touching the component rules**:\n\n- headings use the Georgia font stack (`--nw-font-georgia`),\n- buttons are pills (`999px` radius),\n- the button background is `--nw-teal-700`, because teal-600 fails contrast with white text,\n- the Northwind section must stay exactly as it is.\n\nRight now the semantic tier is only declared on `:root`. Think about where it gets resolved.",
+  "hints": [
+    "Write a `[data-brand=\"tidewater\"] { … }` block that points the brand tokens (`--nw-brand-font-heading`, `--nw-brand-radius-control` and the ramp) at Tidewater values.",
+    "Brand tokens alone won't reach the section: the semantic tokens were computed on `:root` with Northwind's values. Change the semantic rule's selector to `:root, [data-brand]`.",
+    "Inside the Tidewater block, also map `--nw-color-action-bg` to `var(--nw-brand-700)`."
+  ],
+  "explanation": "The brand block only swaps brand-tier values, plus one semantic mapping that Tidewater genuinely needs for contrast. Re-declaring the semantic tier under `[data-brand]` is what makes each section compute `--nw-color-action-bg`, `--nw-font-heading` and `--nw-radius-control` from its own brand tokens, instead of inheriting values already resolved at the root. The components never mention a brand, so a third brand is one more block.",
+  "checks": {
+    "northwind-intact": "The Northwind section keeps its blue button, 6px radius and Inter headings",
+    "tidewater-font": "Tidewater headings use Georgia",
+    "tidewater-shape": "Tidewater buttons are pills (999px radius)",
+    "tidewater-contrast": "Tidewater buttons use teal-700 with white text",
+    "no-brand-in-components": "No rule targets components by brand"
+  }
+}

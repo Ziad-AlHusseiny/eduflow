@@ -1,0 +1,17 @@
+{
+  "title": "Slice the year and update prices",
+  "prompt": "Using the `monthly_2025` and `months` lists and the `prices` dictionary: set `q4_total` to the sum of October to December using a slice; set `best_month` to the three-letter name of the month with the highest revenue; add `\"Laptop Stand\"` to `prices` at 49; and set `grinder_new_price` to the Burr Coffee Grinder's price after a 5% rise, rounded to 2 decimals. Work it out with code rather than typing the numbers.",
+  "hints": [
+    "October is position 9 because January is 0. A slice that ends at 12 (or `[-3:]`) includes December.",
+    "`max(monthly_2025)` gives the highest value; `monthly_2025.index(value)` gives its position; the same position in `months` gives its name.",
+    "Add a key with `prices[\"Laptop Stand\"] = 49`. For the rise, `round(prices[\"Burr Coffee Grinder\"] * 1.05, 2)`."
+  ],
+  "explanation": "`monthly_2025[9:12]` (or `[-3:]`) picks positions 9, 10 and 11, which are October to December. The best month takes two steps: find the largest value, then find where it sits with `.index()`, and use that position in the parallel `months` list. Two lists kept in the same order are fragile, which is one reason a table with labelled rows (a pandas Series) is nicer, as you will see in Section 2. Assigning to a new key adds it to the dictionary, and `129 * 1.05` rounds to 135.45, the grinder's real price after Cartwheel's March 2025 rise.",
+  "checks": {
+    "q4-total": "`q4_total` is 146,826",
+    "best-month": "`best_month` is `\"Nov\"`",
+    "laptop-stand": "`prices` now has 4 products, including Laptop Stand at 49",
+    "grinder-price": "`grinder_new_price` is 135.45",
+    "lists-untouched": "The original lists still have all 12 months"
+  }
+}

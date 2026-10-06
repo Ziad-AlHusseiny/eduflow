@@ -1,0 +1,18 @@
+{
+  "title": "Whose job is it?",
+  "prompt": "During the migration Lantern runs a worker on Amazon EC2, the events database on Amazon RDS, the RSVP API on AWS Lambda, and posters in Amazon S3. Select every task that is **Lantern's** responsibility under the shared responsibility model.",
+  "hints": [
+    "Picture the stacks from the lesson's figure. Which layers are purple (yours) for each service?",
+    "Physical hardware is never yours. Who can reach your data always is.",
+    "Three tasks belong to Lantern: one is an operating system, two are about access."
+  ],
+  "explanation": "On EC2 you own the guest operating system, so applying security updates to it is Lantern's job. Network access rules, such as which addresses can reach the database port, are configuration and therefore yours on every service. Who may read the posters bucket is also configuration, so the bucket policy is yours. AWS replaces failed physical disks, keeps Lambda's managed runtime patched, and runs the hardware under RDS.",
+  "options": {
+    "ec2-os": { "text": "Installing security updates on the EC2 instance's Linux operating system.", "why": "Yours. On EC2 the guest OS sits above the line; AWS only runs the hardware and the hypervisor underneath it." },
+    "disk-swap": { "text": "Replacing a failed physical drive in the data centre that hosts the RDS database.", "why": "AWS's. Physical hardware and facilities are always security of the cloud. You will never touch a data-centre drive." },
+    "sg-port": { "text": "Making sure the database port only accepts connections from Lantern's app, not the whole internet.", "why": "Yours. Network access is configuration you control through security groups, covered in section three." },
+    "lambda-runtime": { "text": "Patching the Node.js runtime that the Lambda function runs on.", "why": "AWS's, for managed runtimes with the default automatic updates. Your bundled npm packages, however, stay yours." },
+    "bucket-policy": { "text": "Deciding who is allowed to read objects in the posters bucket.", "why": "Yours. AWS gives safe defaults such as Block Public Access, but every access decision on your data is your responsibility." },
+    "rds-engine-hw": { "text": "Keeping the servers under the RDS database powered and cooled.", "why": "AWS's. Power, cooling and physical security are the clearest example of security of the cloud." }
+  }
+}

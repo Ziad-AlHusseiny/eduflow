@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "start-task",
+    "set-loading",
+    "build-url",
+    "fetch",
+    "check-status",
+    "decode",
+    "set-loaded"
+  ]
+}

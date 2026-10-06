@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "function MovieList({ movies }) {\n  return (\n    <div>\n      {movies.length && (\n        <ul>\n          {movies.map((movie) => (\n            <li key={movie.id}>\n              {movie.title}\n              <span className=\"badge\">Watched</span>\n            </li>\n          ))}\n        </ul>\n      )}\n    </div>\n  );\n}\n\nconst MOVIES = [\n  { id: 1, title: 'Arrival', watched: true },\n  { id: 2, title: 'Past Lives', watched: false },\n  { id: 3, title: 'Paddington 2', watched: false },\n];\n\nexport default function App() {\n  return (\n    <main>\n      <section id=\"full\">\n        <MovieList movies={MOVIES} />\n      </section>\n      <section id=\"empty\">\n        <MovieList movies={[]} />\n      </section>\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "function MovieList({ movies }) {\n  if (movies.length === 0) {\n    return <p>Nothing to watch yet.</p>;\n  }\n\n  return (\n    <ul>\n      {movies.map((movie) => (\n        <li key={movie.id}>\n          {movie.title}\n          {movie.watched && <span className=\"badge\">Watched</span>}\n        </li>\n      ))}\n    </ul>\n  );\n}\n\nconst MOVIES = [\n  { id: 1, title: 'Arrival', watched: true },\n  { id: 2, title: 'Past Lives', watched: false },\n  { id: 3, title: 'Paddington 2', watched: false },\n];\n\nexport default function App() {\n  return (\n    <main>\n      <section id=\"full\">\n        <MovieList movies={MOVIES} />\n      </section>\n      <section id=\"empty\">\n        <MovieList movies={[]} />\n      </section>\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "full-list",
+      "test": "return $$('#full li').length === 3;"
+    },
+    {
+      "id": "badge-watched",
+      "test": "const li = $$('#full li'); const b = li[0] && li[0].querySelector('span'); return !!b && text(b) === 'Watched';"
+    },
+    {
+      "id": "badge-hidden",
+      "test": "const li = $$('#full li'); return li.length === 3 && !li[1].querySelector('span') && !li[2].querySelector('span') && !text(li[1]).includes('Watched') && !text(li[2]).includes('Watched');"
+    },
+    {
+      "id": "empty-message",
+      "test": "return text('#empty').includes('Nothing to watch yet.') && !$('#empty ul');"
+    },
+    {
+      "id": "no-zero",
+      "test": "return !/\\b0\\b/.test(text('#empty'));"
+    }
+  ]
+}

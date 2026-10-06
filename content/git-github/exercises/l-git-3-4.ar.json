@@ -1,0 +1,29 @@
+{
+  "title": "ساهم بإصلاح لا تستطيع رفعه",
+  "prompt": "استنسخت `open-themes/vite-themes` مباشرة، وأصلحت خطأً إملائيًا على فرع اسمه `fix-readme-typo`، وشغّلت `git push -u origin fix-readme-typo`. فأجاب GitHub:\n\n```text\nERROR: Permission to open-themes/vite-themes.git denied to maya-okafor.\nfatal: Could not read from remote repository.\n```\n\nما الطريقة الصحيحة لإيصال إصلاحك إلى المشرفين دون إعادة العمل؟",
+  "hints": [
+    "الخطأ لا يتعلّق بمفتاح SSH الخاص بك؛ فـ GitHub يعرف تمامًا من أنت.",
+    "تحتاج إلى نسخة من الـ repository على GitHub مسموح لك بالرفع إليها.",
+    "نسختك المحلية الحالية تستطيع التواصل مع أكثر من remote."
+  ],
+  "explanation": "ليست لديك صلاحية الكتابة على `open-themes/vite-themes`، لذا لن تجعل أي بيانات اعتماد هذا الرفع ينجح. أنشئ له fork على GitHub، فيُنشأ `maya-okafor/vite-themes`. وفي نسختك المحلية الحالية، أعد تسمية `origin` الحالي إلى `upstream` (`git remote rename origin upstream`) وأضف الـ fork الخاص بك باسم `origin` (`git remote add origin git@github.com:maya-okafor/vite-themes.git`). ثم نفّذ `git push -u origin fix-readme-typo` وافتح pull request من فرع الـ fork إلى `main` في الأصل. ويُعاد استخدام الـ commit الخاص بك كما هو.",
+  "options": {
+    "a": {
+      "text": "ولّد مفتاح SSH جديدًا وأضفه إلى حسابك، ثم ارفع مجددًا.",
+      "why": "الرسالة تذكر اسم المستخدم الخاص بك، إذن نجحت المصادقة. المشكلة في الصلاحية: لست متعاونًا (collaborator) في ذلك الـ repository."
+    },
+    "b": {
+      "text": "شغّل `git push --force -u origin fix-readme-typo`.",
+      "why": "القوة تغيّر طريقة الكتابة فوق الفرع، لا كونك مسموحًا لك بالكتابة. سيظل الرفع مرفوضًا."
+    },
+    "c": {
+      "text": "راسل المشرفين واطلب منهم إضافتك كمتعاون لتستطيع رفع فرعك.",
+      "why": "لا يمنح المشرفون صلاحية الكتابة من أجل إصلاح خطأ إملائي. والـ forks موجودة لكي يستطيع أي شخص المساهمة دونها."
+    },
+    "d": {
+      "text": "أنشئ له fork على GitHub، واجعل الأصل `upstream` والـ fork الخاص بك `origin` في هذه النسخة، وارفع الفرع إلى الـ fork، وافتح pull request إلى الأصل.",
+      "why": "صحيح. الـ fork الخاص بك repository تستطيع الرفع إليه، والـ pull request منه هو الطريقة التي تصل بها التغييرات إلى مشروع لا تملكه."
+    }
+  },
+  "checks": {}
+}

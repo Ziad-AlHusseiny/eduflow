@@ -1,0 +1,40 @@
+{
+  "title": "Update or new build?",
+  "prompt": "Trailhead 1.2 is live with `runtimeVersion` set to the `appVersion` policy. The team's list for this week is below. Select **every** change you can ship to existing 1.2 users with `eas update` alone, without a new build or store review.",
+  "hints": [
+    "Ask of each change: does it touch only JavaScript and bundled assets, or does it change the compiled native app?",
+    "Anything in app.json that the stores or the OS read (icons, permission strings) is native configuration.",
+    "Four changes can go over the air."
+  ],
+  "explanation": "Text, logic, new screens built from modules already in the binary, and images bundled with the JavaScript are all part of the update bundle, so they ship with `eas update`. A new native module like `expo-haptics` needs to be compiled in; the app icon and permission descriptions live in native configuration the OS reads from the installed binary. Those three need a new `version`, a production build and a store release.",
+  "options": {
+    "copy-fix": {
+      "text": "Reword the empty state on the hike log to \"No hikes yet. Log your first one!\"",
+      "why": "Update. It's a string in a component, part of the JavaScript bundle."
+    },
+    "reducer-bug": {
+      "text": "Fix `hikesReducer` so editing a hike's date re-sorts the list.",
+      "why": "Update. Pure JavaScript logic, the ideal over-the-air fix."
+    },
+    "new-screen": {
+      "text": "Add a yearly stats screen built only from View, Text and FlatList.",
+      "why": "Update. New screens are fine as long as every native module they use is already in the build."
+    },
+    "add-sdk-module": {
+      "text": "Add `expo-haptics` so the Save button vibrates gently.",
+      "why": "New build. A native module that isn't in the installed binary can't arrive in an update."
+    },
+    "icon": {
+      "text": "Replace the app icon with the new logo.",
+      "why": "New build. The home-screen icon is part of the installed app package, not the JavaScript bundle."
+    },
+    "permission-text": {
+      "text": "Clarify the location permission description in the `expo-location` plugin options.",
+      "why": "New build. Config plugin options are written into native configuration when the app is built."
+    },
+    "new-image": {
+      "text": "Swap the empty-state illustration for a new PNG imported with `require()`.",
+      "why": "Update. Images bundled through the JavaScript bundler are assets that updates include."
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Splits a bill in integer cents between people.\n// Contract:\n//   - one share per person\n//   - the shares add up exactly to totalCents\n//   - shares differ by at most one cent\n//   - leftover cents go to the FIRST people in the list\n//   - fewer than one person throws a RangeError\nfunction splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n",
+  "mutants": [
+    {
+      "id": "drops-remainder",
+      "code": "// Splits a bill in integer cents between people.\n// Contract:\n//   - one share per person\n//   - the shares add up exactly to totalCents\n//   - shares differ by at most one cent\n//   - leftover cents go to the FIRST people in the list\n//   - fewer than one person throws a RangeError\nfunction splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (base));\n}\n"
+    },
+    {
+      "id": "extra-cent",
+      "code": "// Splits a bill in integer cents between people.\n// Contract:\n//   - one share per person\n//   - the shares add up exactly to totalCents\n//   - shares differ by at most one cent\n//   - leftover cents go to the FIRST people in the list\n//   - fewer than one person throws a RangeError\nfunction splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i <= remainder ? base + 1 : base));\n}\n"
+    },
+    {
+      "id": "remainder-last",
+      "code": "// Splits a bill in integer cents between people.\n// Contract:\n//   - one share per person\n//   - the shares add up exactly to totalCents\n//   - shares differ by at most one cent\n//   - leftover cents go to the FIRST people in the list\n//   - fewer than one person throws a RangeError\nfunction splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i >= people - remainder ? base + 1 : base));\n}\n"
+    },
+    {
+      "id": "zero-people",
+      "code": "// Splits a bill in integer cents between people.\n// Contract:\n//   - one share per person\n//   - the shares add up exactly to totalCents\n//   - shares differ by at most one cent\n//   - leftover cents go to the FIRST people in the list\n//   - fewer than one person throws a RangeError\nfunction splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 0) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "const sum = (xs) => xs.reduce((a, b) => a + b, 0);\n\ndescribe('splitEvenly', () => {\n  test('returns one share per person', () => {\n    expect(splitEvenly(1000, 3)).toHaveLength(3);\n  });\n\n  // Test the rest of the contract in the subject's comment.\n});\n"
+  },
+  "solution": {
+    "js": "const sum = (xs) => xs.reduce((a, b) => a + b, 0);\n\ndescribe('splitEvenly', () => {\n  test('returns one share per person', () => {\n    expect(splitEvenly(1000, 3)).toHaveLength(3);\n  });\n\n  test('never loses or invents a cent', () => {\n    for (const [total, people] of [[1000, 3], [1001, 4], [2, 3], [900, 3], [0, 4]]) {\n      expect(sum(splitEvenly(total, people))).toBe(total);\n    }\n  });\n\n  test('keeps shares within one cent of each other', () => {\n    const shares = splitEvenly(1001, 4);\n    expect(Math.max(...shares) - Math.min(...shares)).toBeLessThanOrEqual(1);\n  });\n\n  test('gives the leftover cents to the first people', () => {\n    expect(splitEvenly(1001, 4)).toEqual([251, 250, 250, 250]);\n    expect(splitEvenly(1000, 3)).toEqual([334, 333, 333]);\n  });\n\n  test('refuses to split between zero people', () => {\n    expect(() => splitEvenly(1000, 0)).toThrow(RangeError);\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-drops-remainder",
+      "suite": "drops-remainder"
+    },
+    {
+      "id": "catches-extra-cent",
+      "suite": "extra-cent"
+    },
+    {
+      "id": "catches-remainder-last",
+      "suite": "remainder-last"
+    },
+    {
+      "id": "catches-zero-people",
+      "suite": "zero-people"
+    }
+  ]
+}

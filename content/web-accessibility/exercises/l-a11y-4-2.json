@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"marquee\" aria-label=\"Artists\">\n  <div class=\"marquee__track\">Nour Quartet · The Saltmarsh Band · Layla &amp; the Tides · Harbour Brass · DJ Marwa</div>\n</section>\n\n<div class=\"cards\">\n  <article class=\"card\">\n    <h3>Friday pass</h3>\n    <p>SAR 180</p>\n    <div class=\"stepper\">\n      <button type=\"button\" aria-label=\"Fewer Friday passes\">−</button>\n      <span>1</span>\n      <button type=\"button\" aria-label=\"More Friday passes\">+</button>\n    </div>\n  </article>\n  <article class=\"card\"><h3>Saturday pass</h3><p>SAR 180</p></article>\n  <article class=\"card\"><h3>Weekend pass</h3><p>SAR 320</p></article>\n</div>",
+    "css": ".marquee { overflow: hidden; background: #f1eefb; padding: 8px 0; margin-block-end: 16px; }\n.marquee__track { white-space: nowrap; animation: scroll-names 12s linear infinite; }\n@keyframes scroll-names { from { transform: translateX(100%); } to { transform: translateX(-100%); } }\n\n.cards { display: grid; grid-template-columns: repeat(3, 320px); gap: 16px; }\n.card { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; }\n.card h3 { margin: 0; font-size: 18px; }\n.stepper { display: flex; align-items: center; gap: 0; }\n.stepper button { width: 16px; height: 16px; padding: 0; font-size: 12px; line-height: 1; border: 1px solid #5b3cc4; background: #fff; }\n.stepper span { padding-inline: 8px; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<section class=\"marquee\" aria-label=\"Artists\">\n  <button type=\"button\" class=\"marquee-toggle\" aria-pressed=\"false\">Pause animation</button>\n  <div class=\"marquee__track\">Nour Quartet · The Saltmarsh Band · Layla &amp; the Tides · Harbour Brass · DJ Marwa</div>\n</section>\n\n<div class=\"cards\">\n  <article class=\"card\">\n    <h3>Friday pass</h3>\n    <p>SAR 180</p>\n    <div class=\"stepper\">\n      <button type=\"button\" aria-label=\"Fewer Friday passes\">−</button>\n      <span>1</span>\n      <button type=\"button\" aria-label=\"More Friday passes\">+</button>\n    </div>\n  </article>\n  <article class=\"card\"><h3>Saturday pass</h3><p>SAR 180</p></article>\n  <article class=\"card\"><h3>Weekend pass</h3><p>SAR 320</p></article>\n</div>",
+    "css": ".marquee { overflow: hidden; background: #f1eefb; padding: 8px 0; margin-block-end: 16px; }\n.marquee__track { white-space: nowrap; animation: scroll-names 12s linear infinite; }\n.marquee--paused .marquee__track { animation-play-state: paused; }\n@keyframes scroll-names { from { transform: translateX(100%); } to { transform: translateX(-100%); } }\n\n@media (prefers-reduced-motion: reduce) {\n  .marquee__track { animation: none; }\n}\n\n.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; }\n.card { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; }\n.card h3 { margin: 0; font-size: 1.125rem; }\n.stepper { display: flex; align-items: center; gap: 4px; }\n.stepper button { min-inline-size: 2.75rem; min-block-size: 2.75rem; padding: 0; font-size: 1.25rem; line-height: 1; border: 1px solid #5b3cc4; background: #fff; }\n.stepper span { padding-inline: 8px; }\n",
+    "js": "const marquee = document.querySelector('.marquee');\nconst toggle = document.querySelector('.marquee-toggle');\n\ntoggle.addEventListener('click', () => {\n  const paused = toggle.getAttribute('aria-pressed') === 'true';\n  toggle.setAttribute('aria-pressed', String(!paused));\n  marquee.classList.toggle('marquee--paused', !paused);\n});\n"
+  },
+  "checks": [
+    {
+      "id": "reduced-motion",
+      "test": "const track = $('.marquee__track'); const rules = []; const walk = (list) => { for (const r of list) { if (r.media && r.conditionText && /prefers-reduced-motion\\s*:\\s*reduce/.test(r.conditionText)) rules.push(...r.cssRules); else if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); return rules.some((r) => r.selectorText && track.matches(r.selectorText) && (r.style.animationName === 'none' || /(^|\\s)none(\\s|$)/.test(r.style.animation) || r.style.animationPlayState === 'paused' || /^0(s|ms)?$/.test(r.style.animationDuration) || r.style.animationIterationCount === '1'));"
+    },
+    {
+      "id": "pause-control",
+      "test": "const btn = $$('button').find((b) => /pause|stop/i.test(b.textContent + ' ' + (b.getAttribute('aria-label') || ''))); if (!btn) return false; const track = $('.marquee__track'); if (getComputedStyle(track).animationPlayState === 'paused') return false; await click(btn); const cs = getComputedStyle(track); return cs.animationPlayState === 'paused' || cs.animationName === 'none';"
+    },
+    {
+      "id": "reflow",
+      "test": "const doc = document.documentElement; const cards = $('.cards'); return doc.scrollWidth <= doc.clientWidth && cards.scrollWidth <= cards.clientWidth + 1;"
+    },
+    {
+      "id": "target-size",
+      "test": "const bs = $$('.stepper button'); return bs.length === 2 && bs.every((b) => { const r = b.getBoundingClientRect(); return r.width >= 24 && r.height >= 24; });"
+    }
+  ]
+}

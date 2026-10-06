@@ -1,0 +1,10 @@
+{
+  "title": "Endpoints exist, requests fail",
+  "prompt": "The Service below has three endpoints, the Pods are Running and Ready, yet `curl notes-api` from another Pod gets `connection refused` every time. Select the line that causes it.",
+  "hints": [
+    "The Service found the Pods, so the selector is fine. Follow the port numbers.",
+    "Where does the app inside the Pod actually listen?"
+  ],
+  "explanation": "Line 10 sends traffic to port 80 on the Pods, but notes-api listens on 3000, so every connection is refused. Point `targetPort` at the container's port, ideally by name so the two can't drift:\n\n```yaml\n# Service\n  ports:\n    - port: 80\n      targetPort: http\n# Pod template\n    ports:\n      - name: http\n        containerPort: 3000\n```",
+  "checks": {}
+}

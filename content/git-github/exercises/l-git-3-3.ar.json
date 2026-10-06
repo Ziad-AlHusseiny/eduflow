@@ -1,0 +1,20 @@
+{
+  "title": "أوصِل مرشّح المشاريع عبر pull request",
+  "prompt": "رتّب خطوات سير عمل الـ pull request، من بدء العمل على مرشّح المشاريع إلى وصوله إلى `main` مع ترتيب الـ repository المحلي.",
+  "hints": [
+    "الـ pull request يحتاج إلى فرع موجود على GitHub.",
+    "يُردّ على ملاحظات المراجعة بالرفع إلى الفرع نفسه، قبل أن يُدمج أي شيء.",
+    "التنظيف المحلي يأتي بعد أن يدمج GitHub الفرع ويحذفه."
+  ],
+  "explanation": "يبدأ العمل على فرع جديد من `main` محدَّث. رفعه بـ `-u` يضعه على GitHub، حيث تفتح pull request إلى `main` بوصف واضح. يعلّق المراجعون؛ وتردّ أنت بإنشاء commits ورفعها إلى الفرع نفسه، فيتحدّث الـ pull request. وبعد الموافقة يُدمج (هنا بطريقة squash) ويُحذف الفرع البعيد. وأخيرًا تحدّث `main` المحلي وتحذف الفرع المحلي.",
+  "items": {
+    "branch": "`git switch main`، ثم `git pull`، ثم `git switch -c projects-filter`.",
+    "push": "سجّل العمل في commits وشغّل `git push -u origin projects-filter`.",
+    "open": "افتح pull request (القاعدة: `main`) يتضمّن ما الذي تغيّر ولماذا وكيف يُتحقَّق منه، و `Closes #12`.",
+    "review": "يترك مراجِع تعليقات على الأسطر ويطلب تغييرات.",
+    "update": "سجّل الإصلاحات في commits على `projects-filter` ونفّذ `git push`؛ فيتحدّث الـ pull request.",
+    "merge": "بعد الموافقة، انقر Squash and merge، ثم Delete branch.",
+    "cleanup": "محليًا: `git switch main`، ثم `git pull`، ثم `git branch -D projects-filter`."
+  },
+  "checks": {}
+}

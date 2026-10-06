@@ -1,0 +1,182 @@
+[
+  {
+    "id": "vite",
+    "term": "Vite",
+    "definition": "أداة بناء وخادم تطوير لمشاريع الواجهات الأمامية. يقدّم ملفات المصدر مع تحديثات فورية أثناء التطوير، ويجمّعها في ملفات ثابتة محسّنة داخل dist/ للإنتاج.",
+    "lesson": "l-rf-1-2"
+  },
+  {
+    "id": "strict-mode",
+    "term": "StrictMode",
+    "definition": "component غلاف في React يضيف فحوصًا خاصة بالتطوير، مثل رسم الـ components مرتين وتشغيل الـ effects مرتين، ليكشف الكود غير النقي ودوال التنظيف المفقودة. لا تأثير له في الإنتاج.",
+    "lesson": "l-rf-1-2"
+  },
+  {
+    "id": "component",
+    "term": "المكوّن (component)",
+    "definition": "دالة JavaScript يبدأ اسمها بحرف كبير وتُرجع JSX. تستخدمها كوسم، وتستدعيها React لتعرف ما الذي يجب عرضه.",
+    "lesson": "l-rf-1-3"
+  },
+  {
+    "id": "fragment",
+    "term": "Fragment",
+    "definition": "غلاف يُكتب بالشكل <>…</> أو <Fragment> يجمع عدّة عناصر من دون إضافة عقدة إلى الـ DOM، فيستطيع الـ component إرجاع عناصر متجاورة كجذر واحد.",
+    "lesson": "l-rf-1-3"
+  },
+  {
+    "id": "jsx",
+    "term": "JSX",
+    "definition": "امتداد لصياغة JavaScript يتيح لك كتابة markup شبيه بـ HTML داخل JavaScript. يحوّل المترجم كل وسم إلى استدعاء دالة يُنشئ عنصر React.",
+    "lesson": "l-rf-1-4"
+  },
+  {
+    "id": "react-element",
+    "term": "عنصر React (React element)",
+    "definition": "كائن JavaScript عادي ينشئه JSX ويصف ما يجب أن يظهر على الشاشة: نوعًا مثل \"h2\" أو component، إضافةً إلى الـ props الخاصة به. وتحوّل React هذه العناصر إلى DOM.",
+    "lesson": "l-rf-1-4"
+  },
+  {
+    "id": "derived-value",
+    "term": "القيمة المشتقّة (derived value)",
+    "definition": "بيانات تُحسب أثناء الـ render من الـ props أو الـ state، مثل عدد أو قائمة مصفّاة. لا تُخزَّن أبدًا في الـ state، فلا يمكن أن تخرج عن التزامن مع مصدرها.",
+    "lesson": "l-rf-2-1"
+  },
+  {
+    "id": "props",
+    "term": "Props",
+    "definition": "المدخلات التي يمرّرها الأب إلى component كخصائص، وتصل إليه ككائن واحد. الـ props للقراءة فقط: لا يغيّرها الـ component أبدًا، بل يستقبل props جديدة حين يعيد الأب الـ render.",
+    "lesson": "l-rf-2-2"
+  },
+  {
+    "id": "children-prop",
+    "term": "children",
+    "definition": "الـ prop الذي يحمل كل ما يوضع بين وسمي الفتح والإغلاق لـ component. عرض {children} يتيح للـ component أن يغلّف محتوى لا يعرف عنه شيئًا.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "slot",
+    "term": "Slot prop",
+    "definition": "prop يقبل JSX، مثل actions={<button>Shuffle</button>}، فيقرّر المستدعي ما الذي يظهر، ويقرّر الـ component أين يظهر.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "prop-drilling",
+    "term": "Prop drilling",
+    "definition": "تمرير prop عبر عدّة components لا تستخدمه، فقط لإيصاله إلى component متداخل في العمق. وكثيرًا ما يزيله التركيب بالعناصر أو الـ context.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "conditional-rendering",
+    "term": "العرض الشرطي (conditional rendering)",
+    "definition": "اختيار ما يُخرجه الـ component بحسب البيانات، باستخدام return مبكر أو المعامل الثلاثي أو && داخل JSX. وإرجاع null لا يعرض شيئًا.",
+    "lesson": "l-rf-2-4"
+  },
+  {
+    "id": "unmount",
+    "term": "إلغاء التركيب (unmount)",
+    "definition": "حين تزيل React الـ component من الشجرة، فتهدم الـ DOM والـ state الخاصين به. والـ component المعروض شرطيًا يُلغى تركيبه حين يصبح شرطه false.",
+    "lesson": "l-rf-2-4"
+  },
+  {
+    "id": "key",
+    "term": "المفتاح (key)",
+    "definition": "prop خاص على عناصر القوائم يُخبر React بهوية كل عنصر بين مرّات الـ render. يجب أن يكون فريدًا بين الإخوة وثابتًا، وهو عادةً معرّف من البيانات.",
+    "lesson": "l-rf-2-5"
+  },
+  {
+    "id": "state",
+    "term": "State",
+    "definition": "بيانات يتذكّرها الـ component بين مرّات الـ render، ويُعلَن عنها باستخدام useState. استدعاء الـ setter الخاص بها يخزّن قيمة جديدة ويجعل React تعيد رسم الـ component.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "hook",
+    "term": "Hook",
+    "definition": "دالة يبدأ اسمها بـ \"use\"، مثل useState أو useEffect، تتيح للـ component استخدام ميزات React. ويجب استدعاء الـ hooks في المستوى الأعلى من الـ component.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "state-snapshot",
+    "term": "لقطة الـ state (state snapshot)",
+    "definition": "مجموعة قيم الـ state الثابتة التي يراها render واحد. ضبط الـ state لا يغيّر المتغيّرات الحالية، بل يجدول render جديدًا بقيم جديدة.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "updater-function",
+    "term": "دالة التحديث (updater function)",
+    "definition": "دالة تُمرَّر إلى setter الـ state، مثل setCount((c) => c + 1). تستدعيها React بأحدث قيمة منتظرة، فتتراكم التحديثات المتتالية بشكل صحيح.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "immutable-update",
+    "term": "التحديث بلا تعديل مباشر (immutable update)",
+    "definition": "تغيير الـ state بإنشاء مصفوفات أو كائنات جديدة (باستخدام spread أو map أو filter) بدل تعديل الموجودة، حتى تستطيع React اكتشاف التغيير.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "event-handler",
+    "term": "معالج الحدث (event handler)",
+    "definition": "دالة تُمرَّر إلى prop مثل onClick أو onSubmit، تستدعيها React حين يقع الحدث. والمعالجات هي مكان الآثار الجانبية الناتجة عن إجراءات المستخدم.",
+    "lesson": "l-rf-3-2"
+  },
+  {
+    "id": "event-bubbling",
+    "term": "انتشار الحدث (event bubbling)",
+    "definition": "الطريقة التي ينتقل بها الحدث من العنصر الذي وقع عليه صعودًا عبر أسلافه، فيُطلق معالجاتهم أيضًا. والدالة e.stopPropagation() توقفه.",
+    "lesson": "l-rf-3-2"
+  },
+  {
+    "id": "controlled-input",
+    "term": "الحقل المتحكَّم به (controlled input)",
+    "definition": "حقل نموذج تأتي قيمته من الـ state في React، ويحدّث معالج onChange الخاص به ذلك الـ state، فيكون الـ state المصدر الوحيد للحقيقة لما يعرضه الحقل.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "form-action",
+    "term": "Form action",
+    "definition": "ميزة في React 19 تستقبل فيها دالة ممرَّرة إلى الخاصية action في النموذج كائن FormData المُرسَل. وتمنع React إعادة تحميل الصفحة وتعيد ضبط الحقول غير المتحكَّم بها بعد ذلك.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "use-action-state",
+    "term": "useActionState",
+    "definition": "hook في React 19 يغلّف دالة action ويُرجع آخر نتيجة أنتجتها، ودالة إرسال تمرّرها إلى النموذج، ومؤشّر isPending.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "lifting-state-up",
+    "term": "رفع الـ state للأعلى (lifting state up)",
+    "definition": "نقل الـ state من component إلى أقرب أب مشترك لكل الـ components التي تحتاجه، ثم تمرير القيمة ومعالجات التغيير إلى الأسفل كـ props.",
+    "lesson": "l-rf-3-4"
+  },
+  {
+    "id": "effect",
+    "term": "Effect",
+    "definition": "كود يُمرَّر إلى useEffect ويعمل بعد أن تحدّث React الشاشة، ويُستخدم للتزامن مع شيء خارج React، مثل عنوان المستند أو التخزين أو المؤقّتات أو الاشتراكات.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "dependency-array",
+    "term": "مصفوفة الاعتماديات (dependency array)",
+    "definition": "الوسيط الثاني لـ useEffect، ويسرد كل قيمة يقرؤها الـ effect. ولا تعيد React تشغيل الـ effect إلا حين تتغيّر إحدى هذه القيم منذ الـ render السابق.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "cleanup-function",
+    "term": "دالة التنظيف (cleanup function)",
+    "definition": "دالة يُرجعها الـ effect لتلغي ما فعله، مثل إزالة مستمع أو إيقاف مؤقّت. وتشغّلها React قبل أن يعمل الـ effect مجددًا وعند إلغاء التركيب.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "utility-class",
+    "term": "Utility class",
+    "definition": "class صغير في CSS يفعل شيئًا واحدًا، مثل p-4 للحشو أو text-slate-600 للون. ويولّد Tailwind CSS الـ utilities التي تستخدمها ملفاتك.",
+    "lesson": "l-rf-4-2"
+  },
+  {
+    "id": "preview-deployment",
+    "term": "نسخة المعاينة (preview deployment)",
+    "definition": "deployment لـ branch غير الإنتاج أو لـ pull request على رابط فريد خاص به، حتى يمكن فحص التغييرات قبل دمجها ووصولها إلى موقع الإنتاج.",
+    "lesson": "l-rf-4-3"
+  }
+]

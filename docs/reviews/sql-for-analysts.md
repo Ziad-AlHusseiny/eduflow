@@ -1,0 +1,60 @@
+# Review: sql-for-analysts
+
+## Verdict
+
+This is a strong, well-built course. The 16 lessons work through one coherent "request queue" at Cartwheel, from a first SELECT to a Q4 board review, and they teach the habits that matter most to analysts: state the grain, use half-open date ranges, put right-table filters in ON, aggregate before joining, use NOT EXISTS rather than NOT IN, and reconcile totals. I ran every `sql run` block, every exercise solution and every number quoted in the prose against `content/data/shop.sqlite` (SQLite 3.51 locally; sql.js 1.14 in the browser). Almost all of them match the data exactly. Join fan-out, NULL semantics, window frames and the SQLite/PostgreSQL comparisons are explained correctly. I checked PostgreSQL's default NULL ordering on postgresql.org and SQLite's window-function history on sqlite.org. The problems were small but real: a few figures in the prose that don't match the data (an exercise result of "twelve" that is eleven, "thousands" of orders sharing a fee that is 372, "late-December" orders that go back to October), a prose threshold that contradicted its query, several quiz explanations whose reasoning was wrong even though the marked answer was right (RANK arithmetic, ROWS vs RANGE, SQLite frame-type history, HAVING), and some Arabic word choices. The worst of these was عشوائي ("random") for "arbitrary", used throughout. The Arabic also called a scalar subquery "subquery عددي" ("numeric"). No ids, answer positions or structure changed.
+
+## Issues found and fixed
+
+| File | Category | Severity | What was wrong | What changed |
+|---|---|---|---|---|
+| lessons/l-sql-2-1.en/.ar.md | accuracy | high | The prose said Karim wants products with "at least 130 units across all order lines", and that excluding discounted lines was a hypothetical. The query below it uses `WHERE discount = 0` and `HAVING SUM(quantity) >= 100`, and the next paragraph says "100+ units". | The request is now "at least 100 units at full price, with no discount". It explains that "no discount" is a row condition (WHERE) and the threshold is a group condition (HAVING), which matches the query. |
+| lessons/l-sql-1-2.en/.ar.md | accuracy | medium | "If the parts keep 1,146, 110 and 1,864 rows…": 1,146 is web orders only, and 110 is already the combined channel+coupon result, not a single part. | Now lists the real three parts of Huda's filter: 1,848 (web or app), 127 (the two coupons) and 1,864 (not cancelled/returned). It also states that their AND can't exceed 127. |
+| lessons/l-sql-1-4.en/.ar.md | accuracy | medium | Quiz Q1: the "why" for `> '2025-11-01' AND < '2025-11-30'` said "both ends… only partly included". Every time on 1 November still passes, but all of 30 November is lost. | The "why" now explains that all of 30 November is lost and why the first day survives. |
+| lessons/l-sql-2-1.en/.ar.md | accuracy | medium | Quiz Q1: "Both go in HAVING" was explained as "works in some engines but filters late". PostgreSQL rejects a non-grouped `order_date` in HAVING. SQLite tests one arbitrary row per group and gives silently wrong counts. | Rewritten to give the real reason. |
+| lessons/l-sql-2-1.en/.ar.md | accuracy | low | "November's volume is nearly triple July's" (347 vs 98 is about 3.5×). | "more than three times". |
+| exercises/l-sql-2-1.en/.ar.json | accuracy | medium | The explanation said "Twelve products clear the bar". The solution returns 11. | "Eleven". |
+| lessons/l-sql-2-3.en/.ar.md | accuracy | medium | Said "thousands of different orders share a 4.99 fee" (quiz and callout). The real count is 372 of 2,066. The quiz "why" said SUM(DISTINCT) returns 22.97 "instead of thousands". | The quiz now says "372 different orders", the callout says "Hundreds of orders", and SUM(DISTINCT) is compared with the real per-channel totals (678 to 3,413). |
+| lessons/l-sql-2-2.en/.ar.md | accuracy | low | "PostgreSQL has always had" RIGHT/FULL JOIN. | "has had them for decades". |
+| lessons/l-sql-2-4.en/.ar.md | accuracy | low | "52 signed up in 2024, more than a year ago": a 2024-12-31 signup is exactly a year before the data ends. | "at least a year before the data ends". |
+| lessons/l-sql-3-1.en/.ar.md | accuracy | low | "A cyclic recursion runs until it fails". It can also run until someone cancels it. | Added "or someone cancels it". |
+| lessons/l-sql-3-2.en/.ar.md | accuracy | medium | Quiz Q1 "why"s: "RANK counts how many rows come before, which is two" (that gives 2, not the correct 3), and "the third distinct value gets 2" (700 is the second distinct value). | RANK is now explained as "1 + rows ranked above = 3". DENSE_RANK now says "700, the second distinct value". |
+| lessons/l-sql-3-3.en/.ar.md | accuracy | medium | Quiz Q3 said SQLite has supported "ROWS, RANGE and GROUPS frames since 3.25". GROUPS frames and RANGE with an offset arrived in 3.28.0 (checked on sqlite.org/windowfunctions.html). | Now says ROWS frames since 3.25 (2018). |
+| lessons/l-sql-3-3.en/.ar.md | accuracy | medium | Quiz Q4 "why": "With one row per day, ROWS and RANGE behave the same here". That's false for a text sort key. `RANGE 6 PRECEDING` over date text puts each row in a frame of its own (I verified this in sqlite3). | Rewritten: the frame type isn't the issue; WHERE removed the earlier rows before the window ran. |
+| exercises/l-sql-3-4.en/.ar.json | accuracy | low | The explanation said the cohort size was "inflated by repeat purchases in the first month". `activity` holds every order the customer ever placed. | It now says the size "included every order its customers ever placed". |
+| lessons/l-sql-4-2.en/.ar.md | accuracy | low | "SQLite and PostgreSQL both keep statistics… gathered by ANALYZE". SQLite has none until someone runs ANALYZE (shop.sqlite has no `sqlite_stat1`), while PostgreSQL's autovacuum gathers them automatically. | Now states that difference. |
+| lessons/l-sql-4-4.en/.ar.md | accuracy | medium | The answer to Rania said "63 late-December orders were still in transit". Of the 63 Q4 orders still processing or shipped, 40 are shipped orders dating back to 12 October. Only the 23 processing ones are late December. | "63 Q4 orders, most of them from December, were still processing or in transit… cancellations and returns could trim Q4". |
+| assessments.en/.ar.yaml | accuracy | low | s-sql-1 Q1: BETWEEN "would drop most of 31 December". | "every order on 31 December after midnight". |
+| lessons/l-sql-4-1.en/.ar.md | pedagogy | low | The checks table gave "open tickets that already have a rating" as the example for *completeness*. It's a consistency rule, and the suite treats it that way. | The completeness example is now "tickets with no `agent_id`". The rated-while-open example moved to Consistency, which now covers related columns as well as tables. |
+| lessons/l-sql-4-3.en.md | pedagogy | low | A takeaway ran two sentences together with a comma splice. | Now joined with a colon. |
+| l-sql-1-1/2-1/4-3 .ar.md, exercises/l-sql-2-1.ar.json, assessments.ar.yaml, glossary.ar.json | arabic | medium | "Arbitrary" (an unspecified row) was rendered عشوائي ("random") in eight places. That misstates SQLite's behaviour. | Now اعتباطي/اعتباطية everywhere (glossary, quizzes, lessons, exercise, assessments). |
+| l-sql-3-1.ar.md, glossary.ar.json | arabic | medium | "Scalar subquery" was rendered "الـ subquery العددي" ("numeric subquery"). A scalar subquery can return text, and the glossary term read "الـ subquery العددي (scalar subquery)". | Kept the English term developers use: "الـ scalar subquery" (and "قيمة مفردة" for "a single value"). |
+| l-sql-3-2.ar.md | arabic | medium | "فئة" (the course's word for *category*) was also used for customer *tiers* in the NTILE section, which made "the tier" and "the category" read the same. It also wrote "ثلاثة وستين" instead of digits. | Tiers are now شريحة/الشرائح throughout. The number is now 63. |
+| l-sql-2-4, 3-4, 4-1 .ar.md; exercises/l-sql-3-4.ar.json; assessments.ar.yaml | arabic | low | "العملاء المتمايزين" for distinct customers, which is stilted. | Now "العملاء دون تكرار (DISTINCT)", "كلًّا مرة واحدة" or "مختلفة كلها", depending on context. |
+| l-sql-2-2.ar.md | consistency | low | "The many side" was جانب «الكثير» here but جانب «المتعدد» in lesson 2-3, the exercise and the glossary. | Unified to «المتعدد». |
+| l-sql-1-1.ar.md | arabic | low | "عيّنة عشوائية" for "arbitrary sample"; "ثمانية وأربعون صفًا" with the number spelled out. | "عيّنة اعتباطية لا يمكن الاعتماد عليها"; "48 صفًا". |
+| l-sql-1-2.ar.md | arabic | low | "أُجيب سؤال هدى" (the verb needs عن); the colloquial "لأنه اشتغل". | "أُجيب عن سؤال هدى"; "لأنه نُفّذ دون أخطاء". |
+| l-sql-1-3.ar.md | arabic | low | "فلا يُصل إلى فرع" (malformed passive). | "فلا يُوصَل إلى فرع". |
+| l-sql-1-4.ar.md | arabic | low | "الصيغة البحثية" (a literal rendering of "searched CASE"); the tip title "اختر تاريخ «حتى»"; "عطلة Black Friday" for the Black Friday weekend. | "الصيغة الشرطية (searched)"; "ثبّت تاريخ الارتكاز" (matching the term used in the body); "عطلة نهاية أسبوع Black Friday". |
+| l-sql-2-1.ar.md | arabic | low | "ومعًا يلتقطون" (human plural for checks). | "تلتقط". |
+| l-sql-2-3.ar.md | arabic | low | "تضاعف الشحن في حدود الضعف" (redundant); "ستربط جداول بنفسها". | "تضاعف الشحن تقريبًا"; "ستربط الجدول بنفسه". |
+| l-sql-2-4.ar.md | arabic | low | "يعيد **صفر صفوف**"; "LEFT JOIN لا يُبقي" (wrong verb agreement for الطريقة). | "لا يعيد **أي صف**"; "LEFT JOIN لا تُبقي منه إلا…". |
+| l-sql-3-3.ar.md | arabic | low | "ثم ما بعد الحفلة" (a literal rendering of "the hangover"). | "ثم الركود الذي يليه". |
+| l-sql-4-3.ar.md | arabic | low | "«اشتغل في SQLite»" (colloquial); "الترويس"; "الستمئة" with the number spelled out. | "«نُفّذ في SQLite»"; "التعليق في رأس الـ query"; "الـ 600". |
+| l-sql-4-4.ar.md | arabic | low | Quiz used "ثلاثة وستون" instead of digits; "نمت الأردن" (wrong gender); a verb agreement slip in the caveat. | Digits; "نما إيراد الأردن"; caveat sentence rewritten. |
+| exercises/l-sql-2-1.ar.json, l-sql-2-4.ar.json, l-sql-4-2.ar.json | arabic | low | "لدى … فقط 132 وحدة" (awkward); "ستمئة قيمة" with the number spelled out; "عطلة Black Friday". | "لم يبع … إلا 132 وحدة"; "قائمة من 600 قيمة"; "عطلة نهاية أسبوع Black Friday". |
+| assessments.ar.yaml | arabic | low | "يصنعون" (wrong agreement for صفّان); "مسحًا افتراضيًا"; "مع أن على customer_id يوجد index" (awkward word order). | "يصنعان"; "مسحًا في الإعداد الافتراضي"; "مع وجود index على customer_id". |
+
+## Verified and left unchanged (selection)
+
+- All quoted results: 1,191 / 110 / 1,864 (1-2); 56 open tickets, 264 vs 1,942, 873/588/3.74/2.52 (1-3); 336 vs 347, 189, the December urgent tickets (1-4); the priority averages (2-1); category revenue, Operations ticket counts (2-2); 6,732 vs 3,413, 1.93 lines per order, 166,562 vs 140,675 (2-3); Leo Ibrahim's 3 referrals, 85/52 never-ordered (2-4); 140 of 418 above 781.84, Peter's org tree (3-1); UAE ranking ties, first-order channels 268/172/63 (3-2); YTD 552/84, +193/−140, 325 vs 120, 0.43 (3-3); funnel rates, 56% vs 37%, cohort figures and the Nov-2024 cohort's 14.3% (3-4); the three failing data-quality checks (4-1); every query plan (4-2); the Q4 table, 146,825.44 / 52,537.10, 228 → 642 orders (4-4).
+- Dialect claims: IS DISTINCT FROM (SQLite 3.39+), `IS NOT` SQLite-only, LIKE case-insensitive in SQLite and case-sensitive in PostgreSQL, RIGHT/FULL JOIN in SQLite 3.39+, NULLS FIRST/LAST defaults (postgresql.org: NULLS LAST is the default for ASC), SUM(boolean) failing in PostgreSQL, bare columns, the min/max bare-column special case, `EXTRACT(EPOCH FROM b - a)`, `date_trunc`, and the default RANGE frame.
+
+## Couldn't fix or verify
+
+- Nothing is outstanding. One observation, left as is: "Black Friday weekend" in 1-4 is used loosely for 28–30 Nov. 26 Nov had more orders (18) than 30 Nov (11), so "the busiest days" is a slight stretch, but it's not wrong enough to change.
+
+## Validation
+
+- `node scripts/content/validate.mjs sql-for-analysts`: 0 errors, 0 warnings.
+- `node scripts/content/check-exercises.mjs sql-for-analysts`: 16 exercises, 0 problems.

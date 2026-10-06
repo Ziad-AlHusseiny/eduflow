@@ -1,0 +1,11 @@
+{
+  "id": "design-systems",
+  "project": "Northwind UI: the design system behind Northwind's dispatch web app and its marketing site, shared by two brands (Northwind and the acquired Tidewater). You audit it, tokenize it, build its components, ship it with versioned releases, and grow its adoption across 40 teams.",
+  "sections": [
+    { "id": "s-ds-1", "lessons": [ { "id": "l-ds-1-1", "minutes": 12 }, { "id": "l-ds-1-2", "minutes": 20 }, { "id": "l-ds-1-3", "minutes": 18 } ] },
+    { "id": "s-ds-2", "lessons": [ { "id": "l-ds-2-1", "minutes": 20 }, { "id": "l-ds-2-2", "minutes": 18 }, { "id": "l-ds-2-3", "minutes": 22 }, { "id": "l-ds-2-4", "minutes": 20 }, { "id": "l-ds-2-5", "minutes": 20 } ] },
+    { "id": "s-ds-3", "lessons": [ { "id": "l-ds-3-1", "minutes": 22 }, { "id": "l-ds-3-2", "minutes": 20 }, { "id": "l-ds-3-3", "minutes": 22 }, { "id": "l-ds-3-4", "minutes": 18 } ] },
+    { "id": "s-ds-4", "lessons": [ { "id": "l-ds-4-1", "minutes": 20 }, { "id": "l-ds-4-2", "minutes": 20 }, { "id": "l-ds-4-3", "minutes": 18 }, { "id": "l-ds-4-4", "minutes": 22 } ] },
+    { "id": "s-ds-5", "lessons": [ { "id": "l-ds-5-1", "minutes": 18 }, { "id": "l-ds-5-2", "minutes": 17 }, { "id": "l-ds-5-3", "minutes": 18 } ] }
+  ]
+}

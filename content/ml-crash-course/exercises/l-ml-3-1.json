@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\n# 1. A pipeline: StandardScaler, then LogisticRegression; fit it on the training data\nmodel = LogisticRegression().fit(X_train, y_train)\n\n# 2. Churn probability (class 1) for every test customer\nchurn_prob = model.predict(X_test)\n\n# 3. customer_id of the 20 test customers with the highest churn probability\ncall_list = []\n\n# 4. Share of those 20 who really churned\nhit_rate = None\n",
+  "solution": "import pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\nmodel = make_pipeline(StandardScaler(), LogisticRegression()).fit(X_train, y_train)\n\nchurn_prob = model.predict_proba(X_test)[:, 1]\n\nranked = churn.loc[X_test.index, [\"customer_id\", \"churned\"]].assign(prob=churn_prob)\ntop20 = ranked.sort_values(\"prob\", ascending=False).head(20)\ncall_list = top20[\"customer_id\"].tolist()\n\nhit_rate = top20[\"churned\"].mean()\nprint(call_list[:5], hit_rate)\n",
+  "checks": [
+    {
+      "id": "pipeline",
+      "test": "[type(s).__name__ for s in model] == ['StandardScaler', 'LogisticRegression']"
+    },
+    {
+      "id": "probs",
+      "test": "len(churn_prob) == 100 and abs(float(churn_prob[0]) - float(__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.linear_model', fromlist=['x']).LogisticRegression()).fit(X_train, y_train).predict_proba(X_test)[:, 1][0])) < 1e-6 and 0 < float(min(churn_prob)) < float(max(churn_prob)) < 1"
+    },
+    {
+      "id": "call-list",
+      "test": "len(call_list) == 20 and set(int(c) for c in call_list) == set(churn.loc[X_test.index, 'customer_id'].to_numpy()[__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.linear_model', fromlist=['x']).LogisticRegression()).fit(X_train, y_train).predict_proba(X_test)[:, 1].argsort()[::-1][:20]].tolist())"
+    },
+    {
+      "id": "hit-rate",
+      "test": "hit_rate is not None and abs(float(hit_rate) - churn.set_index('customer_id').loc[[int(c) for c in call_list], 'churned'].mean()) < 1e-9 and float(hit_rate) > 0.8"
+    }
+  ]
+}

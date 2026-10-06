@@ -1,0 +1,18 @@
+{
+  "title": "Make the hikes reducer immutable",
+  "prompt": "Trailhead's `hikesReducer` mutates state, so screens don't update. Rewrite it so **every** case returns new arrays and objects and never changes `state`. Keep the list sorted **newest first** by `date` (`YYYY-MM-DD` strings).\n\n- `added`: insert `action.hike` in date order. If a hike with that `id` already exists, return the **same** `state`.\n- `updated`: merge `action.changes` into the hike with `action.id`, re-sort, and never let `changes` overwrite the `id`.\n- `deleted`: remove the hike.\n- `favoriteToggled`: flip `favorite`; hikes that didn't change keep their **same object**, so memoized rows skip re-rendering.\n- Any unknown action returns the same `state` (don't throw).",
+  "hints": [
+    "Create a comparator once: `const byNewest = (a, b) => b.date.localeCompare(a.date);`. `[...state, hike].sort(byNewest)` sorts a copy.",
+    "`state.map((h) => (h.id === action.id ? { ...h, ...changes } : h))` copies only the changed hike. Put `id: h.id` after the spread so it wins.",
+    "Returning `state` itself (same reference) is how a reducer tells React that nothing changed."
+  ],
+  "explanation": "React decides whether to re-render by comparing references, so a reducer that mutates and returns the same array hides every change. The fixed version builds new arrays with spread, `map`, `filter` and a sort on a copy, creates a new object only for the hike that changed, and returns the original `state` when nothing should change (a duplicate add or an unknown action). Unchanged hikes keep their identity, which is exactly what lets `memo(HikeRow)` skip them.",
+  "checks": {
+    "add-sorted": "Added hikes land in date order in a new array",
+    "add-duplicate": "Adding an existing id returns the same state",
+    "update": "Updates merge, re-sort, keep the id and don't mutate",
+    "toggle": "Toggling a favorite copies only the changed hike",
+    "delete": "Deleting returns a new, shorter array",
+    "unknown": "Unknown actions return the same state without throwing"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "أكمل بناء الـ theme الداكن",
+  "prompt": "املأ إعداد Style Dictionary الذي يولّد الـ theme الداكن في Northwind. يجب أن يحقّق الإخراج ما يلي:\n\n- أن يُسمّى كل متغيّر بالبادئة `nw` (`--nw-…`)،\n- أن يستخدم صيغة CSS custom properties المدمجة في Style Dictionary،\n- أن يحتوي الـ semantic tokens الداكنة وحدها، دون الـ primitives المحمّلة عبر `include`،\n- أن يضعها داخل الـ attribute selector الذي يحوّل أي عنصر إلى الداكن، مكتوبًا بعلامات تنصيص مزدوجة داخل النص المحاط بعلامات مفردة،\n- أن يُبقي مراجع `var()` بدل القيم المحلولة.",
+  "hints": [
+    "اسم الصيغة هو نفسه المستخدم في سكربت البناء في الدرس.",
+    "الـ tokens المحمّلة عبر `source` تُعلَّم بشكل مختلف عن المحمّلة عبر `include`. أيّ خاصية تميّز بينها؟",
+    "الـ selector هو نفسه من درس الـ themes: attribute selector وحده، دون `html`."
+  ],
+  "explanation": "`prefix: 'nw'` يضيف نطاق الأسماء إلى كل اسم. و`css/variables` تكتب الـ custom properties داخل الـ selector المحدّد. والتصفية على `token.isSource` تُبقي الـ semantic tokens الداكنة وتُسقط الـ primitives التي حُمّلت فقط لكي تُحلّ المراجع. و`[data-theme=\"dark\"]` يسمح لأي عنصر ببدء شجرة فرعية داكنة، و`outputReferences: true` يُبقي أسطرًا مثل `--nw-color-action-bg: var(--nw-color-blue-400);` حتى تصل بنية الطبقات سليمة إلى المتصفّح.",
+  "checks": {}
+}

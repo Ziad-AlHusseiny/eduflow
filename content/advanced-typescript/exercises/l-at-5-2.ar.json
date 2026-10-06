@@ -1,0 +1,17 @@
+{
+  "title": "حرّر المخزون، وأعِد محاولة الخصم من البطاقة",
+  "prompt": "إصلاحان لنظام الدفع في Cartwheel:\n\n1. اجعل `reserve` تُعيد قيمة قابلة للتحرير (فيها method باسم `[Symbol.dispose]` تطبع `release <sku>` بدل method باسم `release`)، وأعِد كتابة `placeOrder` باستخدام `using` بحيث يُحرَّر كل حجز حين تنتهي الدالة، **بترتيب معكوس**، حتى حين يرمي الخصم من البطاقة خطأً.\n2. اكتب مصنع decorator محدَّد الأنواع `retry(times)` وطبّق `@retry(3)` على `PaymentGateway.charge`، بحيث يُحاوَل الخصم من البطاقة الذي يرمي خطأً حتى 3 مرات إجمالًا قبل أن ينتشر الخطأ. أبقِ توقيع `charge` سليمًا.\n\nأعلى الملف يعلن `Symbol.dispose` و`Disposable`، لأن بيئة التجربة تستخدم الـ lib الخاصة بـ ES2022. `DisposableStack` غير متاحة هنا؛ إن احتجت إليها، فاكتب صنفًا صغيرًا خاصًا بك.",
+  "hints": [
+    "`using r = reserve('A');` تحرّر `r` عند نهاية الكتلة. لقائمة ديناميكية من رموز المنتجات، اجمع القيم القابلة للتحرير في صنف صغير فيه method باسم `use(item)` و`[Symbol.dispose]()` تحرّرها بترتيب معكوس.",
+    "الـ method decorator القياسي شكله `(method, context: ClassMethodDecoratorContext<This, …>) => replacementFunction`. والمصنع دالة تُعيد واحدًا: `function retry(times: number) { return function <This, Args extends unknown[], Return>(method, context) { … } }`.",
+    "داخل البديل، كرّر: `try { return method.call(this, ...args); } catch (e) { if (attempt >= times) throw e; }`."
+  ],
+  "explanation": "تربط `using` عمر المورد بكتلة: أيًّا كانت طريقة خروج `placeOrder`، تُحرَّر الحاوية، وهي تحرّر الحجوزات بترتيب \"الداخل أخيرًا يخرج أولًا\"، فيزول تسرّب كود البداية عند رفض الخصم من البطاقة. يلتقط مصنع الـ decorator قيمة `times` ويُعيد method decorator قياسيًا؛ وتُستنتج `This` و`Args` و`Return` الـ generic من `charge`، فيحتفظ البديل بتوقيعها بالضبط (اختبار `T2`) ويستدعي الأصل بـ `method.call(this, ...args)`. ومنطق إعادة المحاولة يعيش الآن في مكان واحد قابل لإعادة الاستخدام بدل أن يكون داخل كود الدفع.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها اختبارات الأنواع",
+    "releases": "تُحرَّر الحجوزات بعد الخصم من البطاقة، بترتيب معكوس",
+    "releases-on-error": "تُحرَّر الحجوزات حتى حين يفشل الخصم من البطاقة نهائيًا",
+    "retries": "ينجح `charge` في المحاولة الثالثة بعد إخفاقين",
+    "gives-up": "يستسلم `charge` ويعيد رمي الخطأ بعد 3 محاولات"
+  }
+}

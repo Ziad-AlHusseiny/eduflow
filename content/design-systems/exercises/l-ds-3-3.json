@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"toolbar\">\n  <button class=\"nw-button\" type=\"button\" id=\"assign\">Assign driver</button>\n  <button class=\"nw-button\" type=\"button\" id=\"late\" aria-pressed=\"false\">Show only late</button>\n  <button class=\"nw-button\" type=\"button\" id=\"save\" aria-disabled=\"true\" aria-describedby=\"save-why\">Save route</button>\n  <p id=\"save-why\">Select a driver before saving.</p>\n</div>\n<p id=\"log\">Saved 0 times</p>",
+    "css": ":root {\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-50: #eaf0fd;\n  --nw-gray-200: #d9dee3;\n  --nw-gray-500: #7b8794;\n  --nw-color-action-bg: var(--nw-blue-600);\n  --nw-color-action-bg-subtle: var(--nw-blue-50);\n  --nw-color-text-disabled: var(--nw-gray-500);\n  --nw-color-border: var(--nw-gray-200);\n  --nw-focus-ring-color: var(--nw-blue-600);\n  --nw-focus-ring-width: 2px;\n  --nw-focus-ring-offset: 2px;\n}\n.nw-button {\n  --nw-button-bg: #ffffff;\n  --nw-button-text: #1f2933;\n  --nw-button-border: var(--nw-color-border);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 1px solid var(--nw-button-border);\n  padding: 8px 16px;\n  border-radius: 6px;\n  font: inherit;\n  cursor: pointer;\n}\n.nw-button:focus {\n  outline: none;\n}\n",
+    "js": "let saves = 0;\nconst log = document.querySelector('#log');\nconst save = document.querySelector('#save');\nconst late = document.querySelector('#late');\n\nsave.addEventListener('click', () => {\n  saves += 1;\n  log.textContent = `Saved ${saves} times`;\n});\n\nlate.addEventListener('click', () => {\n  // Toggle the filter here\n});\n"
+  },
+  "solution": {
+    "html": "<div class=\"toolbar\">\n  <button class=\"nw-button\" type=\"button\" id=\"assign\">Assign driver</button>\n  <button class=\"nw-button\" type=\"button\" id=\"late\" aria-pressed=\"false\">Show only late</button>\n  <button class=\"nw-button\" type=\"button\" id=\"save\" aria-disabled=\"true\" aria-describedby=\"save-why\">Save route</button>\n  <p id=\"save-why\">Select a driver before saving.</p>\n</div>\n<p id=\"log\">Saved 0 times</p>",
+    "css": ":root {\n  --nw-blue-600: #1f5ae0;\n  --nw-blue-50: #eaf0fd;\n  --nw-gray-200: #d9dee3;\n  --nw-gray-500: #7b8794;\n  --nw-color-action-bg: var(--nw-blue-600);\n  --nw-color-action-bg-subtle: var(--nw-blue-50);\n  --nw-color-text-disabled: var(--nw-gray-500);\n  --nw-color-border: var(--nw-gray-200);\n  --nw-focus-ring-color: var(--nw-blue-600);\n  --nw-focus-ring-width: 2px;\n  --nw-focus-ring-offset: 2px;\n}\n.nw-button {\n  --nw-button-bg: #ffffff;\n  --nw-button-text: #1f2933;\n  --nw-button-border: var(--nw-color-border);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  border: 1px solid var(--nw-button-border);\n  padding: 8px 16px;\n  border-radius: 6px;\n  font: inherit;\n  cursor: pointer;\n}\n.nw-button:focus-visible {\n  outline: var(--nw-focus-ring-width) solid var(--nw-focus-ring-color);\n  outline-offset: var(--nw-focus-ring-offset);\n}\n.nw-button[aria-pressed=\"true\"] {\n  --nw-button-bg: var(--nw-color-action-bg-subtle);\n  --nw-button-border: var(--nw-color-action-bg);\n}\n.nw-button[aria-disabled=\"true\"] {\n  --nw-button-text: var(--nw-color-text-disabled);\n  cursor: not-allowed;\n}\n",
+    "js": "let saves = 0;\nconst log = document.querySelector('#log');\nconst save = document.querySelector('#save');\nconst late = document.querySelector('#late');\n\nsave.addEventListener('click', () => {\n  if (save.getAttribute('aria-disabled') === 'true') return;\n  saves += 1;\n  log.textContent = `Saved ${saves} times`;\n});\n\nlate.addEventListener('click', () => {\n  const pressed = late.getAttribute('aria-pressed') === 'true';\n  late.setAttribute('aria-pressed', String(!pressed));\n});\n"
+  },
+  "checks": [
+    {
+      "id": "focus-visible-rule",
+      "test": "const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules]).filter((r) => r.selectorText); const fv = rules.filter((r) => r.selectorText.includes(':focus-visible')); const plainFocus = rules.filter((r) => /:focus(?![-\\w])/.test(r.selectorText) && /outline/.test(r.style.cssText) && /none|0px/.test(r.style.outlineStyle + r.style.outline + r.style.outlineWidth)); return fv.length > 0 && plainFocus.length === 0;"
+    },
+    {
+      "id": "ring",
+      "test": "const b = $('#assign'); b.focus(); const ok = b.matches(':focus-visible') && style(b, 'outline-style') === 'solid' && style(b, 'outline-width') === '2px' && style(b, 'outline-color') === 'rgb(31, 90, 224)' && style(b, 'outline-offset') === '2px'; b.blur(); return ok;"
+    },
+    {
+      "id": "toggle",
+      "test": "const b = $('#late'); click(b); await tick(); const on = b.getAttribute('aria-pressed') === 'true' && style(b, 'background-color') === 'rgb(234, 240, 253)'; click(b); await tick(); return on && b.getAttribute('aria-pressed') === 'false' && style(b, 'background-color') === 'rgb(255, 255, 255)';"
+    },
+    {
+      "id": "blocked",
+      "test": "click($('#save')); await tick(); return text('#log') === 'Saved 0 times';"
+    },
+    {
+      "id": "disabled-look",
+      "test": "return style('#save', 'color') === 'rgb(123, 135, 148)' && style('#save', 'cursor') === 'not-allowed';"
+    }
+  ]
+}

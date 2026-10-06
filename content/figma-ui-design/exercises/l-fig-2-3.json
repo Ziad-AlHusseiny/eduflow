@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "json",
+  "code": "{\n  \"screen\":        { \"paddingX\": 20, \"paddingTop\": 32, \"gap\": 24 },\n  \"title\":         { \"style\": \"Title\", \"lineHeight\": 36 },\n  \"statsRow\":      { \"flow\": \"horizontal\", \"gap\": 16 },\n  \"statCard\":      { \"padding\": 14, \"gap\": 4 },\n  \"calendar\":      { \"flow\": \"grid\", \"gap\": 8, \"cellSize\": 40 },\n  \"streakBanner\":  { \"padding\": 16, \"gap\": 12, \"radius\": 12 },\n  \"editButton\":    { \"height\": 48, \"paddingX\": 18, \"radius\": 12 },\n  \"caption\":       { \"style\": \"Caption\", \"lineHeight\": 16 }\n}",
+  "bugLines": [
+    5,
+    8
+  ]
+}

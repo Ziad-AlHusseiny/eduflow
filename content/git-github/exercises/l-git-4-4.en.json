@@ -1,0 +1,11 @@
+{
+  "title": "Debug the CI workflow",
+  "prompt": "A teammate wrote `.github/workflows/ci.yml` to run the portfolio's HTML check on every pull request into `main`. It never appears on pull requests, and once that's fixed it would still fail. Select the three lines that are wrong.",
+  "hints": [
+    "Event names in `on` are exact; compare with the event name you saw in the lesson.",
+    "A runner starts empty. What has to happen before `npm` can find `package.json`?",
+    "Every `uses:` needs to say which version of the action to run."
+  ],
+  "explanation": "Line 4: the event is `pull_request` (singular); `pull_requests` isn't an event GitHub recognises, so the workflow is invalid and never runs on pull requests. Line 11: `npm ci` runs before `actions/checkout`, on an empty runner with no `package.json`; move it after checkout and setup-node. Line 13: `uses` must include a ref, such as `actions/setup-node@v7`; without `@…` the workflow fails to load. Fixed, the steps read: checkout, setup-node with Node 24, `npm ci`, `npm test`.",
+  "checks": {}
+}

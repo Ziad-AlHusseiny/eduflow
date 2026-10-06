@@ -1,0 +1,17 @@
+{
+  "title": "Update expenses without mutating them",
+  "prompt": "The starter's functions change the arrays and objects they are given, so the caller's data changes behind its back. Rewrite them to return new values instead:\n\n- `addExpense(list, expense)` returns a **new** array with `expense` at the end.\n- `updateAmount(list, id, amount)` returns a **new** array in which the expense with that `id` is a **new** object with the new `amount`. Other expenses stay as they are, and nothing in `list` changes.\n- `describe(expense)` returns a string like `\"Train: $12.20 (travel)\"`, using `\"other\"` when there is no category. Destructure the parameter.\n",
+  "hints": [
+    "Spread an array into a new one: `[...list, expense]`.",
+    "For the update, `map` over the list and return either `{ ...e, amount }` or `e` unchanged, depending on whether `e.id === id`.",
+    "Destructure with a default in the parameter list: `function describe({ label, amount, category = \"other\" })`."
+  ],
+  "explanation": "`[...list, expense]` copies the references of the existing items into a new array and adds one more, so the caller's array keeps its length. In `updateAmount`, `map` already builds a new array; for the matching item you return `{ ...e, amount }`, a new object with every property of `e` and the new amount (the shorthand `amount` means `amount: amount`). Unchanged items are returned as they are, which is safe because nothing modifies them. In `describe`, destructuring in the parameter list documents the three properties the function needs, and the default covers expenses without a category.\n",
+  "checks": {
+    "add": "`addExpense` returns the list with the new expense at the end",
+    "add-pure": "`addExpense` leaves the original array unchanged",
+    "update": "`updateAmount` changes the amount of the matching expense",
+    "update-pure": "`updateAmount` leaves the original array and objects unchanged",
+    "describe": "`describe` formats the expense, defaulting the category to \"other\""
+  }
+}

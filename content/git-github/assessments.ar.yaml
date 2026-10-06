@@ -1,0 +1,374 @@
+checkpoints:
+  s-git-1:
+    - q: تشغّل `git add index.html`، ثم تعدّل `index.html` مرة أخرى، ثم تشغّل `git commit -m "Update intro"`. أيّ نسخة من الملف تدخل في الـ commit؟
+      options:
+        - text: النسخة التي حفظتها آخر مرة.
+          why: "`git commit` يسجّل الـ index، لا ملفاتك على القرص. والتعديل الثاني لم يُجهَّز قط."
+        - text: النسختان، في commitين منفصلين.
+          why: الأمر `git commit` الواحد ينشئ دائمًا commit واحدًا. ولا يقسم Git التعديلات بحسب وقت حفظها.
+        - text: النسخة كما كانت لحظة تشغيل `git add`.
+          why: صحيح. نسخ `git add` تلك النسخة إلى الـ index، والـ commit يسجّل الـ index. أما التعديل اللاحق فما زال غير مجهّز.
+        - text: لا هذه ولا تلك؛ يرفض Git تسجيل ملف تغيّر بعد تجهيزه.
+          why: يسمح Git بذلك ويعرض الملف على أنه مجهّز ومعدّل في آن واحد. وهذا طبيعي أثناء بناء الـ commit.
+      answer: 2
+    - q: |-
+        يعرض `git status -s`:
+        ```text
+        A  contact.html
+        ?? notes.txt
+        ```
+        ماذا يسجّل `git commit -m "Add contact page"`؟
+      options:
+        - text: "`contact.html` فقط."
+          why: صحيح. الحرف `A` في العمود الأيسر يعني أنه مجهّز كملف جديد؛ و `??` تعني أن `notes.txt` غير متتبَّع ويبقى خارج الـ commit.
+        - text: الملفين كليهما، لأنهما جديدان.
+          why: كون الملف جديدًا لا يكفي. لا يدخل الـ commit إلا المحتوى المجهّز، و `notes.txt` لم يُضف قط.
+        - text: لا شيء، لأن الملفات غير المتتبَّعة تمنع الـ commit.
+          why: الملفات غير المتتبَّعة لا تمنع الـ commits أبدًا. يتجاهلها Git ما لم تجهّزها.
+        - text: "`notes.txt` فقط، لأن `??` تعني أنه جاهز."
+          why: "`??` تعني أن Git لم يتتبّع الملف قط. ولا شيء منه مجهّز."
+      answer: 0
+    - q: أيّ عبارة عن معرّفات الـ commits صحيحة؟
+      options:
+        - text: المعرّفات مرقّمة بالترتيب، فالمعرّف الأعلى يعني دائمًا commit أحدث.
+          why: المعرّفات hashes، لا عدّادات. وترتيبها لا يقول شيئًا عن الزمن.
+        - text: تستطيع تعديل رسالة الـ commit والاحتفاظ بمعرّفه.
+          why: الرسالة جزء مما يُحسب منه الـ hash. وتغييرها ينشئ commit مختلفًا بمعرّف جديد.
+        - text: شخصان يسجّلان ملفات متطابقة يحصلان دائمًا على المعرّف نفسه.
+          why: المؤلف والوقت والأب تدخل في الـ hash أيضًا، فتختلف الـ commits.
+        - text: معرّف الـ commit يعتمد على محتواه ومؤلفه وتاريخه ورسالته وأبيه، فالتغيير نفسه إن سُجّل مرتين حصل على معرّفين.
+          why: صحيح. ولهذا أيضًا ينتج الـ amend والـ rebase والـ revert معرّفات جديدة دائمًا.
+      answer: 3
+    - q: |-
+        هذا ناتج `git log --oneline --graph`:
+        ```text
+        *   9d1f0a2 (HEAD -> main) Merge branch 'contact'
+        |\
+        | * 6b2c8e1 (contact) Add contact form
+        * | 3e7a4d9 Fix header spacing
+        |/
+        * 1f0c5b8 Add home page
+        ```
+        أيّ commit هو `HEAD~1`؟
+      options:
+        - text: "`6b2c8e1`، لأنه أحدث commit قبل الدمج."
+          why: "`~` تتبع الأب الأول، وهو في الـ merge الفرع الذي كنت عليه (`main`)، لا الفرع المدموج."
+        - text: "`3e7a4d9`، الأب الأول للـ merge."
+          why: صحيح. كنت على `main` حين دمجت، لذا فطرف `main` السابق هو الأب الأول. أما `HEAD^2` فسيكون `6b2c8e1`.
+        - text: "`1f0c5b8`، لأنه حيث يلتقي الخطّان."
+          why: هذا هو الـ merge base، على بعد خطوتين. و `HEAD~1` خطوة واحدة.
+        - text: لا شيء؛ `HEAD~1` خطأ على merge commit.
+          why: إنه يعمل جيدًا. يتبع Git دائمًا الأب الأول مع `~`.
+      answer: 1
+    - q: تريد مراجعة ما سيحتويه الـ commit التالي بالضبط قبل تشغيل `git commit`. أيّ أمر يعرض ذلك؟
+      options:
+        - text: "`git diff --staged`"
+          why: صحيح. يقارن الـ index بآخر commit، وهذا بالضبط التغيير الذي سيسجّله الـ commit التالي.
+        - text: "`git diff`"
+          why: هذا يعرض التغييرات التي *لم* تجهّزها بعد، ولن تكون في الـ commit.
+        - text: "`git log -p`"
+          why: هذا يعرض الـ commits السابقة وفروقاتها، لا ما هو على وشك أن يُسجَّل.
+        - text: "`git show HEAD`"
+          why: هذا يعرض آخر commit أنشأته بالفعل.
+      answer: 0
+  s-git-2:
+    - q: على `main`، تشغّل `git switch -c hero-image`، وتعدّل `index.html` دون commit، ثم تشغّل `git switch main`. الفرعان يشيران إلى الـ commit نفسه. ماذا يحدث لتعديلك؟
+      options:
+        - text: يضيع، لأن الانتقال يعيد ضبط الـ working tree.
+          why: الانتقال يحتفظ بالتغييرات غير المسجّلة كلما استطاع. ويرفض بدل أن يضيّعها.
+        - text: ينتقل معك إلى `main` كتغيير غير مسجّل.
+          why: صحيح. في الفرعين `index.html` نفسه، فلا شيء يحتاج إلى الكتابة فوقه وينتقل التعديل معك.
+        - text: يرفض Git دائمًا الانتقال ما دامت لديك تغييرات غير مسجّلة.
+          why: لا يرفض إلا حين يكون الانتقال سيكتب فوق تغييراتك. وهنا لن يفعل.
+        - text: يُسجَّل تلقائيًا في commit على `hero-image` قبل الانتقال.
+          why: لا ينشئ Git commits نيابةً عنك أبدًا. العمل غير المسجّل يبقى كذلك حتى تسجّله.
+      answer: 1
+    - q: "يفشل `git branch -d old-layout` بالرسالة `error: the branch 'old-layout' is not fully merged`. ماذا يعني ذلك؟"
+      options:
+        - text: أنت حاليًا على `old-layout`، فلا يمكن حذفه.
+          why: هذا خطأ مختلف (لا يمكنك حذف الفرع الذي أنت عليه). أما هذا فيتعلّق بـ commits غير مدموجة.
+        - text: الفرع غير موجود محليًا.
+          why: الفرع المفقود يعطي خطأ «غير موجود»، لا «not fully merged».
+        - text: لا يمكن الوصول إلى GitHub، فلا يستطيع Git فحص الفرع.
+          why: "`git branch -d` يعمل محليًا بالكامل ولا يتواصل مع أي remote."
+        - text: بعض الـ commits الخاصة به لم تُدمج في فرعك الحالي؛ ادمجها، أو استخدم `-D` إن كنت متأكّدًا أنها غير مرغوبة.
+          why: صحيح. `-d` يحمي العمل غير المدموج. و `-D` يحذف رغم ذلك، ويظل الـ reflog قادرًا على إنقاذه لفترة.
+      answer: 3
+    - q: أنت عند الـ commit الثالث من `git rebase main` على فرعك حين يجعلك تعارض تدرك أنك تفضّل الدمج. كيف تعود تمامًا إلى حيث كنت قبل الـ rebase؟
+      options:
+        - text: "`git merge --abort`"
+          why: لا يوجد merge قيد التنفيذ. لكل عملية أمر الإلغاء الخاص بها.
+        - text: "`git reset --hard main`"
+          why: هذا يجعل فرعك يشير إلى `main`، فيُسقط منه commits الفرع. يمكن استعادتها عبر الـ reflog، لكنه عكس ما تريده.
+        - text: "`git rebase --abort`"
+          why: صحيح. يوقف الـ rebase ويعيد الفرع إلى الـ commits الأصلية.
+        - text: "`git rebase --skip`"
+          why: هذا يُسقط الـ commit المتعارض ويواصل الـ rebase، فتخسر عملًا وتبقى في منتصف الـ rebase.
+      answer: 2
+    - q: أنت وزميلك ترفعان كلاكما إلى الفرع المشترك `redesign` على GitHub. وقد تأخّر عن `main`. كيف تحدّثه؟
+      options:
+        - text: ادمج `main` في `redesign` وارفع.
+          why: صحيح. الـ merge يضيف commit دون إعادة كتابة أي شيء يملكه زميلك بالفعل.
+        - text: نفّذ rebase لـ `redesign` على `main` ثم `git push --force`.
+          why: هذا يعيد كتابة commits بنى عليها زميلك، وهذا بالضبط ما تمنعه القاعدة الذهبية.
+        - text: احذف `redesign` وأعد إنشاءه من `main`.
+          why: هذا يرمي عمل الفرع بدل أن يحدّثه.
+        - text: شغّل `git reset --hard main` على `redesign`.
+          why: هذا يُسقط commits الفرع من الفرع. ولا يُدمج شيء.
+      answer: 0
+    - q: أثناء دمج، يتعارض `styles.css`، وأنت تعرف أن نسخة الفرع القادم هي الصحيحة للملف كله. ما أسرع حلّ صحيح؟
+      options:
+        - text: "`git restore --ours styles.css`، ثم `git add styles.css`"
+          why: "`--ours` يحتفظ بنسخة فرعك الحالي، وهذا عكس ما تريده."
+        - text: "`git merge --abort`"
+          why: هذا يلغي الدمج كله بدل أن يحلّه.
+        - text: احذف `styles.css` وشغّل `git commit`.
+          why: هذا يسجّل حذف الملف، فيتعطّل الموقع.
+        - text: "`git restore --theirs styles.css`، ثم `git add styles.css` و `git commit`"
+          why: صحيح. `--theirs` يأخذ نسخة الفرع القادم من الملف المتعارض؛ والتجهيز يعلّمه بأنه حُلّ.
+      answer: 3
+  s-git-3:
+    - q: "يقول `git status` إن `Your branch is up to date with 'origin/main'`، لكن GitHub يعرض commit على `main` ليس لديك. لماذا؟"
+      options:
+        - text: صفحة GitHub مخزّنة مؤقتًا والـ commit ليس موجودًا فعلًا.
+          why: صفحة GitHub دقيقة. معلومات الـ repository الخاص بك هي القديمة.
+        - text: "`git status` يتجاهل الـ commits الأقدم من يوم."
+          why: لا يوجد حدّ كهذا. الحالة تقارن بما يسجّله `origin/main` حاليًا أيًّا كان.
+        - text: رُفع الـ commit إلى remote مختلف.
+          why: إنه على `main` في `origin`، كما تراه على GitHub. المشكلة في آخر مرة سألت فيها.
+        - text: الحالة تقارن بآخر `origin/main` معروف لديك، ولا يتحدّث إلا حين تنفّذ fetch؛ شغّل `git fetch` وتحقّق مجددًا.
+          why: صحيح. لا يتواصل Git مع GitHub عند `git status`. وبعد الـ fetch سيبلّغك أنك متأخّر.
+      answer: 3
+    - q: "ترفع فرعًا جديدًا بـ `git push` فتحصل على `fatal: The current branch contact-form has no upstream branch.` ما الذي يجري؟"
+      options:
+        - text: لم يُضف الـ remote المسمّى `origin` بعد.
+          why: لو لم يوجد remote أصلًا، لاشتكى Git من الـ repository المفقود، لا من الـ upstream المفقود.
+        - text: لم يُرفع الفرع قط، فليس له upstream؛ شغّل `git push -u origin contact-form`.
+          why: صحيح. `-u` يرفع ويسجّل الـ upstream، فيعمل `git push` و `git pull` المجرّدان لاحقًا.
+        - text: انتهت صلاحية بيانات الاعتماد.
+          why: أخطاء المصادقة تذكر الوصول أو المصادقة. أما هذا فيتعلّق بالتتبّع.
+        - text: عليك تنفيذ `git pull` قبل رفع فرع جديد.
+          why: لا شيء يُسحب؛ فالفرع غير موجود على GitHub بعد.
+      answer: 1
+    - q: يريد فريقك أن يحصل `main` على commit واحد بالضبط لكل pull request، يحمل عنوان الـ pull request. أيّ طريقة دمج تناسب؟
+      options:
+        - text: Squash and merge
+          why: صحيح. كل commits الفرع تصبح commit واحدًا جديدًا على `main`.
+        - text: Create a merge commit
+          why: هذا يُبقي كل commit في الفرع مع merge commit، فيحصل `main` على عدة commits لكل pull request.
+        - text: Rebase and merge
+          why: هذا يعيد تشغيل كل commit منفردًا على `main`، دون commit ملخّص واحد.
+        - text: أغلق الـ pull request وارفع التغييرات مباشرة
+          why: هذا يتخطّى المراجعة، ومع قواعد الحماية يُحجب على أي حال.
+      answer: 0
+    - q: استنسخت الـ fork الخاص بك من مشروع ما. يعرض `git remote -v` الاسم `origin` فقط، ويشير إلى الـ fork. كيف تحصل على أحدث commits من المشروع الأصلي؟
+      options:
+        - text: "`git pull origin main`"
+          why: الـ fork الخاص بك لا يحتوي أحدث commits الأصل حتى تزامنه، فهذا يسحب سجلًّا متأخّرًا.
+        - text: استنسخ الأصل بـ `git clone` في المجلد نفسه.
+          why: الـ clone ينشئ repository جديدًا؛ ولا يستطيع الدمج في repository موجود.
+        - text: "`git remote add upstream <original-url>`، ثم `git fetch upstream` ودمج `upstream/main`."
+          why: صحيح. remote ثانٍ للأصل يتيح لك الجلب منه مباشرة مع مواصلة الرفع إلى الـ fork الخاص بك.
+        - text: احذف الـ fork وأنشئ fork جديدًا.
+          why: هذا ينجح مرة واحدة، على حساب فروعك وأي pull requests مفتوحة. أما الـ remote فيفعلها في كل مرة.
+      answer: 2
+    - q: "يقول الـ pull request الخاص بك `Fixes #31` ودُمج في فرع `develop`، لكن الـ issue رقم 31 ما زالت مفتوحة. الفرع الافتراضي للـ repository هو `main`. لماذا؟"
+      options:
+        - text: "`Fixes` ليست كلمة مفتاحية معترفًا بها؛ وحدها `Closes` تعمل."
+          why: "`fixes` و `closes` و `resolves` كلها تعمل، مع صيغها المختلفة."
+        - text: كلمات الإغلاق المفتاحية لا تسري إلا حين يُدمج الـ pull request في الفرع الافتراضي.
+          why: صحيح. ستُغلق الـ issue حين يصل التغيير إلى `main`، أو يمكنك إغلاقها يدويًا.
+        - text: يجب أن تكون الكلمة المفتاحية في عنوان الـ pull request، لا في وصفه.
+          why: الوصف هو المكان المعتاد لكلمات الإغلاق المفتاحية.
+        - text: لا يمكن إغلاق الـ issues إلا من قِبل من فتحها.
+          why: أي شخص لديه صلاحية الكتابة يستطيع إغلاق issue، والدمج يستطيع إغلاقها تلقائيًا.
+      answer: 1
+  s-git-4:
+    - q: "أنشأت ثلاثة commits محلية على فرعك: `wip 1` و `wip 2` و `wip 3`. لم يُرفع أيّ منها. وتريد commit واحدًا نظيفًا بدلًا منها. ما الطريقة الأكثر مباشرة؟"
+      options:
+        - text: '`git reset --soft HEAD~3`، ثم `git commit -m "Add contact validation"`'
+          why: صحيح. يرجع الفرع ثلاثة commits بينما تبقى كل تغييراتها مجهّزة، جاهزة لتُسجَّل مرة واحدة.
+        - text: "`git revert HEAD~3..HEAD`"
+          why: هذا يضيف ثلاثة commits أخرى تتراجع عن الثلاثة الأولى، وهو عكس ما تريده.
+        - text: "`git reset --hard HEAD~3`، ثم commit"
+          why: "`--hard` يرمي التغييرات أيضًا، فلن يبقى شيء لتسجيله."
+        - text: "`git commit --amend` ثلاث مرات"
+          why: الـ amend لا يستبدل إلا آخر commit في كل مرة؛ ولا يجمع الـ commits الأقدم.
+      answer: 0
+    - q: يعرض `git stash list` ثلاثة مدخلات. تريد تطبيق الأوسط، `stash@{1}`، وإبقاءه في القائمة تحسّبًا لحاجتك إليه مجددًا. أيّ أمر؟
+      options:
+        - text: "`git stash pop stash@{1}`"
+          why: الـ pop يطبّق الـ stash ثم يحذفه، فلن يبقى في القائمة.
+        - text: "`git stash show stash@{1}`"
+          why: هذا يعرض محتوى الـ stash دون تطبيق أي شيء.
+        - text: "`git stash apply stash@{1}`"
+          why: صحيح. `apply` يستعيد التغييرات ويترك مدخل الـ stash في مكانه.
+        - text: "`git stash push stash@{1}`"
+          why: "`push` ينشئ stash جديدًا من تغييراتك الحالية؛ ولا يطبّق واحدًا."
+      answer: 2
+    - q: أيّ `.gitignore` يتجاهل كل ملف `.log` في المشروع باستثناء `logs/keep.log`؟
+      options:
+        - text: "`logs/` في سطر، ثم `!logs/keep.log`"
+          why: بمجرد تجاهل مجلد `logs/`، لا ينظر Git داخله أبدًا، فلا يستطيع سطر `!` إعادة تضمين الملف.
+        - text: "`*.log` في سطر، ثم `!logs/keep.log`"
+          why: صحيح. المستبعد هو الملفات فقط لا المجلد، فيستطيع سطر `!` اللاحق إعادة تضمين ذلك الملف وحده.
+        - text: "`!logs/keep.log` في سطر، ثم `*.log`"
+          why: الأسطر اللاحقة هي التي تفوز. `*.log` يأتي أخيرًا فيتجاهل `keep.log` مجددًا.
+        - text: "`*.log # except logs/keep.log`"
+          why: "`#` لا تبدأ تعليقًا إلا في بداية السطر؛ وهذا النمط يطابق ملفًا يحمل ذلك الاسم كاملًا."
+      answer: 1
+    - q: يعرض الـ pull request الخاص بك علامة خطأ حمراء بجانب `CI / check`. ماذا تفعل؟
+      options:
+        - text: انقر Re-run حتى يصبح أخضر.
+          why: إن كان الفحص يفشل لسبب حقيقي، فإعادة التشغيل تعطي النتيجة نفسها. أعد التشغيل فقط للإخفاقات المتقلّبة فعلًا.
+        - text: اطلب من مسؤول الـ repository تجاوز القاعدة والدمج.
+          why: التجاوز يُفشل الغرض من الفحص. اعرف سبب فشله أولًا.
+        - text: أغلق الـ pull request وافتح واحدًا جديدًا.
+          why: الـ pull request الجديد يشغّل الفحص نفسه على الكود نفسه ويفشل بالطريقة نفسها.
+        - text: افتح Details، واقرأ سجلّ الخطوة الفاشلة، وأعد إنتاج المشكلة محليًا بـ `npm test`، ثم أصلح وسجّل وارفع إلى الفرع نفسه.
+          why: صحيح. الرفع الجديد يعيد تشغيل الـ workflow على الـ pull request المحدَّث.
+      answer: 3
+    - q: يجب نشر الـ commit المنشور حاليًا على أنه الإصدار 1.2.0 على GitHub. أيّ الأوامر تفعل ذلك؟
+      options:
+        - text: "`git branch v1.2.0`، ثم `git push origin v1.2.0`"
+          why: الفرع يتحرّك مع كل commit، فهو الأداة الخطأ لتعليم إصدار ثابت.
+        - text: "`git tag v1.2.0`، ثم `git push`"
+          why: هذا ينشئ tag خفيفًا ثم لا يرفعه، لأن الرفع العادي لا يرسل الـ tags.
+        - text: '`git tag -a v1.2.0 -m "Release 1.2.0"`، ثم `git push origin v1.2.0`'
+          why: صحيح. الـ tag المشروح يسجّل من علّم الإصدار ولماذا، والـ tag يجب أن يُرفع صراحةً.
+        - text: "`git commit --tag v1.2.0`"
+          why: "لا يوجد خيار `--tag` في `git commit`. الـ tags تُنشأ بـ `git tag`."
+      answer: 2
+final:
+  - q: أيّ وصف للـ branch في Git دقيق؟
+    options:
+      - text: نسخة كاملة من ملفات المشروع مخزّنة في مجلد خاص بها.
+        why: هكذا كانت تعمل بعض الأنظمة القديمة. أما في Git فإنشاء الفرع لا ينسخ شيئًا.
+      - text: مؤشّر مسمّى ومتحرّك إلى commit واحد؛ والسجلّ يأتي من تتبّع الآباء.
+        why: صحيح. ولهذا فإنشاء الفروع والتنقّل بينها وحذفها رخيص.
+      - text: مجلد داخل `.git` يحتوي كل commit أُنشئ على ذلك الفرع.
+        why: الـ commits لا تُصنَّف بحسب الفروع. وملف الفرع يحمل معرّف commit واحدًا.
+      - text: نسخة الـ repository التي تعيش على GitHub.
+        why: هذا هو الـ remote. والفروع موجودة محليًا وعلى الـ remotes كليهما.
+    answer: 1
+  - q: أنشأت commitين على `main` كانا مقصودين لفرع جديد. لم يُرفع شيء بعد. ما الإصلاح الأنظف؟
+    options:
+      - text: "`git revert HEAD~2..HEAD`، ثم أعد العمل على فرع."
+        why: الـ revert يضيف commits تراجع إلى `main` لعمل لم يره أحد غيرك، وستعيد العمل بيدك.
+      - text: "`git switch -c contact-form` ثم تابع."
+        why: الفرع الجديد فيه الـ commits، لكن `main` ما زال يحتويها أيضًا.
+      - text: "`git push`، ثم أصلح الأمر على GitHub."
+        why: هذا ينشر الخطأ أولًا، فيحوّل إصلاحًا محليًا سهلًا إلى مشكلة في سجلّ مشترك.
+      - text: "`git branch contact-form`، ثم `git reset --hard origin/main`، ثم `git switch contact-form`."
+        why: صحيح. الفرع الجديد يحتفظ بالـ commits، و `main` يعود ليطابق GitHub.
+    answer: 3
+  - q: أيّ أمر يسرد الـ commits الموجودة على `feature` وليست على `main`؟
+    options:
+      - text: "`git log --oneline main..feature`"
+        why: صحيح. `A..B` تعني الـ commits التي يمكن الوصول إليها من B لا من A.
+      - text: "`git log --oneline feature..main`"
+        why: "هذا هو العكس: الـ commits الموجودة على `main` وتنقص `feature`."
+      - text: "`git diff main feature`"
+        why: هذا يقارن لقطتين سطرًا بسطر. ولا يسرد commits.
+      - text: "`git log --oneline --all`"
+        why: هذا يسرد كل commit على كل فرع، دون الفصل بينها.
+    answer: 0
+  - q: مع ضبط `pull.rebase` على `true`، يتوقّف `git pull` بتعارض في `index.html`. أصلحت الملف. ما الذي يُنهي المهمّة؟
+    options:
+      - text: "`git add index.html`، ثم `git merge --continue`"
+        why: لا يوجد merge قيد التنفيذ. مع `pull.rebase true`، الـ pull ينفّذ rebase.
+      - text: '`git commit -am "Fix conflict"`'
+        why: أثناء الـ rebase ينشئ Git الـ commits بنفسه. والـ commit اليدوي يضيف commit زائدًا.
+      - text: "`git add index.html`، ثم `git rebase --continue`"
+        why: صحيح. جهّز الحلّ ودع الـ rebase يعيد تشغيل بقية الـ commits الخاصة بك.
+      - text: شغّل `git pull` مجددًا.
+        why: هناك rebase قيد التنفيذ أصلًا، فلن يبدأ Git عملية أخرى حتى تُنهي الحالية أو تلغيها.
+    answer: 2
+  - q: حذفت `experiment` بالقوة بـ `git branch -D` ثم تذكّرت أن فيه commit تحتاجه. كيف تستعيده؟
+    options:
+      - text: استعده من سلّة المهملات؛ فـ Git ينقل الفروع المحذوفة إليها.
+        why: لا يستخدم Git سلّة مهملات نظامك. والـ commit ما زال داخل `.git`.
+      - text: شغّل `git revert experiment`.
+        why: اسم الفرع لم يعد موجودًا، والـ revert ينشئ commits تراجع على أي حال.
+      - text: جِد الـ commit في `git reflog`، ثم `git switch -c experiment <commit-id>`.
+        why: صحيح. حذف الفرع يزيل مؤشّرًا؛ والـ reflog يتذكّر أين كان الـ HEAD، فتستطيع توجيه فرع جديد إليه.
+      - text: ضاع إلى الأبد؛ فـ `-D` يحذف الـ commits نهائيًا.
+        why: "`-D` لا يحذف إلا اسم الفرع. والـ commits التي لا يمكن الوصول إليها تبقى قابلة للاستعادة لأسابيع."
+    answer: 2
+  - q: يتّفق فريقك على ألّا يرفع أحد إلى `main` مباشرة وأن يجتاز كل pull request الـ CI. ما الذي يفرض ذلك؟
+    options:
+      - text: branch ruleset على `main` مع Require a pull request و Require status checks to pass.
+        why: صحيح. يرفض GitHub حينها الرفع المباشر ويُبقي زر الدمج معطّلًا حتى يصبح الفحص المطلوب أخضر.
+      - text: ملاحظة في CONTRIBUTING.md.
+        why: الوثائق تشرح القاعدة لكنها لا تستطيع منع أحد من خرقها.
+      - text: workflow يتراجع عن أي رفع مباشر إلى `main`.
+        why: هذا يتصرّف بعد وقوع الضرر، ويضيف ضجيجًا إلى السجلّ. أما القواعد فتمنعه من البداية.
+      - text: إضافة `main` إلى `.gitignore`.
+        why: "`.gitignore` يتحكّم في الملفات التي يتتبّعها Git. ولا علاقة له بالفروع أو الرفع."
+    answer: 0
+  - q: أيّ مما يلي آمن على فرع سحبه زملاؤك بالفعل؟
+    options:
+      - text: "`git commit --amend` على آخر commit، ثم رفع بالقوة."
+        why: الـ amend يستبدل commit يملكونه بالفعل، فلا يعود سجلّهم يطابق سجلّك.
+      - text: "`git rebase -i` لضغط commits قديمة، ثم رفع بالقوة."
+        why: الـ rebase يعيد كتابة commits مشارَكة، وهذا يخرق القاعدة الذهبية.
+      - text: "`git reset --hard HEAD~2`، ثم رفع بالقوة."
+        why: هذا يحذف commits من فرع بنى عليه آخرون.
+      - text: "`git revert <commit>` ورفع عادي."
+        why: صحيح. الـ revert يضيف commit جديدًا ولا يعيد كتابة شيء، فيكفي أن يسحبه زملاؤك.
+    answer: 3
+  - q: "في `styles.css` تغييران لا علاقة بينهما: إصلاح لون وبداية تخطيط جديد. تريد تسجيل إصلاح اللون فقط. ماذا تستخدم؟"
+    options:
+      - text: "`git commit -a`"
+        why: هذا يسجّل كل تغيير متتبَّع، بما في ذلك التخطيط غير المكتمل.
+      - text: "`git add -p styles.css`، مع تجهيز كتلة اللون فقط"
+        why: صحيح. وضع الـ patch يتيح لك تجهيز الكتل (hunks) منفردة، فلا يحتوي الـ commit إلا الإصلاح.
+      - text: "`git stash`، ثم commit"
+        why: الـ stash يزيل التغييرين كليهما، فلا يبقى شيء لتسجيله.
+      - text: "`git restore styles.css`، ثم commit"
+        why: هذا يرمي التغييرين كليهما من الملف.
+    answer: 1
+  - q: أيّ عبارة عن مصادقة SSH مع GitHub صحيحة؟
+    options:
+      - text: تلصق مفتاحك الخاص في GitHub ليتحقّق منك.
+        why: المفتاح الخاص يجب ألّا يغادر جهازك أبدًا. ولا يحتاج GitHub إلا المفتاح العام.
+      - text: مفاتيح SSH تنتهي صلاحيتها كل 30 يومًا ويجب توليدها من جديد.
+        why: مفاتيح SSH في GitHub ليس لها تاريخ انتهاء (يحذف GitHub المفتاح فقط إن بقي عامًا دون استخدام). تحذفها أنت حين تتخلّى عن الجهاز.
+      - text: بمجرد إعداد SSH، تستخدمه كل الـ remotes تلقائيًا.
+        why: عنوان الـ remote هو الذي يقرّر. العناوين `https://` تواصل استخدام HTTPS حتى تغيّرها.
+      - text: تضيف المفتاح العام `.pub` إلى GitHub، ويبقى المفتاح الخاص على جهازك.
+        why: صحيح. يتحقّق GitHub من أنك تملك المفتاح الخاص المطابق للمفتاح العام في حسابك.
+    answer: 3
+  - q: لم يتحرّك `main` منذ أنشأت `footer`، لكنك تريد أن يُظهر سجلّ `main` عمل الـ footer كـ feature واحدة مجمّعة. أيّ أمر؟
+    options:
+      - text: "`git merge footer`"
+        why: مع عدم تحرّك `main`، ينفّذ هذا fast-forward، فلا merge commit ولا تجميع.
+      - text: "`git merge --no-ff footer`"
+        why: صحيح. يفرض merge commit حتى حين يكون الـ fast-forward ممكنًا.
+      - text: "`git merge --ff-only footer`"
+        why: هذا لا يسمح إلا بالـ fast-forward، وهو عكس ما تريده.
+      - text: "`git rebase footer`"
+        why: تنفيذ rebase لـ `main` على `footer` يعطيك خطًا مستقيمًا، دون تجميع أيضًا.
+    answer: 1
+  - q: في سير عمل الـ fork، إلى أين يذهب فرع الـ feature الخاص بك قبل أن تفتح الـ pull request؟
+    options:
+      - text: مباشرة إلى الـ repository الأصلي (`upstream`).
+        why: دون صلاحية كتابة يُرفض هذا الرفع. ولهذا يوجد الـ fork.
+      - text: لا مكان؛ يقرأ GitHub الفروع من حاسوبك.
+        why: لا يرى GitHub إلا ما رُفع إلى repository على GitHub.
+      - text: إلى الـ fork الخاص بك (`origin`)، ثم يذهب الـ pull request من فرع الـ fork إلى `main` في الأصل.
+        why: صحيح. ترفع إلى حيث لديك صلاحية الكتابة، وتقترح التغيير على الأصل.
+      - text: إلى فرع `main` في الـ fork الخاص بك.
+        why: إبقاء `main` مرآة للـ upstream واستخدام فرع منفصل لكل مساهمة يتجنّب الـ pull requests الفوضوية.
+    answer: 2
+  - q: workflow في `.github/workflow/ci.yml` لا يعمل أبدًا على الـ pull requests، وتبويب Actions لا يعرض شيئًا. ما السبب الأرجح؟
+    options:
+      - text: يجب أن يكون اسم المجلد `.github/workflows` (بالجمع).
+        why: صحيح. لا يقرأ GitHub ملفات الـ workflows إلا من `.github/workflows/`.
+      - text: يجب أن يكون اسم الملف `main.yml`.
+        why: ملفات الـ workflows يمكن أن تحمل أي اسم ينتهي بـ `.yml` أو `.yaml`.
+      - text: الـ Actions لا تعمل إلا على الـ repositories الخاصة.
+        why: الـ Actions تعمل على الـ repositories العامة والخاصة على حدّ سواء.
+      - text: الـ workflows لا تعمل إلا بعد أن يشترطها ruleset.
+        why: الـ rulesets تستطيع اشتراط فحص، لكن الـ workflows تعمل بمحفّزاتها الخاصة بغضّ النظر عن ذلك.
+    answer: 0

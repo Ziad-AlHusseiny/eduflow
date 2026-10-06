@@ -1,0 +1,17 @@
+{
+  "title": "نظّف الأعمدة النصية في الملف المُصدَّر",
+  "prompt": "في `messy`: احذف المسافات من `customer`؛ واحذف المسافات من `country` وحوّله إلى حالة العنوان (title case)؛ وفي `channel`، استبدل المسافة بشرطة سفلية (`mobile app` ← `mobile_app`) واملأ القيم المفقودة بـ `\"unknown\"`. أضِف عمودًا `first_name` يحمل الكلمة الأولى من اسم العميل المنظّف. وأخيرًا اجعل `desk_lines` عدد الصفوف التي يحتوي فيها `product` على \"desk\" بأيّ حالة أحرف.",
+  "hints": [
+    "سلسِل methods الـ `.str` وأسنِد النتيجة إلى العمود نفسه: `messy[\"country\"] = messy[\"country\"].str.strip().str.title()`.",
+    "تترك `.str.replace(\" \", \"_\")` القيم المفقودة مفقودة، فتستطيع تسلسل `.fillna(\"unknown\")` بعدها مباشرة.",
+    "`messy[\"customer\"].str.split(\" \").str[0]` تأخذ الكلمة الأولى. وللعدّ، `str.contains(\"desk\", case=False).sum()`؛ واستخدم `messy[\"product\"]` لا `messy.product`."
+  ],
+  "explanation": "بعد حذف المسافات وتحويل حالة الأحرف، تتقلّص كتابات الدول الـ 22 إلى الدول الثماني التي تبيع لها Cartwheel بالضبط، ويبقى 122 اسم عميل مختلفًا بعد أن تتطابق المكرّرات المحاطة بالمسافات مع نظيراتها المنظّفة. والقناة الآن تستخدم الأكواد نفسها التي في جدول `orders` النظيف، فيمكن مقارنة الاثنين أو ربطهما لاحقًا. تأخذ `str.split(\" \").str[0]` الجزء الأول من كل تقسيم؛ أما `expand=True` فتعطيك كل الأجزاء كأعمدة. وتجد `case=False` كلًّا من `Standing Desk 140cm` و`Compact Writing Desk` و`Desk Mat XL`: 15 بندًا.",
+  "checks": {
+    "customer": "أسماء العملاء ليست فيها مسافات في البداية أو النهاية",
+    "country": "`country` يحمل الدول الحقيقية الثماني بالضبط",
+    "channel": "`channel` يستخدم `web` و`mobile_app` و`marketplace` و`unknown`",
+    "first-name": "`first_name` يحمل كلمة واحدة لكل صف، أولها Daniel",
+    "desk": "`desk_lines` يساوي 15"
+  }
+}

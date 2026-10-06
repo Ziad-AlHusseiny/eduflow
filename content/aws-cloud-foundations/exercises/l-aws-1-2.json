@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": false, "options": ["us", "eu-cheap-missing", "eu-near", "eu-far"], "correct": ["eu-near"] }

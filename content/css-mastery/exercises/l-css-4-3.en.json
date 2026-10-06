@@ -1,0 +1,17 @@
+{
+  "title": "Scroll-driven progress and reveals",
+  "prompt": "The `grow` and `reveal` keyframes are ready. Wire them to scrolling:\n\n1. Fix the progress bar so `grow` runs on the **document's scroll timeline**, with `linear` timing and a fill mode that holds the keyframes (`both`).\n2. Make each `.speaker` run `reveal` on its **view timeline**, from the start of its **entry** to **30% of its cover** range.\n3. Put the scroll-driven rules inside `@supports (animation-timeline: view())` so browsers without support show the plain page. (Wrapping them in `prefers-reduced-motion: no-preference` too is recommended.)",
+  "hints": [
+    "Look at the order in the starter: which declaration resets the other?",
+    "For the speakers: `animation: reveal linear both;` then `animation-timeline: view();` and `animation-range: …`.",
+    "`@supports (animation-timeline: view()) { .progress { animation: grow linear both; animation-timeline: scroll(root); } .speaker { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% cover 30%; } }`"
+  ],
+  "explanation": "The starter's bar never moved because the `animation` shorthand came after `animation-timeline` and reset it to `auto`, leaving a zero-length time animation. Declaring the timeline after the shorthand ties `grow` to the root scroller, and `linear` keeps the bar proportional to scroll distance. Each speaker's anonymous `view()` timeline tracks that card through the viewport, and `entry 0% cover 30%` makes the reveal finish shortly after the card appears. The `@supports` guard keeps the reveal out of browsers that can't run it, such as stable Firefox in 2026, where the cards simply stay visible.",
+  "checks": {
+    "progress-scroll-timeline": "The bar's animation runs on a scroll() timeline",
+    "progress-linear": "The bar uses linear timing and keeps its keyframes",
+    "speaker-view-timeline": "Every speaker card runs reveal on a view() timeline",
+    "speaker-range": "The reveal runs from entry to cover 30%",
+    "guarded": "The rules are inside @supports (animation-timeline: …)"
+  }
+}

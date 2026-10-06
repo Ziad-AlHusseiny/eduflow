@@ -1,0 +1,19 @@
+{
+  "title": "A store that protects its data",
+  "prompt": "Rewrite `ExpenseStore` so its data can only change through its methods:\n\n- Keep the expenses in a **private field** `#expenses`, so instances have no public properties.\n- `add({ label, amount, category })` creates an expense with an id (`\"exp-1\"`, `\"exp-2\"`… counted per store), a `category` defaulting to `\"other\"`, stores it and **returns** it.\n- `remove(id)` removes the expense with that id.\n- `list()` returns a **copy** of the expenses array.\n- `total` is a **getter** returning the sum of all amounts.\n- `totalFor(category)` returns the sum for one category (0 if none).\n",
+  "hints": [
+    "Declare fields at the top of the class body: `#expenses = [];` and `#nextNumber = 1;`. Inside methods, use `this.#expenses`.",
+    "Build the id with `` `exp-${this.#nextNumber++}` ``, and destructure the parameter with a default: `add({ label, amount, category = \"other\" })`.",
+    "`get total() { return this.#expenses.reduce((sum, e) => sum + e.amount, 0); }`. `list()` returns `[...this.#expenses]`."
+  ],
+  "explanation": "The private fields mean the only way to change the list is through `add` and `remove`, so every expense is guaranteed an id and a category, and outside code cannot slip a half-formed object in. Each `new ExpenseStore()` gets its own `#expenses` and `#nextNumber`, which is why two stores count ids independently. `list()` returns a copy, because handing out the real array would let callers mutate it and bypass the rules. `total` is a getter computed from the current data each time it is read, so it can never disagree with the list, even after a removal.\n",
+  "checks": {
+    "add-returns": "`add` returns the new expense with an id and a default category",
+    "list-copy": "`list` returns a copy, so changing it does not change the store",
+    "private": "The store has no public data properties",
+    "remove": "`remove` deletes the expense with that id",
+    "total-getter": "`total` is a getter that stays up to date",
+    "total-for": "`totalFor` sums one category",
+    "independent": "Two stores keep separate data and id counters"
+  }
+}

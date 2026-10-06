@@ -1,0 +1,45 @@
+{
+  "title": "Web Accessibility in Practice",
+  "tagline": "Audit and fix a real booking page until everyone can use it, keyboard, screen reader and all.",
+  "description": [
+    "About one in six people lives with a significant disability, and far more of us are temporarily or situationally limited: a broken wrist, a sunny screen, a noisy train. Yet almost every home page on the web fails basic accessibility checks. This course teaches the skills that close that gap, taught by an accessibility lead who has worked beside screen-reader users for a decade.",
+    "You audit and repair Ticketly, an event-booking page that starts out broken in all the usual ways. You replace div soup with semantic HTML, label every form field, make the seat picker work from the keyboard, build dialogs and tabs that follow the ARIA Authoring Practices, fix contrast and motion, and finish with an end-to-end audit using axe, a keyboard and real screen readers."
+  ],
+  "audience": "Front-end developers and designers who build for the web and want to ship interfaces disabled people can actually use.",
+  "prerequisites": "Comfortable writing HTML and CSS and reading basic JavaScript event handlers; no prior accessibility knowledge needed.",
+  "learnItems": [
+    "Explain WCAG 2.2 AA and what it requires of your pages",
+    "Structure pages with landmarks, headings and real buttons and links",
+    "Build forms with labels, grouped options and announced errors",
+    "Manage keyboard focus in dialogs, SPAs and custom widgets",
+    "Use ARIA correctly: roles, states, live regions, APG patterns",
+    "Audit a page with axe, a keyboard, VoiceOver and NVDA"
+  ],
+  "sections": {
+    "s-a11y-1": "Why Accessibility, and for Whom",
+    "s-a11y-2": "Semantic HTML First",
+    "s-a11y-3": "Keyboard, Focus and ARIA",
+    "s-a11y-4": "Visual Design and Content",
+    "s-a11y-5": "Testing and Accessibility Culture"
+  },
+  "lessons": {
+    "l-a11y-1-1": "Who You Are Building For",
+    "l-a11y-1-2": "How Assistive Technology Reads Your Page",
+    "l-a11y-1-3": "WCAG 2.2, POUR and the Law",
+    "l-a11y-2-1": "Landmarks and Headings",
+    "l-a11y-2-2": "Buttons, Links and the Clickable Div",
+    "l-a11y-2-3": "Accessible Forms",
+    "l-a11y-2-4": "Images, Alt Text and Data Tables",
+    "l-a11y-3-1": "Keyboard Access and Visible Focus",
+    "l-a11y-3-2": "Managing Focus: Dialogs and Single-Page Apps",
+    "l-a11y-3-3": "ARIA: Roles, States and Live Regions",
+    "l-a11y-3-4": "Widget Patterns: Disclosure, Tabs and Menu Button",
+    "l-a11y-4-1": "Color and Contrast",
+    "l-a11y-4-2": "Zoom, Reflow, Target Size and Motion",
+    "l-a11y-4-3": "Accessible Names and Descriptions",
+    "l-a11y-4-4": "Plain Language, Language and Direction",
+    "l-a11y-5-1": "Automated Testing with axe",
+    "l-a11y-5-2": "Testing with a Keyboard and Screen Readers",
+    "l-a11y-5-3": "Auditing a Page and Building an Accessible Team"
+  }
+}

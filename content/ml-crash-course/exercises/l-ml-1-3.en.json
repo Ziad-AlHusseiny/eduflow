@@ -1,0 +1,16 @@
+{
+  "title": "Fit two trees and compare",
+  "prompt": "Fit two decision trees on the churn training data and see memorisation in numbers.\n\n1. Fit `shallow` (`max_depth=3`) and `deep` (no depth limit), both with `random_state=42`.\n2. Set `shallow_test` to the shallow tree's test accuracy, and `deep_train` / `deep_test` to the deep tree's training and test accuracy.\n3. Set `new_pred` to the shallow tree's prediction (0 or 1) for `new_customer`.",
+  "hints": [
+    "`fit` returns the model, so `DecisionTreeClassifier(...).fit(X_train, y_train)` works in one line.",
+    "`model.score(X, y)` returns accuracy for a classifier.",
+    "`predict` returns an array with one value per row; take element `[0]` for the single new customer."
+  ],
+  "explanation": "The deep tree scores 1.00 on the customers it trained on and 0.72 on new ones; the depth-3 tree scores 0.73 on new ones with a fraction of the rules. The training score of a flexible model tells you almost nothing. The new customer ordered 12 days ago and has six orders, so the shallow tree predicts 0 (stays).",
+  "checks": {
+    "fitted": "Both trees are fitted with the right depth settings",
+    "shallow-test": "shallow_test is the shallow tree's test accuracy",
+    "deep-scores": "deep_train and deep_test are the deep tree's scores",
+    "prediction": "new_pred is the shallow tree's prediction for new_customer"
+  }
+}

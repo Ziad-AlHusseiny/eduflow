@@ -1,0 +1,16 @@
+{
+  "title": "Format an expense line",
+  "prompt": "An expense arrived from a form with messy text. Build the string `line` so that it reads exactly `Coffee with Sam: $4.50 (food)`, then log it. Use the variables: trim `rawLabel` and capitalise its first letter, show `cents` as dollars with two decimals, and lowercase `category`. A template literal keeps this readable.\n",
+  "hints": [
+    "Start with `const trimmed = rawLabel.trim();` so the first character is the letter c, not a space.",
+    "`trimmed[0].toUpperCase() + trimmed.slice(1)` capitalises the first letter. `(cents / 100).toFixed(2)` gives `\"4.50\"`.",
+    "Put it together with backticks: `` `${label}: $${price} (${category.toLowerCase()})` ``."
+  ],
+  "explanation": "Each string method returns a new string, so the solution stores each step under its own name: `trimmed`, then `label`. Doing the trim first matters, because in the raw text index 0 is a space. `toFixed(2)` turns `4.5` into the text `\"4.50\"`, which is what people expect to see for money. The template literal then reads almost like the output itself; the first `$` in `$${price}` is a literal dollar sign and the second starts the insertion.\n",
+  "checks": {
+    "trimmed": "Starts with a capital C and has no stray spaces",
+    "price": "Shows the amount as $4.50",
+    "exact": "`line` is exactly \"Coffee with Sam: $4.50 (food)\"",
+    "logged": "Logs the line"
+  }
+}

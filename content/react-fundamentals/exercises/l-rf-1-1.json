@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["derive-in-render", "counter-variable", "read-dom", "derive-in-child"],
+  "correct": ["derive-in-render", "derive-in-child"]
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "text",
+  "code": "feat(projects): add tag filter to projects page\nfix: stop footer overlapping content on mobile\nUpdated stuff\ndocs: add setup steps to README\nfeat(contact): Added contact form, fixed nav and changed colors\nchore: update html-validate dev dependency\nfix(nav): close mobile menu when a link is clicked\nstyle projects grid spacing",
+  "bugLines": [
+    3,
+    5,
+    8
+  ]
+}

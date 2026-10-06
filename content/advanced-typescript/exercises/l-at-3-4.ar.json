@@ -1,0 +1,15 @@
+{
+  "title": "حدّد أنواع أسماء الأحداث وأنماط الروابط",
+  "prompt": "استخدم الـ template literal types لتحديد أنواع نصوص Cartwheel:\n\n- `CheckoutEvent`: `order.<status>` لكل `OrderStatus`، إضافة إلى `payment.<outcome>` لكل `PaymentOutcome`.\n- `FlagEnvVar`: `CHECKOUT_` متبوعة بكل `Feature` بأحرف كبيرة.\n- `PathParams<P>`: أسماء كل `:param` في نمط المسار (`never` حين لا يوجد أيٌّ منها).\n\nثم نفّذ `buildPath(pattern, params)` وقت التشغيل: استبدل كل `:param` بقيمته من `params`، مرمّزة للروابط بـ `encodeURIComponent`.",
+  "hints": [
+    "`` `order.${OrderStatus}` `` يتوسّع إلى نص واحد لكل حالة. و`Uppercase<Feature>` تعمل داخل العنصر النائب.",
+    "لـ `PathParams` حالتان: معامل يليه `/` ومزيد من المسار (التقطه وعاوِد على الباقي)، أو معامل في النهاية تمامًا.",
+    "وقت التشغيل، تزور `pattern.replace(/:(\\w+)/g, (_, name) => …)` كل اسم معامل. عامل `params` في الداخل كـ `Record<string, string | number>` بتحويل واحد مشروح بتعليق."
+  ],
+  "explanation": "الـ union داخل الـ template literal يتوسّع إلى نص واحد لكل عضو، فتُشتقّ عائلتا الأحداث كلتاهما من الـ unions الموجودة. وتحوّل `Uppercase` كل اسم ميزة. أما `PathParams` فتطابق المسار بالأنماط: تلتقط `infer Param` النص الذي بعد النقطتين حتى أول `/`، ويعالج الاستدعاء التعاودي بقية المسار؛ ويلتقط الفرع الأخير المعامل الذي في النهاية. ثم يجعل `Record<PathParams<P>, …>` كل معامل مفتاحًا إلزاميًا في `params`، فيكون `lineId` الناقص خطأ ترجمة لا طلبًا إلى `/orders/1042/lines/undefined`.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها كل اختبارات الأنواع",
+    "builds": "`buildPath` تملأ كل معامل وتترك المسارات الخالية من المعاملات كما هي",
+    "encodes": "قيم المعاملات مرمّزة للروابط"
+  }
+}

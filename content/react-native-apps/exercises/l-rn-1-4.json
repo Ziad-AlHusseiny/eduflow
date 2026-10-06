@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Turn what a hiker types into whole minutes, or null if it isn't valid.\n// Accept: \"135\", \"2:15\", \"2h 15m\", \"2h15m\", \"1h\", \"45m\" (any case, extra spaces OK).\nfunction parseDurationMin(text) {\n  return Number(text);\n}\n\nconsole.log(parseDurationMin('2h 15m'));\n"
+  },
+  "solution": {
+    "js": "function parseDurationMin(text) {\n  const s = String(text).trim().toLowerCase();\n  let minutes = null;\n  let m;\n  if (/^\\d+$/.test(s)) {\n    minutes = Number(s);\n  } else if ((m = s.match(/^(\\d+):(\\d{2})$/))) {\n    if (Number(m[2]) < 60) minutes = Number(m[1]) * 60 + Number(m[2]);\n  } else if ((m = s.match(/^(?:(\\d+)\\s*h)?\\s*(?:(\\d+)\\s*m)?$/)) && (m[1] || m[2])) {\n    minutes = Number(m[1] ?? 0) * 60 + Number(m[2] ?? 0);\n  }\n  return minutes !== null && minutes > 0 ? minutes : null;\n}\n\nconsole.log(parseDurationMin('2h 15m'));\n"
+  },
+  "checks": [
+    {
+      "id": "plain-minutes",
+      "test": "return typeof parseDurationMin === 'function' && parseDurationMin(\"135\") === 135 && parseDurationMin(\" 90 \") === 90;"
+    },
+    {
+      "id": "clock-format",
+      "test": "return parseDurationMin(\"2:15\") === 135 && parseDurationMin(\"0:45\") === 45 && parseDurationMin(\"2:75\") === null;"
+    },
+    {
+      "id": "hours-minutes",
+      "test": "return parseDurationMin(\"2h 15m\") === 135 && parseDurationMin(\"2h15m\") === 135 && parseDurationMin(\"1H 5M\") === 65;"
+    },
+    {
+      "id": "single-unit",
+      "test": "return parseDurationMin(\"1h\") === 60 && parseDurationMin(\"45m\") === 45;"
+    },
+    {
+      "id": "rejects-bad",
+      "test": "return parseDurationMin(\"\") === null && parseDurationMin(\"abc\") === null && parseDurationMin(\"0\") === null && parseDurationMin(\"h\") === null;"
+    }
+  ]
+}

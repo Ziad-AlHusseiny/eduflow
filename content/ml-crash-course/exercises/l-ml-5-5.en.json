@@ -1,0 +1,17 @@
+{
+  "title": "Package the champion",
+  "prompt": "Get the champion ready to ship.\n\n1. `bundle`: a dict with `\"model\"` (the fitted pipeline), `\"features\"` (the feature list), `\"version\"` (any string) and `\"sklearn_version\"` (`sklearn.__version__`).\n2. Save `bundle` with `joblib.dump` into the in-memory `buffer`, rewind it, and load it back into `reloaded`.\n3. Finish `predict_churn(record, bundle)`: raise `ValueError` if any feature is missing, if `orders` is below 1, or if `mobile_share` is outside 0–1. Otherwise return the churn probability as a Python `float`, with columns in the bundle's feature order (the record's keys may come in any order).",
+  "hints": [
+    "`joblib.dump(bundle, buffer)`, then `buffer.seek(0)` before `joblib.load(buffer)`: loading reads from the current position.",
+    "Build `missing = [f for f in bundle[\"features\"] if f not in record]` and raise if it isn't empty.",
+    "`pd.DataFrame([record])[bundle[\"features\"]]` fixes the column order; wrap the result of `predict_proba(...)[0, 1]` in `float()`."
+  ],
+  "explanation": "The bundle carries everything a production job needs: the pipeline with its fitted scaler, the column order, a version to log with every prediction, and the library version to pin. Reloading gives identical predictions. The guard turns bad input into an explicit error instead of a plausible-looking probability, and selecting `bundle[\"features\"]` makes the column order independent of how the caller built the record. In a real service the buffer would be a file in a trusted model store.",
+  "checks": {
+    "bundle": "bundle holds model, features, version and sklearn_version",
+    "reloaded": "reloaded predicts exactly like the original",
+    "predicts": "predict_churn returns the right float, whatever the key order",
+    "missing": "A missing feature raises ValueError",
+    "ranges": "orders below 1 or mobile_share outside 0–1 raise ValueError"
+  }
+}

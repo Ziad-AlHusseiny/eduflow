@@ -1,0 +1,17 @@
+{
+  "title": "Build focus, toggle and disabled states in",
+  "prompt": "This toolbar hides keyboard focus and ignores its own states. Fix it in CSS and JS:\n\n1. Remove the `:focus { outline: none }` rule and add a `:focus-visible` ring: a solid outline using `--nw-focus-ring-width`, `--nw-focus-ring-color` and an `outline-offset` of `--nw-focus-ring-offset`.\n2. Make **Show only late** a real toggle: each click flips `aria-pressed` between `\"true\"` and `\"false\"`. When pressed, its background is `--nw-color-action-bg-subtle` and its border `--nw-color-action-bg`.\n3. **Save route** has `aria-disabled=\"true\"`: clicking it must not save, its text uses `--nw-color-text-disabled`, and its cursor is `not-allowed`.",
+  "hints": [
+    "Style states by their attributes: `.nw-button[aria-pressed=\"true\"]` and `.nw-button[aria-disabled=\"true\"]`. Override the component tokens inside them.",
+    "In the toggle's click handler, read `aria-pressed`, then set it to the opposite with `setAttribute('aria-pressed', String(!pressed))`.",
+    "At the top of the save handler, `return` early when `save.getAttribute('aria-disabled') === 'true'`."
+  ],
+  "explanation": "The ring now appears for keyboard focus via `:focus-visible` and comes from tokens, so every component and theme can share it. The toggle's look is driven by `aria-pressed`, so the visual state and the announced state can never disagree. `aria-disabled` keeps Save focusable so its `aria-describedby` explanation is reachable, which is why the click handler has to guard the action itself. In the real system, the Button component does all of this internally, and teams get it by default.",
+  "checks": {
+    "focus-visible-rule": "Focus styling uses `:focus-visible`, and no `:focus` rule removes the outline",
+    "ring": "Keyboard focus shows a 2px solid ring in the focus color with a 2px offset",
+    "toggle": "Clicking **Show only late** toggles `aria-pressed` and its pressed styling",
+    "blocked": "Clicking the `aria-disabled` Save button doesn't save",
+    "disabled-look": "Save uses the disabled text color and a `not-allowed` cursor"
+  }
+}

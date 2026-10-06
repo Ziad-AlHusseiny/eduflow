@@ -1,0 +1,20 @@
+{
+  "title": "رتّب الإصدار الأول من Trailhead",
+  "prompt": "اكتملت ميزات Trailhead 1.0.0 واختُبرت. رتّب خطوات إصداره الأول على الـ App Store وGoogle Play بالترتيب الذي ستنفّذها به.",
+  "hints": [
+    "لا تستطيع بناء أي شيء حتى يعرف التطبيق هويته الدائمة، ويعرف EAS الـ profiles الموجودة.",
+    "يرى المختبِرون build من نوع preview قبل أن يذهب أي شيء إلى المتاجر.",
+    "مراجعة المتجر تحدث بعد رفع الـ production build والتحقّق منه على هواتف حقيقية."
+  ],
+  "explanation": "الهوية أولًا لأنها دائمة، ثم ينشئ `eas build:configure` الـ profiles التي يستخدمها كل أمر لاحق. يتيح build المعاينة لمتنزّهين حقيقيين اكتشاف المشكلات قبل إشراك المتاجر. يُرفع الـ production build باستخدام `eas submit`، ويُتحقَّق منه مرة أخرى بوصفه build إصدار حقيقيًا عبر TestFlight أو المسار الداخلي، وعندها فقط يُرسَل للمراجعة مع اكتمال صفحة المتجر وتفاصيل الخصوصية والحساب التجريبي. والإطلاق هو الخطوة الأخيرة المقصودة: الموافقة لا تعني بالضرورة الإطلاق في تلك الدقيقة.",
+  "items": {
+    "set-identity": "اضبط `ios.bundleIdentifier` و`android.package` و`version` في app.json",
+    "configure": "شغّل `eas build:configure` لإنشاء eas.json مع الـ build profiles",
+    "preview": "اصنع build من نوع `preview` وشاركه مع بضعة متنزّهين عبر التوزيع الداخلي",
+    "production-build": "شغّل `eas build --platform all --profile production`",
+    "submit": "شغّل `eas submit` لرفع الـ builds إلى App Store Connect وGoogle Play",
+    "store-test": "ثبّت builds من TestFlight والمسار الداخلي على هواتف حقيقية وامشِ عبر المسارات الرئيسية",
+    "review": "أكمل صفحة المتجر وتفاصيل الخصوصية والحساب التجريبي، ثم أرسل للمراجعة",
+    "release": "أطلق الإصدار الموافق عليه للمستخدمين"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Find what axe can't",
+  "prompt": "This part of Ticketly passes an axe scan with **zero violations**. A screen reader user still runs into four real WCAG failures. Select the lines a human reviewer would flag. (`.section-title` is styled to look exactly like the other section headings, and `addToBasket()` writes \"Ticket added\" into `#basket-status`.)",
+  "hints": [
+    "axe checks that things exist. Look for things that exist but mean the wrong thing.",
+    "Compare what a sighted user sees with what the accessibility tree says, line by line.",
+    "One problem is about text, one about structure, one about dynamic updates, and one about voice control."
+  ],
+  "explanation": "**Line 3:** `alt=\"image\"` is present, so axe is satisfied, but it tells a screen reader user nothing (\"image, image\"). Describe the photo or, if it is decorative, use `alt=\"\"`.\n\n**Line 4:** the paragraph looks like a section heading but isn't one, so it is missing from heading navigation (1.3.1 Info and Relationships). Use `<h2>Tickets</h2>`.\n\n**Line 8:** `#basket-status` changes after each click, but it isn't a live region, so screen readers announce nothing (4.1.3 Status Messages). Add `role=\"status\"`.\n\n**Line 9:** the visible text is \"Reserve seats\" but the accessible name is \"Book\", so a voice control user saying \"click Reserve seats\" gets nothing (2.5.3 Label in Name). Remove the `aria-label`. axe has a rule for this, but it is experimental and off by default.\n\nThe other lines are fine: the input is labelled, the buttons and link have clear names.",
+  "checks": {}
+}

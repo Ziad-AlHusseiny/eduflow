@@ -1,0 +1,11 @@
+{
+  "title": "Stage on purpose",
+  "prompt": "Complete the session. You stage only part of `index.html` (the typo fix), check exactly what will be committed, commit it, then stage the nav work but take `styles.css` back out of the index without losing your edits.",
+  "hints": [
+    "Partial staging works hunk by hunk. The flag is short for patch.",
+    "Plain `git diff` shows unstaged changes. The flag you need compares the index with the last commit.",
+    "The same `git restore` command can either discard edits or unstage. Only one of those is safe here."
+  ],
+  "explanation": "`git add -p` walks through each hunk so you can stage the typo fix alone. `git diff --staged` (or `--cached`) shows the index against the last commit, which is exactly the next commit. `git restore --staged styles.css` copies the committed version into the index, unstaging the file while your edits stay in the working tree. Without `--staged`, `git restore` would have overwritten your file.",
+  "checks": {}
+}

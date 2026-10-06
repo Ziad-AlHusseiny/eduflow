@@ -1,0 +1,28 @@
+{
+  "title": "Struct or class: predict the output",
+  "prompt": "`Limit` is a struct and `Wallet` is a class. Read the snippet and predict the single line it prints.\n\n```swift\nimport Foundation\n\nstruct Limit {\n    var amount: Decimal\n}\n\nfinal class Wallet {\n    var balance: Decimal\n    init(balance: Decimal) { self.balance = balance }\n}\n\nvar food = Limit(amount: 300)\nvar fun = food\nfun.amount = 100\n\nlet mine = Wallet(balance: 500)\nlet shared = mine\nshared.balance -= 50\n\nprint(food.amount, fun.amount, mine.balance)\n```",
+  "hints": [
+    "Treat the two halves separately: first the struct, then the class.",
+    "After `var fun = food`, how many `Limit` values exist?",
+    "After `let shared = mine`, how many `Wallet` objects exist?"
+  ],
+  "explanation": "`var fun = food` copies the struct, so changing `fun.amount` to 100 leaves `food.amount` at 300. `let shared = mine` copies only the reference: there is still one `Wallet`, and subtracting 50 through `shared` is visible through `mine`. The output is `300 100 450`.\n\nNotice that `shared` is a `let` and the subtraction still compiled. `let` fixes which object `shared` points to, not the object's `var` properties.",
+  "options": {
+    "a": {
+      "text": "`100 100 450`",
+      "why": "This treats the struct like a class. `var fun = food` made a separate copy, so `food` keeps 300."
+    },
+    "b": {
+      "text": "`300 100 450`",
+      "why": "Correct. The struct copy is independent, and the two class references share one wallet."
+    },
+    "c": {
+      "text": "`300 100 500`",
+      "why": "This treats the class like a struct. `shared` and `mine` are the same object, so the 50 is gone from both."
+    },
+    "d": {
+      "text": "It doesn't compile: `shared` is a `let`.",
+      "why": "`let` freezes the reference, not the object's `var` properties, so `shared.balance -= 50` is legal."
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Number the releases",
+  "prompt": "Apply Northwind's versioning policy from the lesson. Each line is its own release starting from **4.7.2**. Write the full next version number for each one, such as `4.7.3`.",
+  "hints": [
+    "Ask of each change: does it fix, add, or break something in the public API (props, defaults, token names)?",
+    "A release takes the highest bump among its changes.",
+    "Token values may evolve within their role; token names are the contract."
+  ],
+  "explanation": "The focus fix restores documented behavior, so it's a patch (4.7.3). A new prop is a backward-compatible addition (4.8.0). Removing a token name breaks anyone still using it, and changing a default changes rendering without any code change, so both are majors (5.0.0). A release mixing a fix and a new component takes the higher bump, minor (4.8.0). A value refinement that keeps the token's name and role is a minor design update (4.8.0), shipped with a changelog note and visual diffs.",
+  "checks": {}
+}

@@ -1,0 +1,11 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# 1. Sign in with your console identity (short-term credentials)\naws {{0}} --profile lantern-admin\n\n# 2. Confirm which account and identity you are using\naws {{1}} get-caller-identity --profile lantern-admin\n\n# 3. List bucket names only, as plain text, in Lantern's Region\naws s3api list-buckets --profile lantern-admin \\\n  --{{2}} eu-west-1 \\\n  --query \"Buckets[].Name\" --output {{3}}",
+  "blanks": [
+    { "answers": ["login"] },
+    { "answers": ["sts"] },
+    { "answers": ["region"] },
+    { "answers": ["text"] }
+  ]
+}

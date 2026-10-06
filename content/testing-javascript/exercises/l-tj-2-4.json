@@ -1,0 +1,51 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "function formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  return `${sign}$${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;\n}\n\n// Sends a reminder to everyone who owes money (a negative balance).\n// - Calls sendReminder(name, message) once per debtor, with a message\n//   such as \"You owe $5.00 to the group\".\n// - Skips debts smaller than minimumCents (default 100, i.e. $1.00);\n//   a debt of exactly minimumCents IS reminded.\n// - People who are owed money or are settled up get nothing.\n// - If sendReminder throws for someone, logs\n//   console.warn(\"Could not remind <name>: <error message>\")\n//   and carries on with the others.\n// Returns the number of reminders that were sent successfully.\nfunction remindDebtors(balances, sendReminder, { minimumCents = 100 } = {}) {\n  let sent = 0;\n  for (const [name, cents] of Object.entries(balances)) {\n    if (cents >= 0 || -cents < minimumCents) continue;\n    try {\n      sendReminder(name, `You owe ${formatMoney(-cents)} to the group`);\n      sent += 1;\n    } catch (error) {\n      console.warn(`Could not remind ${name}: ${error.message}`);\n    }\n  }\n  return sent;\n}\n",
+  "mutants": [
+    {
+      "id": "reminds-creditors",
+      "code": "function formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  return `${sign}$${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;\n}\n\n// Sends a reminder to everyone who owes money (a negative balance).\n// - Calls sendReminder(name, message) once per debtor, with a message\n//   such as \"You owe $5.00 to the group\".\n// - Skips debts smaller than minimumCents (default 100, i.e. $1.00);\n//   a debt of exactly minimumCents IS reminded.\n// - People who are owed money or are settled up get nothing.\n// - If sendReminder throws for someone, logs\n//   console.warn(\"Could not remind <name>: <error message>\")\n//   and carries on with the others.\n// Returns the number of reminders that were sent successfully.\nfunction remindDebtors(balances, sendReminder, { minimumCents = 100 } = {}) {\n  let sent = 0;\n  for (const [name, cents] of Object.entries(balances)) {\n    if (cents === 0 || Math.abs(cents) < minimumCents) continue;\n    try {\n      sendReminder(name, `You owe ${formatMoney(-cents)} to the group`);\n      sent += 1;\n    } catch (error) {\n      console.warn(`Could not remind ${name}: ${error.message}`);\n    }\n  }\n  return sent;\n}\n"
+    },
+    {
+      "id": "swapped-args",
+      "code": "function formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  return `${sign}$${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;\n}\n\n// Sends a reminder to everyone who owes money (a negative balance).\n// - Calls sendReminder(name, message) once per debtor, with a message\n//   such as \"You owe $5.00 to the group\".\n// - Skips debts smaller than minimumCents (default 100, i.e. $1.00);\n//   a debt of exactly minimumCents IS reminded.\n// - People who are owed money or are settled up get nothing.\n// - If sendReminder throws for someone, logs\n//   console.warn(\"Could not remind <name>: <error message>\")\n//   and carries on with the others.\n// Returns the number of reminders that were sent successfully.\nfunction remindDebtors(balances, sendReminder, { minimumCents = 100 } = {}) {\n  let sent = 0;\n  for (const [name, cents] of Object.entries(balances)) {\n    if (cents >= 0 || -cents < minimumCents) continue;\n    try {\n      sendReminder(`You owe ${formatMoney(-cents)} to the group`, name);\n      sent += 1;\n    } catch (error) {\n      console.warn(`Could not remind ${name}: ${error.message}`);\n    }\n  }\n  return sent;\n}\n"
+    },
+    {
+      "id": "skips-exact-minimum",
+      "code": "function formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  return `${sign}$${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;\n}\n\n// Sends a reminder to everyone who owes money (a negative balance).\n// - Calls sendReminder(name, message) once per debtor, with a message\n//   such as \"You owe $5.00 to the group\".\n// - Skips debts smaller than minimumCents (default 100, i.e. $1.00);\n//   a debt of exactly minimumCents IS reminded.\n// - People who are owed money or are settled up get nothing.\n// - If sendReminder throws for someone, logs\n//   console.warn(\"Could not remind <name>: <error message>\")\n//   and carries on with the others.\n// Returns the number of reminders that were sent successfully.\nfunction remindDebtors(balances, sendReminder, { minimumCents = 100 } = {}) {\n  let sent = 0;\n  for (const [name, cents] of Object.entries(balances)) {\n    if (cents >= 0 || -cents <= minimumCents) continue;\n    try {\n      sendReminder(name, `You owe ${formatMoney(-cents)} to the group`);\n      sent += 1;\n    } catch (error) {\n      console.warn(`Could not remind ${name}: ${error.message}`);\n    }\n  }\n  return sent;\n}\n"
+    },
+    {
+      "id": "stops-on-failure",
+      "code": "function formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  return `${sign}$${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;\n}\n\n// Sends a reminder to everyone who owes money (a negative balance).\n// - Calls sendReminder(name, message) once per debtor, with a message\n//   such as \"You owe $5.00 to the group\".\n// - Skips debts smaller than minimumCents (default 100, i.e. $1.00);\n//   a debt of exactly minimumCents IS reminded.\n// - People who are owed money or are settled up get nothing.\n// - If sendReminder throws for someone, logs\n//   console.warn(\"Could not remind <name>: <error message>\")\n//   and carries on with the others.\n// Returns the number of reminders that were sent successfully.\nfunction remindDebtors(balances, sendReminder, { minimumCents = 100 } = {}) {\n  let sent = 0;\n  for (const [name, cents] of Object.entries(balances)) {\n    if (cents >= 0 || -cents < minimumCents) continue;\n    try {\n      sendReminder(name, `You owe ${formatMoney(-cents)} to the group`);\n      sent += 1;\n    } catch (error) {\n      throw error;\n    }\n  }\n  return sent;\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "describe('remindDebtors', () => {\n  let warn;\n\n  beforeEach(() => {\n    // Watch console.warn and keep the test output quiet.\n    warn = vi.spyOn(console, 'warn').mockImplementation(() => {});\n  });\n\n  afterEach(() => {\n    vi.restoreAllMocks(); // puts the real console.warn back\n  });\n\n  test('returns how many reminders were sent', () => {\n    const sendReminder = vi.fn();\n\n    const sent = remindDebtors({ Ana: 1500, Ben: -1500 }, sendReminder);\n\n    expect(sent).toBe(1);\n  });\n\n  // Add tests with vi.fn() and toHaveBeenCalledWith / toHaveBeenCalledTimes.\n});\n"
+  },
+  "solution": {
+    "js": "describe('remindDebtors', () => {\n  let warn;\n\n  beforeEach(() => {\n    warn = vi.spyOn(console, 'warn').mockImplementation(() => {});\n  });\n\n  afterEach(() => {\n    vi.restoreAllMocks(); // puts the real console.warn back\n  });\n\n  test('returns how many reminders were sent', () => {\n    const sendReminder = vi.fn();\n\n    const sent = remindDebtors({ Ana: 1500, Ben: -1500 }, sendReminder);\n\n    expect(sent).toBe(1);\n  });\n\n  test('reminds only debtors, with their name and the amount', () => {\n    const sendReminder = vi.fn();\n\n    remindDebtors({ Ana: 1500, Ben: -500, Cai: 0 }, sendReminder);\n\n    expect(sendReminder).toHaveBeenCalledTimes(1);\n    expect(sendReminder).toHaveBeenCalledWith('Ben', 'You owe $5.00 to the group');\n  });\n\n  test('reminds a debt of exactly the minimum, but not less', () => {\n    const sendReminder = vi.fn();\n\n    remindDebtors({ Ben: -100, Dee: -99, Ana: 199 }, sendReminder);\n\n    expect(sendReminder).toHaveBeenCalledTimes(1);\n    expect(sendReminder).toHaveBeenCalledWith('Ben', 'You owe $1.00 to the group');\n  });\n\n  test('warns and carries on when one reminder fails', () => {\n    const sendReminder = vi.fn().mockImplementation((name) => {\n      if (name === 'Ben') throw new Error('Mailbox full');\n    });\n\n    const sent = remindDebtors({ Ben: -500, Dee: -300, Ana: 800 }, sendReminder);\n\n    expect(sent).toBe(1);\n    expect(sendReminder).toHaveBeenCalledWith('Dee', 'You owe $3.00 to the group');\n    expect(warn).toHaveBeenCalledWith('Could not remind Ben: Mailbox full');\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-reminds-creditors",
+      "suite": "reminds-creditors"
+    },
+    {
+      "id": "catches-swapped-args",
+      "suite": "swapped-args"
+    },
+    {
+      "id": "catches-skips-exact-minimum",
+      "suite": "skips-exact-minimum"
+    },
+    {
+      "id": "catches-stops-on-failure",
+      "suite": "stops-on-failure"
+    }
+  ]
+}

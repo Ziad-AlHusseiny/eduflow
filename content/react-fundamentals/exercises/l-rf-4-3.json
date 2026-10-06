@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "build-preview",
+    "commit",
+    "push",
+    "import",
+    "deploy",
+    "branch-preview",
+    "merge"
+  ]
+}

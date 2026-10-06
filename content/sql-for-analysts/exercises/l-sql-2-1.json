@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Best-selling products: at least 130 units\nSELECT\n  product_id,\n  SUM(quantity) AS units,\n  ROUND(SUM(quantity * unit_price * (1 - discount)), 2) AS revenue\nFROM order_items\nORDER BY units DESC;",
+  "solution": "SELECT\n  product_id,\n  SUM(quantity) AS units,\n  ROUND(SUM(quantity * unit_price * (1 - discount)), 2) AS revenue\nFROM order_items\nGROUP BY product_id\nHAVING SUM(quantity) >= 130\nORDER BY units DESC, product_id;",
+  "orderMatters": false
+}

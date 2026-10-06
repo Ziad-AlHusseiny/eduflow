@@ -1,0 +1,11 @@
+{
+  "title": "Set up the frequency chips",
+  "prompt": "The New habit sheet has a row of frequency chips: **Daily**, **Weekdays**, **Weekends**, **Custom**. Each chip is a 16 × 16 icon followed by its label. From the developer's redline:\n\n- In each chip, the icon and label sit **4 px** apart and are centered on each other vertically.\n- The chip's content sits **12 px** from its left and right edges and **6 px** from its top and bottom edges.\n- The chips sit side by side, **8 px** apart.\n\nFill in the auto layout settings for one chip and for the row that holds all four. Use the names Figma shows (Vertical, Horizontal or Grid for flow; Top, Center or Bottom for alignment) and numbers in px.",
+  "hints": [
+    "Two frames are involved: each chip, and the row that contains the chips. Which one owns the 8 px?",
+    "Space between children is gap; space between the children and the frame edge is padding.",
+    "Chip: Horizontal, gap 4, padding 12 and 6, centered. Row: Horizontal, gap 8."
+  ],
+  "explanation": "Each chip is a **Horizontal** auto layout frame because the icon and label sit side by side. The 4 px between them is the chip's **gap**; the 12 px and 6 px around them are its **padding** (6 is off the spacing scale on purpose: with a 20 px label line it gives the chip an even 32 px height, the kind of written reason Lesson 2.3 asks for); and centering is the chip's alignment, set on the parent, not by nudging the icon. The 8 px between chips belongs to the parent row, another **Horizontal** frame with an **8** px gap. Putting each value on the frame that owns it means a developer can read it straight from Dev Mode, and a longer label like \"Weekends\" grows its chip without breaking the row.",
+  "checks": {}
+}

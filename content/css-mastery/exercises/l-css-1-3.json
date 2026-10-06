@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<section class=\"schedule\">\n  <article class=\"session-card\">\n    <h2>Container Queries in Production</h2>\n    <span class=\"badge\">Layout</span>\n    <span class=\"badge bg-accent\">Sold out</span>\n  </article>\n</section>",
+    "css": "/* reset */\n* { box-sizing: border-box; }\nh2 { margin: 0 0 0.5rem; }\n\n/* components */\n.schedule .session-card .badge {\n  display: inline-block;\n  padding: 0.2em 0.7em;\n  border-radius: 999px;\n  background: #ede9fe;\n  color: #5b21b6;\n}\n\n/* utilities: these should always win */\n.bg-accent { background: #fde68a; }\n"
+  },
+  "solution": {
+    "html": "<section class=\"schedule\">\n  <article class=\"session-card\">\n    <h2>Container Queries in Production</h2>\n    <span class=\"badge\">Layout</span>\n    <span class=\"badge bg-accent\">Sold out</span>\n  </article>\n</section>",
+    "css": "@layer reset, components, utilities;\n\n@layer reset {\n  * { box-sizing: border-box; }\n  h2 { margin: 0 0 0.5rem; }\n}\n\n@layer components {\n  .schedule .session-card .badge {\n    display: inline-block;\n    padding: 0.2em 0.7em;\n    border-radius: 999px;\n    background: #ede9fe;\n    color: #5b21b6;\n  }\n}\n\n@layer utilities {\n  .bg-accent { background: #fde68a; }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "utility-wins",
+      "test": "return style('.badge.bg-accent', 'background-color') === 'rgb(253, 230, 138)';"
+    },
+    {
+      "id": "component-kept",
+      "test": "const b = $$('.badge').find((el) => !el.classList.contains('bg-accent')); return style(b, 'background-color') === 'rgb(237, 233, 254)' && style(b, 'color') === 'rgb(91, 33, 182)';"
+    },
+    {
+      "id": "uses-layers",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); return all.some((r) => r instanceof CSSLayerBlockRule);"
+    },
+    {
+      "id": "selector-unchanged",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); return all.some((r) => r.selectorText === '.schedule .session-card .badge');"
+    },
+    {
+      "id": "no-important",
+      "test": "return ![...document.querySelectorAll('style')].some((s) => s.textContent.includes('!important'));"
+    }
+  ]
+}

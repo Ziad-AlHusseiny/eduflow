@@ -1,0 +1,17 @@
+{
+  "title": "Panel فيه slots",
+  "prompt": "يستخدم `App` الـ component المسمّى `Panel` بالطريقة التي يجب أن يعمل بها، لكن `Panel` يتجاهل معظم ما يُعطى له. عدّل **`Panel` فقط** بحيث:\n\n- يظهر ما يُمرَّر في `actions` داخل `<header>`، بعد `<h2>`؛\n- ويظهر ما يوضع بين وسمي `<Panel>` (أي `children`) داخل `<section>`، **بعد** `<header>` لا داخله.\n\nلوحة Watched ليس لها `actions`، لذا يجب ألّا تعرض أي زر.",
+  "hints": [
+    "فكّك propين إضافيين: `function Panel({ title, actions, children })`.",
+    "اعرض `{actions}` مباشرة بعد `<h2>`. وإذا كانت قيمته `undefined` فلن تعرض React شيئًا.",
+    "أضف `<div>{children}</div>` بعد وسم الإغلاق `</header>`."
+  ],
+  "explanation": "يصل الـ JSX المتداخل كـ `children`، ويحمل الـ prop المسمّى `actions` عنصرًا، فكلاهما مجرّد قيمة يضعها Panel في الـ markup الخاص به. يقرّر Panel *أين* توضع الأشياء، ويقرّر `App` *ما* هي. ولأن الـ prop الغائب قيمته `undefined`، و`undefined` لا تعرض شيئًا، يصبح الـ slot المسمّى actions اختياريًا من دون أي `if`.",
+  "checks": {
+    "two-panels": "لوحتان بالعنوانين \"To watch\" و\"Watched\"",
+    "children-first": "تعرض لوحة To watch عنصري القائمة الخاصين بها، خارج الترويسة",
+    "children-second": "تعرض لوحة Watched الفقرة الخاصة بها، خارج الترويسة",
+    "actions-slot": "يظهر زر Shuffle داخل ترويسة لوحة To watch",
+    "actions-optional": "لوحة Watched لا تحتوي على أي زر"
+  }
+}

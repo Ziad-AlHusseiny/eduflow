@@ -1,0 +1,43 @@
+{
+  "title": "Keep, or delete?",
+  "prompt": "You've inherited Splitwise-lite's test suite. CI takes 25 minutes and the team wants it faster without losing confidence. Select **every test you would delete** (or not write in the first place). Leave the ones that earn their place unselected.",
+  "hints": [
+    "For each test, ask: what plausible bug would make it fail? If the answer is \"only a refactor\" or \"only a bug in React\", it is a candidate.",
+    "Regression tests for real bugs and tests of money edge cases are rarely the ones to cut."
+  ],
+  "explanation": "Delete four. The whole-page snapshot fails on every markup tweak and teaches people to press \"update\" without reading. The `useState` test checks React, not Splitwise-lite. The constant test restates a line of code and can only fail when someone changes the value on purpose. The spy on a private helper fails on refactors and passes on real bugs. Keep the other four: the negative-amount format is a money edge case; the settle-up end-to-end test covers the flow where UI, API and logic meet; the regression test documents a bug that really shipped; and the 404 test covers error handling that users hit on bad links. To speed up CI, combine these deletions with sharding and moving duplicated end-to-end checks down to component tests.",
+  "options": {
+    "page-snapshot": {
+      "text": "`expect(container).toMatchSnapshot()` on the entire rendered group page (a 400-line snapshot).",
+      "why": "Delete. It fails on every harmless markup change and says nothing about which behaviour matters, so reviewers rubber-stamp updates."
+    },
+    "negative-format": {
+      "text": "`expect(formatMoney(-505)).toBe('-$5.05')`",
+      "why": "Keep. Negative amounts and padding are exactly where money formatting breaks, and the test runs in a millisecond."
+    },
+    "usestate": {
+      "text": "A test that renders a component, calls its `useState` setter through a test hook and checks the state changed.",
+      "why": "Delete. It tests React's own behaviour, which React's suite already covers; it can't fail because of your code."
+    },
+    "settle-e2e": {
+      "text": "A Playwright test: add an expense, click Settle up, expect \"Everyone is settled up\".",
+      "why": "Keep. It is the core flow, and only an end-to-end test checks that the UI, the API and the settle-up logic work together."
+    },
+    "constant": {
+      "text": "`expect(DEFAULT_CURRENCY).toBe('USD')`",
+      "why": "Delete. It restates the source. It only fails when someone changes the constant deliberately, and then it just needs updating too."
+    },
+    "private-spy": {
+      "text": "A test that spies on the internal `_sortDebtors` helper and asserts it was called exactly once by `settleUp`.",
+      "why": "Delete. It locks in an implementation detail: inlining or renaming the helper breaks it, while a wrong settlement would pass."
+    },
+    "regression": {
+      "text": "A regression test from last spring's bug report: `expect(parseAmount('12.5')).toBe(1250)`.",
+      "why": "Keep. This bug actually shipped once; the test makes sure it never returns silently."
+    },
+    "network-404": {
+      "text": "A test that `loadGroup` rejects with \"HTTP 404\" when the API answers 404.",
+      "why": "Keep. Error handling is where bugs hide, and broken or old links make 404s a real user path."
+    }
+  }
+}

@@ -1,0 +1,246 @@
+{
+  "intro": {
+    "en": "Six quick questions, about two minutes. We'll suggest a learning path and the first course to open. It's a starting point, not a verdict: every course stays open to you.",
+    "ar": "ستة أسئلة سريعة تستغرق نحو دقيقتين. سنقترح عليك مسار تعلّم وأول دورة تبدأ بها. إنها نقطة انطلاق لا حكم نهائي، فكل الدورات تبقى متاحة لك."
+  },
+  "questions": [
+    {
+      "id": "q-enjoy",
+      "q": { "en": "Which of these sounds most satisfying?", "ar": "أيّ هذه الأمور يمنحك أكبر قدر من الرضا؟" },
+      "options": [
+        {
+          "id": "enjoy-build",
+          "text": { "en": "Seeing a page I built work in the browser", "ar": "أن أرى صفحة بنيتها تعمل في المتصفّح" },
+          "weights": { "front-end-developer": 3, "mobile-developer": 1, "product-designer": 1 }
+        },
+        {
+          "id": "enjoy-answer",
+          "text": { "en": "Finding the number that explains what happened", "ar": "أن أجد الرقم الذي يفسّر ما حدث" },
+          "weights": { "data-analyst": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "enjoy-craft",
+          "text": { "en": "Making something look and feel right", "ar": "أن أجعل شيئًا ما يبدو صحيحًا ويُشعر المستخدم بالراحة" },
+          "weights": { "product-designer": 3, "front-end-developer": 1 }
+        },
+        {
+          "id": "enjoy-run",
+          "text": { "en": "Keeping a system running smoothly under load", "ar": "أن أُبقي نظامًا يعمل بسلاسة تحت الضغط" },
+          "weights": { "cloud-engineer": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "enjoy-predict",
+          "text": { "en": "Teaching a computer to make good predictions", "ar": "أن أعلّم الحاسوب كيف يتنبّأ بشكل صحيح" },
+          "weights": { "ml-engineer": 3, "data-analyst": 1 }
+        }
+      ]
+    },
+    {
+      "id": "q-goal",
+      "q": { "en": "What do you want to have six months from now?", "ar": "ما الذي تريد أن تصل إليه بعد ستة أشهر من الآن؟" },
+      "options": [
+        {
+          "id": "goal-web-job",
+          "text": { "en": "A portfolio of web apps and a front-end job", "ar": "مجموعة أعمال من تطبيقات الويب ووظيفة في الواجهات الأمامية" },
+          "weights": { "front-end-developer": 3, "mobile-developer": 1 }
+        },
+        {
+          "id": "goal-app",
+          "text": { "en": "An app of my own that people install on their phones", "ar": "تطبيق خاص بي يثبّته الناس على هواتفهم" },
+          "weights": { "mobile-developer": 3 }
+        },
+        {
+          "id": "goal-insight",
+          "text": { "en": "Analyses and reports my team relies on", "ar": "تحليلات وتقارير يعتمد عليها فريقي" },
+          "weights": { "data-analyst": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "goal-design",
+          "text": { "en": "A design portfolio with a real case study", "ar": "ملف أعمال في التصميم يضم دراسة حالة حقيقية" },
+          "weights": { "product-designer": 3 }
+        },
+        {
+          "id": "goal-systems",
+          "text": { "en": "Systems in production: cloud infrastructure or ML services", "ar": "أنظمة تعمل في بيئة الإنتاج: بنية سحابية أو خدمات تعلّم آلة" },
+          "weights": { "cloud-engineer": 2, "ml-engineer": 2 }
+        }
+      ]
+    },
+    {
+      "id": "q-experience",
+      "q": { "en": "How much have you worked with code or data before?", "ar": "ما مقدار خبرتك السابقة في البرمجة أو البيانات؟" },
+      "options": [
+        {
+          "id": "exp-none",
+          "text": { "en": "None yet, or only copied snippets", "ar": "لا شيء بعد، أو مجرد نسخ مقتطفات من الكود" },
+          "weights": { "product-designer": 2, "front-end-developer": 1, "data-analyst": 1 }
+        },
+        {
+          "id": "exp-web",
+          "text": { "en": "Some HTML, CSS or JavaScript", "ar": "بعض HTML أو CSS أو JavaScript" },
+          "weights": { "front-end-developer": 3, "mobile-developer": 2, "product-designer": 1 }
+        },
+        {
+          "id": "exp-spreadsheets",
+          "text": { "en": "Spreadsheets and formulas, maybe a little SQL", "ar": "جداول البيانات والمعادلات، وربما قليل من SQL" },
+          "weights": { "data-analyst": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "exp-python",
+          "text": { "en": "Comfortable in Python or another language", "ar": "مرتاح في Python أو لغة برمجة أخرى" },
+          "weights": { "ml-engineer": 3, "data-analyst": 1, "cloud-engineer": 1 }
+        },
+        {
+          "id": "exp-ops",
+          "text": { "en": "I use the command line and manage servers or deployments", "ar": "أستخدم سطر الأوامر وأدير خوادم أو عمليات نشر" },
+          "weights": { "cloud-engineer": 3, "ml-engineer": 1 }
+        }
+      ]
+    },
+    {
+      "id": "q-work",
+      "q": { "en": "Which problem would you rather spend an afternoon on?", "ar": "أيّ مشكلة تفضّل أن تقضي عليها فترة بعد الظهر؟" },
+      "options": [
+        {
+          "id": "work-visual",
+          "text": { "en": "Adjusting spacing, type and color until a screen feels calm", "ar": "ضبط المسافات والخطوط والألوان حتى تبدو الشاشة هادئة ومريحة" },
+          "weights": { "product-designer": 3, "front-end-developer": 1 }
+        },
+        {
+          "id": "work-logic",
+          "text": { "en": "Tracking down why a click updates the wrong thing", "ar": "تتبّع سبب تحديث نقرةٍ للعنصر الخطأ" },
+          "weights": { "front-end-developer": 3, "mobile-developer": 1 }
+        },
+        {
+          "id": "work-data",
+          "text": { "en": "Working out why sales dropped in March", "ar": "معرفة سبب انخفاض المبيعات في شهر مارس" },
+          "weights": { "data-analyst": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "work-infra",
+          "text": { "en": "Finding out why a deploy works on one server but not another", "ar": "اكتشاف سبب نجاح عملية deploy على خادم وفشلها على آخر" },
+          "weights": { "cloud-engineer": 3 }
+        },
+        {
+          "id": "work-model",
+          "text": { "en": "Tuning a model so it makes fewer wrong guesses", "ar": "ضبط model ليخطئ في تخميناته أقل" },
+          "weights": { "ml-engineer": 3, "data-analyst": 1 }
+        }
+      ]
+    },
+    {
+      "id": "q-platform",
+      "q": { "en": "Where do you want your work to live?", "ar": "أين تريد أن يعيش عملك؟" },
+      "options": [
+        {
+          "id": "platform-web",
+          "text": { "en": "In the browser, on any screen", "ar": "في المتصفّح، على أي شاشة" },
+          "weights": { "front-end-developer": 3, "product-designer": 1 }
+        },
+        {
+          "id": "platform-phone",
+          "text": { "en": "On phones, as an app people install", "ar": "على الهواتف، كتطبيق يثبّته الناس" },
+          "weights": { "mobile-developer": 3, "product-designer": 1 }
+        },
+        {
+          "id": "platform-reports",
+          "text": { "en": "In reports, dashboards and slide decks", "ar": "في التقارير ولوحات المتابعة والعروض التقديمية" },
+          "weights": { "data-analyst": 3 }
+        },
+        {
+          "id": "platform-cloud",
+          "text": { "en": "Behind the scenes, in the cloud", "ar": "خلف الكواليس، في السحابة" },
+          "weights": { "cloud-engineer": 3, "ml-engineer": 1 }
+        },
+        {
+          "id": "platform-features",
+          "text": { "en": "Inside products, as features that predict or recommend", "ar": "داخل المنتجات، كميزات تتنبّأ أو تقترح" },
+          "weights": { "ml-engineer": 3 }
+        }
+      ]
+    },
+    {
+      "id": "q-time",
+      "q": { "en": "How much time can you give each week?", "ar": "كم من الوقت تستطيع أن تخصّص أسبوعيًا؟" },
+      "options": [
+        {
+          "id": "time-short",
+          "text": { "en": "Under 3 hours", "ar": "أقل من 3 ساعات" },
+          "weights": { "cloud-engineer": 2, "data-analyst": 2, "product-designer": 1 }
+        },
+        {
+          "id": "time-medium",
+          "text": { "en": "3 to 6 hours", "ar": "من 3 إلى 6 ساعات" },
+          "weights": { "product-designer": 2, "data-analyst": 1, "mobile-developer": 1, "ml-engineer": 1 }
+        },
+        {
+          "id": "time-long",
+          "text": { "en": "More than 6 hours", "ar": "أكثر من 6 ساعات" },
+          "weights": { "front-end-developer": 2, "mobile-developer": 2, "ml-engineer": 2 }
+        }
+      ]
+    }
+  ],
+  "results": {
+    "front-end-developer": {
+      "why": {
+        "en": "You like seeing your work run in a browser and chasing down why it behaves the way it does, which is most of a front-end developer's day.",
+        "ar": "تحب أن ترى عملك يعمل في المتصفّح وأن تتعقّب سبب تصرّفه بطريقة معيّنة، وهذا معظم يوم مطوّر الواجهات الأمامية."
+      },
+      "firstStep": {
+        "en": "Open Git & GitHub and make your first commit tonight; every course after it builds on that habit.",
+        "ar": "افتح دورة Git & GitHub وأنشئ أول commit لك الليلة؛ فكل دورة بعدها تبني على هذه العادة."
+      }
+    },
+    "data-analyst": {
+      "why": {
+        "en": "You want answers more than tools, and you already think in rows, columns and the question behind them.",
+        "ar": "يهمّك الوصول إلى الإجابات أكثر من الأدوات، وأنت تفكّر بالفعل في صفوف وأعمدة وفي السؤال الذي يقف خلفها."
+      },
+      "firstStep": {
+        "en": "Start SQL for Analysts and query the Cartwheel store database from the first section.",
+        "ar": "ابدأ دورة SQL for Analysts واكتب queries على قاعدة بيانات متجر Cartwheel منذ القسم الأول."
+      }
+    },
+    "product-designer": {
+      "why": {
+        "en": "You notice when spacing, type or flow feels off, and you want to be the person who fixes it before anyone writes code.",
+        "ar": "تلاحظ متى تكون المسافات أو الخطوط أو تسلسل الخطوات غير مريحة، وتريد أن تكون من يصلح ذلك قبل أن يكتب أحد سطر كود."
+      },
+      "firstStep": {
+        "en": "Open UI Design with Figma and set up your first frame; the course is free and needs only a free Figma account.",
+        "ar": "افتح دورة UI Design with Figma وجهّز أول frame لك؛ الدورة مجانية ولا تحتاج إلا إلى حساب Figma مجاني."
+      }
+    },
+    "mobile-developer": {
+      "why": {
+        "en": "You want to build things people carry in their pocket, and you're happy to learn the web foundations that get you there fastest.",
+        "ar": "تريد أن تبني أشياء يحملها الناس في جيوبهم، ولا تمانع تعلّم أساسيات الويب التي توصلك إلى ذلك بأسرع طريق."
+      },
+      "firstStep": {
+        "en": "Start with Git & GitHub so your first app is versioned from its first line, then move straight on to JavaScript Fundamentals.",
+        "ar": "ابدأ بدورة Git & GitHub حتى يُحفظ تطبيقك الأول بنسخه منذ سطره الأول، ثم انتقل مباشرة إلى JavaScript Fundamentals."
+      }
+    },
+    "cloud-engineer": {
+      "why": {
+        "en": "You care about what happens after the code is written: where it runs, who can reach it, and why it fell over at 3 a.m.",
+        "ar": "يهمّك ما يحدث بعد كتابة الكود: أين يعمل، ومن يستطيع الوصول إليه، ولماذا توقّف في الثالثة فجرًا."
+      },
+      "firstStep": {
+        "en": "Start with Git & GitHub, then open AWS Cloud Foundations, which is free and begins with how IAM decides who can do what.",
+        "ar": "ابدأ بدورة Git & GitHub، ثم افتح AWS Cloud Foundations، وهي مجانية وتبدأ بكيفية تحديد IAM لمن يحق له فعل ماذا."
+      }
+    },
+    "ml-engineer": {
+      "why": {
+        "en": "You're comfortable with code and curious about prediction, and you want models that run in real products, not only in a notebook.",
+        "ar": "أنت مرتاح مع الكود وفضولي تجاه التنبؤ، وتريد نماذج تعمل داخل منتجات حقيقية، لا في دفتر تحليل فقط."
+      },
+      "firstStep": {
+        "en": "Open Python for Data Analysis; it's free, and clean data is where every good model starts.",
+        "ar": "افتح دورة Python for Data Analysis؛ فهي مجانية، والبيانات النظيفة هي نقطة بداية كل model جيد."
+      }
+    }
+  }
+}

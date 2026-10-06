@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "dockerfile",
+  "code": "# syntax=docker/dockerfile:1\nFROM node:24-slim\nRUN mkdir /app\nRUN cd /app\nCOPY . .\nRUN npm ci\nRUN npm run build\nEXPOSE 3000\nCMD npm start",
+  "bugLines": [4, 9]
+}

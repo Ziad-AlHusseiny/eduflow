@@ -1,0 +1,399 @@
+customer_id,country,segment,tenure_days,orders,total_spent,avg_order_value,days_since_last_order,used_coupon,support_tickets,avg_satisfaction,mobile_share,churned
+3,United Kingdom,consumer,611,1,50.4,50.4,11,0,1,2,0,1
+4,United Kingdom,consumer,473,1,378,378,394,0,2,,0,0
+5,United Kingdom,consumer,214,4,543.38,135.84,38,1,2,4,0.25,0
+6,United States,small_business,149,1,124.95,124.95,77,0,0,,0,0
+7,United States,enterprise,492,4,1913.7,478.42,256,1,4,4.5,0.75,1
+8,United Kingdom,consumer,295,2,193.2,96.6,122,0,0,,0.5,0
+11,Saudi Arabia,consumer,381,1,437,437,311,0,2,4,0,1
+12,Canada,consumer,88,1,371.7,371.7,30,0,1,3,1,1
+16,Saudi Arabia,consumer,64,1,134.4,134.4,29,0,1,,1,0
+17,Germany,consumer,313,1,527,527,253,0,0,,0,1
+18,United Kingdom,consumer,133,3,850.5,283.5,52,0,2,3,0,1
+19,Germany,consumer,629,1,158,158,313,0,2,5,1,1
+23,United States,consumer,421,2,399.65,199.83,156,0,1,5,0,1
+24,Saudi Arabia,consumer,634,3,731,243.67,267,0,1,,0,1
+26,Saudi Arabia,small_business,523,1,129,129,428,0,0,,0,1
+30,United Kingdom,small_business,522,1,449,449,312,0,0,,1,1
+31,Saudi Arabia,consumer,351,2,311.12,155.56,54,1,1,4,1,1
+33,Canada,consumer,590,9,1440.21,160.02,19,1,5,4,0.67,0
+35,United Kingdom,consumer,391,3,216.6,72.2,63,1,0,,0.33,1
+36,Egypt,small_business,197,8,3711.75,463.97,20,0,6,3.25,0.5,0
+37,United Kingdom,consumer,531,1,89.25,89.25,309,1,1,3,0,1
+38,Germany,consumer,536,5,1135.8,227.16,96,0,2,4,0.6,1
+40,Saudi Arabia,consumer,353,3,673.15,224.38,45,1,2,4,0,1
+42,United Arab Emirates,small_business,147,3,1295.02,431.67,64,1,0,,0.33,0
+43,United Arab Emirates,consumer,570,5,1063,212.6,309,0,0,,0.6,1
+45,Egypt,consumer,274,4,185.06,46.27,25,1,1,4,0,0
+46,Saudi Arabia,consumer,606,2,380.85,190.43,108,0,0,,0.5,1
+47,United Kingdom,consumer,555,2,129,64.5,329,0,3,2,0,1
+49,United Kingdom,consumer,422,2,169.05,84.53,192,0,2,,0.5,1
+50,United Kingdom,consumer,433,2,238.2,119.1,68,0,0,,0.5,0
+51,United States,consumer,316,2,1106.7,553.35,179,0,0,,0.5,0
+52,Egypt,consumer,174,2,178.5,89.25,81,0,1,4,0.5,0
+53,United States,enterprise,604,7,1312,187.43,316,0,4,3,0.43,1
+54,Germany,consumer,168,2,208.43,104.21,24,1,1,,0.5,0
+55,United Arab Emirates,consumer,534,1,223,223,526,0,0,,0,1
+56,United States,consumer,320,1,51.45,51.45,153,0,0,,1,1
+57,Jordan,consumer,615,3,923,307.67,494,0,0,,1,1
+58,Germany,consumer,180,1,93.45,93.45,36,0,1,4,1,1
+60,United Arab Emirates,consumer,491,2,269.7,134.85,11,0,0,,0,1
+61,United Kingdom,consumer,217,1,105,105,80,0,1,3,0,0
+67,Germany,small_business,604,7,1066.9,152.41,60,1,4,4,0.14,0
+68,United States,consumer,626,12,1685.5,140.46,276,1,2,5,0.33,1
+69,United Kingdom,consumer,525,4,765.45,191.36,28,0,0,,0,0
+70,United States,small_business,527,2,493.5,246.75,105,0,1,5,0.5,1
+71,United Kingdom,small_business,597,15,1735.2,115.68,325,1,12,4,0.13,1
+72,United Kingdom,consumer,409,2,463,231.5,307,0,0,,0.5,1
+74,United Kingdom,consumer,533,1,193.5,193.5,305,1,0,,0,1
+75,Egypt,consumer,124,2,421.05,210.53,54,0,4,3.33,0,1
+76,Canada,consumer,446,1,28,28,261,0,1,,0,1
+77,Germany,small_business,392,3,607.65,202.55,186,0,2,3,0.33,0
+78,Jordan,consumer,585,4,762.15,190.54,163,1,1,2,0.25,1
+79,United Arab Emirates,consumer,289,3,404.25,134.75,47,0,1,4,0.67,1
+80,Saudi Arabia,consumer,617,2,138,69,398,0,1,3,0,1
+81,United States,small_business,500,3,918,306,232,0,2,,0.33,0
+83,Jordan,consumer,501,8,1700.23,212.53,23,1,3,3.67,0.25,0
+84,Germany,consumer,582,1,45,45,369,0,1,,0,1
+85,Germany,consumer,486,4,646.9,161.73,100,1,0,,0.25,0
+86,Egypt,consumer,137,4,654.15,163.54,24,1,1,,0.25,0
+88,United States,consumer,164,1,44.1,44.1,159,0,0,,1,1
+89,United States,consumer,630,7,2281,325.86,302,1,3,3,0.43,1
+91,Germany,consumer,231,1,40.95,40.95,62,0,1,,1,1
+92,United Kingdom,consumer,343,4,1123.74,280.94,74,1,1,4,0.25,0
+93,Jordan,consumer,576,3,534,178,262,0,3,4,0.67,1
+94,United Arab Emirates,consumer,300,5,2462.35,492.47,48,0,2,3,0.6,0
+95,United Kingdom,consumer,159,4,696.15,174.04,19,1,2,4,0.5,0
+96,Egypt,consumer,352,2,642,321,277,0,1,3,0.5,0
+97,Canada,small_business,112,1,304.5,304.5,47,0,2,2,0,0
+98,United States,consumer,250,1,333.9,333.9,206,0,0,,1,1
+101,Saudi Arabia,consumer,417,10,963.25,96.33,28,1,3,4.5,0.3,0
+103,Egypt,consumer,65,1,267.75,267.75,50,0,0,,0,1
+105,Jordan,consumer,318,2,143,71.5,247,0,1,,0,1
+106,Egypt,consumer,315,3,459,153,252,1,2,4,0.33,1
+107,Jordan,small_business,532,3,188.9,62.97,170,1,0,,0,0
+108,Germany,consumer,567,2,445,222.5,335,1,1,4,0,1
+109,United States,consumer,267,1,190.05,190.05,120,0,2,4,0,1
+110,United Arab Emirates,consumer,543,6,893.3,148.88,17,1,3,4.5,0.33,0
+111,United Kingdom,consumer,626,3,916.3,305.43,186,1,1,4,0,1
+112,Saudi Arabia,consumer,198,8,2011.85,251.48,26,1,4,4.5,0.25,0
+114,United States,consumer,392,1,23.1,23.1,127,0,0,,0,1
+115,United Arab Emirates,consumer,638,1,78,78,307,0,0,,0,0
+119,Germany,consumer,633,12,3356.27,279.69,25,1,2,3,0.33,0
+120,Germany,consumer,405,2,209.6,104.8,167,0,0,,0.5,1
+121,United States,consumer,267,2,328.54,164.27,15,1,0,,1,0
+123,Egypt,consumer,278,1,23.1,23.1,7,0,0,,1,1
+124,United Arab Emirates,consumer,569,7,1175.45,167.92,29,1,5,2,0.14,0
+125,United Kingdom,consumer,60,1,46.2,46.2,50,1,0,,1,1
+126,Canada,consumer,447,3,1049.1,349.7,233,1,0,,0.67,0
+127,Egypt,enterprise,442,3,810.7,270.23,399,1,1,2,0.67,1
+129,Egypt,consumer,226,12,2342.08,195.17,58,1,7,4,0.33,0
+131,Canada,consumer,330,2,309.2,154.6,107,0,0,,0.5,0
+132,Saudi Arabia,consumer,616,5,1684.75,336.95,308,1,5,4,0.2,1
+133,Saudi Arabia,consumer,270,1,1343.63,1343.63,94,1,1,,0,1
+134,Saudi Arabia,small_business,313,2,785.2,392.6,37,0,2,3,0,0
+136,United States,consumer,584,9,1596.96,177.44,20,1,3,5,0.11,0
+139,United Kingdom,consumer,187,8,1786.05,223.26,32,0,3,4,0.38,0
+140,United States,small_business,638,4,654.8,163.7,210,1,3,3.5,0.25,0
+141,United States,consumer,413,2,66.15,33.08,5,0,0,,0,0
+143,Egypt,consumer,600,1,129,129,454,0,0,,1,1
+146,Egypt,consumer,287,3,388.35,129.45,1,0,0,,0.67,0
+147,Saudi Arabia,consumer,336,9,1791.05,199.01,26,0,4,3.5,0.44,0
+148,Canada,consumer,159,4,403.2,100.8,19,1,2,3.5,0.5,0
+149,Germany,consumer,93,5,832.81,166.56,11,1,0,,0.4,0
+151,United Arab Emirates,consumer,23,2,274.05,137.03,14,0,2,,0.5,0
+152,Saudi Arabia,consumer,73,2,541.8,270.9,2,0,2,,0.5,0
+155,Canada,consumer,442,7,852.3,121.76,118,1,4,2.75,0.43,1
+157,United States,small_business,420,2,213.6,106.8,168,0,0,,0,1
+160,Saudi Arabia,consumer,279,3,446.75,148.92,35,1,1,2,0.33,0
+161,Saudi Arabia,consumer,621,6,826,137.67,481,0,4,4.67,0.5,1
+162,United Kingdom,consumer,203,5,1228.13,245.63,23,1,4,3,0.6,0
+164,Germany,consumer,162,1,131.25,131.25,144,0,1,3,0,0
+165,Canada,consumer,273,11,2170.15,197.29,76,0,5,4,0.36,0
+167,Germany,consumer,522,1,98,98,307,0,1,4,0,1
+168,United States,consumer,443,4,632,158,315,0,3,4,0,1
+169,United Kingdom,consumer,61,1,54.6,54.6,15,0,0,,0,1
+170,Germany,enterprise,491,2,728.7,364.35,89,0,0,,0.5,1
+173,Germany,small_business,291,1,44.1,44.1,177,1,0,,0,0
+174,United States,consumer,420,1,40.5,40.5,278,1,0,,1,1
+177,United Arab Emirates,small_business,512,5,915.1,183.02,425,1,4,3.5,0.4,1
+179,Saudi Arabia,consumer,582,2,535.35,267.68,195,0,0,,0,1
+180,Canada,consumer,160,1,35.7,35.7,87,0,0,,0,0
+181,Saudi Arabia,consumer,610,1,208.25,208.25,317,1,1,,0,1
+182,United Arab Emirates,enterprise,268,7,1661.4,237.34,32,1,2,3.5,0.29,1
+183,United States,consumer,137,2,347.55,173.77,79,0,1,,0,1
+184,United Kingdom,consumer,294,1,796,796,254,0,0,,0,1
+185,Germany,small_business,435,8,2396.5,299.56,7,1,4,3,0.5,0
+187,Egypt,consumer,637,1,381,381,577,0,0,,1,1
+188,Egypt,consumer,526,1,29.25,29.25,306,1,0,,0,1
+189,United States,consumer,608,1,34.2,34.2,347,1,0,,0,0
+194,Canada,consumer,610,1,159,159,293,0,1,2,0,1
+196,United Arab Emirates,consumer,611,1,138,138,447,0,0,,0,1
+197,Canada,consumer,459,5,1605.35,321.07,90,1,2,4,0.2,0
+199,Saudi Arabia,consumer,353,1,490.35,490.35,89,0,1,5,1,1
+201,United Arab Emirates,consumer,467,9,3589.5,398.83,322,1,0,,0.11,1
+204,Saudi Arabia,consumer,512,13,3503.5,269.5,209,1,10,4.11,0.38,0
+206,Jordan,consumer,631,6,1474.6,245.77,3,1,3,4.67,0.5,0
+207,United States,consumer,189,10,3133.67,313.37,48,1,4,4.5,0.4,0
+210,Egypt,consumer,140,2,222.6,111.3,52,0,3,3.5,1,0
+211,Egypt,enterprise,336,1,30.45,30.45,53,0,2,4.5,0,1
+212,United States,enterprise,196,2,134.4,67.2,26,0,1,,0,1
+213,Saudi Arabia,consumer,507,5,1733.9,346.78,69,0,1,,0.2,0
+215,United Arab Emirates,consumer,474,5,1489.4,297.88,27,0,1,4,0,1
+216,Germany,consumer,31,1,166.95,166.95,16,0,1,4,0,0
+217,United States,consumer,318,4,687.75,171.94,10,0,0,,0,0
+220,Jordan,consumer,137,1,40.95,40.95,98,0,0,,0,1
+221,United Arab Emirates,consumer,436,1,42,42,379,0,0,,1,1
+222,Canada,consumer,580,1,416,416,572,0,0,,1,1
+223,Germany,consumer,181,3,282.45,94.15,114,0,4,3.67,0.67,0
+225,Germany,small_business,617,1,97.65,97.65,187,0,1,5,0,1
+226,United Kingdom,consumer,631,1,303.45,303.45,20,1,0,,0,1
+227,United Kingdom,consumer,256,3,897.65,299.22,203,1,2,3,0,1
+228,United States,consumer,587,8,1413,176.63,319,1,2,4,0.25,1
+230,Saudi Arabia,consumer,243,2,307.65,153.83,185,0,1,3,0,1
+232,Saudi Arabia,consumer,265,2,524.65,262.33,29,0,0,,0.5,0
+233,United Arab Emirates,consumer,611,5,1259,251.8,265,0,0,,0.2,1
+234,United Arab Emirates,consumer,624,4,772.94,193.23,113,1,2,4,0.25,0
+237,Egypt,consumer,187,1,111.3,111.3,186,0,1,2,0,1
+238,Egypt,consumer,294,3,338.35,112.78,11,0,2,3.5,0.33,0
+239,Saudi Arabia,consumer,583,1,183,183,303,1,0,,1,1
+241,Egypt,consumer,610,1,38,38,591,0,0,,1,1
+242,Canada,consumer,186,1,93.45,93.45,134,0,0,,1,1
+243,Germany,small_business,482,5,1297.95,259.59,165,1,7,3.8,0.2,0
+245,United States,consumer,494,1,331.8,331.8,24,0,0,,0,1
+246,United Arab Emirates,consumer,293,1,480.17,480.17,41,1,1,4,0,1
+248,United States,consumer,171,1,30.45,30.45,48,0,0,,0,1
+249,Germany,small_business,219,7,1336.65,190.95,22,1,3,4,0.14,0
+250,United Arab Emirates,consumer,378,2,471.9,235.95,87,0,1,5,1,1
+253,Canada,consumer,402,1,157,157,272,0,0,,1,1
+254,Canada,consumer,186,5,673.05,134.61,110,0,1,5,0.6,1
+255,Saudi Arabia,consumer,79,2,174.09,87.05,6,1,0,,0.5,0
+256,United Kingdom,consumer,542,9,2216.34,246.26,58,1,4,4.33,0.22,0
+257,Egypt,enterprise,409,2,1651.11,825.56,93,1,0,,0,1
+258,United Arab Emirates,consumer,591,1,33.6,33.6,19,0,0,,0,1
+259,United States,consumer,244,1,127.05,127.05,167,0,1,5,0,1
+261,Saudi Arabia,consumer,368,8,1767.55,220.94,79,1,2,,0.13,1
+262,Egypt,consumer,247,1,323.4,323.4,181,0,1,,0,1
+263,Canada,small_business,235,2,641.55,320.77,56,0,2,4,0,1
+264,Germany,consumer,213,9,2304.33,256.04,9,1,2,,0.33,0
+265,Egypt,consumer,591,1,138,138,317,0,0,,0,1
+266,United Kingdom,consumer,282,12,1255.45,104.62,220,1,7,3.6,0.58,0
+268,Jordan,consumer,346,1,443.1,443.1,121,0,0,,0,1
+269,Canada,consumer,509,7,783.45,111.92,21,0,7,4.67,0.43,0
+272,United States,consumer,370,2,961,480.5,234,0,1,,0.5,0
+273,United States,consumer,625,1,658,658,313,0,0,,1,1
+275,United States,consumer,465,3,1709,569.67,290,0,2,4,0,0
+277,United States,consumer,426,8,1876.38,234.55,22,1,3,4.5,0.13,0
+278,United Arab Emirates,consumer,530,1,505,505,509,0,1,2,0,1
+280,United Arab Emirates,enterprise,42,4,1381.8,345.45,14,0,7,4,0.25,0
+281,Egypt,consumer,215,1,56.7,56.7,42,0,0,,0,1
+282,United States,small_business,34,1,344.14,344.14,2,1,0,,1,1
+284,United States,consumer,526,3,661.5,220.5,5,0,3,3.33,0.67,0
+288,United Arab Emirates,consumer,342,1,261.45,261.45,1,0,0,,1,1
+290,United Kingdom,consumer,398,7,1737,248.14,263,0,6,4.4,0.57,1
+292,Germany,consumer,328,1,67.2,67.2,85,0,0,,0,1
+295,United Arab Emirates,consumer,404,12,3109.86,259.15,2,1,5,3,0.17,0
+297,Saudi Arabia,consumer,110,1,94.5,94.5,62,0,0,,0,1
+299,United States,consumer,234,1,46.2,46.2,3,0,0,,0,0
+300,Egypt,consumer,410,1,758,758,325,0,0,,0,1
+301,Saudi Arabia,consumer,588,2,504,252,214,0,2,3,0,1
+303,Canada,consumer,322,1,80,80,238,0,0,,1,1
+304,Egypt,consumer,128,2,150.15,75.08,107,0,0,,0.5,1
+305,Egypt,consumer,393,2,569.75,284.88,256,1,2,3.5,0.5,1
+306,United Kingdom,consumer,472,5,1393.55,278.71,1,1,2,4,0.2,0
+309,Egypt,consumer,161,2,1445.85,722.93,87,0,1,3,0.5,1
+312,United States,small_business,633,7,580.65,82.95,31,1,5,3,0.14,0
+313,United States,consumer,434,4,1318.75,329.69,1,1,5,5,0,1
+314,Egypt,consumer,259,1,187.95,187.95,170,0,0,,0,1
+317,Canada,consumer,297,1,439.95,439.95,58,0,0,,0,1
+318,United States,consumer,515,1,141,141,425,0,1,,1,1
+319,United Kingdom,consumer,563,7,1986.65,283.81,17,1,3,3.33,0.29,0
+320,Germany,consumer,317,2,607.58,303.79,17,1,1,,0.5,0
+321,Germany,consumer,520,2,544.3,272.15,85,0,2,4,0.5,0
+322,United Arab Emirates,small_business,534,3,459.6,153.2,89,0,0,,0.67,0
+324,Egypt,small_business,413,11,2910.13,264.56,134,1,4,3.75,0.36,0
+326,Saudi Arabia,consumer,219,5,991.73,198.35,20,1,2,5,0,0
+327,Egypt,consumer,363,4,807.25,201.81,24,0,2,3.5,0.5,0
+328,United Arab Emirates,consumer,548,6,975.61,162.6,35,1,1,2,0,0
+329,United States,consumer,119,6,1817.76,302.96,2,1,2,2,0.5,0
+331,United Kingdom,consumer,334,11,3806.08,346.01,39,1,7,3.67,0.18,0
+332,Germany,consumer,379,9,2756,306.22,260,1,7,3,0.56,1
+333,United Arab Emirates,small_business,605,2,1518.45,759.23,195,0,1,4,0.5,1
+334,United Kingdom,consumer,632,1,133.25,133.25,147,1,1,5,0,0
+335,Germany,consumer,414,6,1672.5,278.75,283,1,3,3.5,0.17,1
+336,Saudi Arabia,consumer,85,1,286.65,286.65,51,0,0,,1,0
+337,United Kingdom,small_business,251,4,971.3,242.83,17,0,3,3.67,0,0
+339,Germany,consumer,387,13,2091.05,160.85,58,1,5,4,0.15,0
+340,United Kingdom,small_business,413,2,357.26,178.63,146,1,0,,0.5,1
+342,United Kingdom,small_business,128,2,321.3,160.65,23,0,0,,0.5,1
+343,United States,consumer,79,1,148.05,148.05,66,0,0,,0,0
+344,United Kingdom,consumer,12,1,142.8,142.8,6,0,0,,1,0
+345,United Arab Emirates,consumer,101,1,60.9,60.9,8,0,1,,0,0
+346,Canada,small_business,594,1,616,616,561,0,1,,0,0
+349,Jordan,consumer,474,1,29,29,217,0,0,,0,1
+352,United States,consumer,624,1,49,49,310,0,0,,0,1
+353,United Kingdom,consumer,309,2,1326.15,663.08,16,0,2,3.5,0.5,1
+354,Jordan,small_business,489,1,152.25,152.25,165,0,0,,0,1
+355,Canada,consumer,446,3,245.65,81.88,99,0,0,,0.67,1
+356,Saudi Arabia,consumer,124,1,46.2,46.2,50,0,0,,0,0
+357,United Kingdom,consumer,623,4,1502,375.5,561,1,1,2,0.25,1
+359,United Arab Emirates,consumer,458,2,1619,809.5,352,0,1,,0.5,1
+361,United States,consumer,552,3,551,183.67,284,0,2,3,0,1
+362,United Kingdom,consumer,543,4,347.35,86.84,0,1,3,4,0.5,0
+363,Egypt,consumer,464,1,75.6,75.6,166,1,0,,0,1
+364,United Kingdom,enterprise,10,1,73.5,73.5,5,0,0,,1,0
+366,Germany,consumer,520,1,18,18,285,0,0,,0,1
+367,Egypt,consumer,332,1,835.8,835.8,66,0,1,5,0,1
+368,United States,consumer,480,3,319,106.33,423,0,1,3,0.33,1
+369,United Arab Emirates,small_business,68,1,667.8,667.8,35,0,0,,0,0
+370,United Arab Emirates,consumer,548,2,248.25,124.13,180,0,0,,0.5,1
+371,Saudi Arabia,consumer,553,1,171,171,482,0,0,,0,1
+373,Egypt,consumer,482,1,477,477,214,0,0,,0,1
+374,United Arab Emirates,consumer,150,1,211.05,211.05,147,1,0,,0,1
+375,Canada,consumer,380,10,2644.64,264.46,35,1,4,3.25,0.4,0
+376,United States,enterprise,586,1,59.85,59.85,579,1,0,,1,1
+377,United Kingdom,consumer,478,2,305,152.5,254,0,2,3,0.5,1
+381,United States,consumer,276,2,169.05,84.53,92,1,2,4,0.5,0
+382,Saudi Arabia,consumer,557,2,564.7,282.35,8,0,0,,0,1
+383,Germany,consumer,522,3,344.5,114.83,201,1,2,3,0.33,1
+384,United Arab Emirates,enterprise,43,1,28.35,28.35,36,0,1,5,0,0
+385,Germany,consumer,385,6,1370.55,228.43,122,0,4,3.67,0.33,0
+386,United Kingdom,small_business,85,5,2522.73,504.55,22,1,2,5,0.4,0
+387,United Arab Emirates,consumer,609,1,477.75,477.75,48,0,0,,1,1
+388,Germany,consumer,109,4,445.2,111.3,3,0,2,,0.75,0
+389,United Arab Emirates,consumer,601,5,1900.85,380.17,37,1,3,3,0.6,1
+391,Saudi Arabia,consumer,627,2,1120,560,313,0,2,3,1,0
+392,Saudi Arabia,consumer,638,3,520,173.33,276,0,0,,0.33,0
+393,Germany,consumer,593,3,566,188.67,304,1,1,3,0.67,1
+395,Saudi Arabia,consumer,415,1,297,297,323,0,0,,0,1
+396,United Kingdom,small_business,629,5,1304.8,260.96,457,1,2,4,0.6,1
+398,Saudi Arabia,consumer,240,2,203.75,101.88,83,1,1,,0,1
+400,Saudi Arabia,consumer,199,2,815.85,407.93,78,0,4,2,0.5,0
+402,Germany,consumer,389,6,453.5,75.58,176,1,3,4,0.5,0
+405,Germany,consumer,95,1,121.8,121.8,77,0,0,,0,0
+406,United Kingdom,consumer,571,2,544.6,272.3,166,1,1,,0.5,0
+407,Saudi Arabia,consumer,638,11,3140.25,285.48,128,1,11,3.88,0.36,0
+408,Canada,consumer,521,2,213,106.5,270,0,3,2,0.5,0
+409,Germany,consumer,73,2,519.75,259.88,48,0,2,3,0.5,0
+410,Saudi Arabia,consumer,619,5,1218,243.6,518,0,3,5,0.4,1
+411,Egypt,small_business,368,3,816.5,272.17,46,0,2,5,0.33,0
+413,Egypt,consumer,595,1,36.9,36.9,263,1,1,4,0,1
+416,United Arab Emirates,consumer,528,2,702,351,392,0,0,,1,1
+417,Germany,enterprise,563,15,3309.25,220.62,189,1,4,4,0.27,0
+418,United Arab Emirates,small_business,265,1,47.25,47.25,181,0,1,,0,0
+419,Saudi Arabia,consumer,548,9,2924.25,324.92,261,1,1,4,0.56,1
+420,United Arab Emirates,consumer,185,2,212.1,106.05,112,0,0,,0,0
+421,Canada,consumer,572,4,1750.05,437.51,21,0,1,4,0.25,1
+422,Egypt,consumer,628,1,835.8,835.8,65,0,0,,1,1
+426,Egypt,consumer,228,3,429.4,143.13,127,0,2,4.5,0,1
+428,Saudi Arabia,consumer,223,1,255.15,255.15,155,0,0,,0,1
+429,Canada,consumer,503,4,339.8,84.95,9,1,2,3,0.5,0
+435,United Arab Emirates,consumer,576,6,992.55,165.43,173,1,5,3.5,0.67,0
+437,Jordan,consumer,559,5,557.51,111.5,97,1,1,,0.4,0
+438,Germany,consumer,428,3,621.75,207.25,193,1,1,3,0.67,1
+439,United States,consumer,571,5,1118,223.6,292,0,3,3.5,0.2,1
+441,United Arab Emirates,consumer,480,4,230.65,57.66,256,1,3,4,0.25,1
+443,Saudi Arabia,consumer,588,2,79.9,39.95,315,1,0,,0.5,1
+445,United Kingdom,consumer,271,9,1121.04,124.56,46,1,3,4,0.44,0
+446,Saudi Arabia,consumer,243,2,718.2,359.1,30,0,0,,0.5,0
+447,United Kingdom,consumer,560,1,29,29,536,0,0,,0,0
+449,Jordan,small_business,546,3,706.5,235.5,318,1,3,4,0.33,1
+451,Saudi Arabia,consumer,614,7,1348.85,192.69,61,0,6,4.5,0.43,1
+452,Germany,enterprise,135,4,711.38,177.84,33,1,2,3,0,0
+453,Egypt,consumer,536,5,736.4,147.28,400,1,3,4.5,0.2,1
+454,Egypt,consumer,71,1,93.45,93.45,4,0,0,,1,1
+456,Jordan,consumer,79,2,186.9,93.45,31,0,0,,1,1
+458,Canada,enterprise,638,4,299.7,74.93,192,0,3,4.67,0.5,1
+459,Egypt,consumer,357,1,127.05,127.05,177,1,1,5,1,1
+460,Egypt,consumer,497,1,72,72,446,0,0,,0,1
+462,United Arab Emirates,consumer,211,12,2594.29,216.19,36,1,3,2,0.33,0
+464,Jordan,consumer,203,6,1578.15,263.03,29,1,4,3.5,0.67,0
+465,Canada,consumer,421,1,28.9,28.9,311,1,1,,1,1
+467,United Arab Emirates,small_business,600,10,2893,289.3,437,0,1,,0.4,1
+468,United Kingdom,consumer,321,1,24,24,305,1,0,,1,1
+469,United Kingdom,enterprise,534,1,848.61,848.61,109,1,0,,1,0
+470,United States,consumer,428,1,58,58,239,0,0,,0,1
+471,Germany,consumer,204,1,388.5,388.5,176,0,0,,1,1
+474,United Kingdom,small_business,616,1,378,378,458,0,1,5,1,1
+476,Egypt,enterprise,361,3,270.35,90.12,184,1,1,5,0.33,0
+477,Egypt,consumer,149,1,56.7,56.7,51,0,0,,0,0
+478,Saudi Arabia,enterprise,567,2,63,31.5,249,0,0,,1,0
+480,United Arab Emirates,consumer,433,7,1225.45,175.06,124,1,1,5,0.29,0
+481,United States,consumer,294,1,37.8,37.8,203,0,0,,0,0
+482,Canada,small_business,584,3,431,143.67,351,0,0,,0,1
+483,United Arab Emirates,consumer,37,1,357.1,357.1,15,1,0,,0,0
+484,United Kingdom,consumer,550,1,398,398,478,0,0,,1,1
+485,Canada,consumer,436,1,281.4,281.4,18,0,0,,1,0
+486,United Kingdom,consumer,126,5,1495.2,299.04,38,1,2,5,0.6,0
+487,United States,consumer,467,1,335,335,235,0,0,,1,0
+488,Canada,enterprise,603,3,201,67,483,0,1,,0.67,1
+489,United States,enterprise,199,12,3800.32,316.69,34,1,4,4,0.58,0
+490,Egypt,consumer,443,7,824.85,117.84,135,1,4,4,0.29,1
+492,United States,consumer,598,2,227,113.5,479,0,2,4,0,1
+493,Jordan,consumer,79,4,2702.44,675.61,46,1,1,3,0.5,0
+494,United States,small_business,341,1,89,89,293,0,0,,1,0
+495,Egypt,consumer,294,1,245.7,245.7,166,1,0,,0,1
+496,Saudi Arabia,enterprise,266,5,1198.45,239.69,6,0,0,,0.4,1
+497,Egypt,consumer,298,1,93.45,93.45,48,0,0,,1,0
+498,Germany,consumer,633,3,342.25,114.08,258,1,2,4.5,0.33,0
+499,Saudi Arabia,consumer,59,4,555.45,138.86,27,0,1,,0.75,0
+500,Canada,consumer,356,4,1386.75,346.69,41,0,4,3,0.25,0
+501,Saudi Arabia,consumer,61,2,153.3,76.65,14,1,1,5,0,0
+502,United Arab Emirates,small_business,169,6,826.14,137.69,18,1,1,3,0.33,0
+503,Canada,consumer,202,1,30.24,30.24,84,1,0,,0,1
+505,Germany,consumer,582,2,158.6,79.3,347,1,4,3,0,0
+506,Canada,consumer,507,4,342,85.5,249,0,1,5,0,1
+508,United Arab Emirates,consumer,453,3,1494,498,269,1,1,2,0.67,1
+510,Germany,consumer,473,1,213,213,217,0,1,3,0,0
+511,United Kingdom,consumer,437,11,2685.41,244.13,5,1,5,3.4,0.18,0
+513,Saudi Arabia,small_business,516,5,1263.6,252.72,314,1,2,5,0.4,1
+514,Egypt,enterprise,25,3,1666.35,555.45,0,0,0,,0,0
+516,Germany,consumer,353,1,49,49,238,0,0,,0,1
+517,Egypt,enterprise,632,3,378,126,544,0,4,4.33,0,1
+519,United Arab Emirates,small_business,89,1,299.25,299.25,58,0,2,5,0,1
+520,Egypt,consumer,394,2,917,458.5,321,0,1,3,0,1
+521,Egypt,consumer,220,2,375.85,187.92,16,1,1,5,0,0
+526,Canada,consumer,536,3,388.95,129.65,28,1,3,4.33,0.33,0
+530,United Arab Emirates,consumer,313,5,930,186,198,0,3,3,0.4,0
+534,United Arab Emirates,consumer,280,9,2024.4,224.93,198,1,3,4.5,0.33,0
+535,United States,consumer,206,1,154.35,154.35,46,0,0,,0,1
+536,Canada,small_business,622,1,117,117,511,0,0,,0,1
+538,Egypt,consumer,608,3,1028.5,342.83,40,1,1,,0.67,0
+539,Germany,consumer,275,1,44,44,260,0,1,4,0,1
+541,United Arab Emirates,consumer,477,11,2749.6,249.96,8,1,4,2.67,0.27,0
+542,Jordan,consumer,273,3,2201.01,733.67,11,1,2,3,0,1
+543,Saudi Arabia,consumer,72,2,1307.25,653.63,6,1,0,,0.5,0
+544,Germany,consumer,558,6,2254.6,375.77,39,0,0,,0.5,1
+547,Saudi Arabia,consumer,79,9,2559.79,284.42,8,1,4,4,0.33,0
+548,United States,consumer,636,1,99.45,99.45,314,1,0,,1,1
+549,Germany,consumer,79,5,1159.62,231.92,32,1,1,3,0.4,0
+550,Egypt,small_business,544,5,910,182,469,0,2,3,0.2,1
+551,Canada,consumer,516,2,555,277.5,320,0,1,,0,1
+553,Saudi Arabia,consumer,582,1,126,126,405,1,1,,0,1
+554,Saudi Arabia,consumer,82,1,93.45,93.45,26,0,1,,0,0
+558,Egypt,consumer,582,1,385,385,407,0,0,,0,1
+559,Germany,enterprise,319,1,103.95,103.95,56,0,1,4,0,1
+560,United Kingdom,consumer,501,5,868.05,173.61,81,1,0,,0.4,1
+561,Egypt,consumer,529,2,497.8,248.9,34,0,0,,0.5,0
+562,United Arab Emirates,consumer,307,1,207,207,269,0,0,,0,0
+563,United Kingdom,consumer,638,1,72,72,552,0,0,,1,1
+564,Egypt,consumer,546,1,239.4,239.4,181,0,0,,0,1
+565,Egypt,consumer,606,3,513,171,253,0,4,2,0.67,1
+567,United States,small_business,501,2,425.2,212.6,344,1,0,,0,1
+568,United States,consumer,532,8,1812.8,226.6,309,1,4,3.67,0.13,1
+572,United Kingdom,small_business,572,9,1842,204.67,478,0,4,3.5,0.33,1
+573,United Kingdom,consumer,614,2,335,167.5,414,0,0,,0.5,0
+575,United Arab Emirates,consumer,210,2,889.35,444.67,46,0,1,,0.5,0
+579,United States,consumer,95,2,351.75,175.88,3,0,0,,0.5,0
+581,United States,consumer,539,6,805,134.17,343,0,3,4,0.17,0
+582,United Arab Emirates,consumer,111,3,363.3,121.1,11,1,2,2,0.33,0
+583,United States,consumer,95,2,295.05,147.53,73,0,2,4,1,0
+585,Egypt,consumer,438,4,851.32,212.83,94,1,1,4,0.5,0
+586,United Kingdom,consumer,308,1,182.7,182.7,194,0,0,,0,1
+589,Egypt,consumer,449,1,658,658,395,0,2,,1,1
+590,Saudi Arabia,consumer,185,4,665.7,166.43,8,1,2,3,0,1
+592,United Arab Emirates,consumer,274,1,67.2,67.2,51,0,0,,1,1
+596,United States,consumer,72,1,327.92,327.92,68,1,0,,0,0
+597,United Kingdom,consumer,486,1,117,117,441,0,0,,0,1
+599,Egypt,consumer,469,2,881.8,440.9,142,0,0,,0,1
+600,Canada,consumer,354,4,812.9,203.23,93,0,0,,0.25,0

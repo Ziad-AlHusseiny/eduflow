@@ -1,0 +1,18 @@
+{
+  "title": "ارمِ ما يستطيع المستخدمون إصلاحه، وأعِد رمي الباقي",
+  "prompt": "1. أكمل `ValidationError` بحيث تكون قيمة `name` في الـ instances هي `\"ValidationError\"`، وتكون لها خاصية `field`.\n2. اجعل `parseAmount(text)` تُرجع سنتات صحيحة، أو ترمي `ValidationError` بالحقل `\"amount\"` حين يكون النص فارغًا، أو ليس رقمًا منتهيًا، أو ليس أكبر من 0.\n3. أصلح `tryAdd(list, label, amountText)`. مع الإدخال الصالح تُرجع `{ ok: true, list }` وقد أُضيف إليها المصروف الجديد (بتسمية مشذّبة، والمبلغ بالسنتات). والتسمية الفارغة ترمي `ValidationError` بالحقل `\"label\"`. وأخطاء التحقّق تتحوّل إلى `{ ok: false, field, message }`. **وأي خطأ آخر يجب أن يُعاد رميه**، لا أن يُبتلع.\n",
+  "hints": [
+    "في الـ constructor، بعد `super(message)`: `this.name = \"ValidationError\"; this.field = field;`.",
+    "`Number(\"\")` تساوي 0 و`Number(\"Infinity\")` تساوي Infinity، لذلك افحص `text.trim() === \"\"` و`Number.isFinite(dollars) && dollars > 0`.",
+    "في الـ `catch`: `if (error instanceof ValidationError) { return { ok: false, field: error.field, message: error.message }; } throw error;`."
+  ],
+  "explanation": "يرث `ValidationError` من `Error`، فيحتفظ برسالة وأثر مكدّس، ويضيف الحقل `field` الذي يحتاجه النموذج لوضع الرسالة. وترمي `parseAmount` خطأً بدلًا من إرجاع قيمة خاصة، فلا يستطيع المُستدعون معاملة مبلغ غير صالح على أنه رقم عن طريق الخطأ. وفي `tryAdd`، تفحص `catch` الشرط `instanceof ValidationError` ولا تحوّل إلى نتيجة ودودة إلا هذه الأخطاء؛ أما أي شيء آخر، مثل الـ `TypeError` الناتج عن نشر `null`، فهو خطأ برمجي في الكود المُستدعي، فيُعاد رميه كي يظهر في الـ console بدلًا من أن يختفي.\n",
+  "checks": {
+    "error-class": "`ValidationError` هو Error له name وfield",
+    "parse-ok": "`parseAmount` تُرجع سنتات صحيحة مع النص الصالح",
+    "parse-throws": "`parseAmount` ترمي ValidationError مع المدخلات الفارغة أو غير الرقمية أو الصفرية أو السالبة أو اللانهائية",
+    "try-add-ok": "`tryAdd` تضيف المصروف الصالح",
+    "try-add-invalid": "`tryAdd` تُرجع { ok: false, field, message } مع المدخلات غير الصالحة",
+    "rethrows": "`tryAdd` تعيد رمي الأخطاء التي ليست من نوع ValidationError"
+  }
+}

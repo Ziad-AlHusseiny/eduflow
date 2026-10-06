@@ -1,0 +1,17 @@
+{
+  "title": "What does the move really fix?",
+  "prompt": "Lantern's maintainers list five problems with their single server. Suppose they move to AWS with a better design: posters in Amazon S3 and the database on a managed service with automated backups, but the app still on **one** EC2 instance. Select every problem that this move actually solves.",
+  "hints": [
+    "Ask of each problem: is it caused by the hardware layout, or by the design and code?",
+    "A managed service changes who runs the storage and the backups. It changes nothing about how many app servers you have.",
+    "Two problems go away because the data no longer lives on one disk. The others need a different design or different habits."
+  ],
+  "explanation": "Moving posters to S3 removes the full-disk problem, because S3 grows without you provisioning space. Automated backups on a managed database are stored separately from the database server, so a dead disk no longer takes the backups with it. The traffic spike is still a one-instance problem until you add a CDN, more instances or serverless pieces. Bugs in the Node.js code move with the code. And costs only fall if someone watches them; the cloud makes over-spending easier, not harder.",
+  "options": {
+    "spike": { "text": "The site falls over when one event goes viral.", "why": "Not solved. The app still runs on one fixed-size instance. You fix this with caching at the edge, more capacity or serverless pieces, which section four builds." },
+    "disk": { "text": "Poster uploads fill the server's disk.", "why": "Solved. Amazon S3 has no disk to fill; you pay per gigabyte stored instead of provisioning space up front." },
+    "backups": { "text": "Database backups live on the same disk as the database.", "why": "Solved. A managed database's automated backups are kept apart from the instance, so losing the server does not lose the backups." },
+    "bugs": { "text": "A memory leak in the Node.js app needs a restart every few days.", "why": "Not solved. Your code comes with you. The cloud can restart things automatically, but the leak is still yours to fix." },
+    "costs": { "text": "Nobody knows what the hosting costs each month.", "why": "Not solved by moving. AWS bills are detailed but only useful if you set budgets and look at them, which lesson three sets up." }
+  }
+}

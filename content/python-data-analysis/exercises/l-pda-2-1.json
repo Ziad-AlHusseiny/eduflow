@@ -1,0 +1,28 @@
+{
+  "kind": "python",
+  "files": [],
+  "starter": "import pandas as pd\n\nmonths = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\",\n          \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"]\nvalues = [16167, 14906, 18208, 18817, 17428, 13933,\n          22968, 32042, 25514, 30339, 75334, 41153]\n\n# 1. A Series of the values, labelled by month\nrevenue = None\n\n# 2. Label of the best month\nbest_month = None\n\n# 3. Each month's share of the year (a Series that sums to 1)\nshare = None\n\n# 4. A DataFrame with columns name, unit_price, unit_cost for these products\n#    Cast Iron Skillet 26cm  39  17.45\n#    Burr Coffee Grinder    129  76.99\n#    2-Person Dome Tent     149  83.09\nproducts = None\n\n# 5. A Series: unit_price minus unit_cost for each product\nmargin = None\n",
+  "solution": "import pandas as pd\n\nmonths = [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\",\n          \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"]\nvalues = [16167, 14906, 18208, 18817, 17428, 13933,\n          22968, 32042, 25514, 30339, 75334, 41153]\n\nrevenue = pd.Series(values, index=months)\nbest_month = revenue.idxmax()\nshare = revenue / revenue.sum()\n\nproducts = pd.DataFrame({\n    \"name\": [\"Cast Iron Skillet 26cm\", \"Burr Coffee Grinder\", \"2-Person Dome Tent\"],\n    \"unit_price\": [39, 129, 149],\n    \"unit_cost\": [17.45, 76.99, 83.09],\n})\nmargin = products[\"unit_price\"] - products[\"unit_cost\"]\n",
+  "checks": [
+    {
+      "id": "series",
+      "test": "isinstance(revenue, pd.Series) and list(revenue.index) == months and int(revenue['Nov']) == 75334"
+    },
+    {
+      "id": "best-month",
+      "test": "best_month == 'Nov'"
+    },
+    {
+      "id": "share",
+      "test": "isinstance(share, pd.Series) and round(float(share.sum()), 6) == 1.0 and round(float(share['Nov']), 4) == 0.2305"
+    },
+    {
+      "id": "products",
+      "test": "isinstance(products, pd.DataFrame) and products.shape == (3, 3) and set(products.columns) == {'name', 'unit_price', 'unit_cost'}"
+    },
+    {
+      "id": "margin",
+      "test": "isinstance(margin, pd.Series) and [round(float(x), 2) for x in margin] == [21.55, 52.01, 65.91]"
+    }
+  ]
+}

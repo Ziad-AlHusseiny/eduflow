@@ -1,0 +1,8 @@
+{
+  "kind": "spot-bug",
+  "language": "swift",
+  "code": "import Foundation\n\nfinal class Tally {\n    var total: Decimal = 0\n}\n\nfunc totalOfAll(_ amounts: [Decimal]) async -> Decimal {\n    let tally = Tally()\n    await withTaskGroup(of: Void.self) { group in\n        for amount in amounts {\n            group.addTask { tally.total += amount }\n        }\n    }\n    return tally.total\n}",
+  "bugLines": [
+    11
+  ]
+}

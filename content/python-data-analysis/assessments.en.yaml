@@ -1,0 +1,433 @@
+checkpoints:
+  s-pda-1:
+    - q: |-
+        What does this print?
+        ```python
+        prices = {"Desk Mat XL": 29, "Laptop Stand": 49}
+        prices["Desk Mat XL"] = prices.get("Desk Mat XL", 0) + 1
+        print(len(prices), prices["Desk Mat XL"])
+        ```
+      options:
+        - text: "`2 30`"
+          why: Correct. The key already exists, so `.get()` returns 29, one is added, and the dictionary still has two keys.
+        - text: "`3 30`"
+          why: Assigning to an existing key updates it; it does not add a second entry with the same name.
+        - text: "`2 1`"
+          why: "`.get()` returns the stored value, 29, because the key exists. The default 0 is only used for missing keys."
+        - text: A `KeyError`
+          why: Every key the code reads with square brackets exists, and `.get()` never raises for a missing key anyway.
+      answer: 0
+    - q: |-
+        A colleague's function returns `3.3333333333333335` for `average([10, 20, 30])` instead of `20.0`. What is the bug?
+        ```python
+        def average(values):
+            total = 0
+            for v in values:
+                total += v
+                return total / len(values)
+        ```
+      options:
+        - text: "`total` should start at 1."
+          why: Starting at 1 would make every average slightly too high; it would not explain a result based on the first value only.
+        - text: "`len(values)` counts characters instead of items."
+          why: "`len` of a list counts its items, here 3."
+        - text: The `return` is indented inside the loop, so the function returns after adding the first value.
+          why: Correct. On the first pass `total` is 10, and the function immediately returns 10 / 3. Moving `return` back to the function's level fixes it.
+        - text: Python cannot divide integers, so it returns the first value.
+          why: Python divides integers with `/` and returns a float.
+      answer: 2
+    - q: "Which f-string prints `Share: 12.5%` when `share = 0.125`?"
+      options:
+        - text: '`f"Share: {share:.1f}%"`'
+          why: This formats 0.125 with one decimal, giving `0.1%`. The `f` spec does not multiply by 100.
+        - text: '`f"Share: {share:%}"`'
+          why: "The `%` spec multiplies by 100 but defaults to six decimals: `12.500000%`."
+        - text: '`f"Share: {share:,.2f}%"`'
+          why: "This prints `0.12%`: two decimals of the raw fraction."
+        - text: '`f"Share: {share:.1%}"`'
+          why: Correct. The `%` spec multiplies by 100 and adds the percent sign; `.1` keeps one decimal.
+      answer: 3
+    - q: "A loop over rows stops with `TypeError: unsupported operand type(s) for +: 'int' and 'str'` on the line `total = total + row[\"quantity\"]`. What is the most likely fix?"
+      options:
+        - text: Rename `total` to something else.
+          why: The name is fine; the error is about the types of the two values being added.
+        - text: 'Convert the quantity first: `total = total + int(row["quantity"])`.'
+          why: Correct. The quantity arrived as text, and Python never adds text to a number implicitly.
+        - text: Wrap the line in `try` / `except TypeError` and skip the row.
+          why: Every quantity arrived as text, so every row would be skipped and the total would stay 0, with no error to warn you.
+        - text: Start `total` at `""` instead of 0.
+          why: That would concatenate the quantities as text, giving something like `"121"` instead of a number.
+      answer: 1
+    - q: "`totals = [65.0, 18.0, 72.0]`. What does `[t > 50 for t in totals]` produce?"
+      options:
+        - text: "`[True, False, True]`"
+          why: Correct. The expression before `for` is a comparison, so each item becomes a boolean.
+        - text: "`[65.0, 72.0]`"
+          why: That is the filtering form, `[t for t in totals if t > 50]`, where the condition goes after the `for`.
+        - text: "`2`"
+          why: Counting needs `sum(t > 50 for t in totals)`; a list comprehension always builds a list.
+        - text: A `SyntaxError`
+          why: Any expression can go before `for`, including a comparison.
+      answer: 0
+  s-pda-2:
+    - q: 'After `orders = pd.read_csv("orders.csv")`, `orders["order_date"].dt.month` raises `AttributeError: Can only use .dt accessor with datetimelike values`. What is the fix?'
+      options:
+        - text: Use `orders["order_date"].month` instead.
+          why: Datetime parts on a column always go through `.dt`; without it you get another `AttributeError`.
+        - text: Sort the column first.
+          why: Sorting text dates does not change their type.
+        - text: Load with `parse_dates=["order_date"]` (or convert with `pd.to_datetime`) so the column is `datetime64`.
+          why: Correct. The column was read as text (`object`), and `.dt` only works on datetime columns.
+        - text: Drop the rows with missing dates.
+          why: There are no missing dates; the problem is the column's type.
+      answer: 2
+    - q: What does `products.loc[products["unit_price"] > 100, "name"]` return?
+      options:
+        - text: A DataFrame with every column for products above 100 dollars
+          why: Naming a single column after the comma returns just that column.
+        - text: A Series of the names of products priced above 100, indexed by their row labels
+          why: Correct. The mask picks the rows and `"name"` picks one column, so the result is a Series.
+        - text: "`True` or `False` for each product"
+          why: That is the mask itself, `products["unit_price"] > 100`, before it is used to select.
+        - text: The number of products priced above 100
+          why: Counting would need `.sum()` on the mask or `len()` on the result.
+      answer: 1
+    - q: Which line raises the price of active products by 5% and reliably updates `products` itself?
+      options:
+        - text: '`products[products["is_active"] == 1]["unit_price"] *= 1.05`'
+          why: "Chained assignment: the filter creates a new table, and the change is applied to that copy only."
+        - text: '`products["unit_price"][products["is_active"] == 1] *= 1.05`'
+          why: Also chained; under Copy-on-Write it never reaches `products`.
+        - text: "`products.unit_price * 1.05`"
+          why: This computes new prices for every product and throws the result away.
+        - text: '`products.loc[products["is_active"] == 1, "unit_price"] *= 1.05`'
+          why: Correct. One `.loc` call names the rows and the column, so the assignment happens on `products`.
+      answer: 3
+    - q: |-
+        What is the result of `s1 + s2`?
+        ```python
+        s1 = pd.Series([10, 20], index=["a", "b"])
+        s2 = pd.Series([1, 2], index=["b", "c"])
+        ```
+      options:
+        - text: "`a: NaN, b: 21, c: NaN`"
+          why: Correct. Values are matched by label; only `b` exists on both sides, and labels on one side only give `NaN`.
+        - text: "`a: 11, b: 22`"
+          why: That is position-based addition, which pandas does not do for Series with different labels.
+        - text: "`a: 10, b: 21, c: 2`"
+          why: Missing partners are not treated as zero; use `s1.add(s2, fill_value=0)` for that behaviour.
+        - text: A `ValueError` because the indexes differ
+          why: pandas aligns differing indexes instead of raising.
+      answer: 0
+    - q: You want every order from the web or the mobile app. Which filter is the clearest correct choice?
+      options:
+        - text: '`orders[orders["channel"] == "web" or orders["channel"] == "mobile_app"]`'
+          why: "`or` needs one True/False, so pandas raises `ValueError: The truth value of a Series is ambiguous`."
+        - text: '`orders[orders["channel"] == ["web", "mobile_app"]]`'
+          why: Comparing a column with a list does element-wise comparison against a list of a different length, which raises an error.
+        - text: '`orders[orders["channel"].isin(["web", "mobile_app"])]`'
+          why: Correct. `isin` checks each value against the list and reads exactly like the question.
+        - text: '`orders.loc["web":"mobile_app"]`'
+          why: That slices row labels, not channel values; the index here is the row number.
+      answer: 2
+  s-pda-3:
+    - q: A quantity column loads as `float64` and shows values like `1.0` and `2.0`. What explains it, and what keeps the column as whole numbers?
+      options:
+        - text: Some quantities are fractions; round them with `round()`.
+          why: Quantities here are whole numbers; the type comes from blanks, not fractions.
+        - text: Some cells are blank, classic `NaN` is a float, and `astype("Int64")` keeps integers with `<NA>` for the gaps.
+          why: Correct. The nullable `Int64` dtype was made for exactly this case.
+        - text: "`read_csv` always loads numbers as floats; use `astype(int)`."
+          why: Columns without gaps load as `int64`; and `astype(int)` fails while `NaN` values are present.
+        - text: The file is corrupted; reload it with `keep_default_na=False`.
+          why: That keeps blanks as empty strings, turning the whole column into text.
+      answer: 1
+    - q: '`pd.to_numeric(cleaned, errors="coerce")` produced 12 new `NaN` values. What should you do next?'
+      options:
+        - text: Use `fillna(0)` so totals are complete.
+          why: That turns 12 unknown values into real-looking zeros and understates revenue.
+        - text: Drop the 12 rows.
+          why: They may be real sales in an unexpected format; dropping them loses revenue without knowing why.
+        - text: Switch to `astype(float)`, which is stricter.
+          why: It would raise on the first bad value, which tells you less than listing them all.
+        - text: Print the original strings for those rows and extend the cleaning rule for each format you find.
+          why: Correct. Coercion is a way to find problem values, and the raw strings tell you what rule is missing.
+      answer: 3
+    - q: What does `pd.to_datetime(["03/04/2025", "15/04/2025"], format="%d/%m/%Y")` return?
+      options:
+        - text: 3 April 2025 and 15 April 2025
+          why: Correct. The format says day first, so both parse, and the explicit format removes any guessing.
+        - text: 4 March 2025 and an error
+          why: That would be the month-first reading, `%m/%d/%Y`, which fails on month 15.
+        - text: 4 March 2025 and 15 April 2025
+          why: With an explicit format every value is read the same way; pandas does not switch per value.
+        - text: Two `NaT` values
+          why: '`NaT` appears only with `errors="coerce"` for values that do not match; both values match.'
+      answer: 0
+    - q: Your cleaning function removes duplicates first and strips spaces from names afterwards. What can go wrong?
+      options:
+        - text: Nothing; the order of steps does not matter.
+          why: Duplicate detection compares exact values, so order matters.
+        - text: "`strip()` will remove letters from the names."
+          why: "`strip()` removes only leading and trailing whitespace."
+        - text: Copies that differ only by spaces (`"Ali Evans"` and `"Ali Evans "`) are not recognised as duplicates and both survive.
+          why: Correct. Clean the values first, then look for duplicates.
+        - text: "`drop_duplicates` will raise an error on text columns."
+          why: It works on any column type.
+      answer: 2
+    - q: After `df["country"] = df["country"].str.title()`, `nunique()` still reports 9 countries instead of 8. What is the most likely cause?
+      options:
+        - text: "`title()` does not work on capitals such as `EGYPT`."
+          why: '`"EGYPT".title()` gives `"Egypt"`; case is handled.'
+        - text: Some values have leading or trailing spaces, so `"  Egypt"` and `"Egypt"` are still different.
+          why: Correct. `str.strip()` must come before (or with) the case fix.
+        - text: "`nunique()` counts missing values as a country."
+          why: "`nunique()` ignores missing values by default."
+        - text: pandas caches the old values until the file is reloaded.
+          why: Assignment replaces the column immediately; nothing is cached.
+      answer: 1
+  s-pda-4:
+    - q: You left-merge `order_items` (3,991 rows) with `returns` on `order_item_id` with `indicator=True`. 198 rows are `both`. What do the `left_only` rows represent?
+      options:
+        - text: Returns that have no matching order line
+          why: Those would be `right_only`, and a left join never keeps them anyway.
+        - text: Order lines that were returned twice
+          why: A line returned twice would produce two `both` rows, not a `left_only` one.
+        - text: Rows the merge failed to process
+          why: Merges do not fail silently; `left_only` is a normal, meaningful outcome.
+        - text: The 3,793 order lines that were never returned
+          why: Correct. Every item stays, and those without a matching return are marked `left_only`.
+      answer: 3
+    - q: '`sales.pivot_table(index="channel", columns="year", values="revenue")` returns numbers far smaller than the revenue totals. Why?'
+      options:
+        - text: The default `aggfunc` is `"mean"`, so each cell is the average line revenue, not the sum.
+          why: Correct. Pass `aggfunc="sum"` for totals; always state the aggregation explicitly.
+        - text: pivot_table drops cancelled orders automatically.
+          why: It never filters by status; it only aggregates what it is given.
+        - text: The values are in thousands of dollars.
+          why: pandas never rescales values on its own.
+        - text: Rows with missing years were dropped.
+          why: Dropping a few rows could not shrink every cell this much, and there are no missing years.
+      answer: 0
+    - q: '`orders.resample("ME")["revenue"].sum()` raises `TypeError: Only valid with DatetimeIndex, TimedeltaIndex or PeriodIndex`. What is the fix?'
+      options:
+        - text: Use `"M"` instead of `"ME"`.
+          why: The alias is fine; `"M"` is the deprecated spelling and would hit the same error.
+        - text: Sort the orders by date first.
+          why: Sorting does not give the table a datetime index.
+        - text: Put the dates in the index with `set_index("order_date")`, or pass `on="order_date"` to `resample`.
+          why: Correct. resample needs to know which datetime values to bucket.
+        - text: Convert revenue to integers.
+          why: The error is about the index, not the values being summed.
+      answer: 2
+    - q: Merchandising wants products split into five groups with the same number of products in each, by price. Which call fits?
+      options:
+        - text: '`pd.cut(products["unit_price"], 5)`'
+          why: This makes five ranges of equal width; with a few expensive products, most items land in the first group.
+        - text: '`pd.qcut(products["unit_price"], 5)`'
+          why: Correct. `qcut` cuts at quantiles, so each group holds about a fifth of the products.
+        - text: '`products["unit_price"].rank(5)`'
+          why: "`rank` numbers rows; its first argument is not a number of groups."
+        - text: '`products.groupby("unit_price").ngroups`'
+          why: This counts distinct prices; it does not assign products to groups.
+      answer: 1
+    - q: Which call returns revenue per country with `country` as an ordinary column rather than the index?
+      options:
+        - text: '`sales.groupby("country")["revenue"].sum()`'
+          why: This returns a Series indexed by country.
+        - text: '`sales.groupby("country").sum("revenue")`'
+          why: This sums every numeric column and still indexes by country.
+        - text: '`sales.pivot(index="country", values="revenue")`'
+          why: "`pivot` needs a `columns` argument and never aggregates, so it fails here, and would still fail on repeated countries."
+        - text: '`sales.groupby("country", as_index=False)["revenue"].sum()`'
+          why: Correct. `as_index=False` keeps the group key as a column, ready for merging or exporting.
+      answer: 3
+  s-pda-5:
+    - q: Web sessions view a mean of 4.2 pages and a median of 3. A product manager asks for the "typical" session. What do you report?
+      options:
+        - text: 4.2 pages, because the mean uses every session
+          why: The mean is pulled up by a few long sessions, so it describes no typical visitor.
+        - text: Both numbers averaged, 3.6 pages
+          why: Averaging two statistics produces a number with no meaning.
+        - text: 3 pages, the median, ideally with a range such as the quartiles
+          why: Correct. In skewed data the median is the typical value, and quartiles show the spread.
+        - text: The maximum, to show what is possible
+          why: The maximum describes one extreme session, not a typical one.
+      answer: 2
+    - q: "`added_to_cart` and `purchased` have a correlation of 0.62 across sessions. Which conclusion is sound?"
+      options:
+        - text: Sessions that add to cart are much more likely to end in a purchase, which makes the cart a useful funnel step to track.
+          why: Correct. The correlation describes a strong association; a purchase normally requires a cart, so the pattern is expected.
+        - text: Adding to cart causes 62% of purchases.
+          why: A correlation coefficient is not a percentage of outcomes, and it says nothing about cause by itself.
+        - text: 62% of sessions add to cart.
+          why: That would be the mean of `added_to_cart`, a different number.
+        - text: The two columns are unrelated.
+          why: 0.62 indicates a fairly strong positive relationship.
+      answer: 0
+    - q: "Month A to month B: revenue +20%, orders +20%, average order value unchanged. What drove the growth?"
+      options:
+        - text: Bigger baskets
+          why: Average order value did not change, so basket size cannot explain anything here.
+        - text: Higher prices
+          why: Higher prices would show up as a higher average order value, which stayed flat.
+        - text: It cannot be determined without customer data.
+          why: The decomposition already answers it at this level; customer data would split it further.
+        - text: More orders at the same average size
+          why: Correct. Revenue = orders × average order value, and only orders moved.
+      answer: 3
+    - q: You need to show eight quarters of revenue so the board can compare their sizes. Which chart?
+      options:
+        - text: A pie chart with eight slices
+          why: Pies hide time order and make eight similar slices hard to compare.
+        - text: Vertical bars in time order, starting at zero
+          why: Correct. Bars compare amounts, time order shows the trend, and a zero baseline keeps lengths honest.
+        - text: A line chart with the y-axis starting at the smallest quarter
+          why: Zooming hides how big each quarter is; for comparing amounts, start at zero.
+        - text: A histogram of quarterly revenue
+          why: A histogram shows how values are distributed, losing which quarter is which.
+      answer: 1
+    - q: "Restart and Run All stops with `NameError: name 'clean_orders' is not defined`, although the notebook worked an hour ago. What happened?"
+      options:
+        - text: The cell defining `clean_orders` was deleted or moved below the cell that uses it; the function only existed in the old session.
+          why: Correct. Hidden state hid the problem; define functions before using them, or import them from a `.py` file.
+        - text: pandas was upgraded during the hour.
+          why: An upgrade would not make your own function name undefined.
+        - text: The CSV file was renamed.
+          why: A missing file raises `FileNotFoundError`, not `NameError`.
+        - text: Restart and Run All does not support functions.
+          why: It runs every cell in order, including function definitions.
+      answer: 0
+final:
+  - q: What does `sum(float(v.replace(",", "")) for v in ["1,234.50", "99.00"])` return?
+    options:
+      - text: '`"1,234.5099.00"`'
+        why: The values are converted to floats before summing, so no strings are joined.
+      - text: A `ValueError`
+        why: The commas are removed before `float()` sees the text, so both conversions succeed.
+      - text: "`1333.5`"
+        why: Correct. Each string is cleaned and converted, then the floats are added.
+      - text: "`1234.5`"
+        why: The generator covers both values, so 99.0 is added too.
+    answer: 2
+  - q: "`cancelled = orders[orders[\"status\"] == \"cancelled\"]` on Cartwheel's orders. What is `cancelled.shape`?"
+    options:
+      - text: "`(2066, 7)`"
+        why: A filter keeps only matching rows; the full table has 2,066.
+      - text: "`(105, 7)`"
+        why: Correct. 105 orders were cancelled, and filtering rows keeps all 7 columns.
+      - text: "`(105,)`"
+        why: That would be the shape of a Series; filtering a DataFrame returns a DataFrame.
+      - text: "`(7, 105)`"
+        why: Shape is always rows first, then columns.
+    answer: 1
+  - q: '`messy["total"].sum()` returns a long string instead of a number. Which first step diagnoses it?'
+    options:
+      - text: '`messy["total"].round(2)`'
+        why: Rounding text is not possible; it raises a `TypeError` rather than explaining anything.
+      - text: "`messy.drop_duplicates()`"
+        why: Duplicates change the size of a sum, not its type.
+      - text: '`messy["total"].fillna(0)`'
+        why: Filling blanks does not turn text into numbers.
+      - text: '`messy["total"].dtype` and a look at a few values, which reveal text such as `"$65.00"`'
+        why: Correct. An `object` dtype on a number column means some values contain non-numeric characters.
+    answer: 3
+  - q: Support tickets can reference an order, and one order can have several tickets. Which `validate` fits `orders.merge(tickets, on="order_id")`?
+    options:
+      - text: '`"one_to_many"`'
+        why: Correct. Each order id appears once in `orders` and possibly several times in `tickets`.
+      - text: '`"many_to_one"`'
+        why: That asserts the right-hand keys are unique; ticket order ids repeat, so it would raise `MergeError`.
+      - text: '`"one_to_one"`'
+        why: Ticket order ids repeat, so this raises.
+      - text: No validation is possible for this pair of tables.
+        why: Validation works for any merge; you choose the relationship you expect.
+    answer: 0
+  - q: You need the number of orders per customer, but only `order_items` (one row per line) is at hand. Which aggregation is right?
+    options:
+      - text: '`items.groupby("customer_id").size()`'
+        why: "`order_items` has no `customer_id`, and `size()` on lines would count lines, not orders."
+      - text: '`items.groupby("order_id").size()`'
+        why: This counts lines per order, not orders per customer.
+      - text: Merge `customer_id` from `orders`, then `groupby("customer_id")["order_id"].nunique()`
+        why: Correct. Distinct order ids per customer count orders, however many lines each has.
+      - text: '`items["order_id"].value_counts()`'
+        why: This is lines per order again.
+    answer: 2
+  - q: "`monthly` is revenue per month for 2024 and 2025. Which expression compares each month with the same month a year earlier?"
+    options:
+      - text: "`monthly.pct_change()`"
+        why: This compares each month with the one before it, mixing in seasonality.
+      - text: "`monthly.pct_change(12)`"
+        why: Correct. Twelve periods back is the same month last year.
+      - text: "`monthly.rolling(12).mean()`"
+        why: A rolling mean smooths the series; it does not compare periods.
+      - text: "`monthly.diff()`"
+        why: "`diff` gives month-on-month changes in dollars."
+    answer: 1
+  - q: What label does `pd.cut([100], bins=[0, 100, 200])` give to the value 100?
+    options:
+      - text: "`(100, 200]`"
+        why: Bins are closed on the right by default, so 100 belongs to the bin that ends at 100.
+      - text: "`NaN`"
+        why: 100 lies inside the edges, so it is labelled.
+      - text: "`[100, 200)`"
+        why: A left-closed bin like that needs `right=False`; the default closes bins on the right.
+      - text: "`(0, 100]`"
+        why: Correct. With the default `right=True`, each bin includes its right edge.
+    answer: 3
+  - q: One order of 50,000 dollars is added by mistake to a table of 2,000 normal orders. Which statistic barely changes?
+    options:
+      - text: The median
+        why: Correct. One extreme value moves the middle position by at most one row, so the median hardly moves.
+      - text: The mean
+        why: The mean rises by about 25 dollars, a large shift for a typical order of a few hundred.
+      - text: The standard deviation
+        why: A single extreme value inflates the standard deviation considerably.
+      - text: The maximum
+        why: The maximum jumps straight to the mistaken 50,000-dollar order.
+    answer: 0
+  - q: '`q4 = orders[in_q4]` followed by `q4["flag"] = True`. What happens to `orders` under Copy-on-Write?'
+    options:
+      - text: "`orders` gains a `flag` column with `True` for Q4 rows."
+        why: A filtered table behaves as a copy; changes to it never flow back.
+      - text: pandas raises an error because `q4` is a view.
+        why: Assigning a new column to `q4` is allowed; it just affects `q4` only.
+      - text: Nothing; only `q4` gets the new column.
+        why: Correct. To mark rows inside `orders`, use `orders.loc[in_q4, "flag"] = True`.
+      - text: "`orders` gets a `flag` column filled with `True` for every row."
+        why: Nothing is written to `orders` at all.
+    answer: 2
+  - q: '`df["order_date"].str.contains("2025")` works, but `df["order_date"].dt.year` fails. What does that tell you?'
+    options:
+      - text: The column holds datetimes with a time zone.
+        why: Datetime columns support `.dt.year`, with or without a time zone.
+      - text: The column is still text and needs `pd.to_datetime` before date operations.
+        why: Correct. `.str` working and `.dt` failing is the signature of dates stored as strings.
+      - text: The dates are ambiguous.
+        why: Ambiguity affects how text is parsed; it does not stop a datetime column from using `.dt`.
+      - text: The column has missing values.
+        why: Missing values become `NaT` in a datetime column and do not break `.dt`.
+    answer: 1
+  - q: A quarter's revenue rose 30%. Active customers rose 30%; orders per customer and average order value were flat. What is the best summary?
+    options:
+      - text: Customers spent more per order.
+        why: Average order value was flat.
+      - text: Customers ordered more often.
+        why: Orders per customer were flat.
+      - text: Prices went up.
+        why: Price rises would raise the average order value, which did not change.
+      - text: Growth came from having more active customers, each behaving as before.
+        why: Correct. Revenue = customers × orders per customer × average order value, and only customers moved.
+    answer: 3
+  - q: Which habit most protects a recurring monthly report from silently reporting wrong numbers when next month's export changes format?
+    options:
+      - text: A cleaning function ending in assertions about ids, dates, totals and allowed values
+        why: Correct. When the format changes, an assertion stops the run with a message instead of letting bad data reach the report.
+      - text: Rounding every number to whole dollars
+        why: Rounding hides small differences; it does not detect a broken input.
+      - text: Running the notebook cells in a different order each month
+        why: That makes results less reproducible, not more.
+      - text: Using `errors="coerce"` everywhere so nothing crashes
+        why: Coercion without checks turns format changes into silent `NaN`s, the exact failure you want to catch.
+    answer: 0

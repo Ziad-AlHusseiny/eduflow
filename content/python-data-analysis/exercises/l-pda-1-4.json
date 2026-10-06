@@ -1,0 +1,28 @@
+{
+  "kind": "python",
+  "files": [],
+  "starter": "orders = [\n    {\"order_id\": 2574, \"total\": 65.0, \"channel\": \"mobile app\", \"country\": \"Canada\"},\n    {\"order_id\": 2069, \"total\": 18.0, \"channel\": \"mobile app\", \"country\": \"United States\"},\n    {\"order_id\": 1200, \"total\": 33.0, \"channel\": \"mobile app\", \"country\": \"united kingdom\"},\n    {\"order_id\": 1809, \"total\": 35.0, \"channel\": \"web\", \"country\": \"United States\"},\n    {\"order_id\": 1434, \"total\": 72.0, \"channel\": None, \"country\": \"Saudi Arabia\"},\n    {\"order_id\": 2089, \"total\": 58.0, \"channel\": \"marketplace\", \"country\": \"UNITED KINGDOM\"},\n    {\"order_id\": 2490, \"total\": 89.0, \"channel\": \"web\", \"country\": \"United Arab Emirates\"},\n    {\"order_id\": 2985, \"total\": 24.0, \"channel\": \"web\", \"country\": \"United Kingdom\"},\n    {\"order_id\": 2544, \"total\": 58.0, \"channel\": \"mobile app\", \"country\": \"Jordan\"},\n    {\"order_id\": 2375, \"total\": 329.0, \"channel\": \"mobile app\", \"country\": \"United Kingdom\"},\n    {\"order_id\": 1129, \"total\": 29.0, \"channel\": \"web\", \"country\": \"United States\"},\n    {\"order_id\": 1176, \"total\": 44.0, \"channel\": \"web\", \"country\": \"United States\"},\n]\n# 1. Revenue per country, with country names cleaned by .strip().title()\nrevenue_by_country = {}\n\n# 2. order_id of every order with a total of 60 or more, in the original order\nlarge_ids = []\n\n# 3. How many orders came through the \"web\" channel\nweb_count = 0\n",
+  "solution": "orders = [\n    {\"order_id\": 2574, \"total\": 65.0, \"channel\": \"mobile app\", \"country\": \"Canada\"},\n    {\"order_id\": 2069, \"total\": 18.0, \"channel\": \"mobile app\", \"country\": \"United States\"},\n    {\"order_id\": 1200, \"total\": 33.0, \"channel\": \"mobile app\", \"country\": \"united kingdom\"},\n    {\"order_id\": 1809, \"total\": 35.0, \"channel\": \"web\", \"country\": \"United States\"},\n    {\"order_id\": 1434, \"total\": 72.0, \"channel\": None, \"country\": \"Saudi Arabia\"},\n    {\"order_id\": 2089, \"total\": 58.0, \"channel\": \"marketplace\", \"country\": \"UNITED KINGDOM\"},\n    {\"order_id\": 2490, \"total\": 89.0, \"channel\": \"web\", \"country\": \"United Arab Emirates\"},\n    {\"order_id\": 2985, \"total\": 24.0, \"channel\": \"web\", \"country\": \"United Kingdom\"},\n    {\"order_id\": 2544, \"total\": 58.0, \"channel\": \"mobile app\", \"country\": \"Jordan\"},\n    {\"order_id\": 2375, \"total\": 329.0, \"channel\": \"mobile app\", \"country\": \"United Kingdom\"},\n    {\"order_id\": 1129, \"total\": 29.0, \"channel\": \"web\", \"country\": \"United States\"},\n    {\"order_id\": 1176, \"total\": 44.0, \"channel\": \"web\", \"country\": \"United States\"},\n]\nrevenue_by_country = {}\nfor order in orders:\n    country = order[\"country\"].strip().title()\n    revenue_by_country[country] = revenue_by_country.get(country, 0) + order[\"total\"]\nlarge_ids = [o[\"order_id\"] for o in orders if o[\"total\"] >= 60]\nweb_count = 0\nfor o in orders:\n    if o[\"channel\"] == \"web\":\n        web_count += 1\n",
+  "checks": [
+    {
+      "id": "countries-clean",
+      "test": "sorted(revenue_by_country) == ['Canada', 'Jordan', 'Saudi Arabia', 'United Arab Emirates', 'United Kingdom', 'United States']"
+    },
+    {
+      "id": "uk-total",
+      "test": "round(revenue_by_country.get('United Kingdom', 0), 2) == 444.0"
+    },
+    {
+      "id": "all-revenue",
+      "test": "round(sum(revenue_by_country.values()), 2) == 854.0"
+    },
+    {
+      "id": "large-ids",
+      "test": "list(large_ids) == [2574, 1434, 2490, 2375]"
+    },
+    {
+      "id": "web-count",
+      "test": "web_count == 5"
+    }
+  ]
+}

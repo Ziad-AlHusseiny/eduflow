@@ -1,0 +1,15 @@
+{
+  "title": "Say hello to Pocket",
+  "prompt": "Write a two-line program. First log the text `Welcome to Pocket`. Then log the total of three expenses, `450`, `1200` and `899`, by letting JavaScript do the addition inside `console.log()`.\n",
+  "hints": [
+    "Text goes inside quotes, `\"like this\"`. Numbers do not need quotes.",
+    "You can put a whole calculation inside the parentheses, for example `console.log(1 + 2)`.",
+    "`console.log(450 + 1200 + 899);` prints the total."
+  ],
+  "explanation": "The engine runs your two statements in order. In the first, `\"Welcome to Pocket\"` is text, so it is printed as it is. In the second, JavaScript evaluates `450 + 1200 + 899` first, gets `2549`, and only then hands that single number to `console.log()`. Working out what is inside the parentheses before using it is a rule you will lean on in every lesson.\n",
+  "checks": {
+    "logs-welcome": "Logs \"Welcome to Pocket\"",
+    "logs-total": "Logs the total 2549",
+    "welcome-first": "Logs the welcome before the total"
+  }
+}

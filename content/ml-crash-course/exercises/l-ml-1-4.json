@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.neighbors import KNeighborsClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\n# 1. Majority-class baseline: test accuracy\ndummy_acc = None\n\n# 2. Rule baseline: churned if days_since_last_order > best_days.\n#    Pick best_days from range(30, 301, 10) using the TRAINING data only.\nbest_days = None\nrule_acc = None   # the rule's accuracy on the test data\n\n# 3. A k-nearest-neighbours model (default settings): test accuracy\nknn_acc = None\n",
+  "solution": "import pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.neighbors import KNeighborsClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ndummy_acc = DummyClassifier(strategy=\"most_frequent\").fit(X_train, y_train).score(X_test, y_test)\n\ndef rule_accuracy(days, X, y):\n    return ((X[\"days_since_last_order\"] > days).astype(int) == y).mean()\n\nbest_days = max(range(30, 301, 10), key=lambda d: rule_accuracy(d, X_train, y_train))\nrule_acc = rule_accuracy(best_days, X_test, y_test)\n\nknn_acc = KNeighborsClassifier().fit(X_train, y_train).score(X_test, y_test)\nprint(dummy_acc, best_days, rule_acc, knn_acc)\n",
+  "checks": [
+    {
+      "id": "dummy",
+      "test": "dummy_acc is not None and abs(float(dummy_acc) - 0.55) < 0.005"
+    },
+    {
+      "id": "best-days",
+      "test": "best_days in range(30, 301, 10) and abs(((X_train['days_since_last_order'] > best_days).astype(int) == y_train).mean() - max(((X_train['days_since_last_order'] > d).astype(int) == y_train).mean() for d in range(30, 301, 10))) < 1e-9"
+    },
+    {
+      "id": "rule-acc",
+      "test": "rule_acc is not None and abs(float(rule_acc) - ((X_test['days_since_last_order'] > best_days).astype(int) == y_test).mean()) < 1e-9"
+    },
+    {
+      "id": "knn",
+      "test": "knn_acc is not None and abs(float(knn_acc) - 0.72) < 0.005"
+    }
+  ]
+}

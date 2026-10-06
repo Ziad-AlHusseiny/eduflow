@@ -1,0 +1,29 @@
+{
+  "title": "Read the graph",
+  "prompt": "Here is the portfolio's history as a commit graph, the same shape `git log --oneline --graph --all` draws in text. Arrows point from each commit to its parent.\n\n:::figure The portfolio's commit graph\n<svg viewBox=\"0 0 640 230\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">Five commits. 1a2b and 3c4d in a row. From 3c4d, one line goes to 5e6f and another to 7a8b. Merge commit 9c0d has parents 5e6f and 7a8b. main and HEAD point to 9c0d; the label hero points to 7a8b.</title>\n  <circle class=\"d-box\" cx=\"50\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"50\" y=\"115\" text-anchor=\"middle\">1a2b</text>\n  <circle class=\"d-box\" cx=\"170\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"170\" y=\"115\" text-anchor=\"middle\">3c4d</text>\n  <circle class=\"d-box\" cx=\"300\" cy=\"55\" r=\"26\"/>\n  <text class=\"d-code\" x=\"300\" y=\"60\" text-anchor=\"middle\">5e6f</text>\n  <circle class=\"d-box\" cx=\"300\" cy=\"165\" r=\"26\"/>\n  <text class=\"d-code\" x=\"300\" y=\"170\" text-anchor=\"middle\">7a8b</text>\n  <circle class=\"d-box-primary\" cx=\"440\" cy=\"110\" r=\"26\"/>\n  <text class=\"d-code\" x=\"440\" y=\"115\" text-anchor=\"middle\">9c0d</text>\n  <path class=\"d-arrow\" d=\"M144 110 L80 110\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M275 64 L198 100\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M275 156 L198 120\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M415 100 L330 62\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M415 120 L330 160\" marker-end=\"url(#arrow)\"/>\n  <rect class=\"d-box-accent\" x=\"510\" y=\"93\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"560\" y=\"115\" text-anchor=\"middle\">main</text>\n  <rect class=\"d-box-warn\" x=\"510\" y=\"40\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"560\" y=\"62\" text-anchor=\"middle\">HEAD</text>\n  <path class=\"d-line\" d=\"M560 74 L560 93\"/>\n  <rect class=\"d-box-accent\" x=\"370\" y=\"185\" width=\"100\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"420\" y=\"207\" text-anchor=\"middle\">hero</text>\n  <path class=\"d-line\" d=\"M370 195 L328 172\"/>\n</svg>\n:::\n\nYou're on `main`. Which commits does `git log --oneline hero` list?",
+  "hints": [
+    "`git log <name>` starts at the commit that name points to.",
+    "From there it follows parent arrows only. It never walks forward to children.",
+    "Start at the commit labelled `hero` and follow the arrows until you run out."
+  ],
+  "explanation": "`git log hero` starts at `7a8b`, the commit the `hero` branch points to, and follows parents: `7a8b` → `3c4d` → `1a2b`. The merge commit `9c0d` is a *child* of `7a8b`, and Git never walks from parent to child, so it isn't listed. `5e6f` is on the other side of the fork and isn't an ancestor of `hero` either.",
+  "options": {
+    "a": {
+      "text": "All five commits, because `hero` was merged into `main`.",
+      "why": "Merging made `hero`'s commits reachable from `main`, not the other way round. `git log hero` starts at `hero` and only walks backwards."
+    },
+    "b": {
+      "text": "Only `7a8b`, the commit `hero` points to.",
+      "why": "`git log` lists the starting commit and every ancestor, not one commit. `git show hero` would print only `7a8b`."
+    },
+    "c": {
+      "text": "`7a8b`, `3c4d` and `1a2b`.",
+      "why": "Correct. Start at `7a8b` and follow parents: `3c4d`, then the root commit `1a2b`."
+    },
+    "d": {
+      "text": "`9c0d`, `7a8b`, `3c4d` and `1a2b`.",
+      "why": "`9c0d` is a child of `7a8b`. Commits don't know their children, so `git log` can't reach it from `hero`."
+    }
+  },
+  "checks": {}
+}

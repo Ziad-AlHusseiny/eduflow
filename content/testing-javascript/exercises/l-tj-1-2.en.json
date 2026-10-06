@@ -1,0 +1,16 @@
+{
+  "title": "First tests for formatMoney",
+  "prompt": "The **subject** tab holds `formatMoney(cents)`, which turns integer cents into a dollar string: `1234` becomes `\"$12.34\"` and `-505` becomes `\"-$5.05\"`.\n\nThe starter has one test. Add tests until your suite passes on the real code **and** fails on each of three broken versions the checker has hidden: one forgets to pad single-digit cents, one drops the minus sign, and one rounds the dollars instead of flooring them. Use `describe`, `test` and `expect(...).toBe(...)`; there is nothing to import.",
+  "hints": [
+    "Each hidden bug only shows up for certain inputs. Which input makes padding matter? Which makes the sign matter?",
+    "Padding: try 505 (expect \"$5.05\"). Sign: try a negative number.",
+    "Rounding instead of flooring only changes the result when the cents are 50 or more, for example 199 should be \"$1.99\", not \"$2.99\"."
+  ],
+  "explanation": "Each test targets one rule of the format, chosen with an input where breaking that rule changes the output. `1234` alone can't tell padding from no padding (34 has two digits) or floor from round (34 rounds down either way), which is why the starter suite let every bug through. Good examples are **discriminating**: pick inputs where a plausible mistake would produce a different answer. `505` exercises padding, `-505` the sign, `199` the floor. Zero is a cheap extra that guards the most common display in the app.",
+  "checks": {
+    "passes": "All your tests pass against the real formatMoney",
+    "catches-no-padding": "Catches the version that forgets to pad single-digit cents",
+    "catches-sign-lost": "Catches the version that drops the minus sign",
+    "catches-rounds-dollars": "Catches the version that rounds dollars instead of flooring"
+  }
+}

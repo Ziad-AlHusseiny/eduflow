@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "bash",
+  "code": "#!/usr/bin/env bash\nset -euo pipefail\nVPC_ID=\"vpc-0abc1234def567890\"\n\nAPP_SG=$(aws ec2 create-security-group --group-name lantern-app-sg \\\n  --description \"Lantern app servers\" --vpc-id \"$VPC_ID\" \\\n  --query GroupId --output text)\nDB_SG=$(aws ec2 create-security-group --group-name lantern-db-sg \\\n  --description \"Lantern PostgreSQL\" --vpc-id \"$VPC_ID\" \\\n  --query GroupId --output text)\n\n# Visitors reach the app over HTTPS during the migration\naws ec2 authorize-security-group-ingress --group-id \"$APP_SG\" \\\n  --protocol tcp --port 443 --cidr 0.0.0.0/0\n\n# Maintainers need a shell on the app servers\naws ec2 authorize-security-group-ingress --group-id \"$APP_SG\" \\\n  --protocol tcp --port 22 --cidr 0.0.0.0/0\n\n# Only the app servers may talk to PostgreSQL\naws ec2 authorize-security-group-ingress --group-id \"$DB_SG\" \\\n  --protocol tcp --port 5432 --cidr 0.0.0.0/0",
+  "bugLines": [
+    18,
+    22
+  ]
+}

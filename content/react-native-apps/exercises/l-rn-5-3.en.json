@@ -1,0 +1,20 @@
+{
+  "title": "Put Trailhead's first release in order",
+  "prompt": "Trailhead 1.0.0 is feature-complete and tested. Arrange the steps of its first release to the App Store and Google Play in the order you'd do them.",
+  "hints": [
+    "You can't build anything until the app knows its permanent identity and EAS knows which profiles exist.",
+    "Testers see a preview build before anything goes to the stores.",
+    "Store review happens after the production build has been uploaded and checked on real phones."
+  ],
+  "explanation": "Identity comes first because it's permanent, then `eas build:configure` creates the profiles every later command uses. A preview build lets real hikers find problems before the stores are involved. The production build is uploaded with `eas submit`, checked once more as a real release build through TestFlight or the internal track, and only then sent for review with the listing, privacy details and demo account in place. Release is the last, deliberate step: approval doesn't have to mean shipping that minute.",
+  "items": {
+    "set-identity": "Set `ios.bundleIdentifier`, `android.package` and `version` in app.json",
+    "configure": "Run `eas build:configure` to create eas.json with build profiles",
+    "preview": "Make a `preview` build and share it with a few hikers through internal distribution",
+    "production-build": "Run `eas build --platform all --profile production`",
+    "submit": "Run `eas submit` to upload the builds to App Store Connect and Google Play",
+    "store-test": "Install the TestFlight and internal-track builds on real phones and walk through the main flows",
+    "review": "Complete the store listing, privacy details and demo account, then submit for review",
+    "release": "Release the approved version to users"
+  }
+}

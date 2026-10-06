@@ -1,0 +1,422 @@
+checkpoints:
+  s-dk-1:
+    - q: "تشغّل notes-api بالأمر `docker run --memory 256m`. تحت اختبار حمل يموت الـ container ويعرض `docker ps -a` الحالة `Exited (137)`. ما الذي فرض الحدّ؟"
+      options:
+        - text: "الـ PID namespace، التي تضع سقفًا لما تستطيع شجرة العمليات حجزه."
+          why: "الـ namespaces تتحكّم فيما تراه العملية، لا في مقدار ما تستهلكه."
+        - text: "‏Node.js نفسه، الذي يقرأ `--memory` ويخرج بالرمز 137."
+          why: "لا يقرأ Node خيارات Docker. الحدّ يُفرض من خارج العملية."
+        - text: "حدّ ذاكرة في الـ cgroups؛ أنهى الـ OOM killer في النواة العملية بإشارة SIGKILL ‏(128 + 9 = 137)."
+          why: "صحيح. الـ cgroups تفرض حدود الموارد، والقتل بسبب نفاد الذاكرة يظهر كرمز الخروج 137."
+        - text: "الـ layers المخصّصة للقراءة فقط في الـ image، التي لا تتّسع لأكثر من 256 ميغابايت."
+          why: "الـ layers على القرص ولا علاقة لها بمقدار الذاكرة الذي تستخدمه العملية."
+      answer: 2
+    - q: |
+        تغيّر سطرًا واحدًا في `src/server.ts` وتعيد بناء هذه الـ image. كم يستغرق البناء تقريبًا مقارنة بإعادة بناء دون تغييرات؟
+        ```dockerfile
+        FROM node:24-slim
+        WORKDIR /app
+        COPY . .
+        RUN npm ci
+        RUN npm run build
+        ```
+      options:
+        - text: "أطول بكثير، لأن `COPY . .` تُخفق في الـ cache، فتُعاد كل خطوة بعدها، بما فيها `npm ci` الكامل."
+          why: "صحيح. تغيير الكود يُبطل `COPY`، والتثبيت المكلف يأتي بعدها. انسخ ملفات الحزم أولًا."
+        - text: "المدة نفسها تقريبًا، لأن `npm run build` وحده يحتاج إلى الإعادة."
+          why: "كان هذا سيصحّ لو ثُبّتت الاعتماديات قبل نسخ الكود. وهذا ليس الحال هنا."
+        - text: "أسرع، لأن Docker يعيد استخدام مجلد `node_modules` السابق."
+          why: "حالما تُخفق `COPY . .`، يُعاد `npm ci` من الصفر على الـ layer الجديدة."
+        - text: "يفشل، لأن الملفات المتغيّرة لا يمكن نسخها فوق layers مخزّنة."
+          why: "الملفات المتغيّرة تنتج ببساطة layer جديدة. لا شيء يفشل؛ الأمر بطيء فقط."
+      answer: 0
+    - q: "يعمل notes-api بـ `CMD [\"node\", \"dist/server.js\"]` ولا معالج SIGTERM فيه. ماذا يفعل `docker stop`؟"
+      options:
+        - text: "يخرج Node فورًا بالرمز 143، لأن الإجراء الافتراضي لـ SIGTERM هو إنهاء العملية."
+          why: "هذا ما يحدث مع العملية العادية. أما في موقع PID 1 فلا يُطبَّق الإجراء الافتراضي، فتُتجاهل الإشارة."
+        - text: "يعيد Docker تشغيل الـ container بدلًا من إيقافه."
+          why: "الأمر `docker stop` لا يعيد التشغيل أبدًا. قد تعيد سياسة إعادة التشغيل تشغيله لاحقًا، لكن ليس كجزء من الإيقاف."
+        - text: "ينهي Node الطلبات الجارية ويخرج بالرمز 0."
+          why: "التفريغ الآمن لا يحدث إلا إذا عالج كودك SIGTERM. ودون معالج لا يوجد تفريغ."
+        - text: "تُتجاهل الإشارة لأن Node في موقع PID 1 دون معالج، فبعد 10 ثوانٍ يرسل Docker إشارة SIGKILL ويخرج الـ container بالرمز 137."
+          why: "صحيح. أضف معالج SIGTERM يغلق الخادم ومجمّع اتصالات قاعدة البيانات، فيستغرق الإيقاف أقل بكثير من ثانية."
+      answer: 3
+    - q: "تشغّل `docker run -d -p 3000:3000 notes-api:dev`. السجلات تقول `listening on 3000`، لكن `curl localhost:3000` من حاسوبك يحصل على `connection reset`. ما الذي تتحقّق منه أولًا؟"
+      options:
+        - text: "هل في الـ image سطر `EXPOSE 3000`."
+          why: "التعليمة `EXPOSE` توثيق؛ والخيار `-p` نشر المنفذ أصلًا."
+        - text: "هل يرتبط التطبيق بـ `127.0.0.1` داخل الـ container بدلًا من `0.0.0.0`."
+          why: "صحيح. الحركة المنشورة تصل إلى واجهة الشبكة الخاصة بالـ container، والمستمع على الـ loopback وحده لا يراها أبدًا."
+        - text: "هل المنفذ 3000 مفتوح في جدار الحماية على المضيف."
+          why: "المنفذ المحجوب سيرفض الاتصال أو تنتهي مهلته من البداية؛ أما إعادة الضبط بعد الاتصال فتشير إلى أن لا شيء يستمع على تلك الواجهة داخل الـ container."
+        - text: "هل Docker Desktop محدّث."
+          why: "مشاكل الإصدارات نادرًا ما تكون السبب؛ وعنوان الاستماع متّهم أكثر شيوعًا بكثير."
+      answer: 1
+    - q: "أي عبارة عن الـ images والـ containers صحيحة؟"
+      options:
+        - text: "يحصل كل container على نسخة كاملة خاصة به من ملفات الـ image على القرص."
+          why: "الـ containers تتشارك layers الـ image المخصّصة للقراءة فقط، ولا يضيف كل منها إلا layer رقيقة قابلة للكتابة."
+        - text: "حذف الـ container يحذف الـ image الخاصة به أيضًا."
+          why: "الـ images تبقى حتى تحذفها بـ `docker image rm` أو بعملية prune."
+        - text: "يمكن تشغيل containers كثيرة من image واحدة؛ ولكل منها layer خاصة قابلة للكتابة تُحذف مع الـ container."
+          why: "صحيح. ولهذا توضع البيانات التي يجب أن تبقى في volume."
+        - text: "تغييرات الـ container الذي يعمل تُكتب عائدةً إلى الـ image حين يتوقّف."
+          why: "الـ images غير قابلة للتغيير. التغييرات تبقى في الـ layer القابلة للكتابة في الـ container، والتي يمكن أن يلتقطها `docker commit`، لكن لا ينبغي لك فعل ذلك."
+      answer: 2
+  s-dk-2:
+    - q: "مرحلة التشغيل في notes-api فيها `COPY --from=build /app/dist ./dist` و`COPY --from=deps /app/node_modules ./node_modules`، لكن بدء الـ container يفشل برسالة `Cannot use import statement outside a module`. ما الناقص؟"
+      options:
+        - text: "‏TypeScript، الذي يجب تثبيته في مرحلة التشغيل."
+          why: "بيئة التشغيل تشغّل JavaScript مترجَمة. ولا حاجة إلى TypeScript إلا في مرحلة البناء."
+        - text: "الملف `package.json`، الذي يخبر الحقل `\"type\": \"module\"` فيه Node بمعاملة ملفات `.js` كـ ES modules."
+          why: "صحيح. انسخ `package.json` إلى مرحلة التشغيل بجوار `dist` و`node_modules`."
+        - text: "المجلد `src/`، الذي يقرؤه Node عند البدء."
+          why: "يشغّل Node الملف `dist/server.js`؛ ولا يقرأ مصادر TypeScript أبدًا."
+        - text: "تعليمة `ENTRYPOINT`."
+          why: "‏`CMD` وحدها تبدأ التطبيق. والخطأ يأتي من طريقة تحليل Node للملف، لا من طريقة تشغيله."
+      answer: 1
+    - q: "يشترط فريق الأمن لديكم ألا تستطيع عملية notes-api تعديل كودها حتى لو حصل مهاجم على تنفيذ كود عن بُعد. أي خيار في الـ Dockerfile يحقّق ذلك؟"
+      options:
+        - text: "استخدم `COPY --chown=node:node` لكل الملفات حتى يملكها التطبيق."
+          why: "هذا يعطي مستخدم التطبيق صلاحية الكتابة على كوده، وهو عكس المطلوب."
+        - text: "شغّل كـ root لكن ركّب نظام الملفات للقراءة فقط."
+          why: "الجذر المخصّص للقراءة فقط يساعد، لكن التشغيل كـ root يُضعف كل ما عداه. اجمع بين المستخدم غير الـ root والقراءة فقط، ولا تقايض أحدهما بالآخر."
+        - text: "استخدم الـ image الكاملة `node:24` حتى تتحقّق أدوات النظام من سلامة الملفات."
+          why: "أدوات أكثر تعني مساحة هجوم أكبر، لا حماية."
+        - text: "اترك الملفات المنسوخة مملوكة لـ root وانتقل إلى `USER node` في النهاية، فيستطيع التطبيق قراءتها لا الكتابة فيها."
+          why: "صحيح. ملفات مملوكة لـ root وقابلة للقراءة من الجميع، مع مستخدم بلا صلاحيات، تعني أن الكود للقراءة فقط بالنسبة للعملية."
+      answer: 3
+    - q: "مهمّة في الـ CI تبني `notes-api` على runner من نوع amd64 وتنشرها على cluster من nodes ‏arm64. تفشل الـ Pods برسالة `exec format error`. ما الحل؟"
+      options:
+        - text: "ابنِ بـ `docker buildx build --platform linux/amd64,linux/arm64` وادفع، حتى يشير الـ tag إلى فهرس يضمّ المعماريّتين."
+          why: "صحيح. كل node يسحب الـ manifest الخاص بمعماريّته من الـ tag نفسه."
+        - text: "ثبّت الـ base image بالـ digest."
+          why: "التثبيت بالـ digest يثبّت البايتات، لكن إن كانت تلك البايتات لـ amd64 وحدها، فلن تستطيع nodes ‏arm64 تشغيلها."
+        - text: "غيّر الـ base image إلى `node:24-alpine`."
+          why: "images ‏Alpine أيضًا لكل معمارية على حدة. والبناء ما زال ينتج amd64 فقط."
+        - text: "أضف `imagePullPolicy: Always`."
+          why: "يسحب الـ image نفسها التي لا تدعم إلا amd64 مرة أخرى."
+      answer: 0
+    - q: "في الـ registry لديك `notes-api:1.4.0`. إصلاح عاجل جاهز. أي tag تعطيه؟"
+      options:
+        - text: "‏`1.4.0` مرة أخرى، حتى لا تحتاج الـ manifests إلى تغيير."
+          why: "إعادة دفع tag منشور تعني أن الـ nodes تشغّل كودًا مختلفًا تحت الاسم نفسه حسب وقت سحبها. لا تُعِد استخدامه أبدًا."
+        - text: "‏`latest`، لأنه أحدث بناء."
+          why: "‏`latest` مجرد اسم افتراضي؛ لا يعطي أي قابلية للتتبّع ويتغيّر من تحتك."
+        - text: "‏`1.4.1` مع tag ‏`sha-<commit>`، وتحديث الـ manifest (ويفضَّل إلى الـ digest الجديد)."
+          why: "صحيح. المحتوى الجديد يحصل على إصدار جديد؛ وtag الـ SHA والـ digest يجعلانه قابلًا للتتبّع ودقيقًا."
+        - text: "‏`1.4.0-fixed`، مع الكتابة فوقه إن جاء إصلاح آخر."
+          why: "الكتابة فوق tag لها المشكلة نفسها التي لإعادة استخدام `1.4.0`."
+      answer: 2
+    - q: "يُبلغ `docker scout cves` عن CVE حرجة في حزمة npm يستخدمها notes-api، ويوجد إصدار مُصلَح. ما الاستجابة الصحيحة؟"
+      options:
+        - text: "غيّر الـ base image إلى distroless."
+          why: "‏distroless تزيل حزم نظام التشغيل، لكن حزمة npm المعرّضة في `node_modules` لديك وتُشحن في الحالتين."
+        - text: "ارفع الاعتمادية إلى الإصدار المُصلَح، وأعِد البناء، وأعِد الفحص، وأبقِ بوّابة الـ CVE في الـ CI."
+          why: "صحيح. الاعتمادية القابلة للإصلاح تُصلَح، والبوّابة تمنع عودتها."
+        - text: "أضف الـ CVE إلى قائمة التجاهل حتى ينجح البناء."
+          why: "تجاهل نتيجة حرجة قابلة للإصلاح يخفي خطرًا حقيقيًا؛ قوائم التجاهل للحالات الموثّقة التي لا يمكن الوصول إليها أو لا يمكن إصلاحها."
+        - text: "أعِد البناء بـ `--no-cache` حتى يرى الماسح layers جديدة."
+          why: "البناء الجديد يثبّت الإصدار المقفل نفسه ويحصل على النتيجة نفسها."
+      answer: 1
+  s-dk-3:
+    - q: "في Compose، قيمة `DATABASE_URL` لخدمة `api` هي `postgres://notes:notes@db:5432/notes`. تعيد تسمية الخدمة من `db` إلى `postgres` وتشغّل `docker compose up -d --remove-orphans`. ماذا يحدث؟"
+      options:
+        - text: "لا شيء يتغيّر؛ يحتفظ Compose باسم الـ DNS القديم كاسم بديل."
+          why: "أسماء الـ DNS تأتي من أسماء الخدمات الحالية. الخيار `--remove-orphans` يزيل الـ container القديم `db`، فيذهب اسمه معه. (ودون هذا الخيار يبقى الـ container اليتيم يعمل ويجيب على الاسم `db`، فيُخفي الخلل.)"
+        - text: "يعيد Compose كتابة `DATABASE_URL` ليطابق."
+          why: "لا يعدّل Compose قيم متغيّرات البيئة نيابة عنك أبدًا."
+        - text: "يُحلّ الاسمان كلاهما، لأن الـ volume ما زال اسمه `pgdata`."
+          why: "أسماء الـ volumes لا علاقة لها بـ DNS الشبكة."
+        - text: "لم يعد الـ API يستطيع حلّ `db` ويفشل في الاتصال حتى تحدّث المضيف في العنوان إلى `postgres`."
+          why: "صحيح. الخدمات يجد بعضها بعضًا باسم الخدمة، فيجب أن يتبع نصّ الاتصال إعادة التسمية."
+      answer: 3
+    - q: "تشغّل `docker compose down`، وتعدّل `db/init/002-seed.sql`، ثم تشغّل `docker compose up -d`. لا تظهر البيانات الأولية. لماذا؟"
+      options:
+        - text: "‏`down` حذف الـ bind mount."
+          why: "الـ bind mounts تشير إلى مجلد على مضيفك؛ ولا شيء يحذفه."
+        - text: "سكربتات التهيئة تعمل بترتيب معكوس."
+          why: "إنها تعمل بترتيب الأسماء، وليست هذه هي المشكلة هنا."
+        - text: "الـ volume ‏`pgdata` صمد بعد `down`، فقاعدة البيانات مهيّأة أصلًا وتُتخطّى سكربتات التهيئة."
+          why: "صحيح. استخدم migration للتغييرات على قاعدة بيانات موجودة، أو احذف volume التطوير عن قصد بـ `down -v`."
+        - text: "لا يقرأ Postgres ملفات `.sql` إلا وقت بناء الـ image."
+          why: "سكربتات التهيئة تعمل عند بدء الـ container، لكن فقط على مجلد بيانات فارغ."
+      answer: 2
+    - q: "خدمة `migrate` تشغّل migrations المخطّط ثم تخرج. تريد ألا تبدأ `api` إلا بعد أن يصبح Postgres سليمًا وتنجح الـ migration. أي `depends_on` صحيح لـ `api`؟"
+      options:
+        - text: "‏`db` مع `condition: service_healthy`، و`migrate` مع `condition: service_completed_successfully`."
+          why: "صحيح. الأول ينتظر الـ healthcheck؛ والثاني ينتظر خروج المهمّة بالرمز 0."
+        - text: "‏`db` و`migrate` بصيغة القائمة المختصرة."
+          why: "الصيغة المختصرة لا تنتظر إلا بدء الـ containers، لا الجاهزية ولا الاكتمال."
+        - text: "‏`migrate` مع `condition: service_healthy`."
+          why: "المهمّة التي تخرج لا تصبح سليمة أبدًا، فلن تبدأ `api` أبدًا."
+        - text: "‏`db` مع `condition: service_started` و`restart: true`."
+          why: "هذا ما زال لا ينتظر أن يقبل Postgres الاتصالات ولا أن تنتهي الـ migration."
+      answer: 0
+    - q: "ملف `.env` في مشروعك يحتوي على `POSTGRES_PASSWORD=devpass`. والملف `compose.yaml` يضبط `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}` تحت `db.environment`. تشغّل `POSTGRES_PASSWORD=other docker compose up -d` على volume جديد. أي كلمة مرور يحصل عليها Postgres؟"
+      options:
+        - text: "‏`devpass`، لأن `.env` يفوز دائمًا."
+          why: "في الاستبدال، المتغيّر المضبوط أصلًا في الـ shell له الأولوية على `.env`."
+        - text: "‏`other`، لأن متغيّرات بيئة الـ shell لها الأولوية على `.env` في الاستبدال."
+          why: "صحيح. مفيد للتجاوزات لمرة واحدة، وسبب لفحص `docker compose config` حين تفاجئك القيم."
+        - text: "الاثنتان، موصولتين بفاصلة."
+          why: "للمتغيّرات قيمة واحدة؛ ولا يُوصل شيء بشيء."
+        - text: "ولا واحدة؛ يُخرج Compose خطأ عند تعارض القيم."
+          why: "لا يوجد خطأ تعارض؛ قواعد الأولوية هي التي تقرّر."
+      answer: 1
+    - q: "إعداد التطوير لدى زميلك يربط المشروع كاملًا (`.:/app`) بـ bind mount داخل container الـ API على macOS. يفشل التطبيق بخطأ في وحدة أصلية (native module)، وتبدو تغييرات الملفات بطيئة. بماذا توصي؟"
+      options:
+        - text: "أضف `:ro` إلى الـ bind mount."
+          why: "القراءة فقط لا تمنع `node_modules` المبني لـ macOS على المضيف من حجب نظيره المبني لـ Linux في الـ container."
+        - text: "انتقل إلى named volume للمشروع كاملًا."
+          why: "الـ named volume لن يرى تعديلاته إطلاقًا."
+        - text: "شغّل `npm ci` على جهاز Mac قبل كل بدء."
+          why: "هذا ما زال ينتج ملفات تنفيذية لـ macOS، لا يستطيع Linux تحميلها."
+        - text: "استخدم Compose watch لمزامنة `./src` إلى الـ container وإعادة البناء عند تغيّر الـ lockfile، مع إبقاء `node_modules` داخل الـ image."
+          why: "صحيح. ملفات الكود وحدها تعبر حدود الآلة الافتراضية، وتبقى الاعتماديات مبنية لـ Linux."
+      answer: 3
+  s-dk-4:
+    - q: "تطبّق Deployment بـ 3 نسخ، ثم تحذف الـ ReplicaSet الخاص به بالأمر `kubectl delete rs notes-api-6c8f9d7b5`. ماذا يحدث؟"
+      options:
+        - text: "ينشئ الـ controller الخاص بالـ Deployments كائن ReplicaSet جديدًا للقالب نفسه، فينشئ هذا 3 Pods من جديد."
+          why: "صحيح. ما زال الـ Deployment يصرّح بـ 3 نسخ من ذلك القالب، فيعيد الـ controller الخاص به الـ ReplicaSet المفقود."
+        - text: "يُحذف الـ Deployment أيضًا، لأنه كان يملك الـ ReplicaSet."
+          why: "الملكية تسري إلى الأسفل: حذف الابن لا يحذف مالكه."
+        - text: "تستمر الـ Pods في العمل دون مالك إلى الأبد."
+          why: "حذف الـ ReplicaSet يحذف الـ Pods الخاصة به افتراضيًا، والـ Deployment يعيد إنشاء الاثنين على أي حال."
+        - text: "لا شيء، لأن الـ ReplicaSets لا يمكن حذفها مباشرة."
+          why: "تستطيع حذفها؛ والـ controller ببساطة يستعيد ما يصرّح به الـ Deployment."
+      answer: 0
+    - q: "تحتاج الـ Pods في الـ namespace ‏`web` إلى استدعاء notes-api، الذي يعيش الـ Service ‏`notes-api` (المنفذ 80) الخاص به في الـ namespace ‏`notes`. أي عنوان يعمل؟"
+      options:
+        - text: "‏`http://notes-api` (المنفذ 80)"
+          why: "الاسم القصير لا يُحلّ إلا داخل الـ namespace نفسه، فمن `web` لا يجد الـ Service الموجود في `notes`."
+        - text: "‏`http://notes-api.notes` (المنفذ 80)، أو الاسم الكامل `notes-api.notes.svc.cluster.local`"
+          why: "صحيح. إضافة الـ namespace إلى الاسم تجعله قابلًا للحلّ من أي namespace."
+        - text: "`http://notes:3000`"
+          why: "‏`notes` اسم الـ namespace، لا Service، و3000 منفذ الـ Pod لا منفذ الـ Service."
+        - text: "‏`http://localhost:80` مع NodePort"
+          why: "‏`localhost` هو الـ Pod المتّصِل نفسه."
+      answer: 1
+    - q: "بعد تغيير ما، صارت Pods ‏notes-api في حالتَي Running وReady، لكن الـ EndpointSlice الخاص بالـ Service فارغ. ما الذي تغيّر على الأرجح؟"
+      options:
+        - text: "رُفع الـ tag الخاص بالـ image."
+          why: "الـ image الجديدة تنشئ Pods جديدة بالـ labels نفسها؛ والـ endpoints تتبعها."
+        - text: "تغيّر نوع الـ Service من ClusterIP إلى LoadBalancer."
+          why: "تغيير النوع يضيف عرضًا خارجيًا؛ ولا يغيّر الـ Pods التي تقف خلف الـ Service."
+        - text: "تغيّرت الـ labels في قالب الـ Pod ولم تعد تطابق الـ selector الخاص بالـ Service."
+          why: "صحيح. الـ Pods الجاهزة دون labels مطابقة غير مرئية للـ Service. قارن مخرجات `kubectl get pods --show-labels` بالـ selector."
+        - text: "حُدّث الـ ConfigMap."
+          why: "قيم الإعدادات لا تؤثّر في مطابقة الـ labels."
+      answer: 2
+    - q: "تحدّث الـ Secret ‏`notes-db` بكلمة مرور جديدة، وتُغيَّر كلمة مرور Postgres لتطابقها. يقرأ notes-api قيمة `DATABASE_URL` عبر `secretKeyRef`. تبدأ الـ Pods الموجودة بالفشل في المصادقة. لماذا، وما الحل؟"
+      options:
+        - text: "الـ Secrets تُخزَّن مؤقتًا لمدة 24 ساعة؛ انتظر انتهاء الصلاحية."
+          why: "لا توجد قاعدة تخزين مؤقت كهذه لمتغيّرات البيئة. إنها لا تتغيّر أبدًا في container يعمل."
+        - text: "يجب حذف الـ Secret وإعادة إنشائه، لا تحديثه."
+          why: "التحديث لا بأس به؛ المشكلة في طريقة استهلاك الـ Pods العاملة له."
+        - text: "يجب تغيير الـ selector في الـ Deployment ليلتقط الـ Secret الجديد."
+          why: "الـ selectors تختار الـ Pods، لا الإعدادات. وتغييرها سيكسر الـ Deployment."
+        - text: "متغيّرات البيئة تُقرأ عند بدء الـ container، فالـ Pods العاملة ما زالت تستخدم القيمة القديمة؛ شغّل `kubectl rollout restart deployment/notes-api`."
+          why: "صحيح. الـ Pods الجديدة تقرأ الـ Secret المحدَّث. ولتدوير دون توقّف، اجعل قاعدة البيانات تقبل كلمتَي المرور خلال التبديل."
+      answer: 3
+    - q: "لماذا تشغّل الفرق `kubectl diff -f k8s/` قبل `kubectl apply -f k8s/`؟"
+      options:
+        - text: "لترى بالضبط أي الحقول على الـ cluster الحيّ ستتغيّر، فتلتقط المفاجآت مثل إلغاء زيادة طارئة في عدد النسخ."
+          why: "صحيح. إنها خطوة المراجعة للـ cluster، مثل قراءة pull request قبل الـ merge."
+        - text: "لأن `apply` يفشل ما لم يُشغَّل `diff` أولًا."
+          why: "‏`apply` يعمل وحده؛ و`diff` عادة أمان، لا شرط."
+        - text: "للتحقّق من صياغة YAML فقط."
+          why: "إنه يحتاج فعلًا إلى YAML صالح، لكن قيمته في مقارنة ملفاتك بالكائنات الحيّة."
+        - text: "لتنزيل الـ manifests الحالية إلى مجلد `k8s/`."
+          why: "‏`diff` لا يكتب ملفات؛ إنه يطبع الفروق."
+      answer: 0
+  s-dk-5:
+    - q: "الـ readiness probe لـ notes-api يستدعي `/readyz` (الذي يفحص Postgres)، والـ liveness يستدعي `/healthz`. يتعطّل Postgres لمدة دقيقتين. ماذا يحدث؟"
+      options:
+        - text: "تُعاد تشغيل كل الـ Pods مرارًا حتى يعود Postgres."
+          why: "الـ liveness لا يفحص إلا `/healthz`، الذي لا يمسّ Postgres، فلا تحدث أي إعادة تشغيل."
+        - text: "يعيد Kubernetes جدولة الـ Pods على nodes أخرى."
+          why: "الـ probes لا تنقل الـ Pods بين الـ nodes أبدًا."
+        - text: "تصبح كل الـ Pods غير جاهزة وتغادر endpoints الـ Service؛ ثم تعود دون إعادة تشغيل حين يعود Postgres."
+          why: "صحيح. تفشل الطلبات سريعًا عند الـ Service بدلًا من أن تعلق في التطبيق، ولا يحتاج التعافي إلى إعادات تشغيل."
+        - text: "لا شيء، لأن الـ probes تتوقّف مؤقتًا حين تتعطّل اعتمادية."
+          why: "لا يعرف Kubernetes شيئًا عن الاعتماديات؛ إنه يشغّل الـ probes كما ضُبطت."
+      answer: 2
+    - q: "‏node فيه 4 أنوية معالج، ومجموع requests المعالج للـ Pods عليه 3.8 نواة، مع أن الاستهلاك الفعلي نواة واحدة فقط. ‏Pod جديد من notes-api يطلب 250m. ماذا يحدث؟"
+      options:
+        - text: "يُجدوَل هناك، لأن الاستهلاك الفعلي منخفض."
+          why: "يضع الـ scheduler الـ Pods حسب الـ requests، لا حسب الاستهلاك الحالي."
+        - text: "يُجدوَل هناك وتُخنق Pods أخرى لإفساح المجال."
+          why: "الجدولة لا تضغط الـ requests الخاصة بالـ Pods الموجودة أبدًا."
+        - text: "يُجدوَل بـ request مخفّض إلى 200m."
+          why: "الـ requests لا تُعدَّل أبدًا لتناسب node."
+        - text: "لا يُجدوَل على ذلك الـ node، لأنه لم يتبقَّ إلا 200m من المعالج القابل للطلب؛ فيذهب إلى مكان آخر أو يبقى Pending."
+          why: "صحيح. الـ requests حجوزات. والمبالغة في الطلب تهدر السعة حتى حين تبدو الـ nodes خاملة."
+      answer: 3
+    - q: "أثناء rollout إلى 1.6.0 مع `maxUnavailable: 0`، يعلق `kubectl rollout status` ثم يُبلغ `exceeded its progress deadline`. والـ readiness probe للـ Pod الجديد يفشل. ما حالة الخدمة؟"
+      options:
+        - text: "يحصل المستخدمون على أخطاء من Pod الإصدار 1.6.0."
+          why: "الـ Pod غير الجاهز ليس ضمن endpoints الـ Service، فلا يستقبل أي حركة."
+        - text: "ما زالت Pods الإصدار 1.5.x القديمة تخدم بكامل السعة؛ والـ rollout عالق ويحتاج إلى undo أو إصلاح."
+          why: "صحيح. مع عدم السماح بأي نقص في الإتاحة ومع بوّابة الـ readiness، لم يُقلَّص الـ ReplicaSet القديم أبدًا."
+        - text: "تراجع Kubernetes فعلًا إلى الإصدار السابق."
+          why: "يُبلغ Kubernetes عن الفشل لكنه لا يتراجع من تلقاء نفسه."
+        - text: "تقلّص الـ Deployment إلى صفر."
+          why: "لا شيء في التحديث المتدرّج يقلّص الـ Deployment بأكمله إلى صفر."
+      answer: 1
+    - q: "الإنتاج يستخدم Gateway مشتركًا. الـ HTTPRoute الخاص بفريق notes يُظهر `Accepted: False` مع السبب `NotAllowedByListeners`. ما السبب المرجّح؟"
+      options:
+        - text: "الحقل `allowedRoutes` في listener الـ Gateway لا يسمح بـ routes من الـ namespace ‏`notes`."
+          why: "صحيح. الـ Gateways تختار الـ namespaces التي يمكنها ربط routes؛ اطلب من فريق المنصّة السماح لـ `notes` أو استخدم selector يطابقه."
+        - text: "الـ Service الخاص بـ notes-api ليس له endpoints."
+          why: "الـ endpoints تؤثّر في وصول الحركة إلى الـ Pods، لا في قبول الـ Gateway للـ route."
+        - text: "الـ HTTPRoute يستخدم `apiVersion: gateway.networking.k8s.io/v1`."
+          why: "هذا هو الإصدار الحالي الصحيح."
+        - text: "الـ Pods تفتقر إلى readiness probe."
+          why: "الـ probes لا تؤثّر في ارتباط الـ route."
+      answer: 0
+    - q: "‏Pod من notes-api مبني على distroless في حالة Running، لكن كل طلب إليه تنتهي مهلته. يفشل `kubectl exec` لعدم وجود shell. أي أمر يتيح لك أن تختبر، من داخل شبكة الـ Pod، هل يجيب التطبيق على المنفذ 3000؟"
+      options:
+        - text: "`kubectl logs <pod> --previous`"
+          why: "السجلات تعرض المخرجات السابقة؛ ولا تستطيع اختبار الاتصال، والـ container لم ينهَر أصلًا."
+        - text: "‏`kubectl port-forward pod/<pod> 3000:3000` يليه `kubectl events`"
+          why: "الـ port-forward يختبر من حاسوبك عبر الـ API server، لا من داخل شبكة الـ Pod، والأحداث لن تُظهر انتهاء مهل الطلبات."
+        - text: "‏`kubectl debug -it <pod> --image=busybox:1.37 --target=api`، ثم `wget -qO- localhost:3000/healthz`"
+          why: "صحيح. الـ ephemeral container يتشارك الـ network namespace الخاصة بالـ Pod، فيكون `localhost:3000` هو التطبيق نفسه."
+        - text: "`kubectl describe node`"
+          why: "تفاصيل الـ node لن تخبرك هل يجيب التطبيق داخل الـ Pod."
+      answer: 2
+final:
+  - q: "يريد مهندس في Skylane بناءً أسرع لـ notes-api في الـ CI. البناء يعمل على runners جديدة بـ cache فارغ لـ Docker، والـ Dockerfile مرتّب بشكل صحيح أصلًا. ما الذي يساعد أكثر؟"
+    options:
+      - text: "التحويل من `npm ci` إلى `npm install`."
+        why: "ليس أسرع بشكل ملموس مع cache بارد، ويتخلّى عن التثبيت القابل للتكرار."
+      - text: "تصدير الـ build cache واستيراده بـ `--cache-to` و`--cache-from` (مثلًا إلى registry)."
+        why: "صحيح. عندها تستطيع الـ runners الجديدة إعادة استخدام الـ layers التي بنتها مهام سابقة."
+      - text: "البناء بـ `--no-cache` من أجل الاتّساق."
+        why: "هذا يضمن تنفيذ كل خطوة، وهو أبطأ بناء ممكن."
+      - text: "إضافة المزيد من خطوات `RUN` حتى توجد نقاط cache أكثر."
+        why: "الـ layers الإضافية لا تفيد حين لا يوجد cache تقرأ منه أصلًا."
+    answer: 1
+  - q: "أي سطر في الـ Dockerfile يعرّض بيانات اعتماد للخطر رغم حذفها لاحقًا في البناء نفسه؟"
+    options:
+      - text: "`RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci`"
+        why: "الـ secret mount لا يوجد إلا لتلك الخطوة ولا يُكتب أبدًا في layer. هذا هو النمط الآمن."
+      - text: "`COPY package.json package-lock.json ./`"
+        why: "ملفات التعريف والـ lockfiles لا تحتوي على بيانات اعتماد."
+      - text: "`USER node`"
+        why: "تغيير المستخدم لا يكشف أي سرّ."
+      - text: "‏`COPY .npmrc .` يليه لاحقًا `RUN rm .npmrc`"
+        why: "صحيح. الملف يبقى حيًّا في layer الـ `COPY`؛ وحذفه في layer لاحقة يخفيه فقط."
+    answer: 3
+  - q: "الـ image الخاصة بـ notes-api تعمل بـ `USER node`، والـ securityContext في الـ Deployment يضبط `runAsNonRoot: true`. تفشل الـ Pods بـ `CreateContainerConfigError`. ما أنظف حل؟"
+    options:
+      - text: "اضبط مستخدمًا رقميًا، إمّا `USER 1000` في الـ Dockerfile أو `runAsUser: 1000` في الـ securityContext، حتى يستطيع الـ kubelet التحقّق من أنه ليس root."
+        why: "صحيح. لا يستطيع الـ kubelet إثبات أن *اسم* مستخدم ليس root، فيرفض بدء الـ container."
+      - text: "احذف `runAsNonRoot` من الـ securityContext."
+        why: "هذا يزيل فحص أمان بدلًا من تلبيته."
+      - text: "أعِد الـ image إلى التشغيل كـ root."
+        why: "عندها يرفضها `runAsNonRoot` مباشرة، وتكون قد خسرت الحماية على أي حال."
+      - text: "أضف `allowPrivilegeEscalation: true`."
+        why: "لا علاقة له بالتحقّق من المستخدم، وهو إعداد أضعف."
+    answer: 0
+  - q: "بيئة Compose تبدأ بشكل موثوق على حاسوبك، لكن في الـ CI تعمل اختبارات التكامل أحيانًا قبل أن يجهز الـ API. أي تغيير يحلّ ذلك دون تخمين؟"
+    options:
+      - text: "أضف `sleep 30` قبل الاختبارات."
+        why: "قصيرة جدًا على runner بطيء، ومهدرة على runner سريع."
+      - text: "استخدم `restart: always` على الـ API."
+        why: "إعادة التشغيل لا تخبر خطوة الاختبار متى يكون الـ API جاهزًا."
+      - text: "أعطِ الـ API وقاعدة البيانات healthchecks، وشغّل البيئة بـ `docker compose up -d --wait`."
+        why: "صحيح. ‏`--wait` لا يعود إلا حين تكون الخدمات سليمة، ويفشل إن صارت إحداها غير سليمة."
+      - text: "انشر منفذ قاعدة البيانات حتى تستطيع الاختبارات استطلاعه."
+        why: "كون قاعدة البيانات تعمل لا يثبت أن الـ API جاهز."
+    answer: 2
+  - q: "ترث Deployment بلا readiness probe ومع إعدادات التحديث المتدرّج الافتراضية. يخرج إصدار فيه عنوان قاعدة بيانات معطوب. ماذا يحدث؟"
+    options:
+      - text: "يتوقّف الـ rollout وتستمر الـ Pods القديمة في الخدمة."
+        why: "دون readiness probe تُعدّ الـ Pods الجديدة جاهزة حالما تعمل، فلا شيء يتوقّف."
+      - text: "يكتشف Kubernetes العنوان المعطوب ويرفض الإصدار."
+        why: "لا يعرف Kubernetes شيئًا عن قيم إعدادات تطبيقك."
+      - text: "يُستبدل Pod واحد فقط، بسبب `maxSurge`."
+        why: "‏`maxSurge` يحدّد وتيرة الـ rollout؛ ولا يوقفه."
+      - text: "تُعلَّم الـ Pods الجديدة جاهزة حالما تبدأ الـ containers الخاصة بها، فيستبدل الـ rollout كل Pod يعمل بآخر يفشل."
+        why: "صحيح. الـ readiness هو بوّابة الـ rollouts. ودونه يأخذ الإصدار المعطوب كل الحركة."
+    answer: 3
+  - q: "لدى notes-api ‏request للمعالج قدره 500m ولا حدّ للمعالج، وrequest وحدّ للذاكرة قدرهما 512Mi. تحت قفزة في الحركة يصل استهلاكه للمعالج إلى 1.5 نواة على node فيه سعة خاملة. ماذا يحدث؟"
+    options:
+      - text: "يُقتل بسبب نفاد الذاكرة لتجاوزه الـ request."
+        why: "القتل بسبب نفاد الذاكرة يتعلّق بحدود الذاكرة، لا المعالج، والـ requests لا تُفرض أبدًا كسقوف."
+      - text: "يستخدم المعالج الخامل، لأنه لا يوجد حدّ للمعالج يخنقه؛ والـ request الخاص به ما زال يضمن 500m عند التزاحم."
+        why: "صحيح. الـ requests تحجز؛ والـ limits وحدها تضع سقفًا. وهذا سبب ترك بعض الفرق لحدود المعالج."
+      - text: "يُخنق إلى 500m."
+        why: "الخنق يحدث عند *حدّ* المعالج. أما الـ request فحجز أدنى، لا سقف."
+      - text: "ينقله الـ scheduler إلى node أكبر."
+        why: "الـ scheduler لا ينقل الـ Pods العاملة أبدًا؛ الـ Pods الجديدة وحدها تحصل على مواضع جديدة."
+    answer: 1
+  - q: "أي manifest صالح في Kubernetes الحالي؟"
+    options:
+      - text: "‏`apiVersion: extensions/v1beta1` مع `kind: Deployment`"
+        why: "تلك المجموعة وذلك الإصدار للـ Deployments أُزيلا منذ زمن بعيد."
+      - text: "‏`apiVersion: autoscaling/v1` مع HPA يستخدم `metrics` و`behavior`"
+        why: "‏`metrics` و`behavior` حقلان من `autoscaling/v2`."
+      - text: "‏`apiVersion: networking.k8s.io/v1beta1` مع `kind: Ingress`"
+        why: "الـ Ingress يُقدَّم بالإصدار `networking.k8s.io/v1`؛ والإصدار التجريبي أُزيل."
+      - text: "‏`apiVersion: apps/v1` مع `kind: Deployment`"
+        why: "صحيح. الـ Deployments والـ ReplicaSets والـ StatefulSets تعيش في `apps/v1`."
+    answer: 3
+  - q: "أضاف notes-api 1.5.0 عمودًا، وكوده يكتب في العمودين القديم والجديد معًا. في 1.5.0 خلل، فتشغّل `kubectl rollout undo`. لماذا هذا التراجع آمن؟"
+    options:
+      - text: "لأن `rollout undo` يستعيد لقطة من قاعدة البيانات."
+        why: "لا يمسّ Kubernetes قاعدة بياناتك أبدًا."
+      - text: "لأن تغيير المخطّط كان إضافيًا، فما زال 1.4.0 يجد كل ما يتوقّعه."
+        why: "صحيح. تغييرات التوسعة ثم التقليص (expand-then-contract) تُبقي الإصدارات المتجاورة متوافقة، وهذا يجعل التراجع مملًّا بالمعنى الجيد."
+      - text: "لأن Postgres يتجاهل الأعمدة المجهولة في جمل UPDATE."
+        why: "لا يتجاهل Postgres أي شيء؛ ببساطة لا يشير 1.4.0 إلى العمود الجديد أبدًا."
+      - text: "لأن التراجع آمن دائمًا في Kubernetes."
+        why: "التراجع عن الكود لا يكون آمنًا إلا حين تكون البيانات والمخطّط متوافقة مع الكود الأقدم."
+    answer: 1
+  - q: "الـ HPA الخاص بـ notes-api يستهدف استخدامًا للمعالج بنسبة 60% مع request للمعالج قدره 200m. أربعة Pods يبلغ متوسط كل منها 240m. كم نسخة تقريبًا سيريد الـ HPA؟"
+    options:
+      - text: "4، لأن الـ HPA لا يوسّع إلا حين يتجاوز الاستهلاك الـ request."
+        why: "الهدف 60% من الـ request ‏(120m). و240m ضعف ذلك."
+      - text: "5"
+        why: "المطلوب = 4 × 240 / 120 = 8، لا 5."
+      - text: "8"
+        why: "صحيح. الاستهلاك 200% من الهدف البالغ 120m لكل Pod، فيضاعف الـ HPA النسخ (ضمن `maxReplicas`)."
+      - text: "2، لأنه يأخذ متوسط الـ request والاستهلاك."
+        why: "يوسّع الـ HPA حسب نسبة الاستهلاك إلى الهدف؛ ولا يأخذ متوسطهما."
+    answer: 2
+  - q: "الـ controller ‏ingress-nginx الذي كان الـ cluster لديك يستخدمه تقاعد ولم يعد يتلقّى إصلاحات أمنية. ما الاتجاه الموصى به لإعدادات توجيه HTTP الجديدة؟"
+    options:
+      - text: "اعرض كل خدمة بـ NodePort خاص بها."
+        why: "الـ NodePorts ليست نقطة دخول عامة؛ وستخسر إنهاء TLS والتوجيه."
+      - text: "أبقِ على الـ controller المتقاعد؛ ستصونه نواة Kubernetes."
+        why: "التقاعد يعني لا إصدارات ولا إصلاحات أمنية."
+      - text: "استبدل الـ Ingress بـ Service من نوع LoadBalancer لكل تطبيق."
+        why: "يصلح لخدمة واحدة؛ لكنه مكلف ولا يمكن التوجيه فيه حسب المضيف أو المسار مع خدمات كثيرة."
+      - text: "‏Gateway API: ‏Gateway يملكه فريق المنصّة، وHTTPRoutes يملكها فريق كل تطبيق."
+        why: "صحيح. ‏Gateway API هو الخليفة الموصى به من المشروع، بموارد موجّهة حسب الأدوار وأدوات تنفيذ (implementations) كثيرة."
+    answer: 3
+  - q: "‏Pod من notes-api يُظهر `CrashLoopBackOff` و`Last State: Terminated, Exit Code: 137`. والأمر `kubectl logs --previous` يعرض سجلات طلبات عادية، ثم لا شيء. ما السبب المرجّح والحل؟"
+    options:
+      - text: "تجاوز الـ container حدّ ذاكرته فقُتل بسبب نفاد الذاكرة؛ تحقّق في `describe` من `OOMKilled`، ثم ارفع الحدّ أو أصلح التسرّب وضع سقفًا للـ heap في V8."
+        why: "صحيح. الخروج بالرمز 137 دون مخرجات خطأ يشير إلى SIGKILL، والذاكرة هي السبب المعتاد في حلقة الانهيار."
+      - text: "استثناء JavaScript أسقط العملية."
+        why: "الاستثناء غير الملتقَط يطبع stack trace ويخرج بالرمز 1، لا 137."
+      - text: "لا يمكن سحب الـ image."
+        why: "فشل السحب لا يصل أبدًا إلى تشغيل التطبيق أو تسجيل الطلبات."
+      - text: "فشل الـ readiness probe."
+        why: "إخفاقات الـ readiness لا تقتل الـ containers إطلاقًا."
+    answer: 0
+  - q: "أي مجموعة تعطي notes-api عمليات نشر دون توقّف؟"
+    options:
+      - text: "استراتيجية `Recreate` مع liveness probe على `/readyz`."
+        why: "‏`Recreate` يوقف كل شيء أولًا، والـ liveness probe الذي يفحص الاعتماديات يضيف عواصف إعادة تشغيل."
+      - text: "لا probes، و`maxUnavailable: 25%`، وقيمة عالية لـ `terminationGracePeriodSeconds`."
+        why: "دون readiness تأخذ الـ Pods الجديدة الحركة قبل أن تجهز، وتنخفض السعة أثناء الـ rollout."
+      - text: "‏readiness probe، و`maxUnavailable: 0`، وتوقّف `preStop` قصير، ومعالج SIGTERM يفرّغ الطلبات الجارية."
+        why: "صحيح. الـ Pods الجديدة لا تأخذ الحركة إلا حين تجهز، والسعة لا تنخفض أبدًا، والـ Pods القديمة تغادر دون إسقاط الطلبات."
+      - text: "‏`replicas: 1` مع `kubectl rollout restart` بعد كل تغيير."
+        why: "النسخة الواحدة تعني أن أي إعادة تشغيل توقّف للخدمة."
+    answer: 2

@@ -1,0 +1,17 @@
+{
+  "title": "Describe a typical order",
+  "prompt": "`value` holds the revenue of every non-cancelled order. Set `median_value` and `p90_value` (the 90th percentile), each rounded to 2 decimals. Set `below_mean_share` to the share of orders whose value is below the mean, rounded to 3 decimals. Compute `upper_fence` as Q3 + 1.5 \u00d7 (Q3 \u2212 Q1) and `n_outliers` as the number of orders above it. Finally build `by_channel`, a DataFrame indexed by channel with the columns `count`, `mean` and `median` of order value, in that order.",
+  "hints": [
+    "`value.median()` and `value.quantile(0.9)`; wrap each in `round(..., 2)`.",
+    "A share is the mean of a boolean Series: `(value < value.mean()).mean()`. `value.quantile([0.25, 0.75])` returns both quartiles, which you can unpack into two names.",
+    "`orders.groupby(\"channel\")[\"revenue\"].agg([\"count\", \"mean\", \"median\"])` gives the three columns in that order."
+  ],
+  "explanation": "The median order is 147.26 dollars, and 66.3% of orders are below the 227.77 mean: the clearest possible demonstration that the mean is not the typical order in skewed data. The fence at 656.62 flags 125 large orders, which you would inspect rather than delete. The channel table puts sizes next to both averages, so you can see that the means and the medians do not even rank the channels the same way, and that the marketplace group is the smallest at 208 orders.",
+  "checks": {
+    "median": "`median_value` is 147.26",
+    "p90": "`p90_value` is the 90th percentile",
+    "below-mean": "66.3% of orders are below the mean",
+    "fence": "The fence is 656.62 with 125 orders above it",
+    "by-channel": "`by_channel` has count, mean and median per channel"
+  }
+}

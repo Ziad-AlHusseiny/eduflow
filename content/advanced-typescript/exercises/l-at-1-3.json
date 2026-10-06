@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type Order = {\n  id: number;\n  couponCode: string | null;\n  // null = not known yet (address incomplete); 0 = free shipping\n  shippingFeeCents: number | null;\n};\n\nfunction shippingLabel(order: Order): string {\n  if (!order.shippingFeeCents) return 'Calculated at checkout';\n  if (order.shippingFeeCents === 0) return 'Free';\n  return `$${(order.shippingFeeCents / 100).toFixed(2)}`;\n}\n\nfunction usedCoupons(orders: Order[]): string[] {\n  return orders.map((o) => o.couponCode).filter((c) => c);\n}\n\nfunction couponBanner(order: Order, names: string[]): string[] {\n  if (order.couponCode === null) return [];\n  return names.map((n) => `${n}, ${order.couponCode.toUpperCase()} is applied`);\n}\n\nconst orders: Order[] = [\n  { id: 1001, couponCode: 'welcome10', shippingFeeCents: 0 },\n  { id: 1002, couponCode: null, shippingFeeCents: null },\n  { id: 1003, couponCode: 'loyal5', shippingFeeCents: 499 },\n];\nconsole.log(orders.map(shippingLabel), usedCoupons(orders));\n"
+  },
+  "solution": {
+    "ts": "type Order = {\n  id: number;\n  couponCode: string | null;\n  // null = not known yet (address incomplete); 0 = free shipping\n  shippingFeeCents: number | null;\n};\n\nfunction shippingLabel(order: Order): string {\n  const fee = order.shippingFeeCents;\n  if (fee === null) return 'Calculated at checkout';\n  if (fee === 0) return 'Free';\n  return `$${(fee / 100).toFixed(2)}`;\n}\n\nfunction usedCoupons(orders: Order[]): string[] {\n  return orders.map((o) => o.couponCode).filter((c) => c !== null);\n}\n\nfunction couponBanner(order: Order, names: string[]): string[] {\n  const code = order.couponCode;\n  if (code === null) return [];\n  return names.map((n) => `${n}, ${code.toUpperCase()} is applied`);\n}\n\nconst orders: Order[] = [\n  { id: 1001, couponCode: 'welcome10', shippingFeeCents: 0 },\n  { id: 1002, couponCode: null, shippingFeeCents: null },\n  { id: 1003, couponCode: 'loyal5', shippingFeeCents: 499 },\n];\nconsole.log(orders.map(shippingLabel), usedCoupons(orders));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "free-shipping",
+      "test": "const o = (fee) => ({ id: 1, couponCode: null, shippingFeeCents: fee }); return shippingLabel(o(0)) === 'Free' && shippingLabel(o(null)) === 'Calculated at checkout' && shippingLabel(o(499)) === '$4.99';"
+    },
+    {
+      "id": "used-coupons",
+      "test": "const r = usedCoupons([{ id: 1, couponCode: 'A', shippingFeeCents: 0 }, { id: 2, couponCode: null, shippingFeeCents: 0 }, { id: 3, couponCode: 'B', shippingFeeCents: 0 }]); return JSON.stringify(r) === '[\"A\",\"B\"]';"
+    },
+    {
+      "id": "banner",
+      "test": "const r = couponBanner({ id: 1, couponCode: 'loyal5', shippingFeeCents: 0 }, ['Mona']); return r.length === 1 && r[0].includes('LOYAL5') && couponBanner({ id: 2, couponCode: null, shippingFeeCents: 0 }, ['Mona']).length === 0;"
+    }
+  ]
+}

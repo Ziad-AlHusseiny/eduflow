@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "color-only-calendar",
+    "edges-stats",
+    "edit-weight",
+    "like-purple",
+    "competitor",
+    "looks-good"
+  ],
+  "correct": [
+    "color-only-calendar",
+    "edges-stats",
+    "edit-weight"
+  ]
+}

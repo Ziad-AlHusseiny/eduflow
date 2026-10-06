@@ -1,0 +1,15 @@
+{
+  "title": "Stop the typos, type the overloads",
+  "prompt": "Fix three inference problems in Cartwheel's checkout. Do not change the calls under the type tests.\n\n1. `applyCoupon(available, code)` must reject a `code` that is not in `available`, instead of adding it to the union.\n2. `createMachine({ states, initial })` must reject an `initial` state that is not in `states`.\n3. `formatPrice` must return `string` for a number and `string[]` for an array of numbers.",
+  "hints": [
+    "For 1 and 2, the type parameter should be inferred only from the list, not from the single value.",
+    "Wrap the check-only position in `NoInfer<…>`: `code: NoInfer<C>`.",
+    "For 3, add two overload signatures above the existing implementation: `function formatPrice(cents: number): string;` and `function formatPrice(cents: number[]): string[];`."
+  ],
+  "explanation": "`code` and `initial` were inference sites, so a typo became one more candidate and the union grew to include it. `NoInfer<C>` keeps the type the same but removes that position from inference, so `C` comes only from the list and the single value is checked against it. For `formatPrice`, the union signature cannot say which input produces which output; overload signatures can, and the original union signature stays as the hidden implementation signature.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "format": "`formatPrice` formats a single price and a list of prices",
+    "coupon": "`applyCoupon` still applies a valid coupon"
+  }
+}

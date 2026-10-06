@@ -1,0 +1,29 @@
+{
+  "id": "swift-essentials",
+  "project": "Pocket Budget, a SwiftUI expense tracker built lesson by lesson: typed models, a list and add form, live exchange rates over the network, SwiftData storage and Swift Testing tests, shipped to TestFlight.",
+  "sections": [
+    { "id": "s-sw-1", "lessons": [
+      { "id": "l-sw-1-1", "minutes": 12 },
+      { "id": "l-sw-1-2", "minutes": 16 },
+      { "id": "l-sw-1-3", "minutes": 17 },
+      { "id": "l-sw-1-4", "minutes": 18 }
+    ] },
+    { "id": "s-sw-2", "lessons": [
+      { "id": "l-sw-2-1", "minutes": 17 },
+      { "id": "l-sw-2-2", "minutes": 16 },
+      { "id": "l-sw-2-3", "minutes": 16 },
+      { "id": "l-sw-2-4", "minutes": 18 }
+    ] },
+    { "id": "s-sw-3", "lessons": [
+      { "id": "l-sw-3-1", "minutes": 17 },
+      { "id": "l-sw-3-2", "minutes": 19 },
+      { "id": "l-sw-3-3", "minutes": 19 }
+    ] },
+    { "id": "s-sw-4", "lessons": [
+      { "id": "l-sw-4-1", "minutes": 20 },
+      { "id": "l-sw-4-2", "minutes": 17 },
+      { "id": "l-sw-4-3", "minutes": 17 },
+      { "id": "l-sw-4-4", "minutes": 16 }
+    ] }
+  ]
+}

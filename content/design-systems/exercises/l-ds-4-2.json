@@ -1,0 +1,37 @@
+{
+  "kind": "fill",
+  "language": "text",
+  "template": "@northwind/ui is at 4.7.2. Each line is a separate release from 4.7.2.\n\nFix: Dialog now returns focus to its trigger on close        -> {{0}}\nAdd a `loading` prop to Button                               -> {{1}}\nRemove the old token name --nw-color-text-light              -> {{2}}\nChange Button's default variant from \"primary\" to \"secondary\" -> {{3}}\nA Dialog focus fix plus a new Tabs component                 -> {{4}}\nDarken --nw-color-text-subtle slightly (same name and role)  -> {{5}}",
+  "blanks": [
+    {
+      "answers": [
+        "4.7.3"
+      ]
+    },
+    {
+      "answers": [
+        "4.8.0"
+      ]
+    },
+    {
+      "answers": [
+        "5.0.0"
+      ]
+    },
+    {
+      "answers": [
+        "5.0.0"
+      ]
+    },
+    {
+      "answers": [
+        "4.8.0"
+      ]
+    },
+    {
+      "answers": [
+        "4.8.0"
+      ]
+    }
+  ]
+}

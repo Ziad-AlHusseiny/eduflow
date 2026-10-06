@@ -1,0 +1,19 @@
+{
+  "title": "Listen to Ticketly's checkout",
+  "prompt": "You tested Ticketly's checkout with NVDA and Chrome and wrote down what you heard at seven points. Select **every announcement that reveals a bug**. For each one, think about which of name, role and state is missing or wrong.",
+  "hints": [
+    "A good announcement has a name, a role, and a state when the control has one.",
+    "Listen for what is missing: no name, no role, no state, or a file name where a description should be.",
+    "Four of the seven are bugs."
+  ],
+  "explanation": "Four announcements reveal bugs. \"Pay now\" with no role, skipped by Tab, is a clickable div: use a button. \"edit text, blank\" is a field with no label. \"graphic, IMG underscore 2041 dot jpeg\" means the image has no alt attribute, so the screen reader falls back to the file name. And \"How do refunds work?, button\" on a show/hide control is missing its state, so aria-expanded needs adding. The other three are what correct sounds like: a named radio group with position, a named dialog that announces itself and its first field, and a polite status message read without moving focus.",
+  "options": {
+    "div-pay": { "text": "Reading the summary: \"Pay now\". Tab moves from the card number field straight past it to the footer.", "why": "Bug. No role and not focusable: it is a div pretending to be a button." },
+    "radio-group": { "text": "Tabbing into the ticket options: \"Ticket type, grouping, Standing, radio button, checked, 1 of 2\".", "why": "Correct behaviour. The fieldset's legend names the group, and the radio has a name, a role, a state and its position." },
+    "blank-field": { "text": "Tabbing to the email field: \"edit text, blank\".", "why": "Bug. The field has no accessible name, so the user doesn't know what to type. It needs a label." },
+    "dialog-open": { "text": "After pressing Book now: \"Book Friday pass, dialog, Quantity, spin button, 1\".", "why": "Correct behaviour. The dialog is named, announces itself, and focus moved to its first field." },
+    "file-name": { "text": "Arrowing past the venue photo: \"graphic, IMG underscore 2041 dot jpeg\".", "why": "Bug. The image has no alt attribute, so NVDA reads the file name. Add meaningful alt text, or alt=\"\" if it is decorative." },
+    "status-update": { "text": "After pressing Add to basket, focus stays on the button and NVDA says: \"Ticket added. 2 tickets in your basket.\"", "why": "Correct behaviour. A polite live region announced the update without moving focus." },
+    "no-state": { "text": "On the FAQ toggle that shows and hides an answer: \"How do refunds work?, button\". Pressing it changes nothing in the announcement.", "why": "Bug. A disclosure needs aria-expanded so users hear \"collapsed\" and \"expanded\"." }
+  }
+}

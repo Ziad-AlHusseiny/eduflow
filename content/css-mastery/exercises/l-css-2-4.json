@@ -1,0 +1,38 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"wrap\">\n  <article class=\"session-card\">\n    <span class=\"badge\">Sold out</span>\n    <h3>Intrinsic Sizing in Practice</h3>\n    <p class=\"abstract\">Let content decide how big things are: min-content, max-content, fit-content and the math functions that replace half your media queries.</p>\n  </article>\n</div>",
+    "css": ".wrap {\n  width: 600px; /* the checks change this width */\n}\n.session-card {\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card h3 { margin: 8px 0; }\n.badge {\n  display: block;\n  padding: 0.1em 0.6em;\n  border-radius: 999px;\n  background: #fee2e2;\n  color: #991b1b;\n}\n\n.session-card { padding: 24px; }\n.abstract { width: 40ch; }\n"
+  },
+  "solution": {
+    "html": "<div class=\"wrap\">\n  <article class=\"session-card\">\n    <span class=\"badge\">Sold out</span>\n    <h3>Intrinsic Sizing in Practice</h3>\n    <p class=\"abstract\">Let content decide how big things are: min-content, max-content, fit-content and the math functions that replace half your media queries.</p>\n  </article>\n</div>",
+    "css": ".wrap {\n  width: 600px; /* the checks change this width */\n}\n.session-card {\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n.session-card h3 { margin: 8px 0; }\n.badge {\n  display: block;\n  padding: 0.1em 0.6em;\n  border-radius: 999px;\n  background: #fee2e2;\n  color: #991b1b;\n}\n\n.session-card { padding: clamp(12px, 4%, 32px); }\n.abstract { width: min(100%, 40ch); }\n.badge { width: fit-content; }\n"
+  },
+  "checks": [
+    {
+      "id": "abstract-capped",
+      "test": "const setW = async (w) => { $('.wrap').style.width = w + 'px'; await tick(16); }; await setW(600); const a = $('.abstract'); const probe = document.createElement('div'); probe.style.cssText = 'width:40ch;height:0;font:inherit;'; a.after(probe); const ch40 = probe.getBoundingClientRect().width; probe.remove(); return Math.abs(a.getBoundingClientRect().width - ch40) < 1;"
+    },
+    {
+      "id": "abstract-fits-narrow",
+      "test": "const setW = async (w) => { $('.wrap').style.width = w + 'px'; await tick(16); }; const pad = () => parseFloat(style('.session-card', 'padding-left')); await setW(220); const card = $('.session-card').getBoundingClientRect(); const r = $('.abstract').getBoundingClientRect(); const ok = r.right <= card.right - pad() + 0.5; await setW(600); return ok;"
+    },
+    {
+      "id": "badge-hugs",
+      "test": "const card = $('.session-card').getBoundingClientRect(); const b = $('.badge').getBoundingClientRect(); return style('.badge', 'display') === 'block' && b.width < card.width / 2 && b.width > 20;"
+    },
+    {
+      "id": "padding-min",
+      "test": "const setW = async (w) => { $('.wrap').style.width = w + 'px'; await tick(16); }; const pad = () => parseFloat(style('.session-card', 'padding-left')); await setW(250); const p = pad(); await setW(600); return Math.abs(p - 12) < 0.5;"
+    },
+    {
+      "id": "padding-fluid",
+      "test": "const setW = async (w) => { $('.wrap').style.width = w + 'px'; await tick(16); }; const pad = () => parseFloat(style('.session-card', 'padding-left')); await setW(500); const p = pad(); await setW(600); return Math.abs(p - 20) < 0.5;"
+    },
+    {
+      "id": "padding-max",
+      "test": "const setW = async (w) => { $('.wrap').style.width = w + 'px'; await tick(16); }; const pad = () => parseFloat(style('.session-card', 'padding-left')); await setW(1000); const p = pad(); await setW(600); return Math.abs(p - 32) < 0.5;"
+    }
+  ]
+}

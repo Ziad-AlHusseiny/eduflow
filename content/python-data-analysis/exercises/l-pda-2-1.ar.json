@@ -1,0 +1,17 @@
+{
+  "title": "أول Series وأول DataFrame لك",
+  "prompt": "ابنِ `revenue`، وهي Series من `values` مسمّاة بـ `months`. اجعل `best_month` تسمية أكبر قيمة فيها، و`share` حصة كل شهر من مجموع السنة (Series مجموعها 1). ثم ابنِ `products`، وهو DataFrame له الأعمدة `name` و`unit_price` و`unit_cost` ويحتوي المنتجات الثلاثة المذكورة في التعليقات، بهذا الترتيب، و`margin`، وهي Series تساوي `unit_price` ناقص `unit_cost`.",
+  "hints": [
+    "`pd.Series(values, index=months)` تربط التسميات بالقيم.",
+    "`revenue.idxmax()` تعيد تسمية؛ وقسمة Series على رقم واحد تقسم كل قيمة فيها.",
+    "ابنِ الـ DataFrame من قاموس قوائم، مفتاح لكل عمود، ثم اطرح عمودًا من الآخر: `products[\"unit_price\"] - products[\"unit_cost\"]`."
+  ],
+  "explanation": "تمرير `index=months` يجعل كل إيراد يحمل شهره، فتجيب `idxmax()` عن سؤال \"أيّ شهر؟\" مباشرة. و`revenue / revenue.sum()` تقسم كل قيمة على مجموع واحد: الرقم المفرد يتّحد مع كل عنصر في الـ Series (ويُسمّى هذا broadcasting). أما في الـ DataFrame، فتصبح مفاتيح القاموس أسماء الأعمدة، وكل قائمة تصبح عمودًا. وطرح عمودين يحاذي بينهما بحسب فهرس الصفوف المشترك، فيكون هامش المقلاة 21.55، والمطحنة 52.01، والخيمة 65.91.",
+  "checks": {
+    "series": "`revenue` هي Series مسمّاة من Jan إلى Dec",
+    "best-month": "`best_month` يساوي `\"Nov\"`",
+    "share": "مجموع `share` يساوي 1، ونوفمبر نحو 23%",
+    "products": "`products` هو DataFrame بحجم 3 × 3 وبالأعمدة الصحيحة",
+    "margin": "`margin` تحتوي 21.55 و52.01 و65.91"
+  }
+}

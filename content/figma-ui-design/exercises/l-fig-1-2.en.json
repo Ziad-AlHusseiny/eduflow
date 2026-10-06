@@ -1,0 +1,36 @@
+{
+  "title": "Critique the first Today screen",
+  "prompt": "Sofia drops this draft into the team critique and asks: \"Which changes fix the real problems, and what is the *because* for each?\" Look at size, grouping and alignment.\n\n:::figure Draft one of Steady's Today screen\n<svg viewBox=\"0 0 360 440\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">A phone screen draft: a small title Today at the same size as everything else, a centered progress line, and three habit rows where each streak label sits far below its habit name, nearly touching the next row.</title>\n  <rect class=\"d-box\" x=\"40\" y=\"10\" width=\"280\" height=\"420\" rx=\"24\"/>\n  <text class=\"d-label\" x=\"60\" y=\"52\">Today</text>\n  <text class=\"d-label-muted\" x=\"180\" y=\"80\" text-anchor=\"middle\">3 of 5 done</text>\n  <text class=\"d-label\" x=\"60\" y=\"122\">Read 20 pages</text>\n  <circle class=\"d-line\" cx=\"292\" cy=\"118\" r=\"10\" fill=\"none\"/>\n  <text class=\"d-label-muted\" x=\"60\" y=\"162\">12-day streak</text>\n  <text class=\"d-label\" x=\"60\" y=\"176\">Drink water</text>\n  <circle class=\"d-line\" cx=\"292\" cy=\"172\" r=\"10\" fill=\"none\"/>\n  <text class=\"d-label-muted\" x=\"60\" y=\"216\">3-day streak</text>\n  <text class=\"d-label\" x=\"60\" y=\"230\">Stretch 10 min</text>\n  <circle class=\"d-line\" cx=\"292\" cy=\"226\" r=\"10\" fill=\"none\"/>\n  <text class=\"d-label-muted\" x=\"60\" y=\"270\">30-day streak</text>\n  <rect class=\"d-box-accent\" x=\"40\" y=\"380\" width=\"280\" height=\"50\" rx=\"0\"/>\n  <text class=\"d-label-muted\" x=\"180\" y=\"410\" text-anchor=\"middle\">Today · Stats · Settings</text>\n</svg>\n:::\n\nSelect **every** change that fixes a real problem without creating a new one.",
+  "hints": [
+    "Squint at the mock-up. What stands out, and which streak belongs to which habit?",
+    "Compare the gap between a name and its streak with the gap between that streak and the next habit.",
+    "Count the left edges and centered lines. Then ask whether adding boxes or color removes a problem or hides it."
+  ],
+  "explanation": "Three things are wrong. The title is the same size and weight as the habit names, so nothing ranks. Each streak is 40 px below its own habit but only 14 px above the next one, so proximity pairs it with the wrong row; put it 4 px under its name and give rows a larger gap. The centered progress line adds a second alignment axis for no reason; align it to the shared left edge. Boxes and dividers would decorate the inverted spacing instead of fixing it, centered names make the list harder to scan, and accent-colored streaks would compete with the check buttons, the one thing that should carry the accent.",
+  "options": {
+    "title-rank": {
+      "text": "Make the title clearly larger and bolder than the habit names.",
+      "why": "Correct. Right now title and habits are the same size, so the screen has no entry point. A clear size and weight step gives it one."
+    },
+    "regroup-streaks": {
+      "text": "Place each streak a few pixels under its own habit name and increase the gap between rows.",
+      "why": "Correct. The streaks currently sit closer to the next habit than to their own. Small inside, larger between, fixes the grouping."
+    },
+    "one-edge": {
+      "text": "Left-align the progress line to the same edge as the list.",
+      "why": "Correct. The centered line creates a second axis. One shared left edge makes the screen calmer and quicker to scan."
+    },
+    "boxes-dividers": {
+      "text": "Wrap every row in a box and add a divider under each box.",
+      "why": "Boxes hide the spacing problem rather than solve it, and the screen gets heavier. Fix the gaps first; you may not need boxes at all."
+    },
+    "center-names": {
+      "text": "Center the habit names so the list feels balanced.",
+      "why": "Centered list items start at different x positions, so the eye has to hunt for each one. Lists read best left-aligned."
+    },
+    "accent-streaks": {
+      "text": "Color the streak counts with the accent color so they stand out.",
+      "why": "Streaks rank below the habits and their check buttons. Giving them the accent makes them compete with the primary action."
+    }
+  }
+}

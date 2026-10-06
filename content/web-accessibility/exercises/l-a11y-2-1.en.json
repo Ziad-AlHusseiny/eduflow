@@ -1,0 +1,17 @@
+{
+  "title": "Give Ticketly a skeleton",
+  "prompt": "Ticketly's home page is built from anonymous divs, and its headings were chosen for their font size. Restructure the markup without changing the text:\n\n- Wrap the logo and the menu in a `<header>`, and make the menu a `<nav>` (give it a name such as `aria-label=\"Site\"`).\n- Put the festival content in a single `<main>`.\n- Make the copyright line a `<footer>` outside `main`.\n- Turn \"Harbour Lights 2026\" into the only `<h1>`, and fix the other headings so the outline has no skipped levels: Line-up and Tickets are sections; the two passes belong under Tickets.",
+  "hints": [
+    "You can keep the existing class names on the new elements, so the CSS still applies.",
+    "Line-up and Tickets sit directly under the h1, so they are h2. The passes sit under Tickets.",
+    "header > nav, then main > h1, h2, h2, h3, h3, then footer."
+  ],
+  "explanation": "Landmark elements cost nothing visually but give screen reader users a map: header (banner), nav (navigation), main and footer (contentinfo). The heading levels now describe nesting rather than size: one h1 for the page, h2 for its two sections, and h3 for the passes inside Tickets. The CSS keeps the passes small, because size is a styling decision. Navigating by headings now reads like a table of contents: Harbour Lights 2026, Line-up, Tickets, Friday pass, Weekend pass.",
+  "checks": {
+    "one-main": "There is exactly one main landmark holding the festival content",
+    "banner-nav": "A top-level header contains a nav with the menu links",
+    "footer": "A top-level footer contains the Terms link",
+    "one-h1": "\"Harbour Lights 2026\" is the page's only h1",
+    "heading-order": "Headings start at h1 and never skip a level; the passes sit one level under Tickets"
+  }
+}

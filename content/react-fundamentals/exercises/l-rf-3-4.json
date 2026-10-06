@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useState } from 'react';\n\nconst MOVIES = [\n  { id: 'a1', title: 'Arrival', watched: true },\n  { id: 'p2', title: 'Past Lives', watched: false },\n  { id: 'd3', title: 'Dune: Part Two', watched: false },\n];\n\nfunction MovieList({ movies }) {\n  return (\n    <ul>\n      {movies.map((m) => <li key={m.id}>{m.title}</li>)}\n    </ul>\n  );\n}\n\nfunction FilterBar() {\n  const [filter, setFilter] = useState('all');\n  return (\n    <div>\n      <button aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>All</button>\n      <button aria-pressed={filter === 'to-watch'} onClick={() => setFilter('to-watch')}>To watch</button>\n      <button aria-pressed={filter === 'watched'} onClick={() => setFilter('watched')}>Watched</button>\n    </div>\n  );\n}\n\nexport default function App() {\n  // MovieList should only show movies that match the selected filter.\n  return (\n    <main>\n      <FilterBar />\n      <MovieList movies={MOVIES} />\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useState } from 'react';\n\nconst MOVIES = [\n  { id: 'a1', title: 'Arrival', watched: true },\n  { id: 'p2', title: 'Past Lives', watched: false },\n  { id: 'd3', title: 'Dune: Part Two', watched: false },\n];\n\nfunction MovieList({ movies }) {\n  return (\n    <ul>\n      {movies.map((m) => <li key={m.id}>{m.title}</li>)}\n    </ul>\n  );\n}\n\nfunction FilterBar({ value, onChange }) {\n  return (\n    <div>\n      <button aria-pressed={value === 'all'} onClick={() => onChange('all')}>All</button>\n      <button aria-pressed={value === 'to-watch'} onClick={() => onChange('to-watch')}>To watch</button>\n      <button aria-pressed={value === 'watched'} onClick={() => onChange('watched')}>Watched</button>\n    </div>\n  );\n}\n\nexport default function App() {\n  const [filter, setFilter] = useState('all');\n  const visible = MOVIES.filter((m) =>\n    filter === 'all' ? true : filter === 'watched' ? m.watched : !m.watched,\n  );\n\n  return (\n    <main>\n      <FilterBar value={filter} onChange={setFilter} />\n      <MovieList movies={visible} />\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "starts-all",
+      "test": "const btn = (t) => $$('button').find((b) => text(b) === t); const pressed = (t) => btn(t).getAttribute('aria-pressed') === 'true'; const titles = () => $$('li').map((li) => text(li)).join('|'); return titles() === 'Arrival|Past Lives|Dune: Part Two' && pressed('All') && !pressed('To watch');"
+    },
+    {
+      "id": "to-watch",
+      "test": "const btn = (t) => $$('button').find((b) => text(b) === t); const pressed = (t) => btn(t).getAttribute('aria-pressed') === 'true'; const titles = () => $$('li').map((li) => text(li)).join('|'); await click(btn('To watch')); return titles() === 'Past Lives|Dune: Part Two' && pressed('To watch') && !pressed('All');"
+    },
+    {
+      "id": "watched",
+      "test": "const btn = (t) => $$('button').find((b) => text(b) === t); const pressed = (t) => btn(t).getAttribute('aria-pressed') === 'true'; const titles = () => $$('li').map((li) => text(li)).join('|'); await click(btn('Watched')); return titles() === 'Arrival' && pressed('Watched') && !pressed('To watch');"
+    },
+    {
+      "id": "back-to-all",
+      "test": "const btn = (t) => $$('button').find((b) => text(b) === t); const pressed = (t) => btn(t).getAttribute('aria-pressed') === 'true'; const titles = () => $$('li').map((li) => text(li)).join('|'); await click(btn('All')); return $$('li').length === 3 && pressed('All');"
+    }
+  ]
+}

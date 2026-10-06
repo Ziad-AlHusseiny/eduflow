@@ -1,0 +1,17 @@
+{
+  "title": "أضف Tidewater إلى صفحة المقارنة",
+  "prompt": "صفحة المقارنة المشتركة تعرض العلامتين جنبًا إلى جنب، كلٌّ منهما في قسم له `data-brand` خاص به. أضف علامة Tidewater **دون لمس قواعد المكوّنات**:\n\n- العناوين تستخدم مجموعة خطوط Georgia ‏(`--nw-font-georgia`)،\n- الأزرار على شكل حبّة (نصف قطر `999px`)،\n- خلفية الزر هي `--nw-teal-700`، لأن teal-600 يفشل في التباين مع النص الأبيض،\n- يجب أن يبقى قسم Northwind تمامًا كما هو.\n\nحاليًا الطبقة الدلالية معرّفة على `:root` وحده. فكّر أين تُحسب قيمها.",
+  "hints": [
+    "اكتب كتلة `[data-brand=\"tidewater\"] { … }` تربط الـ brand tokens (`--nw-brand-font-heading` و`--nw-brand-radius-control` والتدرّج) بقيم Tidewater.",
+    "الـ brand tokens وحدها لن تصل إلى القسم: فالـ semantic tokens حُسبت على `:root` بقيم Northwind. غيّر الـ selector الخاص بالقاعدة الدلالية إلى `:root, [data-brand]`.",
+    "داخل كتلة Tidewater، اربط أيضًا `--nw-color-action-bg` بـ `var(--nw-brand-700)`."
+  ],
+  "explanation": "كتلة العلامة لا تبدّل إلا قيم طبقة العلامة، ومعها ربط دلالي واحد تحتاجه Tidewater فعلًا من أجل التباين. وإعادة تعريف الطبقة الدلالية تحت `[data-brand]` هي ما يجعل كل قسم يحسب `--nw-color-action-bg` و`--nw-font-heading` و`--nw-radius-control` من الـ brand tokens الخاصة به، بدل أن يرث قيمًا حُسبت مسبقًا عند الجذر. والمكوّنات لا تذكر أي علامة أبدًا، فالعلامة الثالثة مجرّد كتلة إضافية.",
+  "checks": {
+    "northwind-intact": "قسم Northwind يحتفظ بزرّه الأزرق ونصف القطر 6px وعناوين Inter",
+    "tidewater-font": "عناوين Tidewater تستخدم Georgia",
+    "tidewater-shape": "أزرار Tidewater على شكل حبّة (نصف قطر 999px)",
+    "tidewater-contrast": "أزرار Tidewater تستخدم teal-700 مع نص أبيض",
+    "no-brand-in-components": "لا توجد قاعدة تستهدف المكوّنات بحسب العلامة"
+  }
+}

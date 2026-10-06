@@ -1,0 +1,11 @@
+{
+  "title": "Two best sellers per category",
+  "prompt": "Finish Huda's newsletter list: the **top 2 products by 2025 revenue within each category** (non-cancelled orders). If two products tie for second place, keep both.\n\nReturn `category`, `product`, `revenue` (rounded to 2 decimals) and `rnk` (the product's rank inside its category, 1 = best). Row order doesn't matter.\n\nThe starter's `product_revenue` CTE is correct. Its ranking isn't: it returns only two products for the whole store.",
+  "hints": [
+    "Where does the ranking restart in the starter? Which part of `OVER (...)` makes it restart for each category?",
+    "Add `PARTITION BY category` before the `ORDER BY` inside OVER.",
+    "Because ties should both be kept, use `RANK()` rather than `ROW_NUMBER()`."
+  ],
+  "explanation": "Without PARTITION BY, the whole result is one window, so ROW_NUMBER numbers all products together and `rnk <= 2` keeps the store's top two. `PARTITION BY category` restarts the ranking in every category, and RANK gives tied products the same number so a tie for second keeps both. Kitchen and Outdoor each contain a single product, so they return one row each, and that's the misfiled-products issue from the joins lesson showing up again.",
+  "checks": {}
+}

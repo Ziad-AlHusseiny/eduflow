@@ -1,0 +1,19 @@
+{
+  "title": "Ship the Watchlist",
+  "prompt": "Put these steps in order: from a working app on your laptop to a live production site, then shipping one more change safely through a preview deployment.",
+  "hints": [
+    "Check the production build on your own machine before anything leaves it.",
+    "Vercel imports a repository, so the code has to be on GitHub first.",
+    "A change on a branch gets a preview URL; production only changes when main does."
+  ],
+  "explanation": "You verify the real build locally with `npm run build` and `npm run preview`, commit, and push to GitHub so Vercel has a repository to import. Importing detects Vite (`vite build`, output `dist`), and the first deploy gives you a production URL. After that, changes go on a branch: the pull request gets its own preview URL to check, and merging into `main` triggers the production deployment.",
+  "items": {
+    "build-preview": "Run `npm run build` and `npm run preview` and click through the app locally",
+    "commit": "Commit the working app with Git",
+    "push": "Create a GitHub repository and `git push -u origin main`",
+    "import": "In Vercel, Add New → Project and import the repository (preset: Vite, output: dist)",
+    "deploy": "Click Deploy and open the production URL on your phone",
+    "branch-preview": "Restyle the filter bar on a branch, open a pull request and check its preview URL",
+    "merge": "Merge the pull request into main so production updates"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "title": "من ظهور الشاشة إلى الأسعار على الشاشة",
+  "prompt": "رتّب خطوات شاشة أسعار الصرف في Pocket Budget بالترتيب الذي تحدث به وقت التشغيل، من لحظة ظهور الشاشة إلى لحظة ظهور الأسعار.",
+  "hints": [
+    "لا شيء يحدث حتى يبدأ SwiftUI العمل غير المتزامن، ويجب أن يرى المستخدم مؤشّر تحميل قبل أن يبدأ أي استدعاء للشبكة.",
+    "لا يمكنك الجلب قبل أن يكون لديك URL، ولا يجب أن تفكّ الترميز قبل أن تعرف أن الاستجابة ناجحة.",
+    "الخطوة الأخيرة هي التي تجعل SwiftUI يعيد الرسم."
+  ],
+  "explanation": "تبدأ `.task` الدالة `model.load()` حين يظهر الـ view. يضبط النموذج `.loading` أولًا فيظهر مؤشّر التحميل فورًا. يبني العميل الـ URL مع الـ query items، ثم يعلّق `URLSession.shared.data(from:)` التنفيذ حتى تصل الاستجابة. يأتي فحص الحالة قبل فكّ الترميز، لأن URLSession لا يرمي خطأً عند 404 أو 500، وصفحة الخطأ ستفشل في فكّ الترميز برسالة مضلّلة. ينتج فكّ الترميز `RatesResponse`، وإسناد `.loaded(response)` على الـ main actor هو ما يجعل SwiftUI يعيد رسم القائمة.\n\nإن رمت أي خطوة بعد `set-loading` خطأً، تضبط `catch` الوحيدة في النموذج الحالة `.failed(message)` بدلًا من ذلك.",
+  "items": {
+    "start-task": "ينفّذ SwiftUI ‏`.task { await model.load() }` عند ظهور الـ view",
+    "set-loading": "يضبط النموذج `state = .loading`، فيعرض الـ view ‏`ProgressView`",
+    "build-url": "ابنِ الـ URL: `endpoint.appending(queryItems: [URLQueryItem(name: \"base\", value: \"USD\")])`",
+    "fetch": "`let (data, response) = try await URLSession.shared.data(from: url)`",
+    "check-status": "افحص `(response as? HTTPURLResponse)?.statusCode == 200`، وإلا فارمِ `RateError.badStatus`",
+    "decode": "`try decoder.decode(RatesResponse.self, from: data)` مع استراتيجيتَي snake_case وISO 8601",
+    "set-loaded": "أسند `state = .loaded(response)` على الـ main actor، فيعيد SwiftUI رسم القائمة"
+  }
+}

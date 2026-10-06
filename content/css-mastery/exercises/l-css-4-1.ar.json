@@ -1,0 +1,17 @@
+{
+  "title": "حركة بأدب",
+  "prompt": "أضف الحركة إلى البطاقة، بلطف:\n\n1. أضف transition لارتفاع المرور: حرّك **`translate`** (أو `transform`) و**`box-shadow`** فقط، ولا تستخدم `all` أبدًا، بمدد بين 100ms و400ms.\n2. أنشئ حركة `@keyframes` تجعل هالة `.live-dot::after` تنبض **إلى الأبد**، باستخدام خصائص رخيصة فقط (`scale` و`opacity` و`transform` و`translate` و`rotate`).\n3. اجعل الـ transition والنبض يحترمان **`prefers-reduced-motion`** (يُنصح بالنمط الاختياري مع `no-preference`).",
+  "hints": [
+    "تقبل `transition` قائمة مفصولة بفواصل: `translate 200ms ease-out, box-shadow 200ms ease-out`.",
+    "للنبض حرّك `scale` و`opacity` في `@keyframes`، واستخدم `infinite` كعدد للتكرار.",
+    "ضع تصريحي `transition` و`animation` كليهما داخل `@media (prefers-reduced-motion: no-preference) { … }`."
+  ],
+  "explanation": "ذكر `translate` و`box-shadow` يعني أن الارتفاع وحده يتحرّك؛ وتبقى تغييرات الثيم والتخطيط فورية. والـ keyframes الخاصة بالنبض لا تلمس إلا `scale` و`opacity`، اللتين تستطيع المتصفّحات تحريكهما على الـ compositor دون إعادة حساب التخطيط. وتغليف الاثنين داخل `@media (prefers-reduced-motion: no-preference)` يجعل الحركة اختيارية: من طلبوا من نظام التشغيل تقليل الحركة يحصلون على بطاقة ثابتة ونقطة ثابتة، بينما يظل النص «Live now» يخبرهم بما كانت تعنيه النقطة.",
+  "checks": {
+    "transition-specific": "المرور يحرّك translate وbox-shadow، لا all",
+    "transition-duration": "مدد الـ transition بين 100ms و400ms",
+    "pulse-loops": "هالة نقطة Live تنبض إلى الأبد",
+    "pulse-cheap": "الـ keyframes لا تحرّك إلا خصائص رخيصة",
+    "reduced-motion": "الحركة تحترم prefers-reduced-motion"
+  }
+}

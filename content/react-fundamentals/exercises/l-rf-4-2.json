@@ -1,0 +1,32 @@
+{
+  "kind": "fill",
+  "language": "js",
+  "template": "// Terminal\n// npm install {{0}} @tailwindcss/vite\n\n// vite.config.js\nimport { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\nimport tailwindcss from '{{1}}';\n\nexport default defineConfig({\n  plugins: [react(), {{2}}],\n});\n\n/* src/index.css */\n@import \"{{3}}\";\n\n// src/components/FilterButton.jsx: style the active filter\n<button aria-pressed={active} className=\"px-3 py-1 {{4}}:bg-indigo-600\">",
+  "blanks": [
+    {
+      "answers": [
+        "tailwindcss"
+      ]
+    },
+    {
+      "answers": [
+        "@tailwindcss/vite"
+      ]
+    },
+    {
+      "answers": [
+        "tailwindcss()"
+      ]
+    },
+    {
+      "answers": [
+        "tailwindcss"
+      ]
+    },
+    {
+      "answers": [
+        "aria-pressed"
+      ]
+    }
+  ]
+}

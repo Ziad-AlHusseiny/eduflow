@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "function sortByTotal(orders: { totalCents: number }[]): { totalCents: number }[] {\n  return [...orders].sort((a, b) => a.totalCents - b.totalCents);\n}\n\nfunction indexById(items: { id: number }[]): Map<number, { id: number }> {\n  return new Map(items.map((item) => [item.id, item]));\n}\n\nfunction pluck(items: any[], key: string): any[] {\n  return items.map((item) => item[key]);\n}\n\nfunction lastItem(items: unknown[]): unknown {\n  return items[items.length - 1];\n}\n\n// ---- Type tests (do not edit) ----\ntype DetailedOrder = { id: number; totalCents: number; customer: string };\nconst orders: DetailedOrder[] = [\n  { id: 1003, totalCents: 4500, customer: 'Mona' },\n  { id: 1001, totalCents: 18900, customer: 'Karim' },\n  { id: 1002, totalCents: 1200, customer: 'Lea' },\n];\n\nconst sorted = sortByTotal(orders);\nconst byId = indexById(orders);\nconst customers = pluck(orders, 'customer');\nconst last = lastItem(orders);\n\ntype T1 = Expect<Equal<typeof sorted, DetailedOrder[]>>;\ntype T2 = Expect<Equal<typeof byId, Map<number, DetailedOrder>>>;\ntype T3 = Expect<Equal<typeof customers, string[]>>;\ntype T4 = Expect<Equal<typeof last, DetailedOrder | undefined>>;\n\n// @ts-expect-error: products have no totalCents\nsortByTotal([{ sku: 'TENT-2P' }]);\n\n// @ts-expect-error: 'email' is not a property of DetailedOrder\npluck(orders, 'email');\n\nconsole.log(sorted.map((o) => o.customer), byId.get(1001)?.customer, customers, last?.id);\n"
+  },
+  "solution": {
+    "ts": "function sortByTotal<T extends { totalCents: number }>(orders: T[]): T[] {\n  return [...orders].sort((a, b) => a.totalCents - b.totalCents);\n}\n\nfunction indexById<T extends { id: number }>(items: T[]): Map<number, T> {\n  return new Map(items.map((item) => [item.id, item]));\n}\n\nfunction pluck<T, K extends keyof T>(items: T[], key: K): T[K][] {\n  return items.map((item) => item[key]);\n}\n\nfunction lastItem<T>(items: T[]): T | undefined {\n  return items[items.length - 1];\n}\n\n// ---- Type tests (do not edit) ----\ntype DetailedOrder = { id: number; totalCents: number; customer: string };\nconst orders: DetailedOrder[] = [\n  { id: 1003, totalCents: 4500, customer: 'Mona' },\n  { id: 1001, totalCents: 18900, customer: 'Karim' },\n  { id: 1002, totalCents: 1200, customer: 'Lea' },\n];\n\nconst sorted = sortByTotal(orders);\nconst byId = indexById(orders);\nconst customers = pluck(orders, 'customer');\nconst last = lastItem(orders);\n\ntype T1 = Expect<Equal<typeof sorted, DetailedOrder[]>>;\ntype T2 = Expect<Equal<typeof byId, Map<number, DetailedOrder>>>;\ntype T3 = Expect<Equal<typeof customers, string[]>>;\ntype T4 = Expect<Equal<typeof last, DetailedOrder | undefined>>;\n\n// @ts-expect-error: products have no totalCents\nsortByTotal([{ sku: 'TENT-2P' }]);\n\n// @ts-expect-error: 'email' is not a property of DetailedOrder\npluck(orders, 'email');\n\nconsole.log(sorted.map((o) => o.customer), byId.get(1001)?.customer, customers, last?.id);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "sorts-copy",
+      "test": "const xs = [{ totalCents: 3 }, { totalCents: 1 }, { totalCents: 2 }]; const out = sortByTotal(xs); return out.map((o) => o.totalCents).join() === '1,2,3' && xs[0].totalCents === 3;"
+    },
+    {
+      "id": "indexes",
+      "test": "const m = indexById([{ id: 7, n: 'a' }, { id: 9, n: 'b' }]); return m.get(9).n === 'b' && m.size === 2;"
+    },
+    {
+      "id": "plucks",
+      "test": "return pluck([{ a: 1 }, { a: 2 }], 'a').join() === '1,2' && lastItem([1, 2, 3]) === 3 && lastItem([]) === undefined;"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "kind": "order",
+  "items": [
+    "propose",
+    "export",
+    "ci",
+    "review",
+    "release",
+    "sync"
+  ]
+}

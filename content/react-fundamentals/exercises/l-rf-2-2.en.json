@@ -1,0 +1,16 @@
+{
+  "title": "Make MovieCard reusable",
+  "prompt": "Every card says \"Arrival\". Give `MovieCard` three props, `title`, `year` and `watched`, and use them:\n\n- `<h2>` shows the title, a `<p>` shows the year.\n- Another `<p>` shows **Watched** when `watched` is true and **To watch** otherwise. Default `watched` to `false`.\n\nThen render these three cards in `App`, in this order:\n\n| title | year | watched |\n|---|---|---|\n| Arrival | 2016 | true |\n| Past Lives | 2023 | *(don't pass it)* |\n| Paddington 2 | 2017 | false |",
+  "hints": [
+    "Destructure the props in the parameter list: `function MovieCard({ title, year, watched = false })`.",
+    "Numbers and booleans go in braces: `year={2016}`. A bare `watched` means `watched={true}`.",
+    "Choose the status text with a ternary: `{watched ? 'Watched' : 'To watch'}`."
+  ],
+  "explanation": "`MovieCard` is now a function of its props. The default `watched = false` covers the Past Lives card, which doesn't pass the prop at all, so `watched` arrives as `undefined` and the default kicks in. Numbers and booleans need braces; a quoted `year=\"2016\"` would pass a string, which looks the same here but behaves differently in arithmetic and comparisons.",
+  "checks": {
+    "titles": "Three cards titled Arrival, Past Lives and Paddington 2, in that order",
+    "years": "Each card shows its own year",
+    "watched-status": "Arrival shows \"Watched\"",
+    "default-status": "Past Lives and Paddington 2 show \"To watch\""
+  }
+}

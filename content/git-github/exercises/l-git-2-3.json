@@ -1,0 +1,12 @@
+{
+  "kind": "order",
+  "items": [
+    "merge",
+    "status",
+    "open",
+    "edit",
+    "check",
+    "add",
+    "commit"
+  ]
+}

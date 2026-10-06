@@ -1,0 +1,10 @@
+{
+  "title": "راقبه، ثم استرجعه",
+  "prompt": "الإصدار 1.5.0 قيد النشر (rollout). املأ الفراغات لانتظار الـ rollout، وسرد revisions الـ Deployment، والتراجع إلى السابقة، وإعادة release ‏staging الذي يديره Helm إلى الـ revision رقم 4.",
+  "hints": [
+    "الأوامر الفرعية الثلاثة لـ `kubectl rollout` كلمة واحدة لكل منها: واحد ينتظر، وواحد يسرد، وواحد يعكس.",
+    "أمر Helm للعودة إلى release سابق يحمل اسم المفهوم نفسه."
+  ],
+  "explanation": "```bash\nkubectl rollout status deployment/notes-api --timeout=5m\nkubectl rollout history deployment/notes-api\nkubectl rollout undo deployment/notes-api\nhelm rollback notes-api 4 -n notes\n```\nالأمر `status` ينتظر حتى ينتهي الـ rollout ويخرج برمز غير صفري إن فشل، وهذا يجعله بوّابة جيدة في الـ CI. و`undo` يوسّع الـ ReplicaSet السابق من جديد بقواعد التحديث المتدرّج نفسها. و`helm rollback` يعيد تطبيق كل الـ manifests من release revision رقم 4. بعد ذلك، اعكس التغيير في Git حتى لا يعيد الـ deploy التالي الإصدار 1.5.0.",
+  "checks": {}
+}

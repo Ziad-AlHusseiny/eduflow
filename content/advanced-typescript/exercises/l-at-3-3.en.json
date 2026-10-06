@@ -1,0 +1,13 @@
+{
+  "title": "Build Exclude, Extract and friends",
+  "prompt": "Implement these with conditional types (do not use the built-in `Exclude`, `Extract`, `ReturnType` or `Awaited`):\n\n- `MyExclude<T, U>`: the members of `T` not assignable to `U`.\n- `MyExtract<T, U>`: the members of `T` assignable to `U`.\n- `MyReturnType<F>`: the return type of a function type.\n- `UnwrapPromise<T>`: the value inside a `Promise`, or `T` itself if it is not a promise.\n- `OrderWithStatus<S>`: the `Order` variant(s) whose `status` is `S`.\n- `KeysOfType<T, V>`: the keys of `T` whose values are assignable to `V`.",
+  "hints": [
+    "`MyExclude` and `MyExtract` are one-line distributive conditionals: one returns `never` in the true branch, the other in the false branch.",
+    "Use `infer` to capture a part of a type: `F extends (...args: any[]) => infer R ? R : never`.",
+    "`OrderWithStatus` is `MyExtract<Order, { status: S }>`. For `KeysOfType`, map each key to itself or `never`, then index the result with `[keyof T]`."
+  ],
+  "explanation": "`MyExclude` and `MyExtract` rely on distribution: `T` is a naked type parameter, so each union member is tested separately and the `never` results vanish. The same distribution makes `OrderWithStatus<'delivered' | 'returned'>` give both variants, which is why `['deliveredAt']` works on it. `infer` captures the return type and the promise's value. `KeysOfType` builds an object whose values are key names or `never`, then reads all of its values at once with `[keyof T]`.",
+  "checks": {
+    "types": "The file type-checks with zero errors: all ten type tests pass"
+  }
+}

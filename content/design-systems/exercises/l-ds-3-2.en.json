@@ -1,0 +1,15 @@
+{
+  "title": "Choose the Dialog API",
+  "prompt": "Northwind needs a Dialog. Known uses so far: a delete confirmation (title, sentence, two buttons), a driver-assignment form with a searchable list, a route preview with a map and a side panel, and a marketing newsletter sign-up. Four API proposals arrived. Pick the one you would approve.\n\n```tsx\n// A\n<Dialog title=\"Delete route?\" body=\"…\" confirmLabel=\"Delete\" confirmVariant=\"danger\"\n        cancelLabel=\"Cancel\" showSidePanel={false} onConfirm={…} />\n\n// B\n<Dialog open={open} onOpenChange={setOpen}>{anything}</Dialog>\n\n// C\n<Dialog open={open} onOpenChange={setOpen}>\n  <Dialog.Header><Dialog.Title>Delete route?</Dialog.Title></Dialog.Header>\n  <Dialog.Body>…</Dialog.Body>\n  <Dialog.Footer>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant=\"danger\" onClick={remove}>Delete</Button>\n  </Dialog.Footer>\n</Dialog>\n\n// D\n// No shared Dialog: each team builds its own on top of the native <dialog> element.\n```",
+  "hints": [
+    "List how different the four known uses are. Which API absorbs a map with a side panel without new props?",
+    "Then ask which option still lets the system own focus handling, spacing and the title's accessible name."
+  ],
+  "explanation": "Proposal C composes: the system owns the overlay, focus handling, spacing and the title that names the dialog, while teams arrange header, body and footer content freely. A works for the delete confirmation and turns into prop explosion by the second use case. B is flexible but gives up structure, so every team re-solves titles, spacing and footers differently. D throws away the system's accessibility work entirely. A small configured `ConfirmDialog` can later be built on top of C for the most common case.",
+  "options": {
+    "props": { "text": "A: one Dialog configured entirely through props.", "why": "It fits the confirmation and fails the map preview; every new use becomes another prop such as `showSidePanel`." },
+    "children-only": { "text": "B: a Dialog that renders whatever children it receives.", "why": "Maximally flexible, but the system no longer owns titles, spacing or footers, so dialogs drift apart again." },
+    "compound": { "text": "C: a compound Dialog with Header, Title, Body and Footer pieces.", "why": "Correct. It covers all four uses while the system keeps control of structure, styling and accessibility." },
+    "per-team": { "text": "D: no shared component; teams use the native `<dialog>` element directly.", "why": "The native element is a good foundation for the system's Dialog, but leaving every team to style and label it recreates the inconsistency the system exists to remove." }
+  }
+}

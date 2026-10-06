@@ -1,0 +1,275 @@
+[
+  {
+    "id": "maya-chen",
+    "name": "Maya Chen",
+    "nameAr": "مايا تشين",
+    "role": { "en": "Senior Frontend Engineer", "ar": "مهندسة واجهات أمامية أولى" },
+    "company": "Verse",
+    "bio": {
+      "en": [
+        "Maya has spent nine years building interfaces people use every day, most recently Verse's document editor, where a slow keystroke turns into a bug report within the hour. She learned JavaScript before frameworks were the default, moved to React in 2016, and picked up React Native when Verse shipped its mobile app.",
+        "She teaches the way she reviews code: start from what the user sees, name the trap before you step in it, and keep each example small enough to hold in your head. Her courses grow one real project from the first lesson to the deploy.",
+        "From Maya you get the habits that make front-end work calm: components with one clear job, state that lives in one place, and a feel for when an effect is the wrong tool."
+      ],
+      "ar": [
+        "أمضت مايا تسع سنوات في بناء واجهات يستخدمها الناس كل يوم، وآخرها محرّر المستندات في Verse، حيث يتحوّل أي بطء في الكتابة إلى بلاغ عن خطأ خلال ساعة. تعلّمت JavaScript قبل أن تصبح أطر العمل هي القاعدة، وانتقلت إلى React عام 2016، ثم إلى React Native حين أطلقت Verse تطبيقها للجوال.",
+        "تُدرّس بالطريقة نفسها التي تراجع بها الكود: تبدأ مما يراه المستخدم، وتسمّي الفخ قبل أن تقع فيه، وتُبقي كل مثال صغيرًا بما يكفي لتستوعبه كاملًا. في دوراتها ينمو مشروع حقيقي واحد من الدرس الأول حتى النشر.",
+        "ستخرج معها بعادات تجعل العمل على الواجهات هادئًا: components لكلٍّ منها مهمة واحدة واضحة، وstate يعيش في مكان واحد، وحسّ يخبرك متى يكون الـ effect هو الأداة الخطأ."
+      ]
+    },
+    "expertise": {
+      "en": ["React", "React Native", "JavaScript", "UI performance"],
+      "ar": ["React", "React Native", "JavaScript", "أداء الواجهات"]
+    },
+    "highlights": {
+      "en": [
+        "Rebuilt Verse's document editor in React, cutting typing latency from 120 ms to under 16 ms",
+        "Shipped Verse's React Native app to 1.2 million installs on iOS and Android",
+        "Has mentored more than 30 junior engineers through their first production releases"
+      ],
+      "ar": [
+        "أعادت بناء محرّر المستندات في Verse باستخدام React، فانخفض زمن الاستجابة عند الكتابة من 120 ms إلى أقل من 16 ms",
+        "أطلقت تطبيق Verse المبني بـ React Native حتى تجاوز 1.2 مليون تثبيت على iOS وAndroid",
+        "رافقت أكثر من 30 مهندسًا مبتدئًا حتى أطلقوا أعمالهم الأولى في بيئة الإنتاج"
+      ]
+    },
+    "quote": {
+      "en": "I teach React the way I'd onboard a new teammate: one real feature at a time, with the mistakes left in so you can watch them get fixed.",
+      "ar": "أُدرّس React كما أستقبل زميلًا جديدًا في الفريق: ميزة حقيقية واحدة في كل مرة، مع إبقاء الأخطاء ظاهرة لترى كيف تُصلَح."
+    }
+  },
+  {
+    "id": "daniel-okafor",
+    "name": "Daniel Okafor",
+    "nameAr": "دانيال أوكافور",
+    "role": { "en": "Staff Engineer", "ar": "مهندس برمجيات رئيسي (Staff)" },
+    "company": "Brightline",
+    "bio": {
+      "en": [
+        "Daniel wrote iOS apps in Objective-C, then Swift, for six years before joining Brightline's platform team, where he now owns the shared TypeScript libraries that 40 product engineers build on. Both jobs taught him the same lesson: a good type system catches the bug before the customer does.",
+        "He is the engineer people call when a type has grown into a puzzle nobody can read, and his fix is usually smaller types with honest names, not cleverer ones. In class he works through real failures, like a refund sent twice or an optional that crashed on launch, and shows the type that would have stopped each one.",
+        "Learners get his test for types that earn their keep, and the confidence to delete the ones that don't."
+      ],
+      "ar": [
+        "كتب دانيال تطبيقات iOS بلغة Objective-C ثم Swift لست سنوات قبل أن ينضم إلى فريق المنصّة في Brightline، حيث يتولّى اليوم مكتبات TypeScript المشتركة التي يبني عليها 40 مهندسًا. علّمته الوظيفتان الدرس نفسه: نظام الأنواع الجيد يلتقط الخطأ قبل أن يصل إلى العميل.",
+        "هو المهندس الذي يُستدعى حين يتحوّل type إلى لغز لا يستطيع أحد قراءته، وحلّه في الغالب أنواع أصغر بأسماء صريحة، لا أنواع أذكى. في دروسه يعرض أعطالًا حقيقية، مثل مبلغ مسترد أُرسل مرتين أو optional تسبّب في انهيار التطبيق عند فتحه، ثم يكتب الـ type الذي كان سيمنع كلًّا منها.",
+        "ستأخذ منه معيارًا واضحًا للأنواع التي تستحق مكانها، والثقة لحذف تلك التي لا تستحقه."
+      ]
+    },
+    "expertise": {
+      "en": ["TypeScript", "Swift & SwiftUI", "API design", "Type-safe architecture"],
+      "ar": ["TypeScript", "Swift وSwiftUI", "تصميم الـ API", "معمارية آمنة الأنواع"]
+    },
+    "highlights": {
+      "en": [
+        "Led the migration of Brightline's 400k-line payments codebase from JavaScript to strict TypeScript",
+        "Shipped five iOS apps in Swift, including a banking app used by 800,000 customers",
+        "Maintains Brightline's typed API client, used by 14 product teams"
+      ],
+      "ar": [
+        "قاد نقل قاعدة كود المدفوعات في Brightline، بحجم 400 ألف سطر، من JavaScript إلى TypeScript بالوضع الصارم",
+        "أطلق خمسة تطبيقات iOS بلغة Swift، منها تطبيق مصرفي يستخدمه 800 ألف عميل",
+        "يتولّى صيانة الـ API client المكتوب بأنواع صارمة في Brightline، والذي تعتمد عليه 14 فرقة منتج"
+      ]
+    },
+    "quote": {
+      "en": "I show you the bug first and the type that would have caught it second, so every pattern arrives with a reason.",
+      "ar": "أعرض عليك الخطأ أولًا، ثم الـ type الذي كان سيلتقطه، فيأتيك كل نمط ومعه سببه."
+    }
+  },
+  {
+    "id": "sofia-reyes",
+    "name": "Sofia Reyes",
+    "nameAr": "صوفيا رييس",
+    "role": { "en": "Principal Product Designer", "ar": "مصمّمة منتجات رئيسية" },
+    "company": "Northwind",
+    "bio": {
+      "en": [
+        "Sofia trained as a graphic designer, taught herself CSS to stop arguing with engineers about pixels, and has worked on both sides of the handoff ever since. At Northwind she leads the design system behind 11 products, from the Figma library to the CSS tokens that ship in code.",
+        "Her teaching starts from the decision, not the tool: why this spacing, why this contrast, why this component has three variants and not seven. She critiques the work in front of you the way a good design lead does, specific and kind, and expects you to defend your choices.",
+        "Her exercises end with a short written rationale, because explaining a choice is half the job. From Sofia you get a vocabulary designers and developers share, and files and stylesheets someone else can pick up a year later."
+      ],
+      "ar": [
+        "درست صوفيا التصميم الجرافيكي، ثم علّمت نفسها CSS لتتوقف عن الجدال مع المهندسين حول البكسلات، ومنذ ذلك الحين تعمل على طرفَي التسليم معًا. في Northwind تقود نظام التصميم الذي تقوم عليه 11 منتجًا، من مكتبة Figma حتى الـ tokens التي تصل إلى الكود في CSS.",
+        "يبدأ تدريسها من القرار لا من الأداة: لماذا هذه المسافة، ولماذا هذا التباين، ولماذا لهذا الـ component ثلاثة variants لا سبعة. تنتقد العمل الذي أمامك كما تفعل قائدة تصميم جيدة، بدقة ولطف، وتنتظر منك أن تدافع عن اختياراتك.",
+        "تنتهي تمارينها بتبرير مكتوب قصير، لأن شرح القرار نصف العمل. ستخرج معها بلغة مشتركة بين المصممين والمطوّرين، وبملفات وأنماط يستطيع غيرك أن يكمل العمل عليها بعد عام."
+      ]
+    },
+    "expertise": {
+      "en": ["Figma", "Design systems", "Modern CSS", "Design tokens"],
+      "ar": ["Figma", "أنظمة التصميم", "CSS الحديثة", "الـ design tokens"]
+    },
+    "highlights": {
+      "en": [
+        "Built Northwind's design system, now shared by 11 products and 60 designers and engineers",
+        "Cut UI stylesheet size by 38% across three products by moving them onto shared tokens and cascade layers",
+        "Has run more than 200 design critiques for junior designers"
+      ],
+      "ar": [
+        "بنت نظام التصميم في Northwind، ويستخدمه اليوم 11 منتجًا و60 مصممًا ومهندسًا",
+        "قلّصت حجم ملفات الأنماط بنسبة 38% في ثلاثة منتجات بنقلها إلى tokens مشتركة وcascade layers",
+        "أدارت أكثر من 200 جلسة نقد تصميم لمصممين مبتدئين"
+      ]
+    },
+    "quote": {
+      "en": "I'll ask you why before I ask you how, because a design you can explain is a design you can defend in review.",
+      "ar": "سأسألك «لماذا» قبل أن أسألك «كيف»، لأن التصميم الذي تستطيع شرحه هو تصميم تستطيع الدفاع عنه في المراجعة."
+    }
+  },
+  {
+    "id": "liam-patel",
+    "name": "Liam Patel",
+    "nameAr": "ليام باتيل",
+    "role": { "en": "Lead Data Scientist", "ar": "قائد فريق علم البيانات" },
+    "company": "Datawheel",
+    "bio": {
+      "en": [
+        "Liam started as a business analyst who got tired of copying numbers between spreadsheets, so he learned SQL, then Python, then enough statistics to know when a chart is lying. At Datawheel he leads the team that builds forecasting and churn models for retail clients.",
+        "He teaches analysis as a series of questions from real stakeholders: why did revenue jump, which customers are about to leave, is this result worth acting on? You write the query, check the numbers by hand, and only then reach for a model. He is blunt about data leakage and patient about everything else.",
+        "He also teaches the unglamorous habits that make an analyst trusted: checking row counts after every join, writing assumptions down, and saying \"not yet\" when the data is thin. Learners leave with reproducible notebooks and SQL they can defend line by line in a meeting."
+      ],
+      "ar": [
+        "بدأ ليام محلّلًا للأعمال، ثم ملّ من نسخ الأرقام بين جداول البيانات، فتعلّم SQL ثم Python ثم ما يكفي من الإحصاء ليعرف متى يكذب الرسم البياني. يقود اليوم في Datawheel الفريق الذي يبني نماذج التنبؤ بالمبيعات وتوقّف العملاء لعملاء في قطاع التجزئة.",
+        "يُدرّس التحليل كسلسلة من أسئلة يطرحها أصحاب القرار فعلًا: لماذا قفزت الإيرادات؟ أيّ العملاء على وشك المغادرة؟ هل تستحق هذه النتيجة أن نتصرّف بناءً عليها؟ تكتب الـ query، وتتحقق من الأرقام بنفسك، وبعدها فقط تلجأ إلى model. هو صارم في مسألة تسرّب البيانات (data leakage)، وصبور في كل ما عداها.",
+        "ويعلّمك كذلك العادات غير اللامعة التي تجعل المحلّل موضع ثقة: التحقق من عدد الصفوف بعد كل JOIN، وتدوين الافتراضات، وقول «ليس بعد» حين تكون البيانات شحيحة. ستخرج معه بدفاتر تحليل (notebooks) قابلة لإعادة التشغيل، وبـ SQL تستطيع الدفاع عنه سطرًا سطرًا في أي اجتماع."
+      ]
+    },
+    "expertise": {
+      "en": ["SQL", "pandas", "Machine learning", "Forecasting"],
+      "ar": ["SQL", "pandas", "تعلّم الآلة", "التنبؤ بالأرقام"]
+    },
+    "highlights": {
+      "en": [
+        "Built a churn model that helped a retail client cut 90-day churn by 11%",
+        "Replaced a 60-tab Excel reporting process with a tested pandas pipeline that runs in four minutes",
+        "Has interviewed and hired more than 50 analysts and data scientists"
+      ],
+      "ar": [
+        "بنى نموذجًا للتنبؤ بتوقّف العملاء ساعد أحد عملاء التجزئة على خفض نسبة التوقّف خلال 90 يومًا بمقدار 11%",
+        "استبدل تقريرًا في Excel من 60 ورقة بـ pipeline مختبَر مكتوب بـ pandas يعمل في أربع دقائق",
+        "أجرى مقابلات مع أكثر من 50 محلّل بيانات وعالِم بيانات ووظّفهم"
+      ]
+    },
+    "quote": {
+      "en": "Every lesson starts with a question someone would really ask you at work and ends with an answer you can check.",
+      "ar": "يبدأ كل درس بسؤال قد يطرحه عليك أحدهم في العمل فعلًا، وينتهي بإجابة تستطيع التحقق منها."
+    }
+  },
+  {
+    "id": "amara-diallo",
+    "name": "Amara Diallo",
+    "nameAr": "أمارا ديالو",
+    "role": { "en": "Cloud Architect", "ar": "مهندسة معمارية للحوسبة السحابية" },
+    "company": "Skylane",
+    "bio": {
+      "en": [
+        "Amara racked servers by hand in a university data center before containers existed, then spent eight years moving companies onto the cloud. At Skylane she designs the AWS and Kubernetes platform that runs more than 300 services, and she still takes her turn on call.",
+        "She teaches infrastructure through incidents: the image that was 2 GB for no reason, the IAM policy that let everyone read everything, the pod that restarted all night because nobody wrote a readiness probe. Each one becomes a habit you can apply on Monday morning.",
+        "She also covers what tutorials tend to skip, like cost, permissions and what to log, because those are what wake you up at night. From Amara you get a clear picture of what runs where, and the calm to read a failing deploy instead of guessing at it."
+      ],
+      "ar": [
+        "ركّبت أمارا الخوادم بيديها في مركز بيانات جامعي قبل أن تظهر الـ containers، ثم أمضت ثماني سنوات تنقل الشركات إلى السحابة. في Skylane تصمّم منصّة AWS وKubernetes التي يعمل عليها أكثر من 300 خدمة، وما زالت تأخذ دورها في المناوبة.",
+        "تُدرّس البنية التحتية من خلال الأعطال: image حجمها 2 GB بلا سبب، وسياسة IAM سمحت للجميع بقراءة كل شيء، وpod ظل يُعاد تشغيله طوال الليل لأن أحدًا لم يكتب readiness probe. يتحوّل كل عطل منها إلى عادة تطبّقها صباح الإثنين.",
+        "وتغطي أيضًا ما تتجاهله الدروس عادة، مثل التكلفة والصلاحيات وما يجب تسجيله في الـ logs، لأن هذه هي الأمور التي توقظك ليلًا. ستخرج معها بصورة واضحة عمّا يعمل وأين، وبالهدوء الكافي لقراءة عملية deploy فاشلة بدل التخمين."
+      ]
+    },
+    "expertise": {
+      "en": ["AWS", "Kubernetes", "Docker", "Cloud security"],
+      "ar": ["AWS", "Kubernetes", "Docker", "أمن السحابة"]
+    },
+    "highlights": {
+      "en": [
+        "Moved Skylane's 300+ services from virtual machines to Amazon EKS without a customer-facing outage",
+        "Cut Skylane's monthly AWS bill by 27% through rightsizing and autoscaling",
+        "Wrote the incident runbooks Skylane's platform team still uses on call"
+      ],
+      "ar": [
+        "نقلت أكثر من 300 خدمة في Skylane من الأجهزة الافتراضية إلى Amazon EKS دون أي انقطاع يلاحظه العملاء",
+        "خفّضت فاتورة AWS الشهرية في Skylane بنسبة 27% بضبط أحجام الموارد والتوسّع التلقائي",
+        "كتبت أدلّة التعامل مع الأعطال التي ما زال فريق المنصّة في Skylane يعتمد عليها في المناوبات"
+      ]
+    },
+    "quote": {
+      "en": "I break things on purpose in class, so the first failing deploy you see isn't in production.",
+      "ar": "أكسر الأشياء عمدًا في الدروس، حتى لا تكون أول عملية deploy فاشلة تراها في بيئة الإنتاج."
+    }
+  },
+  {
+    "id": "leila-haddad",
+    "name": "Leila Haddad",
+    "nameAr": "ليلى حدّاد",
+    "role": { "en": "Accessibility Lead", "ar": "قائدة فريق إمكانية الوصول" },
+    "company": "Openfield",
+    "bio": {
+      "en": [
+        "Leila started as a front-end developer and found accessibility the day a blind customer emailed to say he couldn't complete checkout. She fixed the bug that night and has tested with screen readers ever since. At Openfield she leads accessibility across the product, from design reviews to the automated checks in CI.",
+        "She teaches with a keyboard and a screen reader switched on, never from a checklist alone. You hear what your markup sounds like, find where focus gets lost, and fix it with semantic HTML before you reach for ARIA. The exercises use the components that fail audits most often: a custom select, a modal, an error message nobody hears.",
+        "Learners get working knowledge of WCAG 2.2, a testing routine that fits inside a sprint, and the words to make the case for accessibility to their team."
+      ],
+      "ar": [
+        "بدأت ليلى مطوّرة واجهات أمامية، واكتشفت إمكانية الوصول يوم راسلها عميل كفيف ليخبرها أنه لا يستطيع إتمام الشراء. أصلحت المشكلة في الليلة نفسها، ومنذ ذلك الحين وهي تختبر عملها بقارئات الشاشة. تقود اليوم إمكانية الوصول في Openfield على مستوى المنتج كله، من مراجعات التصميم حتى الفحوص الآلية في الـ CI.",
+        "تُدرّس ولوحة المفاتيح وقارئ الشاشة يعملان أمامها، لا اعتمادًا على قائمة تحقق وحدها. تسمع كيف يبدو الـ markup الذي كتبته، وتجد أين يضيع الـ focus، ثم تصلحه بـ HTML دلالي قبل أن تلجأ إلى ARIA. وتعتمد التمارين على العناصر التي تفشل في التدقيق أكثر من غيرها: قائمة select مخصّصة، ونافذة منبثقة، ورسالة خطأ لا يسمعها أحد.",
+        "ستخرج معها بفهم عملي لمعايير WCAG 2.2، وروتين اختبار يتّسع له أي sprint، وبالكلمات المناسبة لإقناع فريقك بأهمية إمكانية الوصول."
+      ]
+    },
+    "expertise": {
+      "en": ["WCAG 2.2", "Screen reader testing", "Semantic HTML & ARIA", "Inclusive design"],
+      "ar": ["WCAG 2.2", "الاختبار بقارئات الشاشة", "HTML الدلالي وARIA", "التصميم الشامل"]
+    },
+    "highlights": {
+      "en": [
+        "Took Openfield's web app from 412 WCAG failures to zero critical issues in nine months",
+        "Added automated accessibility checks to Openfield's CI, now run on every pull request",
+        "Has tested with NVDA, JAWS, VoiceOver and TalkBack every week for seven years"
+      ],
+      "ar": [
+        "نقلت تطبيق Openfield من 412 مخالفة لمعايير WCAG إلى صفر مشكلات حرجة خلال تسعة أشهر",
+        "أضافت فحوصًا آلية لإمكانية الوصول إلى الـ CI في Openfield، تعمل اليوم على كل pull request",
+        "تختبر أسبوعيًا بـ NVDA وJAWS وVoiceOver وTalkBack منذ سبع سنوات"
+      ]
+    },
+    "quote": {
+      "en": "Every lesson starts the same way: turn on a screen reader, close your eyes and listen to what you built.",
+      "ar": "يبدأ كل درس بالطريقة نفسها: شغّل قارئ الشاشة، وأغمض عينيك، واستمع إلى ما بنيته."
+    }
+  },
+  {
+    "id": "kenji-watanabe",
+    "name": "Kenji Watanabe",
+    "nameAr": "كينجي واتانابي",
+    "role": { "en": "Staff Engineer, Developer Experience", "ar": "مهندس برمجيات رئيسي (Staff)، تجربة المطوّرين" },
+    "company": "Trellis",
+    "bio": {
+      "en": [
+        "Kenji's job at Trellis is to make other engineers faster: the Git workflow, the CI pipeline, and the test suite that has to finish before lunch. He has untangled more broken rebases than he can count, and once cut a 40-minute test run to six.",
+        "He teaches tools by showing what they do underneath. Once you can picture commits as a graph and tests as a safety net with known holes, the commands stop being magic words. His exercises plant real bugs for your tests to catch and real messes for your Git skills to clean up.",
+        "From Kenji you get a calm Git routine, tests that catch real bugs instead of chasing coverage numbers, and the habits of a teammate whose pull requests are easy to review."
+      ],
+      "ar": [
+        "مهمة كينجي في Trellis أن يجعل المهندسين الآخرين أسرع: سير العمل في Git، والـ CI pipeline، ومجموعة الاختبارات التي يجب أن تنتهي قبل الغداء. فكّ من عمليات rebase المتعثّرة أكثر مما يستطيع عدّه، وخفّض مرة زمن تشغيل الاختبارات من 40 دقيقة إلى ست.",
+        "يُدرّس الأدوات بأن يريك ما تفعله من الداخل. حين تتخيّل الـ commits على شكل graph، والاختبارات كشبكة أمان فيها ثقوب معروفة، تتوقف الأوامر عن كونها كلمات سحرية. تزرع تمارينه أخطاء حقيقية لتلتقطها اختباراتك، وفوضى حقيقية لتنظّفها بمهاراتك في Git.",
+        "ستخرج معه بروتين هادئ في Git، واختبارات تلتقط أخطاء حقيقية بدل مطاردة نسب التغطية، وبعادات زميل يسهل مراجعة الـ pull requests التي يرسلها."
+      ]
+    },
+    "expertise": {
+      "en": ["Git & GitHub", "Vitest & Playwright", "CI/CD", "Developer experience"],
+      "ar": ["Git وGitHub", "Vitest وPlaywright", "CI/CD", "تجربة المطوّرين"]
+    },
+    "highlights": {
+      "en": [
+        "Cut Trellis's CI test run from 40 minutes to 6 by removing flaky and duplicated tests",
+        "Designed the branching and review workflow used by Trellis's 120 engineers",
+        "Wrote Trellis's internal testing guide, required reading for every new hire"
+      ],
+      "ar": [
+        "خفّض زمن تشغيل الاختبارات في الـ CI لدى Trellis من 40 دقيقة إلى 6 بإزالة الاختبارات المتقلّبة والمكرّرة",
+        "صمّم سير العمل في الـ branches والمراجعات الذي يتّبعه 120 مهندسًا في Trellis",
+        "كتب دليل الاختبارات الداخلي في Trellis، وهو قراءة إلزامية لكل موظف جديد"
+      ]
+    },
+    "quote": {
+      "en": "I show you what Git and your test runner are doing underneath, so you can stop memorizing commands and start reasoning about them.",
+      "ar": "أريك ما يفعله Git وأداة تشغيل الاختبارات من الداخل، لتتوقف عن حفظ الأوامر وتبدأ في فهمها والتفكير فيها."
+    }
+  }
+]

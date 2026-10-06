@@ -1,0 +1,433 @@
+checkpoints:
+  s-ml-1:
+    - q: A churn model scores 0.91 accuracy on the 298 customers it was trained on and 0.70 on the 100 held-out customers. The 80-day rule scores 0.72 on the same 100. What should you tell the team?
+      options:
+        - text: The model is excellent; 0.91 is the number to report.
+          why: That's the training score, which measures memorisation. Only the held-out score predicts behaviour on new customers.
+        - text: The model is slightly better than the rule because its average of the two scores is higher.
+          why: Averaging training and test scores mixes a meaningless number with a meaningful one.
+        - text: The model needs more features before it can be evaluated.
+          why: It can be evaluated now; the evaluation says it isn't beating the rule.
+        - text: The model overfits and doesn't beat the one-line rule on unseen customers, so it isn't ready to replace it.
+          why: Correct. A big train/test gap plus no lift over the rule baseline means no case for the model yet.
+      answer: 3
+    - q: Your data has 10,000 rows and the positive class is 3%. You call `train_test_split(X, y, test_size=0.2, random_state=0)`. What risk does leaving out `stratify=y` create?
+      options:
+        - text: The split becomes non-reproducible.
+          why: "`random_state=0` already makes it reproducible."
+        - text: The model can't be trained on imbalanced data without it.
+          why: Stratifying affects how rows are split, not whether a model can train.
+        - text: The test set's share of positives can drift from 3%, making its metrics less representative.
+          why: Correct. With rare classes, an unstratified split can over- or under-represent positives in the test set.
+        - text: The training set will contain duplicates of the test rows.
+          why: "`train_test_split` never duplicates rows; each row goes to exactly one part."
+      answer: 2
+    - q: |-
+        What does this code print?
+        ```python
+        from sklearn.dummy import DummyClassifier
+        import numpy as np
+        X = np.zeros((10, 1))
+        y = np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0])
+        print(DummyClassifier(strategy="most_frequent").fit(X, y).score(X, y))
+        ```
+      options:
+        - text: "0.7"
+          why: Correct. The most frequent class is 0 (seven of ten), so predicting 0 for everyone is right 70% of the time.
+        - text: "0.3"
+          why: That's the share of the minority class, which the dummy never predicts.
+        - text: "0.5"
+          why: The dummy doesn't guess at random with this strategy; it always predicts the majority class.
+        - text: An error, because X has only zeros.
+          why: The dummy ignores X entirely, so zeros are fine.
+      answer: 0
+    - q: You fit `model = KNeighborsClassifier().fit(X_train, y_train)` and later call `model.fit(X_new, y_new)` on a second batch of data. What does the model now know?
+      options:
+        - text: Both batches, because `fit` adds new data to what it already learned.
+          why: scikit-learn's `fit` doesn't accumulate; it starts from scratch each time.
+        - text: Nothing, because a model can only be fitted once.
+          why: You can refit as often as you like; each call replaces the previous learning.
+        - text: The first batch only; the second call is ignored.
+          why: The second call is not ignored; it overwrites the first.
+        - text: Only the second batch, because calling `fit` again discards what was learned before.
+          why: Correct. To learn from both, fit once on the combined data.
+      answer: 3
+    - q: Which question is framed well enough to start a supervised learning project?
+      options:
+        - text: Use AI to reduce churn.
+          why: There's no target, no moment of prediction and no action; it's a goal, not a problem statement.
+        - text: On the first of each month, predict for each active customer whether they will place no order in the next 90 days, so marketing can choose who gets an offer.
+          why: Correct. It names the target, the population, the prediction time and the decision it feeds.
+        - text: Find out everything that causes churn.
+          why: That's a causal research question; a predictive model alone can't answer it.
+        - text: Build the most accurate model possible on churn.csv.
+          why: Accuracy for what decision, at what moment? Without framing you can't choose metrics or check for leakage.
+      answer: 1
+  s-ml-2:
+    - q: A model predicting delivery times in hours has MAE 2.0 and RMSE 9.5 on the test set. What's the most likely story?
+      options:
+        - text: The model is biased towards predicting too early.
+          why: Neither metric reveals direction; you'd need the mean residual.
+        - text: RMSE and MAE should be equal, so one of them was computed wrongly.
+          why: RMSE is never smaller than MAE and is usually larger; a big gap is information, not an error.
+        - text: Most predictions are close, but a few are wildly off, and squaring makes those dominate RMSE.
+          why: "Correct. Investigate the large misses: they may be a distinct situation, such as customs delays."
+        - text: The model explains 95% of the variance.
+          why: Neither MAE nor RMSE is a share of variance; that's R².
+      answer: 2
+    - q: Gradient descent on a linear model prints a loss that falls for 20 steps, then plateaus at a value higher than `LinearRegression` achieves. Features are unscaled, ranging from 0–1 to 0–50,000. What's the most likely fix?
+      options:
+        - text: Add polynomial features so the model has more capacity.
+          why: The model has enough capacity; `LinearRegression` reaches a lower loss with the same features.
+        - text: Increase the learning rate tenfold.
+          why: With badly scaled features a larger rate tends to diverge along the steep direction.
+        - text: Use a smaller test set.
+          why: The test set has nothing to do with how training converges.
+        - text: Standardise the features so the loss surface isn't a long narrow valley, then rerun.
+          why: Correct. Scaling lets one learning rate work for every direction, so the search reaches the true minimum.
+      answer: 3
+    - q: A degree-4 polynomial model scores R² 0.93 on training data and 0.21 on validation data; a degree-1 model scores 0.48 and 0.46. Which change would you try first on the degree-4 model?
+      options:
+        - text: Train it for longer.
+          why: Plain least squares is solved exactly; there's no 'longer'. The problem is too much flexibility.
+        - text: Add a Ridge penalty and choose `alpha` on validation data.
+          why: Correct. Regularisation keeps the extra columns but shrinks the coefficients that only fit noise.
+        - text: Report the training R², since validation sets are small.
+          why: The training score measures memorisation; reporting it would hide the overfitting.
+        - text: Raise the degree to 6 to capture the pattern fully.
+          why: More flexibility would widen the gap between training and validation further.
+      answer: 1
+    - q: You fit `Lasso(alpha=1)` directly on raw features where `income` is in dollars (tens of thousands) and `age` is in years. What goes wrong?
+      options:
+        - text: Lasso refuses to fit features with different units.
+          why: It fits without complaint, which is the danger.
+        - text: Nothing; Lasso is scale-invariant like decision trees.
+          why: Penalised models are not scale-invariant; the penalty depends on coefficient size.
+        - text: Income will get a huge coefficient and dominate the model.
+          why: "The opposite: large-valued features need small coefficients, which barely feel the penalty."
+        - text: "The penalty treats the coefficients unfairly: features with small numeric ranges need big coefficients and get shrunk or zeroed for their units, not their usefulness."
+          why: Correct. Put a `StandardScaler` before Lasso so the penalty compares like with like.
+      answer: 3
+    - q: "`r2_score(y_test, pred)` returns 0.0 for a new model. Which statement is true?"
+      options:
+        - text: Its squared error on the test set equals that of always predicting the mean of `y_test`.
+          why: Correct. R² = 1 − SSE_model / SSE_mean, so 0 means no improvement on the mean.
+        - text: Every prediction is exactly zero.
+          why: R² compares error sizes; predictions could be any values with the same total squared error as the mean.
+        - text: The model has no coefficients.
+          why: R² says nothing about the model's form.
+        - text: The model is perfect but the metric failed.
+          why: A perfect model scores 1.0.
+      answer: 0
+  s-ml-3:
+    - q: A fraud model must catch at least 90% of fraud; analysts can review up to 500 alerts a day. Which pair of numbers do you need from validation to choose a threshold?
+      options:
+        - text: Accuracy and ROC AUC.
+          why: Neither tells you recall or how many alerts a threshold produces.
+        - text: Training and test accuracy.
+          why: That checks overfitting, not whether the operating point meets the constraints.
+        - text: Precision and F1 at the default threshold.
+          why: The default threshold may not meet either constraint; you need values across thresholds.
+        - text: Recall and the number of flagged cases at each candidate threshold.
+          why: Correct. Pick the threshold that reaches 90% recall while keeping daily alerts under 500, if one exists.
+      answer: 3
+    - q: A random forest uses 500 fully grown trees. Which change most directly reduces its training time without usually hurting accuracy much?
+      options:
+        - text: Set `max_depth=1` so each tree is a single split.
+          why: Stumps are fast but each one is far too weak; a forest of stumps usually underfits badly.
+        - text: Remove the bootstrap sampling.
+          why: Sampling isn't what makes training slow, and it's part of what makes trees diverse.
+        - text: Use fewer trees, such as 200, since the gains from extra trees flatten out.
+          why: Correct. Forest accuracy plateaus as trees are added; past that point more trees only cost time.
+        - text: Scale the features first.
+          why: Trees split on value order; scaling neither speeds them up nor changes their predictions.
+      answer: 2
+    - q: |-
+        ```python
+        prob = model.predict_proba(X_test)
+        print(roc_auc_score(y_test, prob))
+        ```
+        For a binary problem this raises an error. What's the fix?
+      options:
+        - text: Use `model.predict(X_test)` instead.
+          why: That passes hard labels, which throws away the ranking ROC AUC is meant to measure.
+        - text: "Pass the probability of the positive class: `prob[:, 1]`."
+          why: Correct. `predict_proba` returns two columns; ROC AUC needs the positive-class scores as a 1D array.
+        - text: Sort `y_test` before calling the metric.
+          why: Sorting labels would break their pairing with the predictions.
+        - text: Convert `prob` to a list.
+          why: The shape is the problem, not the type.
+      answer: 1
+    - q: A tree-based churn model and a logistic regression both have ROC AUC 0.80 on the same folds. The business needs probabilities that mean what they say, to forecast how many customers will leave. Which is the safer first choice?
+      options:
+        - text: Logistic regression, whose probabilities are usually closer to calibrated out of the box.
+          why: Correct. Tree ensembles often need calibration (for example `CalibratedClassifierCV`) before their probabilities can be used as frequencies.
+        - text: The tree model, because trees always produce calibrated probabilities.
+          why: Tree and ensemble probabilities are often poorly calibrated, especially from deep trees.
+        - text: Either; equal AUC means equal probabilities.
+          why: AUC only measures ranking. Two models can rank identically while their probabilities differ a lot.
+        - text: Neither; probabilities can't be used for counts.
+          why: Calibrated probabilities summed over customers give an expected count; that's a standard use.
+      answer: 0
+    - q: In a dataset where 2% of loans default, a model with `class_weight="balanced"` raises recall from 0.40 to 0.75 and lowers precision from 0.60 to 0.20. What happened?
+      options:
+        - text: The model got worse at everything and should be discarded.
+          why: It now finds many more defaults; whether that's better depends on the cost of each error.
+        - text: The weights leaked the test labels into training.
+          why: Class weights come from the training labels' frequencies; they don't touch the test set.
+        - text: "Mistakes on defaults now cost more during training, so the model flags many more loans: it catches more defaults but with more false alarms."
+          why: Correct. It's the same trade-off as lowering the threshold, built into training.
+        - text: Accuracy must have risen, since recall rose.
+          why: With more false positives on the 98% majority, accuracy usually falls.
+      answer: 2
+  s-ml-4:
+    - q: You scale all of `X` with `StandardScaler().fit_transform(X)` and then run `cross_val_score(LogisticRegression(), X_scaled, y, cv=5)`. What's the problem and the fix?
+      options:
+        - text: No problem; scaling is unsupervised so it can't leak.
+          why: It doesn't use labels, but validation rows still influenced the means and standard deviations. The habit leads to real leaks with other steps.
+        - text: The validation folds influenced the scaler; put the scaler in a pipeline and cross-validate the pipeline on raw `X`.
+          why: Correct. The pipeline refits the scaler inside each fold, on training rows only.
+        - text: Logistic regression doesn't need scaling; remove it.
+          why: It does benefit from scaling (convergence and a fair penalty); the issue is where it's fitted.
+        - text: Use `cv=10` so the leak is averaged out.
+          why: More folds don't remove a leak; every fold is still affected.
+      answer: 1
+    - q: "`GridSearchCV` over 3 values of `max_depth` and 4 values of `min_samples_leaf`, with `cv=5` and the default `refit=True`, is fitted once. How many model fits happen?"
+      options:
+        - text: "12"
+          why: That's the number of combinations, each of which is cross-validated.
+        - text: "17"
+          why: That adds the folds instead of multiplying by them.
+        - text: "60"
+          why: Close, but the default `refit=True` adds one final fit on all the training data.
+        - text: "61"
+          why: Correct. 3 × 4 combinations × 5 folds = 60, plus one refit of the winner.
+      answer: 3
+    - q: Your table has one row per order, several orders per customer, and you want to know how well the model works on new customers. Which validation set-up is right?
+      options:
+        - text: "`StratifiedKFold(shuffle=True)` on orders."
+          why: The same customer's orders would land in both training and validation folds, flattering the score.
+        - text: A random 80/20 split on orders with a fixed `random_state`.
+          why: Reproducible, but it still mixes each customer's orders across the split.
+        - text: "`GroupKFold` with `groups=customer_id`."
+          why: Correct. Every customer's orders stay together, so validation measures performance on unseen customers.
+        - text: "`TimeSeriesSplit` on customer ids sorted alphabetically."
+          why: Sorting by name has no meaning; the grouping problem remains.
+      answer: 2
+    - q: A new feature, `orders_last_30_days`, raises CV ROC AUC from 0.81 to 0.95. The snapshot date is 30 September and the target is churn in the following 90 days. What do you check first?
+      options:
+        - text: "Which 30 days the column covers: if any of them fall after 30 September, it's target leakage."
+          why: Correct. A jump that size from one column is the classic sign of a feature recorded inside the outcome window.
+        - text: Whether a bigger forest can push AUC even higher.
+          why: Optimising further before ruling out a leak builds on a number you can't trust.
+        - text: Whether the fold standard deviation is small.
+          why: A leaky feature produces consistently high scores in every fold; small spread doesn't rule it out.
+        - text: Whether the feature needs scaling.
+          why: Scaling wouldn't explain a 14-point jump.
+      answer: 0
+    - q: "Cross-validated ROC AUC: logistic regression 0.807 ± 0.034, gradient boosting 0.815 ± 0.055, on the same folds. Boosting is slower and harder to explain. What's the defensible decision?"
+      options:
+        - text: Ship boosting; higher mean always wins.
+          why: The gap is a fraction of either spread, so the ranking could flip with a different shuffle.
+        - text: Run the test set on both and ship whichever wins there.
+          why: That turns the test set into a selection tool and adds one more noisy comparison.
+        - text: Ship both and average them, since averaging always helps.
+          why: Ensembling may help, but it doubles the cost and complexity without evidence it's needed.
+        - text: Treat them as tied and ship logistic regression, revisiting when more data arrives.
+          why: Correct. When performance ties within noise, the simpler, cheaper, more explainable model wins.
+      answer: 3
+  s-ml-5:
+    - q: You run k-means with k=5 on customer data without scaling. One column is annual spend in dollars; the others are counts under 20. What will the clusters mostly reflect?
+      options:
+        - text: A balanced mix of all columns.
+          why: k-means uses raw distances, so the column with the largest range dominates.
+        - text: The count columns, because there are more of them.
+          why: Several small-range columns together still contribute far less distance than one in the thousands.
+        - text: Bands of annual spend, because it dominates the distances.
+          why: Correct. Scale the features first if you want every column to matter.
+        - text: Random groupings, because k-means can't handle mixed units.
+          why: It handles them deterministically; the result is just dominated by the largest scale.
+      answer: 2
+    - q: What is a key difference between an LLM's answer to 'rate this customer's churn risk from 0 to 100' and `predict_proba` from a validated logistic regression?
+      options:
+        - text: The LLM's number is more accurate because the model is larger.
+          why: Size doesn't make an unvalidated number accurate for your customers.
+        - text: There is no difference; both are model outputs.
+          why: One has been checked against real outcomes on held-out data; the other hasn't.
+        - text: "`predict_proba` can't be used for ranking."
+          why: It's commonly used for ranking; that's how the call list in section 3 was built.
+        - text: The logistic regression's probabilities were trained and tested against actual churn outcomes; the LLM's number is generated text that hasn't been.
+          why: Correct. Any LLM-produced score needs the same validation before it drives decisions.
+      answer: 3
+    - q: An approval model has equal selection rates for two groups, but recall of 0.85 for group A and 0.60 for group B. Applicants in B who would repay are rejected more often. Which fairness criterion is being violated?
+      options:
+        - text: Demographic parity (equal selection rates).
+          why: Selection rates are equal here; that criterion is met.
+        - text: Equal opportunity (equal true positive rates).
+          why: Correct. Qualified people in group B are approved less often than in group A.
+        - text: Calibration, because recall is a calibration measure.
+          why: Recall measures how many true positives are found, not whether probabilities match frequencies.
+        - text: None; fairness only concerns selection rates.
+          why: Selection rates are one definition among several; this case shows why they aren't enough.
+      answer: 1
+    - q: A deployed churn model's input checks show `mobile_share` drifting sharply after a new app launch, but the 90-day outcomes aren't in yet. What's a sensible response?
+      options:
+        - text: Do nothing until outcomes prove performance has dropped.
+          why: Waiting a quarter ignores an early warning you can investigate now.
+        - text: Delete `mobile_share` from the model immediately.
+          why: Removing a feature without evidence it hurts could make things worse, and needs retraining and re-validation anyway.
+        - text: Investigate the shift, check flag rates per group, and plan a retrain and re-audit once enough new labelled data exists.
+          why: Correct. Drift is a signal to look, prepare and confirm, not a reason to panic or ignore.
+        - text: Lower the threshold to compensate.
+          why: Adjusting the threshold blindly hides the drift instead of understanding it.
+      answer: 2
+    - q: Which practice best protects you when loading `model.joblib` in production?
+      options:
+        - text: Compress the file so it can't be modified.
+          why: Compression doesn't prevent tampering or code execution.
+        - text: Rename it to `.pkl` so tools recognise it.
+          why: The extension changes nothing about what loading can execute.
+        - text: Load it with the newest scikit-learn release available.
+          why: A version mismatch with training can break or change behaviour; pin the training version instead.
+        - text: Load only files from your own access-controlled model store, with the scikit-learn version recorded at training time.
+          why: Correct. joblib files can run code on load, and version pinning keeps behaviour identical.
+      answer: 3
+final:
+  - q: A teammate shows a fraud model with 99.1% accuracy. Fraud is 0.8% of transactions. What's your first question?
+    options:
+      - text: How long did it take to train?
+        why: Training time doesn't tell you whether the model catches fraud.
+      - text: Which algorithm did you use?
+        why: The algorithm matters less than whether it beats doing nothing.
+      - text: Was the data shuffled before splitting?
+        why: A fair question eventually, but there's a more basic one first.
+      - text: What does always predicting 'not fraud' score, and what are the precision and recall on fraud?
+        why: Correct. The majority-class dummy scores 99.2% here; accuracy alone says nothing about catching fraud.
+    answer: 3
+  - q: Which pipeline is leak-free for cross-validating a model on data with missing values and text categories?
+    options:
+      - text: "`make_pipeline(ColumnTransformer([...imputer, scaler..., ...OneHotEncoder...]), model)` passed to `cross_val_score` with the raw DataFrame."
+        why: Correct. Every learned step is refit inside each fold on training rows only.
+      - text: Impute and encode the whole DataFrame, then pass the result and the model to `cross_val_score`.
+        why: The imputer and encoder learned from validation rows before the folds were made.
+      - text: Impute the training set and test set separately with their own medians.
+        why: Each part gets different medians, so the same raw value is treated inconsistently.
+      - text: Drop every row with a missing value, then encode the whole DataFrame.
+        why: Dropping rows can bias the sample, and encoding before splitting still lets validation rows shape the columns.
+    answer: 0
+  - q: Your churn model's ROC AUC is 0.81 and the business wants to contact 200 customers a month. Which output should you hand over?
+    options:
+      - text: The 0/1 labels from `predict`, for every customer.
+        why: Hundreds could be labelled 1, with no way to choose 200 among them.
+      - text: The model's coefficients, so marketing can score customers themselves.
+        why: That pushes modelling work onto the business and invites mistakes.
+      - text: A list of customers ranked by churn probability, so they take the top 200.
+        why: Correct. A ranking matches a fixed budget directly, and AUC measures ranking quality.
+      - text: The confusion matrix at threshold 0.5.
+        why: It summarises performance but doesn't tell anyone whom to contact.
+    answer: 2
+  - q: |-
+      ```python
+      search = GridSearchCV(pipe, {"model__max_depth": [2, 4, 8]}, cv=5)
+      search.fit(X_train, y_train)
+      print(search.score(X_test, y_test))
+      ```
+      What does the printed number estimate?
+    options:
+      - text: The average validation score of the best setting across the five folds.
+        why: That's `best_score_`, computed on validation folds carved from the training data, not on the test set.
+      - text: Performance on new data of the best setting, refit on all training rows.
+        why: Correct. With `refit=True`, `search` is the winning pipeline, and the test set played no part in choosing it.
+      - text: The training accuracy of the deepest tree.
+        why: The search picks the best setting by validation score, not the deepest.
+      - text: An average over all three depths on the test set.
+        why: Only the refit winner is scored.
+    answer: 1
+  - q: A model predicts house prices. Which situation calls for RMSE rather than MAE as the main metric?
+    options:
+      - text: Stakeholders want a number in the target's units.
+        why: Both MAE and RMSE are in the target's units.
+      - text: The data contains no outliers.
+        why: Without large errors, the two metrics tell nearly the same story.
+      - text: You want every error, large or small, to count in proportion to its size.
+        why: That describes MAE, which weighs every miss in proportion to its size.
+      - text: Large errors are disproportionately costly, so they should weigh more than small ones.
+        why: Correct. Squaring makes RMSE punish big misses much more heavily.
+    answer: 3
+  - q: Why does a fully grown decision tree usually score worse on new data than a random forest of such trees?
+    options:
+      - text: The forest's trees are each shallower.
+        why: Forest trees are usually grown deep too.
+      - text: The forest sees more training data.
+        why: Every tree draws from the same training set.
+      - text: Averaging many trees with partly independent errors cancels much of each tree's variance.
+        why: Correct. Each tree overfits differently; the average is steadier.
+      - text: The forest uses gradient descent to tune its trees.
+        why: Forest trees are trained independently, without gradient descent.
+    answer: 2
+  - q: "Logistic regression on churn: `C=0.01` gives CV AUC 0.797, `C=1` gives 0.807, `C=100` gives 0.806, with fold spreads around 0.035. What should you conclude?"
+    options:
+      - text: Regularisation strength barely matters here; keep the default and look for gains elsewhere.
+        why: Correct. Differences far smaller than the spread mean tuning `C` isn't where improvement will come from.
+      - text: "`C=1` is clearly optimal and must be documented as essential."
+        why: It's best by a hair, well within noise.
+      - text: Small `C` overfits, so avoid it.
+        why: Small `C` means a stronger penalty, which underfits if anything.
+      - text: The model is broken, since tuning should change the score a lot.
+        why: A flat curve is a common, healthy result for a well-specified model.
+    answer: 0
+  - q: Which feature is safe to use when predicting, on 30 September, whether a customer orders in the next 90 days?
+    options:
+      - text: Number of support tickets opened in October.
+        why: October is inside the outcome window; it isn't known on 30 September.
+      - text: Whether the customer received a win-back email in November.
+        why: That happens after the prediction date, and is likely triggered by the model itself.
+      - text: Total refunds issued in Q4.
+        why: "Q4 falls inside the outcome window: target leakage."
+      - text: Average days between orders over the customer's history up to 30 September.
+        why: Correct. It uses only information available at the snapshot.
+    answer: 3
+  - q: You need to group 50,000 free-text support tickets into topics with no labels. Which approach fits best?
+    options:
+      - text: Train a logistic regression on the tickets with `churned` as the target.
+        why: That predicts churn, not topics, and ignores what the text says.
+      - text: Embed the tickets with an embedding model, then cluster the vectors with k-means and profile the clusters.
+        why: Correct. Embeddings turn text into vectors that capture meaning; clustering finds groups without labels.
+      - text: Count words with TF-IDF and pick the most frequent word as each ticket's topic.
+        why: Single frequent words miss paraphrases and synonyms that embeddings capture.
+      - text: Send all 50,000 tickets to an LLM one by one and trust its labels.
+        why: Possible, but expensive, and you'd still need a labelled sample to check it.
+    answer: 1
+  - q: Which statement about neural networks is accurate?
+    options:
+      - text: They always outperform gradient boosting on tabular data.
+        why: On small and medium tables, boosted trees and linear models often match or beat them.
+      - text: They don't need feature scaling because they learn their own features.
+        why: Unscaled inputs slow and destabilise gradient-based training; scale them.
+      - text: Without non-linear activations, stacking layers adds no expressive power.
+        why: Correct. Linear layers compose into a single linear map.
+      - text: An epoch is one update of the weights.
+        why: An epoch is one full pass over the training data, usually many updates.
+    answer: 2
+  - q: A model's recall is 0.85 for one region and 0.65 for another, with 900 and 40 customers respectively. What's the most responsible next step?
+    options:
+      - text: Conclude the model is biased against the smaller region and drop it from the rollout.
+        why: With only 40 customers, the gap may be noise; acting on it blindly could cause other harms.
+      - text: Ignore the gap because the smaller region is a small share of revenue.
+        why: Small groups deserve audit too; revenue share doesn't settle fairness.
+      - text: Remove region from the features.
+        why: Other features can act as proxies, and you'd lose the ability to audit by region.
+      - text: Report the gap with its uncertainty, monitor it as data accumulates, and decide with the business whether a threshold or data fix is needed.
+        why: Correct. Make the weakness visible, quantify confidence, and make a deliberate decision.
+    answer: 3
+  - q: A churn model goes live with offers to every flagged customer, and churn among flagged customers falls from 70% to 55%. What's needed to claim the model and offer caused the drop?
+    options:
+      - text: A randomly held-out group of flagged customers who got no offer, compared over the same period.
+        why: Correct. Only a comparison with a randomised control separates the offer's effect from seasonality and luck.
+      - text: A higher test ROC AUC.
+        why: AUC measures ranking quality, not whether an intervention changes behaviour.
+      - text: Retraining on the new data.
+        why: Retraining doesn't measure the effect of the offer.
+      - text: A longer outcome window.
+        why: A longer window changes the definition, not the lack of a comparison group.
+    answer: 0

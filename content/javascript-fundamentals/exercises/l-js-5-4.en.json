@@ -1,0 +1,17 @@
+{
+  "title": "Finish Pocket",
+  "prompt": "Pocket is almost done: the state, `update`, `render`, storage and the add form all work. Wire up the last three pieces:\n\n1. `visibleExpenses()` returns only the expenses whose `category` matches `state.filter`, or all of them when the filter is `\"all\"`. `render` already uses it for the list and the total.\n2. When the `#filter` select changes, update the filter.\n3. Add **one** delegated click listener on `#expense-list` that deletes the expense whose Delete button was clicked.\n\nChange data only through `update(...)`, so every change is saved and re-rendered.\n",
+  "hints": [
+    "`visibleExpenses` is one `if` and one `filter`: `state.expenses.filter((e) => e.category === state.filter)`.",
+    "`filterSelect.addEventListener(\"change\", () => update({ filter: filterSelect.value }));`",
+    "For delete: `const button = event.target.closest(\".delete\"); if (!button) return;` then read `button.closest(\"li\").dataset.id` and call `update({ expenses: state.expenses.filter((e) => e.id !== id) })`."
+  ],
+  "explanation": "All three features are small because the structure does the heavy lifting. The filter is not stored anywhere except `state.filter`; the visible list and its total are derived from it at render time, so they can never disagree. The filter and delete handlers only work out new values and call `update`, which applies them, saves to storage and re-renders, so the saved data is always what the user sees. Delegation means the delete listener keeps working through every re-render and for newly added expenses. Because `idCounter` starts after the highest saved id, new expenses never reuse an id that is already stored.\n",
+  "checks": {
+    "initial": "Shows the three saved expenses and their total",
+    "filter": "Choosing Food shows only food expenses and their total",
+    "delete": "Deleting removes the expense from the page and from storage",
+    "empty-state": "A filter with no matches shows the empty message and $0.00",
+    "add-and-all": "Adding an expense with the filter on All shows it and saves it with a new id"
+  }
+}

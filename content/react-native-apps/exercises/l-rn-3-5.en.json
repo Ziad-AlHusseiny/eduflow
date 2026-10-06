@@ -1,0 +1,18 @@
+{
+  "title": "Match a deep link to a route file",
+  "prompt": "Implement `matchRoute(url, routes)` the way Expo Router picks a screen for a deep link. `routes` are file paths without `.tsx` (see `ROUTES`). Return `{ route, params }` for the best match, or `null`.\n\n- Groups such as `(tabs)` and a final `index` add no URL segment.\n- `[id]` matches exactly one segment and adds it to `params` as a string.\n- `[...path]` matches **one or more** remaining segments and adds them as an array.\n- When several routes match, prefer static segments over `[dynamic]` ones, and `[dynamic]` over `[...catchAll]`, comparing from the first segment.\n- Ignore a trailing slash; add query-string values (`?units=mi`) to `params`.",
+  "hints": [
+    "Turn each route into its URL segments first: drop `(group)` segments and a trailing `index`. Split the URL path with `.split('/').filter(Boolean)`.",
+    "Walk the route's segments alongside the URL's. A literal must equal the URL segment; `[x]` captures it; `[...x]` captures `parts.slice(i)` and ends the match. Afterwards, the lengths must line up.",
+    "To rank, build a string per match with one digit per segment (3 static, 2 dynamic, 1 catch-all) and keep the match with the largest string. `new URLSearchParams(query)` iterates the query pairs."
+  ],
+  "explanation": "The solution normalizes each route file into URL segments, tries to match it segment by segment while collecting params, and scores each segment so that more specific routes win: comparing the score strings ranks static before dynamic before catch-all from left to right. That's why `/hikes/new` reaches `hikes/new.tsx` while `/hikes/42` falls through to `hikes/[id].tsx`, and why the screen must still validate `id`: the matcher accepts any segment at all.",
+  "checks": {
+    "groups-index": "Groups and index files add no URL segment",
+    "dynamic": "Dynamic segments match and become string params",
+    "static-wins": "A static route beats a dynamic one",
+    "catch-all": "Catch-all routes collect the remaining segments as an array",
+    "query-slash": "Query strings become params and trailing slashes are ignored",
+    "no-match": "Unknown or too-long paths return null"
+  }
+}

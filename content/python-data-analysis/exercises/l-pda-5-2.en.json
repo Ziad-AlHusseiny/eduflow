@@ -1,0 +1,36 @@
+{
+  "title": "Pick the charts for the Q4 briefing",
+  "prompt": "The head of growth asks: **\"Is Q4 2025 unusual, or is it the normal seasonal peak on a growing business?\"** You have monthly and quarterly revenue for 2024 and 2025. Select every chart that would help answer that question honestly.",
+  "hints": [
+    "The question is about change over time and about comparing the same season across two years.",
+    "Ask of each chart: does it keep bar lengths honest, and does it put Q4 2025 next to something it can be compared with?"
+  ],
+  "explanation": "A line chart with one line per year on a January-to-December axis shows at a glance that both years peak in November, so seasonality is visible, and the gap between the lines shows growth. Quarterly bars starting at zero make the size of each quarter honest and let Q4 2025 be compared with Q4 2024 and with the other quarters. Pie charts, truncated axes and dual axes all make the comparison harder or misleading, and a histogram of order values answers a different question (how big orders are, not how revenue changed).",
+  "options": {
+    "line-years": {
+      "text": "A line chart of monthly revenue with one line for 2024 and one for 2025, months January to December on the x-axis",
+      "why": "Good choice. Overlaying the years on the same calendar axis shows the shared November peak (seasonality) and the gap between years (growth) in one picture."
+    },
+    "pie-months": {
+      "text": "A pie chart of 2025 revenue by month",
+      "why": "Twelve slices are impossible to compare precisely, and a pie hides time order and says nothing about 2024."
+    },
+    "bars-quarters-zero": {
+      "text": "A bar chart of revenue for all eight quarters, y-axis starting at zero, with Q4 2025 highlighted",
+      "why": "Good choice. Bars from zero keep the sizes honest, the full sequence shows the growth trend, and highlighting Q4 2025 directs attention without distorting it."
+    },
+    "dual-axis": {
+      "text": "One chart with 2025 revenue on a left axis and 2024 revenue on a separate right axis",
+      "why": "Two independent axes can be scaled to make the lines look like anything; readers will compare heights that are on different scales."
+    },
+    "hist-orders": {
+      "text": "A histogram of Q4 2025 order values",
+      "why": "It shows how big Q4 orders were, which is useful later, but it cannot tell you whether the quarter was unusual compared with others."
+    },
+    "bars-quarters-cut": {
+      "text": "A bar chart of the eight quarters with the y-axis starting at 40,000 to make the differences clearer",
+      "why": "Cutting the baseline exaggerates differences: Q1 2025 would look tiny next to Q4 2025, and three of the 2024 quarters, all below 40,000, would vanish entirely. Bars must start at zero."
+    }
+  },
+  "checks": {}
+}

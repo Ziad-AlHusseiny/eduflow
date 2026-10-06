@@ -1,0 +1,38 @@
+{
+  "kind": "fill",
+  "language": "text",
+  "template": "# URL                       file that renders it\n/                           src/app/{{0}}.tsx\n/settings                   src/app/settings/{{1}}.tsx\n/settings/units             src/app/settings/{{2}}.tsx\n(Stack around settings/*)   src/app/settings/{{3}}.tsx\n(any unknown URL)           src/app/{{4}}.tsx\n\n# In code, after the units form saves, return to /settings:\nrouter.{{5}}();",
+  "blanks": [
+    {
+      "answers": [
+        "index"
+      ]
+    },
+    {
+      "answers": [
+        "index"
+      ]
+    },
+    {
+      "answers": [
+        "units"
+      ]
+    },
+    {
+      "answers": [
+        "_layout"
+      ]
+    },
+    {
+      "answers": [
+        "+not-found"
+      ]
+    },
+    {
+      "answers": [
+        "back",
+        "dismiss"
+      ]
+    }
+  ]
+}

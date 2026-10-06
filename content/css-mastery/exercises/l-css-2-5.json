@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"slot\">\n  <article class=\"session-card\">\n    <p class=\"time\">09:30</p>\n    <div class=\"body\">\n      <h3>Container Queries in Production</h3>\n      <p>Cards that adapt to the slot they're in, not the screen.</p>\n    </div>\n  </article>\n</div>",
+    "css": ".slot {\n  width: 500px; /* the checks change this width */\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-inline-start: 6px solid #cbd5e1;\n  border-radius: 12px;\n}\n.session-card p, .session-card h3 { margin: 0; }\n.time { color: #6b7280; }\n\n@media (width >= 400px) {\n  .session-card {\n    display: grid;\n    grid-template-columns: 6rem 1fr;\n    gap: 1rem;\n  }\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"slot\">\n  <article class=\"session-card\">\n    <p class=\"time\">09:30</p>\n    <div class=\"body\">\n      <h3>Container Queries in Production</h3>\n      <p>Cards that adapt to the slot they're in, not the screen.</p>\n    </div>\n  </article>\n</div>",
+    "css": ".slot {\n  width: 500px; /* the checks change this width */\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-inline-start: 6px solid #cbd5e1;\n  border-radius: 12px;\n}\n.session-card p, .session-card h3 { margin: 0; }\n.time { color: #6b7280; }\n\n.slot {\n  container: session / inline-size;\n}\n\n@container session (width >= 400px) {\n  .session-card {\n    display: grid;\n    grid-template-columns: 6rem 1fr;\n    gap: 1rem;\n  }\n}\n\n@container style(--variant: featured) {\n  .session-card {\n    border-inline-start-color: #6d28d9;\n  }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "named-container",
+      "test": "return style('.slot', 'container-type') === 'inline-size' && style('.slot', 'container-name').split(' ').includes('session');"
+    },
+    {
+      "id": "wide-side-by-side",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const t = () => $('.time').getBoundingClientRect(); const b = () => $('.body').getBoundingClientRect(); const side = () => t().right <= b().left && Math.abs(t().top - b().top) < 1; const stacked = () => b().top >= t().bottom - 0.5; await setW(500); return side();"
+    },
+    {
+      "id": "narrow-stacked",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const t = () => $('.time').getBoundingClientRect(); const b = () => $('.body').getBoundingClientRect(); const side = () => t().right <= b().left && Math.abs(t().top - b().top) < 1; const stacked = () => b().top >= t().bottom - 0.5; await setW(300); const ok = stacked(); await setW(500); return ok;"
+    },
+    {
+      "id": "threshold",
+      "test": "const setW = async (w) => { $('.slot').style.width = w + 'px'; await tick(16); }; const t = () => $('.time').getBoundingClientRect(); const b = () => $('.body').getBoundingClientRect(); const side = () => t().right <= b().left && Math.abs(t().top - b().top) < 1; const stacked = () => b().top >= t().bottom - 0.5; await setW(399); const below = stacked(); await setW(400); const at = side(); await setW(500); return below && at;"
+    },
+    {
+      "id": "featured-variant",
+      "test": "const card = $('.session-card'); const before = style(card, 'border-left-color'); $('.slot').style.setProperty('--variant', 'featured'); await tick(16); const after = style(card, 'border-left-color'); $('.slot').style.removeProperty('--variant'); await tick(16); return before === 'rgb(203, 213, 225)' && after === 'rgb(109, 40, 217)';"
+    }
+  ]
+}

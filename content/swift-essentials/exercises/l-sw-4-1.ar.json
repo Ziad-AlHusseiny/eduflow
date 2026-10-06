@@ -1,0 +1,10 @@
+{
+  "title": "سباق البيانات الذي ترفض Swift 6 بناءه",
+  "prompt": "هذه الدالة المساعدة تجمع قائمة من المبالغ باستخدام مجموعة مهام. ستعمل بلا مشكلة في اختبار سريع، ومع ذلك يرفض الـ compiler في Swift 6 بناءها. اختر السطر الذي ينشئ سباق البيانات.",
+  "hints": [
+    "كم مهمة ابنًا تعمل في الوقت نفسه، وما الذي تلمسه كلها؟",
+    "`Tally` هو class عادي فيه `var`. هل هو `Sendable`؟",
+    "في الـ concurrency المهيكلة، يجب أن يسلّم الأبناء النتائج إلى الأب بدل الكتابة في state مشتركة."
+  ],
+  "explanation": "السطر 11 يبدأ مهمة ابنًا لكل مبلغ، وكل ابن يعدّل كائن `Tally` نفسه. المهام الأبناء تعمل بالتوازي، فقد يقرأ اثنان منها `total` ويكتبانها في اللحظة نفسها فيضيع أحد التحديثين. ولأن `Tally` ليس `Sendable`، ترفض Swift 6 الالتقاط (\"passing closure as a 'sending' parameter risks causing data races\"، أو خطأ عزل على الـ main actor حين يستخدم مشروعك العزل الافتراضي على الـ main actor).\n\nاجعل كل ابن يعيد قيمته واجمع في الأب، الذي لا ينفّذ إلا دورة واحدة من الحلقة في كل مرة:\n\n```swift\nfunc totalOfAll(_ amounts: [Decimal]) async -> Decimal {\n    await withTaskGroup(of: Decimal.self) { group in\n        for amount in amounts {\n            group.addTask { amount }\n        }\n        var total: Decimal = 0\n        for await part in group {\n            total += part\n        }\n        return total\n    }\n}\n```\n\nوإن كان لا بدّ فعلًا من مشاركة الـ state، فاجعل `Tally` من نوع `actor` واستدعِ `await tally.add(amount)`."
+}

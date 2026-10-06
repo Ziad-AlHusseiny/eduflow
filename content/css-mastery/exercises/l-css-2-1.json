@@ -1,0 +1,38 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"session-row\">\n  <span class=\"time\">09:30</span>\n  <span class=\"title\">Shipping Accessible Design Systems Across Twelve Product Teams Without Losing Your Mind</span>\n  <button class=\"save\" type=\"button\">Save</button>\n</div>",
+    "css": "/* The row is fixed at 400px for this exercise */\n.session-row {\n  width: 400px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 10px;\n}\n.time {\n  width: 5rem;\n  font-variant-numeric: tabular-nums;\n  color: #6b7280;\n}\n.title {\n  white-space: nowrap;\n  font-weight: 600;\n}\n.save {\n  padding: 0.3em 0.8em;\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"session-row\">\n  <span class=\"time\">09:30</span>\n  <span class=\"title\">Shipping Accessible Design Systems Across Twelve Product Teams Without Losing Your Mind</span>\n  <button class=\"save\" type=\"button\">Save</button>\n</div>",
+    "css": "/* The row is fixed at 400px for this exercise */\n.session-row {\n  width: 400px;\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 10px;\n}\n.time {\n  flex: 0 0 5rem;\n  font-variant-numeric: tabular-nums;\n  color: #6b7280;\n}\n.title {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-weight: 600;\n}\n.save {\n  flex: none;\n  padding: 0.3em 0.8em;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "time-fixed",
+      "test": "const box = (s) => $(s).getBoundingClientRect(); return Math.abs(box('.time').width - 80) < 1;"
+    },
+    {
+      "id": "no-overflow",
+      "test": "const row = $('.session-row'); return row.scrollWidth <= row.clientWidth + 1;"
+    },
+    {
+      "id": "save-at-end",
+      "test": "const box = (s) => $(s).getBoundingClientRect(); const row = $('.session-row'); const inner = box('.session-row').right - parseFloat(style(row, 'border-right-width')) - parseFloat(style(row, 'padding-right')); return Math.abs(box('.save').right - inner) < 1.5;"
+    },
+    {
+      "id": "title-fills",
+      "test": "const box = (s) => $(s).getBoundingClientRect(); const gap = parseFloat(style('.session-row', 'column-gap')) || 0; return Math.abs(box('.title').right + gap - box('.save').left) < 1.5;"
+    },
+    {
+      "id": "ellipsis",
+      "test": "return style('.title', 'text-overflow') === 'ellipsis' && style('.title', 'overflow-x') === 'hidden';"
+    },
+    {
+      "id": "short-title-still-fills",
+      "test": "const box = (s) => $(s).getBoundingClientRect(); const t = $('.title'); const old = t.textContent; t.textContent = 'Keynote'; await tick(16); const row = $('.session-row'); const inner = box('.session-row').right - parseFloat(style(row, 'border-right-width')) - parseFloat(style(row, 'padding-right')); const ok = Math.abs(box('.save').right - inner) < 1.5 && Math.abs(box('.time').width - 80) < 1; t.textContent = old; return ok;"
+    }
+  ]
+}

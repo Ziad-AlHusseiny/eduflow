@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "text",
+  "code": "# Dependencies\nnode_modules/\n\n# Build output from the Sass experiment\n*.css\n\n# Local environment (never commit secrets)\n.env\nsecrets.json   # API keys\n!.env.example\n\n# OS and editor files\n/.DS_Store\n.vscode/\n*.log",
+  "bugLines": [
+    5,
+    9,
+    13
+  ]
+}

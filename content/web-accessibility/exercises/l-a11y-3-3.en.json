@@ -1,0 +1,17 @@
+{
+  "title": "Add the ARIA HTML can't give you",
+  "prompt": "Four small ARIA jobs on Ticketly's pass card:\n\n1. Mark the **Tickets** link as the current page with `aria-current=\"page\"`.\n2. Make **Save to wishlist** a toggle button: start with `aria-pressed=\"false\"` and flip it on each click. Keep the label text unchanged.\n3. Make `#basket-status` a **polite** live region so \"Ticket added…\" is announced.\n4. The sticky bar's Add to basket button has `aria-hidden=\"true\"`, which leaves a silent Tab stop. Fix it without removing the button (you may change its text).",
+  "hints": [
+    "aria-current and aria-pressed are plain attributes in the HTML; aria-pressed also needs updating in the click handler.",
+    "role=\"status\" is a polite live region. The element already exists at load, which is exactly what live regions need.",
+    "Remove aria-hidden from the sticky button. If the duplicate label bothers you, make it more specific, like \"Add Friday pass to basket\"."
+  ],
+  "explanation": "`aria-current=\"page\"` adds \"current page\" to the Tickets link announcement. The wishlist button keeps its label and exposes its state through `aria-pressed`, which the click handler keeps in sync; the CSS can style from the same attribute. `role=\"status\"` on the existing, empty paragraph means each new message is read politely without moving focus. And the sticky button is visible and focusable again in the accessibility tree: a focusable element must never sit inside `aria-hidden=\"true\"`, because keyboard users reach it while screen readers stay silent.",
+  "checks": {
+    "current-page": "Only the Tickets link has aria-current=\"page\"",
+    "pressed-toggles": "Save to wishlist starts at aria-pressed=\"false\" and toggles on each click",
+    "live-region": "#basket-status is a live region and announces the basket count",
+    "polite": "The basket message is polite, not an assertive alert",
+    "no-hidden-focusable": "No focusable element is hidden with aria-hidden"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\ntype Flag = { rollout: number; countries: readonly string[] };\n\nfunction defineFlow(steps: OrderStatus[]) {\n  return steps;\n}\n\nfunction oneOf(values: readonly string[]) {\n  return (input: string): boolean => values.includes(input);\n}\n\nfunction defineFlags(flags: Record<string, Flag>) {\n  return flags;\n}\n\n// ---- Type tests (do not edit) ----\nconst happyPath = defineFlow(['processing', 'shipped', 'delivered']);\ntype T1 = Expect<Equal<typeof happyPath, readonly ['processing', 'shipped', 'delivered']>>;\n\n// @ts-expect-error: 'refunded' is not an order status\ndefineFlow(['processing', 'refunded']);\n\nconst isChannel = oneOf(['web', 'mobile_app', 'marketplace']);\nconst raw: string = 'mobile_app';\nif (isChannel(raw)) {\n  type T2 = Expect<Equal<typeof raw, 'web' | 'mobile_app' | 'marketplace'>>;\n}\n\nconst flags = defineFlags({\n  expressShipping: { rollout: 0.5, countries: ['EG', 'AE'] },\n  giftWrap: { rollout: 1, countries: [] },\n});\ntype T3 = Expect<Equal<typeof flags.expressShipping.countries, readonly ['EG', 'AE']>>;\n\n// @ts-expect-error: every flag needs a rollout\ndefineFlags({ applePay: { countries: ['US'] } });\n\nconsole.log(happyPath, isChannel('web'), isChannel('fax'), flags.expressShipping.countries);\n"
+  },
+  "solution": {
+    "ts": "type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';\ntype Flag = { rollout: number; countries: readonly string[] };\n\nfunction defineFlow<const T extends readonly OrderStatus[]>(steps: T): T {\n  return steps;\n}\n\nfunction oneOf<const T extends readonly string[]>(values: T) {\n  return (input: string): input is T[number] => (values as readonly string[]).includes(input);\n}\n\nfunction defineFlags<const T extends Record<string, Flag>>(flags: T): T {\n  return flags;\n}\n\n// ---- Type tests (do not edit) ----\nconst happyPath = defineFlow(['processing', 'shipped', 'delivered']);\ntype T1 = Expect<Equal<typeof happyPath, readonly ['processing', 'shipped', 'delivered']>>;\n\n// @ts-expect-error: 'refunded' is not an order status\ndefineFlow(['processing', 'refunded']);\n\nconst isChannel = oneOf(['web', 'mobile_app', 'marketplace']);\nconst raw: string = 'mobile_app';\nif (isChannel(raw)) {\n  type T2 = Expect<Equal<typeof raw, 'web' | 'mobile_app' | 'marketplace'>>;\n}\n\nconst flags = defineFlags({\n  expressShipping: { rollout: 0.5, countries: ['EG', 'AE'] },\n  giftWrap: { rollout: 1, countries: [] },\n});\ntype T3 = Expect<Equal<typeof flags.expressShipping.countries, readonly ['EG', 'AE']>>;\n\n// @ts-expect-error: every flag needs a rollout\ndefineFlags({ applePay: { countries: ['US'] } });\n\nconsole.log(happyPath, isChannel('web'), isChannel('fax'), flags.expressShipping.countries);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "one-of",
+      "test": "const g = oneOf(['a', 'b']); return g('a') === true && g('c') === false;"
+    },
+    {
+      "id": "identity",
+      "test": "const f = { x: { rollout: 1, countries: [] } }; return defineFlags(f) === f && defineFlow(['shipped']).join() === 'shipped';"
+    }
+  ]
+}

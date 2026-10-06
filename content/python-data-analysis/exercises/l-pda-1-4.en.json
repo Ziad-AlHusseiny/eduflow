@@ -1,0 +1,17 @@
+{
+  "title": "Summarise twelve orders by country",
+  "prompt": "`orders` holds twelve rows from the messy export, and the country names have inconsistent capitals. Build `revenue_by_country`, a dictionary from cleaned country name (use `.strip().title()`) to the sum of `total`. Build `large_ids`, a list of the `order_id`s whose total is 60 or more, in their original order. Set `web_count` to the number of orders whose channel is exactly `\"web\"`.",
+  "hints": [
+    "Loop over `orders` once for the dictionary: clean the country into a variable first, then update the total for that key.",
+    "`revenue_by_country[country] = revenue_by_country.get(country, 0) + order[\"total\"]` adds to an existing total or starts a new one.",
+    "`large_ids = [o[\"order_id\"] for o in orders if o[\"total\"] >= 60]`. For `web_count`, `sum(1 for o in orders if o[\"channel\"] == \"web\")` or a loop with `+= 1` both work."
+  ],
+  "explanation": "Cleaning the key before using it is what makes `\"united kingdom\"`, `\"UNITED KINGDOM\"` and `\"United Kingdom\"` land in the same bucket; without it you would get three UK entries and a total split three ways. The `.get(key, 0)` pattern handles the first appearance of each country. The comprehension keeps the list in the original order because it walks `orders` front to back. The grand total across countries is still 854.0, which is a quick way to confirm that grouping neither lost nor double-counted a row: always check that the parts add up to the whole.",
+  "checks": {
+    "countries-clean": "Exactly six cleaned country names, with no case variants",
+    "uk-total": "United Kingdom adds up to 444.0",
+    "all-revenue": "The country totals add up to 854.0, the sum of all twelve orders",
+    "large-ids": "`large_ids` is `[2574, 1434, 2490, 2375]`",
+    "web-count": "`web_count` is 5"
+  }
+}

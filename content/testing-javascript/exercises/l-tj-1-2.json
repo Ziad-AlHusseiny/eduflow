@@ -1,0 +1,43 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Splitwise-lite stores money as integer cents.\n// formatMoney(1234) -> \"$12.34\", formatMoney(-505) -> \"-$5.05\"\nfunction formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  const dollars = Math.floor(abs / 100);\n  const rest = String(abs % 100).padStart(2, '0');\n  return `${sign}$${dollars}.${rest}`;\n}\n",
+  "mutants": [
+    {
+      "id": "no-padding",
+      "code": "// Splitwise-lite stores money as integer cents.\n// formatMoney(1234) -> \"$12.34\", formatMoney(-505) -> \"-$5.05\"\nfunction formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  const dollars = Math.floor(abs / 100);\n  const rest = String(abs % 100);\n  return `${sign}$${dollars}.${rest}`;\n}\n"
+    },
+    {
+      "id": "sign-lost",
+      "code": "// Splitwise-lite stores money as integer cents.\n// formatMoney(1234) -> \"$12.34\", formatMoney(-505) -> \"-$5.05\"\nfunction formatMoney(cents) {\n  const sign = '';\n  const abs = Math.abs(cents);\n  const dollars = Math.floor(abs / 100);\n  const rest = String(abs % 100).padStart(2, '0');\n  return `${sign}$${dollars}.${rest}`;\n}\n"
+    },
+    {
+      "id": "rounds-dollars",
+      "code": "// Splitwise-lite stores money as integer cents.\n// formatMoney(1234) -> \"$12.34\", formatMoney(-505) -> \"-$5.05\"\nfunction formatMoney(cents) {\n  const sign = cents < 0 ? '-' : '';\n  const abs = Math.abs(cents);\n  const dollars = Math.round(abs / 100);\n  const rest = String(abs % 100).padStart(2, '0');\n  return `${sign}$${dollars}.${rest}`;\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "describe('formatMoney', () => {\n  test('formats dollars and cents', () => {\n    expect(formatMoney(1234)).toBe('$12.34');\n  });\n\n  // Add tests for: single-digit cents, negative amounts,\n  // and amounts where the cents are 50 or more.\n});\n"
+  },
+  "solution": {
+    "js": "describe('formatMoney', () => {\n  test('formats dollars and cents', () => {\n    expect(formatMoney(1234)).toBe('$12.34');\n  });\n\n  test('pads single-digit cents with a zero', () => {\n    expect(formatMoney(505)).toBe('$5.05');\n  });\n\n  test('puts the minus sign before the dollar sign', () => {\n    expect(formatMoney(-505)).toBe('-$5.05');\n  });\n\n  test('keeps the dollars when the cents are 50 or more', () => {\n    expect(formatMoney(199)).toBe('$1.99');\n  });\n\n  test('formats zero', () => {\n    expect(formatMoney(0)).toBe('$0.00');\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-no-padding",
+      "suite": "no-padding"
+    },
+    {
+      "id": "catches-sign-lost",
+      "suite": "sign-lost"
+    },
+    {
+      "id": "catches-rounds-dollars",
+      "suite": "rounds-dollars"
+    }
+  ]
+}

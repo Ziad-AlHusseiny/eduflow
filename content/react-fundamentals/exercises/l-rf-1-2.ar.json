@@ -1,0 +1,17 @@
+{
+  "title": "جهّز مشروع Watchlist",
+  "prompt": "أنت على حاسوب جديد مثبّت عليه Node.js. رتّب هذه الخطوات بالترتيب الذي ستنفّذها به حتى يعمل مشروع Watchlist ويعرض عنوانك الخاص في المتصفّح.",
+  "hints": [
+    "لا يمكنك تثبيت اعتماديات مشروع غير موجود بعد.",
+    "أوامر npm تعمل على ملف package.json الموجود في المجلد الحالي، لذا يجب أن تكون داخل المشروع أولًا."
+  ],
+  "explanation": "تأكّد أولًا أن إصدار Node حديث بما يكفي لـ Vite (20.19 أو أحدث، أو 22.12 أو أحدث). أمر الإنشاء يصنع المجلد `watchlist`، لذلك تدخله بـ `cd` قبل `npm install`، الذي يقرأ ملف `package.json` الخاص به. ثم يشغّل `npm run dev` الخادم على المنفذ 5173. وعندها فقط يظهر تعديل `App.jsx` في المتصفّح، بفضل الـ hot module replacement.",
+  "items": {
+    "check-node": "`node -v` — تأكّد أن إصدار Node.js هو 20.19 أو أحدث، أو 22.12 أو أحدث",
+    "scaffold": "`npm create vite@latest watchlist -- --template react`",
+    "enter-folder": "`cd watchlist`",
+    "install": "`npm install`",
+    "start-dev": "`npm run dev`، ثم افتح http://localhost:5173",
+    "edit-app": "استبدل محتوى src/App.jsx بالعنوان `<h1>My Watchlist</h1>` واحفظ"
+  }
+}

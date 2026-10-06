@@ -1,0 +1,17 @@
+{
+  "title": "Monthly, quarterly, year over year",
+  "prompt": "`orders` has one row per non-cancelled order, with `order_date` and `revenue`. Build `monthly` (revenue per calendar month, month-end labels) and `monthly_orders` (number of orders per month) with `resample`. Build `quarterly` (revenue per quarter) and `yoy`, its growth versus the same quarter a year earlier as a fraction (1.0 means +100%). Finally set `best_weekday` to the name of the weekday with the highest total revenue.",
+  "hints": [
+    "Put the dates in the index first: `by_time = orders.set_index(\"order_date\")`, then `by_time.resample(\"ME\")[\"revenue\"].sum()`.",
+    "Count orders with `[\"order_id\"].count()` (or `.size()`) on the same resampler. Quarters use `\"QE\"`.",
+    "`quarterly.pct_change(4)` compares with four quarters earlier. For the weekday: `orders.groupby(orders[\"order_date\"].dt.day_name())[\"revenue\"].sum().idxmax()`."
+  ],
+  "explanation": "`resample` needs a datetime index, which `set_index(\"order_date\")` provides; `\"ME\"` and `\"QE\"` label each bucket by its last day. November 2025 had 325 orders and 75,334 dollars of revenue. `pct_change(4)` on a quarterly series is the year-over-year view: the first four values are `NaN` because 2023 is not in the data, and Q4 2025 grew 179.5% on Q4 2024, in line with the 145-200% growth of the other 2025 quarters. Saturday brings in the most revenue, though the weekday differences are small compared with the seasonal ones.",
+  "checks": {
+    "monthly": "`monthly` has 24 months, with November 2025 at about 75,334",
+    "monthly-orders": "`monthly_orders` shows 325 orders in November 2025",
+    "quarterly": "`quarterly` has 8 quarters, ending at about 146,825",
+    "yoy": "`yoy` is 1.795 for Q4 2025 and empty for 2024",
+    "weekday": "`best_weekday` is the top weekday by revenue"
+  }
+}

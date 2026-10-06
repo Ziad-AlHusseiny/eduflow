@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "const SHIPPING_ZONES = {\n  domestic: { countries: ['US', 'CA'], feeCents: 499 },\n  gulf: { countries: ['AE', 'SA'], feeCents: 1299 },\n  levant: { countries: ['EG', 'JO'], feeCents: 899 },\n  europe: { countries: ['GB', 'DE'], feeCents: 999 },\n} as const;\n\n// Shape of the checkout API response (generated from the backend's schema).\ntype CheckoutResponse = {\n  order: { id: number; status: 'processing' | 'shipped'; totalCents: number };\n  lines: { sku: string; quantity: number; unitPriceCents: number }[];\n};\n\ntype Zone = string;\ntype ShippingCountry = string;\ntype FeeCents = number;\ntype LineItem = unknown;\ntype CheckoutStatus = string;\n\nfunction zoneFor(country: ShippingCountry): Zone {\n  for (const [zone, config] of Object.entries(SHIPPING_ZONES)) {\n    if ((config.countries as readonly string[]).includes(country)) return zone;\n  }\n  throw new Error(`No shipping zone for ${country}`);\n}\n\nfunction feeFor(country: ShippingCountry): FeeCents {\n  return SHIPPING_ZONES[zoneFor(country)].feeCents;\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Zone, 'domestic' | 'gulf' | 'levant' | 'europe'>>;\ntype T2 = Expect<Equal<ShippingCountry, 'US' | 'CA' | 'AE' | 'SA' | 'EG' | 'JO' | 'GB' | 'DE'>>;\ntype T3 = Expect<Equal<FeeCents, 499 | 1299 | 899 | 999>>;\ntype T4 = Expect<Equal<LineItem, { sku: string; quantity: number; unitPriceCents: number }>>;\ntype T5 = Expect<Equal<CheckoutStatus, 'processing' | 'shipped'>>;\n\nfunction typeTests() {\n  // @ts-expect-error: France is not in any shipping zone\n  zoneFor('FR');\n}\n\nconsole.log(zoneFor('JO'), feeFor('SA'));\n"
+  },
+  "solution": {
+    "ts": "const SHIPPING_ZONES = {\n  domestic: { countries: ['US', 'CA'], feeCents: 499 },\n  gulf: { countries: ['AE', 'SA'], feeCents: 1299 },\n  levant: { countries: ['EG', 'JO'], feeCents: 899 },\n  europe: { countries: ['GB', 'DE'], feeCents: 999 },\n} as const;\n\n// Shape of the checkout API response (generated from the backend's schema).\ntype CheckoutResponse = {\n  order: { id: number; status: 'processing' | 'shipped'; totalCents: number };\n  lines: { sku: string; quantity: number; unitPriceCents: number }[];\n};\n\ntype ShippingZones = typeof SHIPPING_ZONES;\ntype Zone = keyof ShippingZones;\ntype ShippingCountry = ShippingZones[Zone]['countries'][number];\ntype FeeCents = ShippingZones[Zone]['feeCents'];\ntype LineItem = CheckoutResponse['lines'][number];\ntype CheckoutStatus = CheckoutResponse['order']['status'];\n\nfunction zoneFor(country: ShippingCountry): Zone {\n  // SHIPPING_ZONES is our own const object, so it has no extra keys.\n  for (const zone of Object.keys(SHIPPING_ZONES) as Zone[]) {\n    if ((SHIPPING_ZONES[zone].countries as readonly string[]).includes(country)) return zone;\n  }\n  throw new Error(`No shipping zone for ${country}`);\n}\n\nfunction feeFor(country: ShippingCountry): FeeCents {\n  return SHIPPING_ZONES[zoneFor(country)].feeCents;\n}\n\n// ---- Type tests (do not edit) ----\ntype T1 = Expect<Equal<Zone, 'domestic' | 'gulf' | 'levant' | 'europe'>>;\ntype T2 = Expect<Equal<ShippingCountry, 'US' | 'CA' | 'AE' | 'SA' | 'EG' | 'JO' | 'GB' | 'DE'>>;\ntype T3 = Expect<Equal<FeeCents, 499 | 1299 | 899 | 999>>;\ntype T4 = Expect<Equal<LineItem, { sku: string; quantity: number; unitPriceCents: number }>>;\ntype T5 = Expect<Equal<CheckoutStatus, 'processing' | 'shipped'>>;\n\nfunction typeTests() {\n  // @ts-expect-error: France is not in any shipping zone\n  zoneFor('FR');\n}\n\nconsole.log(zoneFor('JO'), feeFor('SA'));\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "zone",
+      "test": "return zoneFor('JO') === 'levant' && zoneFor('CA') === 'domestic';"
+    },
+    {
+      "id": "fee",
+      "test": "return feeFor('SA') === 1299 && feeFor('GB') === 999;"
+    }
+  ]
+}

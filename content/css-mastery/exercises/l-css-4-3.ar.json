@@ -1,0 +1,17 @@
+{
+  "title": "تقدّم وظهور تدريجي مرتبطان بالتمرير",
+  "prompt": "الـ keyframes `grow` و`reveal` جاهزة. اربطها بالتمرير:\n\n1. أصلح شريط التقدّم ليعمل `grow` على **خط زمن تمرير المستند**، بتوقيت `linear` وبنمط تعبئة يُبقي الـ keyframes مطبّقة (`both`).\n2. اجعل كل `.speaker` تشغّل `reveal` على **خط زمن ظهورها**، من بداية نطاق **entry** إلى **30% من نطاق cover**.\n3. ضع القواعد المرتبطة بالتمرير داخل `@supports (animation-timeline: view())` لتعرض المتصفّحات غير الداعمة الصفحة العادية. (ويُنصح بتغليفها أيضًا في `prefers-reduced-motion: no-preference`.)",
+  "hints": [
+    "انظر إلى الترتيب في كود البداية: أيّ تصريح يعيد ضبط الآخر؟",
+    "للمتحدّثين: `animation: reveal linear both;` ثم `animation-timeline: view();` و`animation-range: …`.",
+    "`@supports (animation-timeline: view()) { .progress { animation: grow linear both; animation-timeline: scroll(root); } .speaker { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% cover 30%; } }`"
+  ],
+  "explanation": "لم يكن شريط البداية يتحرّك لأن الاختصار `animation` جاء بعد `animation-timeline` فأعاد ضبطها إلى `auto`، تاركًا حركة زمنية بطول صفر. إعلان خط الزمن بعد الاختصار يربط `grow` بحاوية تمرير الجذر، و`linear` تُبقي الشريط متناسبًا مع مسافة التمرير. وخط زمن `view()` المجهول الاسم لكل متحدّث يتتبّع تلك البطاقة عبر الـ viewport، و`entry 0% cover 30%` تجعل الظهور ينتهي بعد قليل من ظهور البطاقة. وحماية `@supports` تُبعد الظهور التدريجي عن المتصفّحات التي لا تستطيع تشغيله، مثل نسخة Firefox المستقرة في 2026، حيث تبقى البطاقات ظاهرة ببساطة.",
+  "checks": {
+    "progress-scroll-timeline": "حركة الشريط تعمل على خط زمن scroll()",
+    "progress-linear": "الشريط يستخدم توقيتًا linear ويُبقي الـ keyframes مطبّقة",
+    "speaker-view-timeline": "كل بطاقة متحدّث تشغّل reveal على خط زمن view()",
+    "speaker-range": "الظهور التدريجي يمتدّ من entry إلى cover 30%",
+    "guarded": "القواعد داخل @supports (animation-timeline: …)"
+  }
+}

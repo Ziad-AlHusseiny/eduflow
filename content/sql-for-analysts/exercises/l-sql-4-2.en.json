@@ -1,0 +1,11 @@
+{
+  "title": "A fast and correct weekend filter",
+  "prompt": "Mark's dashboard shows orders per day for the Black Friday weekend, **Friday 28 November to Monday 1 December 2025 inclusive** (all statuses).\n\nReturn `day` ('YYYY-MM-DD') and `orders`, sorted by `day`. Order matters. The starter's filter is index-friendly but drops a whole day.\n\nFix it so the result is complete **and** the filter still uses `idx_orders_date`: run your query with `EXPLAIN QUERY PLAN` in front and check that the plan says SEARCH, not SCAN.",
+  "hints": [
+    "Which day is missing from the starter's output, and why does BETWEEN lose it?",
+    "Wrapping the column, as in `date(order_date) BETWEEN ...`, would fix the count but turn the plan into a SCAN.",
+    "Use a half-open range on the bare column: `order_date >= '2025-11-28' AND order_date < '2025-12-02'`."
+  ],
+  "explanation": "`BETWEEN '2025-11-28' AND '2025-12-01'` stops at midnight at the start of 1 December, so Cyber Monday disappears. `date(order_date) BETWEEN ...` returns the right rows but makes SQLite compute `date()` for every order, a full scan. The half-open range keeps the bare indexed column on one side of each comparison, so the plan reads `SEARCH orders USING COVERING INDEX idx_orders_date`, and it includes all of Monday: 15, 12, 11 and 4 orders.",
+  "checks": {}
+}

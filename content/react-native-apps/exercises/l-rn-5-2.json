@@ -1,0 +1,39 @@
+{
+  "kind": "fill",
+  "language": "tsx",
+  "template": "import { render, screen, userEvent } from '@testing-library/react-native';\nimport { HikeForm } from '../HikeForm';\n\ntest('shows an error, then saves once the distance is fixed', async () => {\n  const onSave = jest.fn();\n  const user = userEvent.{{0}}();\n  await {{1}}(<HikeForm onSave={onSave} />);\n\n  const distance = screen.getByLabelText('Distance (km)');\n  await user.type(screen.getByLabelText('Name'), 'Ridge Loop');\n  await user.type(distance, 'far');\n  await user.{{2}}(screen.getByRole('{{3}}', { name: 'Save' }));\n\n  expect(screen.getByText('Enter a distance in km, like 8.4.')).{{4}}();\n  expect(onSave).not.toHaveBeenCalled();\n\n  await user.clear(distance);\n  await user.type(distance, '8,4');\n  await user.press(screen.getByRole('button', { name: 'Save' }));\n\n  expect(onSave).{{5}}(expect.objectContaining({ name: 'Ridge Loop', distanceKm: 8.4 }));\n});",
+  "blanks": [
+    {
+      "answers": [
+        "setup"
+      ]
+    },
+    {
+      "answers": [
+        "render"
+      ]
+    },
+    {
+      "answers": [
+        "press"
+      ]
+    },
+    {
+      "answers": [
+        "button"
+      ]
+    },
+    {
+      "answers": [
+        "toBeOnTheScreen",
+        "toBeVisible"
+      ]
+    },
+    {
+      "answers": [
+        "toHaveBeenCalledWith",
+        "toHaveBeenLastCalledWith"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split\nfrom sklearn.pipeline import Pipeline, make_pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nX = churn.drop(columns=[\"customer_id\", \"churned\"])\ny = churn[\"churned\"]\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\nnumeric = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n           \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\n\n# A customer the training data never prepared you for\nnew_customer = pd.DataFrame([{\n    \"country\": \"France\", \"segment\": \"government\", \"tenure_days\": 200, \"orders\": 2,\n    \"total_spent\": 150.0, \"avg_order_value\": 75.0, \"days_since_last_order\": 100,\n    \"used_coupon\": 0, \"support_tickets\": 0, \"avg_satisfaction\": np.nan, \"mobile_share\": 0.5}])\n\n# 1. Preprocess: scale `numeric`; impute (median, with indicator) then scale avg_satisfaction;\n#    one-hot encode `segment` so unseen categories don't crash\npreprocess = ColumnTransformer([\n    (\"num\", StandardScaler(), numeric),\n    (\"sat\", StandardScaler(), [\"avg_satisfaction\"]),\n    (\"cat\", OneHotEncoder(), [\"segment\"]),\n])\n\n# 2. Pipeline with steps named \"prep\" and \"model\" (LogisticRegression), fitted on the training data\npipe = Pipeline([(\"prep\", preprocess), (\"model\", LogisticRegression())])\n\n# 3. Mean cross-validated ROC AUC on the training data\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\ncv_auc = None\n\n# 4. Churn probability for new_customer\nnew_prob = None\n",
+  "solution": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split\nfrom sklearn.pipeline import Pipeline, make_pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nX = churn.drop(columns=[\"customer_id\", \"churned\"])\ny = churn[\"churned\"]\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\nnumeric = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n           \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\n\n# A customer the training data never prepared you for\nnew_customer = pd.DataFrame([{\n    \"country\": \"France\", \"segment\": \"government\", \"tenure_days\": 200, \"orders\": 2,\n    \"total_spent\": 150.0, \"avg_order_value\": 75.0, \"days_since_last_order\": 100,\n    \"used_coupon\": 0, \"support_tickets\": 0, \"avg_satisfaction\": np.nan, \"mobile_share\": 0.5}])\n\npreprocess = ColumnTransformer([\n    (\"num\", StandardScaler(), numeric),\n    (\"sat\", make_pipeline(SimpleImputer(strategy=\"median\", add_indicator=True), StandardScaler()),\n     [\"avg_satisfaction\"]),\n    (\"cat\", OneHotEncoder(handle_unknown=\"ignore\"), [\"segment\"]),\n])\npipe = Pipeline([(\"prep\", preprocess), (\"model\", LogisticRegression())])\npipe.fit(X_train, y_train)\n\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\ncv_auc = cross_val_score(pipe, X_train, y_train, cv=cv, scoring=\"roc_auc\").mean()\n\nnew_prob = pipe.predict_proba(new_customer)[0, 1]\nprint(round(cv_auc, 3), round(new_prob, 3))\n",
+  "checks": [
+    {
+      "id": "steps",
+      "test": "list(pipe.named_steps) == ['prep', 'model'] and type(pipe.named_steps['model']).__name__ == 'LogisticRegression'"
+    },
+    {
+      "id": "fitted",
+      "test": "len(pipe.named_steps['prep'].get_feature_names_out()) == 13"
+    },
+    {
+      "id": "cv-auc",
+      "test": "cv_auc is not None and 0.75 < float(cv_auc) < 0.85"
+    },
+    {
+      "id": "unseen",
+      "test": "new_prob is not None and 0.0 < float(new_prob) < 1.0 and abs(float(new_prob) - float(pipe.predict_proba(new_customer)[0, 1])) < 1e-9"
+    }
+  ]
+}

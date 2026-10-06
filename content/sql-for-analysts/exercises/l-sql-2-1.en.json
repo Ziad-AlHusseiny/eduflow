@@ -1,0 +1,11 @@
+{
+  "title": "Karim's best sellers",
+  "prompt": "Karim wants every product that has sold **at least 130 units** across all order lines (ignore order status for now).\n\nReturn one row per product with `product_id`, `units` (total quantity) and `revenue` (sum of `quantity * unit_price * (1 - discount)`, rounded to 2 decimals). Row order doesn't matter.\n\nThe starter returns a single row. Make it return the right grain and apply the threshold.",
+  "hints": [
+    "State the grain: one row per product. Which clause makes that happen?",
+    "Add `GROUP BY product_id`. Now every product appears; you need to keep only some groups.",
+    "A condition on `SUM(quantity)` can't go in WHERE. Use `HAVING SUM(quantity) >= 130`."
+  ],
+  "explanation": "Without GROUP BY, SQLite aggregates the whole table into one row and fills the bare `product_id` from an arbitrary line, so the starter shows one product next to the company-wide total. `GROUP BY product_id` sets the grain to one row per product, and `HAVING` filters those groups after the sums exist. Eleven products clear the bar. The Standing Desk 140cm (product 21) has only 132 units but more than 60,000 in revenue, a reminder that units and revenue rank products very differently.",
+  "checks": {}
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv",
+    "orders.csv"
+  ],
+  "starter": "import pandas as pd\n\nORDERS_FILE = \"orders.csv\"\nITEMS_FILE = \"order_items.csv\"\nQUARTERS = [\"2024Q4\", \"2025Q3\", \"2025Q4\"]\n\n\ndef load_orders(orders_file, items_file):\n    items = pd.read_csv(items_file)\n    orders = pd.read_csv(orders_file, parse_dates=[\"order_date\"])\n    items[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n    revenue = items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum()\n    return orders.merge(revenue, on=\"order_id\", how=\"left\", validate=\"one_to_one\")\n\n\ndef quarter_summary(df, quarter):\n    \"\"\"Return a dict with keys quarter, revenue, orders, aov for one quarter\n    (non-cancelled orders only), revenue and aov rounded to 2 decimals.\n    Assert that the quarter has at least one order.\"\"\"\n    return {}\n\n\ndf = load_orders(ORDERS_FILE, ITEMS_FILE)\n\n# summary: a DataFrame with one row per quarter in QUARTERS, built with quarter_summary\nsummary = None\n\n# Save summary to \"quarter_summary.csv\" without the index\n",
+  "solution": "import pandas as pd\n\nORDERS_FILE = \"orders.csv\"\nITEMS_FILE = \"order_items.csv\"\nQUARTERS = [\"2024Q4\", \"2025Q3\", \"2025Q4\"]\n\n\ndef load_orders(orders_file, items_file):\n    items = pd.read_csv(items_file)\n    orders = pd.read_csv(orders_file, parse_dates=[\"order_date\"])\n    items[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n    revenue = items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum()\n    return orders.merge(revenue, on=\"order_id\", how=\"left\", validate=\"one_to_one\")\n\n\ndef quarter_summary(df, quarter):\n    \"\"\"Return a dict with keys quarter, revenue, orders, aov for one quarter\n    (non-cancelled orders only), revenue and aov rounded to 2 decimals.\n    Assert that the quarter has at least one order.\"\"\"\n    kept = df[df[\"status\"] != \"cancelled\"]\n    in_q = kept[kept[\"order_date\"].dt.to_period(\"Q\") == quarter]\n    assert len(in_q) > 0, f\"no orders in {quarter}\"\n    return {\n        \"quarter\": quarter,\n        \"revenue\": round(in_q[\"revenue\"].sum(), 2),\n        \"orders\": len(in_q),\n        \"aov\": round(in_q[\"revenue\"].mean(), 2),\n    }\n\n\ndf = load_orders(ORDERS_FILE, ITEMS_FILE)\n\nsummary = pd.DataFrame([quarter_summary(df, q) for q in QUARTERS])\nsummary.to_csv(\"quarter_summary.csv\", index=False)\nprint(summary)\n",
+  "checks": [
+    {
+      "id": "q4",
+      "test": "(lambda r: r['quarter'] == '2025Q4' and abs(float(r['revenue']) - 146825.44) < 0.01 and int(r['orders']) == 642 and abs(float(r['aov']) - 228.70) < 0.01)(quarter_summary(df, '2025Q4'))"
+    },
+    {
+      "id": "other-quarter",
+      "test": "(lambda r: int(r['orders']) == 228 and abs(float(r['revenue']) - 52537.10) < 0.01)(quarter_summary(df, '2024Q4'))"
+    },
+    {
+      "id": "uses-argument",
+      "test": "int(quarter_summary(df[df['order_date'] < '2025-12-01'], '2025Q4')['orders']) == 457"
+    },
+    {
+      "id": "summary",
+      "test": "isinstance(summary, pd.DataFrame) and list(summary['quarter']) == QUARTERS and {'revenue', 'orders', 'aov'} <= set(summary.columns)"
+    },
+    {
+      "id": "saved",
+      "test": "__import__('os').path.exists('quarter_summary.csv') and len(pd.read_csv('quarter_summary.csv')) == 3 and 'Unnamed: 0' not in pd.read_csv('quarter_summary.csv').columns"
+    }
+  ]
+}

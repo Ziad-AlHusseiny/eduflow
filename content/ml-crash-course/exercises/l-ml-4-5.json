@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\nfrom sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import FunctionTransformer\nfrom sklearn.tree import DecisionTreeClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\ntree = DecisionTreeClassifier(min_samples_leaf=20, random_state=42)\n\n# 1. Return a COPY of df with two new columns:\n#    orders_per_month = orders / (tenure_days / 30.4)\n#    tickets_per_order = support_tickets / orders\ndef add_features(df):\n    return df\n\n# 2. Pipeline: FunctionTransformer(add_features), then `tree`\npipe = make_pipeline(tree)\n\n# 3. Mean CV ROC AUC on the training data, for the plain tree and for your pipeline\nplain_auc = None\nengineered_auc = None\n",
+  "solution": "import numpy as np\nimport pandas as pd\nfrom sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import FunctionTransformer\nfrom sklearn.tree import DecisionTreeClassifier\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\ncv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)\ntree = DecisionTreeClassifier(min_samples_leaf=20, random_state=42)\n\ndef add_features(df):\n    df = df.copy()\n    df[\"orders_per_month\"] = df[\"orders\"] / (df[\"tenure_days\"] / 30.4)\n    df[\"tickets_per_order\"] = df[\"support_tickets\"] / df[\"orders\"]\n    return df\n\npipe = make_pipeline(FunctionTransformer(add_features), tree)\n\nplain_auc = cross_val_score(tree, X_train, y_train, cv=cv, scoring=\"roc_auc\").mean()\nengineered_auc = cross_val_score(pipe, X_train, y_train, cv=cv, scoring=\"roc_auc\").mean()\nprint(round(plain_auc, 3), round(engineered_auc, 3))\n",
+  "checks": [
+    {
+      "id": "new-columns",
+      "test": "list(add_features(X_train.head(3)).columns) == features + ['orders_per_month', 'tickets_per_order'] or set(add_features(X_train.head(3)).columns) == set(features) | {'orders_per_month', 'tickets_per_order'}"
+    },
+    {
+      "id": "values",
+      "test": "abs(float(add_features(X_train)['orders_per_month'].iloc[0]) - float(X_train['orders'].iloc[0] / (X_train['tenure_days'].iloc[0] / 30.4))) < 1e-9 and abs(float(add_features(X_train)['tickets_per_order'].iloc[0]) - float(X_train['support_tickets'].iloc[0] / X_train['orders'].iloc[0])) < 1e-9"
+    },
+    {
+      "id": "no-mutation",
+      "test": "list(X_train.columns) == features"
+    },
+    {
+      "id": "pipeline",
+      "test": "type(pipe[0]).__name__ == 'FunctionTransformer' and type(pipe[-1]).__name__ == 'DecisionTreeClassifier'"
+    },
+    {
+      "id": "scores",
+      "test": "plain_auc is not None and engineered_auc is not None and abs(float(plain_auc) - 0.716) < 0.002 and float(engineered_auc) > float(plain_auc) + 0.02"
+    }
+  ]
+}

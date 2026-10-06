@@ -1,0 +1,46 @@
+{
+  "title": "Design Systems That Scale",
+  "tagline": "Build a design system that 40 teams actually use: tokens, components, releases and adoption.",
+  "description": [
+    "Most design systems fail quietly: a Figma library nobody trusts, a component package three versions behind, and forty shades of grey in production. This course teaches the parts that make a system survive contact with real teams: token architecture, component APIs, accessibility built into every state, versioned releases, and a governance model people accept.",
+    "You work on one system the whole way through: Northwind UI, which serves a dispatch web app and a marketing site for two brands. Your guide is Sofia Reyes, a principal product designer who has run a system used by forty teams. You write real CSS, real token files and real release plans, and you learn which decisions are expensive to undo."
+  ],
+  "audience": "Designers and front-end developers who already ship UI and now need to build or run a shared design system.",
+  "prerequisites": "Comfortable with HTML and CSS (custom properties, selectors), basic JavaScript, and Figma components.",
+  "learnItems": [
+    "Audit an interface and decide what the system should own",
+    "Structure tokens in primitive, semantic and component tiers",
+    "Theme light, dark, density and two brands without forking code",
+    "Design component APIs that compose instead of growing props",
+    "Ship releases with semver, changelogs and painless deprecations",
+    "Run contribution, governance and adoption metrics at scale"
+  ],
+  "sections": {
+    "s-ds-1": "What a Design System Really Is",
+    "s-ds-2": "Design Tokens",
+    "s-ds-3": "Components",
+    "s-ds-4": "Tooling and Delivery",
+    "s-ds-5": "Adoption at Scale"
+  },
+  "lessons": {
+    "l-ds-1-1": "A Product, Not a Project",
+    "l-ds-1-2": "The Interface Inventory",
+    "l-ds-1-3": "Principles and Team Models",
+    "l-ds-2-1": "Three Tiers: Primitive, Semantic, Component",
+    "l-ds-2-2": "Naming Tokens So They Survive",
+    "l-ds-2-3": "Themes and Modes",
+    "l-ds-2-4": "The DTCG Token Format",
+    "l-ds-2-5": "Token Pipelines: From JSON to Every Platform",
+    "l-ds-3-1": "Component APIs: Props, Variants and Slots",
+    "l-ds-3-2": "Composition Over Configuration",
+    "l-ds-3-3": "States and Accessibility, Built In",
+    "l-ds-3-4": "Documentation People Actually Read",
+    "l-ds-4-1": "Figma Variables and Libraries, in Sync with Code",
+    "l-ds-4-2": "Semver and Changelogs for a Design System",
+    "l-ds-4-3": "Deprecation Paths",
+    "l-ds-4-4": "Storybook, Visual Regression and Releases",
+    "l-ds-5-1": "Contribution and Governance",
+    "l-ds-5-2": "Multi-Brand Theming at Scale",
+    "l-ds-5-3": "Measuring Adoption and Saying No"
+  }
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cascade",
+    "term": "Cascade",
+    "definition": "The algorithm the browser uses to choose one value when several declarations target the same property on the same element: origin and importance, inline styles, layers, specificity, then order of appearance.",
+    "lesson": "l-css-1-1"
+  },
+  {
+    "id": "inheritance",
+    "term": "Inheritance",
+    "definition": "When no declaration targets an inherited property such as `color` or `font-family`, the element takes its parent's computed value; non-inherited properties fall back to their initial value instead.",
+    "lesson": "l-css-1-1"
+  },
+  {
+    "id": "specificity",
+    "term": "Specificity",
+    "definition": "A selector's weight, counted as three separate numbers (IDs; classes, attributes and pseudo-classes; types and pseudo-elements) and compared column by column, never added together.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "where-pseudo-class",
+    "term": ":where()",
+    "definition": "A pseudo-class that matches like `:is()` but always contributes zero specificity, which makes it ideal for resets and base styles that components should override easily.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "is-pseudo-class",
+    "term": ":is()",
+    "definition": "A pseudo-class that matches any selector in its list and takes the specificity of its most specific argument; it uses a forgiving selector list, so one invalid argument doesn't drop the rule.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "cascade-layer",
+    "term": "Cascade layer",
+    "definition": "A named group of rules created with `@layer`. Later-declared layers beat earlier ones before specificity is compared, and unlayered styles beat all layers for normal declarations.",
+    "lesson": "l-css-1-3"
+  },
+  {
+    "id": "custom-property",
+    "term": "Custom property",
+    "definition": "A property whose name starts with two dashes, such as `--track-color`, read with `var()`. It inherits by default and is substituted where it is used, at computed-value time.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "invalid-at-computed-value-time",
+    "term": "Invalid at computed-value time",
+    "definition": "What happens when a `var()` substitution produces a value the property can't use: the property behaves as unset, taking its inherited or initial value rather than an earlier declaration.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "at-property",
+    "term": "@property",
+    "definition": "An at-rule that registers a custom property with a syntax, an inheritance flag and an initial value, so the browser can validate it and interpolate it in transitions and animations.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "css-nesting",
+    "term": "CSS nesting",
+    "definition": "Native syntax for writing rules inside other rules, where `&` stands for the parent selector. It works on selectors, not text, so it can't build BEM class names the way Sass does.",
+    "lesson": "l-css-1-5"
+  },
+  {
+    "id": "has-pseudo-class",
+    "term": ":has()",
+    "definition": "A relational pseudo-class that matches an element when the relative selector inside it finds a match, letting a parent or earlier sibling be styled by its descendants or later siblings.",
+    "lesson": "l-css-1-5"
+  },
+  {
+    "id": "flex-basis",
+    "term": "flex-basis",
+    "definition": "The starting size of a flex item along the main axis, before leftover space is shared by `flex-grow` or a shortfall is taken back by `flex-shrink`.",
+    "lesson": "l-css-2-1"
+  },
+  {
+    "id": "automatic-minimum-size",
+    "term": "Automatic minimum size",
+    "definition": "The default `min-width: auto` of flex and grid items, which stops them shrinking below their content. Setting `min-width: 0` lets long text truncate instead of overflowing.",
+    "lesson": "l-css-2-1"
+  },
+  {
+    "id": "grid-template-areas",
+    "term": "grid-template-areas",
+    "definition": "A grid property that names regions of the grid with strings, one per row, so you can place items by name and rearrange the layout by redrawing the strings.",
+    "lesson": "l-css-2-2"
+  },
+  {
+    "id": "auto-fit",
+    "term": "auto-fit",
+    "definition": "A keyword for `repeat()` that creates as many tracks as fit and collapses the empty ones, so a few items stretch to fill the row; `auto-fill` keeps empty tracks instead.",
+    "lesson": "l-css-2-2"
+  },
+  {
+    "id": "subgrid",
+    "term": "Subgrid",
+    "definition": "The `subgrid` value for `grid-template-rows` or `grid-template-columns`, which makes a nested grid use the tracks it spans in its parent, so content aligns across sibling components.",
+    "lesson": "l-css-2-3"
+  },
+  {
+    "id": "fit-content",
+    "term": "fit-content",
+    "definition": "An intrinsic sizing keyword that sizes an element to its max-content width, capped at the available space, so a block can hug its content without overflowing.",
+    "lesson": "l-css-2-4"
+  },
+  {
+    "id": "clamp",
+    "term": "clamp()",
+    "definition": "A math function that returns a preferred value held between a minimum and a maximum, written `clamp(MIN, PREFERRED, MAX)`. It equals `max(MIN, min(PREFERRED, MAX))`.",
+    "lesson": "l-css-2-4"
+  },
+  {
+    "id": "container-query",
+    "term": "Container query",
+    "definition": "An `@container` rule that applies styles based on the size or style of an ancestor container rather than the viewport, so a component adapts to the slot it sits in.",
+    "lesson": "l-css-2-5"
+  },
+  {
+    "id": "container-units",
+    "term": "Container query units",
+    "definition": "Units such as `cqi` and `cqb` that equal 1% of the nearest size container's inline or block size, falling back to small viewport units when no container exists.",
+    "lesson": "l-css-2-5"
+  },
+  {
+    "id": "fluid-type",
+    "term": "Fluid type",
+    "definition": "Font sizes that change continuously with available width, usually written as `clamp()` with a rem minimum, a linear preferred value combining rem and `vw` or `cqi`, and a rem maximum.",
+    "lesson": "l-css-3-1"
+  },
+  {
+    "id": "logical-properties",
+    "term": "Logical properties",
+    "definition": "Properties named by text flow instead of physical sides, such as `margin-inline-start` and `inline-size`, so layouts mirror correctly in right-to-left languages like Arabic.",
+    "lesson": "l-css-3-2"
+  },
+  {
+    "id": "oklch",
+    "term": "oklch()",
+    "definition": "A color function using perceptual lightness, chroma and hue, so colors with equal lightness look equally light. It can also express colors beyond the sRGB gamut.",
+    "lesson": "l-css-3-3"
+  },
+  {
+    "id": "relative-color-syntax",
+    "term": "Relative color syntax",
+    "definition": "A way to derive a color from another by unpacking its channels with `from`, as in `oklch(from var(--brand) calc(l - 0.1) c h)`, and changing only what you need.",
+    "lesson": "l-css-3-3"
+  },
+  {
+    "id": "light-dark",
+    "term": "light-dark()",
+    "definition": "A color function that returns its first value when the element's used color scheme is light and its second when it's dark. It needs `color-scheme` to allow dark.",
+    "lesson": "l-css-3-4"
+  },
+  {
+    "id": "focus-visible",
+    "term": ":focus-visible",
+    "definition": "A pseudo-class that matches a focused element only when the browser judges a focus indicator useful, such as keyboard focus or any text field, but not a mouse click on a button.",
+    "lesson": "l-css-3-5"
+  },
+  {
+    "id": "starting-style",
+    "term": "@starting-style",
+    "definition": "An at-rule that defines the styles an element transitions from when it is first rendered or goes from `display: none` to shown, enabling entry transitions in CSS alone.",
+    "lesson": "l-css-4-1"
+  },
+  {
+    "id": "view-transition",
+    "term": "View transition",
+    "definition": "An animation created by `document.startViewTransition()`: the browser snapshots the old and new states of a DOM update and animates between them through pseudo-elements you can style.",
+    "lesson": "l-css-4-2"
+  },
+  {
+    "id": "scroll-driven-animation",
+    "term": "Scroll-driven animation",
+    "definition": "A CSS animation whose progress follows a scroll timeline, set with `animation-timeline: scroll()` or `view()`, instead of elapsed time.",
+    "lesson": "l-css-4-3"
+  },
+  {
+    "id": "compositing",
+    "term": "Compositing",
+    "definition": "The final rendering stage, where painted layers are assembled on the GPU. Changes to `transform` and `opacity` can often be handled here alone, skipping layout and paint.",
+    "lesson": "l-css-4-5"
+  }
+]

@@ -1,0 +1,416 @@
+checkpoints:
+  s-sw-1:
+    - q: |-
+        ماذا يطبع هذا الكود؟
+        ```swift
+        let input = "abc"
+        let amount = Int(input) ?? 0
+        print(amount + 5)
+        ```
+      options:
+        - text: "لا شيء؛ لا يُترجَم لأن `Int(input)` قيمة optional."
+          why: "العامل `??` يفكّ الـ optional بقيمة افتراضية، فيصبح التعبير `Int` عاديًا ويُترجَم."
+        - text: يتعطّل التطبيق، لأن "abc" ليست رقمًا.
+          why: "`Int(_:)` تعيد `nil` للمدخلات السيئة بدل أن تُسقط التطبيق؛ الفكّ القسري وحده هو ما يُسقطه."
+        - text: "`abc5`"
+          why: "لا تجمع Swift أبدًا `String` مع `Int` بالعامل `+`؛ والطرفان هنا كلاهما `Int` أصلًا."
+        - text: "`5`"
+          why: "صحيح. `Int(\"abc\")` تساوي `nil`، و`?? 0` تضع 0 مكانها، و0 + 5 تساوي 5."
+      answer: 3
+    - q: "لديك `func convert(_ amount: Decimal, to currency: String) -> Decimal`. أيّ استدعاء يُترجَم؟"
+      options:
+        - text: '`convert(12, to: "EUR")`'
+          why: "صحيح. تسمية المعامل الأول هي `_` فتُحذف؛ والثاني يستخدم التسمية `to`."
+        - text: '`convert(amount: 12, to: "EUR")`'
+          why: "`amount` هو اسم المعامل المستخدم داخل الدالة؛ و`_` تعني أن المستدعي لا يكتب تسمية."
+        - text: '`convert(12, "EUR")`'
+          why: "للمعامل الثاني تسمية الوسيط `to`، وSwift تشترطها في موضع الاستدعاء."
+        - text: '`convert(12, currency: "EUR")`'
+          why: "`currency` هو الاسم الداخلي. أما المستدعي فيجب أن يستخدم التسمية الخارجية `to`."
+      answer: 0
+    - q: "يجب أن تعيد `func monthlyAverage(_ amounts: [Decimal]) -> Decimal?` القيمة `nil` لمصفوفة فارغة. أيّ سطر أول هو الطريقة المعتادة في Swift للتعامل مع ذلك؟"
+      options:
+        - text: "`let first = amounts[0]`"
+          why: "الوصول بالفهرس في مصفوفة فارغة يُسقط التطبيق مع \"Index out of range\" قبل أن تستطيع إعادة أي شيء."
+        - text: "`if amounts.isEmpty { amounts = [0] }`"
+          why: معاملات الدوال ثوابت، فلا يُترجَم هذا؛ كما أنه سيُخفي الحالة الفارغة.
+        - text: '`guard amounts.count > 0 else { print("empty") }`'
+          why: "فرع `else` في الـ `guard` يجب أن يغادر النطاق، فـ `print` وحدها خطأ ترجمة."
+        - text: "`guard !amounts.isEmpty else { return nil }`"
+          why: صحيح. الـ guard تنصّ على القاعدة وتخرج مبكرًا، ويستطيع باقي الدالة افتراض وجود بيانات.
+      answer: 3
+    - q: "تمرّ على المصاريف وتريد عدّ ما يقع منها في كل تصنيف، بدءًا من قاموس فارغ `var counts: [String: Int] = [:]`. أيّ سطر يوضع داخل الحلقة؟"
+      options:
+        - text: "`counts[category] += 1`"
+          why: "البحث بالمفتاح يعيد `Int?`، ولا يمكنك إضافة 1 إلى optional دون فكّه."
+        - text: "`counts.append(category)`"
+          why: "القواميس ليس فيها `append`؛ هذه method خاصة بالمصفوفات."
+        - text: "`counts[category, default: 0] += 1`"
+          why: "صحيح. الصيغة `default:` تقرأ 0 للمفتاح الجديد، وتضيف 1، وتخزّن النتيجة."
+        - text: "`counts.insert(category)`"
+          why: "`insert` هي method خاصة بالـ `Set`؛ وستسجّل العضوية لا العدد."
+      answer: 2
+    - q: |-
+        ما قيمة `result`؟
+        ```swift
+        let values = [5, 12, 30]
+        let result = values.filter { $0 > 10 }.map { $0 * 2 }.reduce(0, +)
+        ```
+      options:
+        - text: "`84`"
+          why: "صحيح. يُبقي `filter` العددين 12 و30، ويضاعفهما `map` إلى 24 و60، ويجمعهما `reduce`."
+        - text: "`94`"
+          why: "هذا يتضمّن 5 بعد مضاعفتها إلى 10. لكن `filter` حذفها قبل تنفيذ `map`."
+        - text: "`[24, 60]`"
+          why: "هذه هي القيمة بعد `map`. ثم يجمع `reduce` المصفوفة في رقم واحد."
+        - text: "`42`"
+          why: "هذا مجموع 12 + 30 دون مضاعفة. خطوة `map` تُنفَّذ قبل `reduce`."
+      answer: 0
+  s-sw-2:
+    - q: |-
+        `Expense` هو struct فيه `var amount: Decimal`. ماذا يطبع هذا الكود؟
+        ```swift
+        var list = [Expense(amount: 5)]
+        var first = list[0]
+        first.amount = 9
+        print(list[0].amount)
+        ```
+      options:
+        - text: "`5`"
+          why: "صحيح. قراءة `list[0]` في `first` تنسخ الـ struct؛ وتغيير النسخة يترك المصفوفة دون مساس."
+        - text: "`9`"
+          why: "هذا سلوك الـ class. الـ structs تُنسخ عند الإسناد، فيكون `first` مستقلًّا."
+        - text: لا يُترجَم، لأن عناصر المصفوفة ثوابت.
+          why: "`list` معرّف بـ `var`، وكذلك `first`؛ لا شيء هنا ثابت."
+        - text: "يتعطّل التطبيق، لأن `first` مرجع معلّق لا يشير إلى شيء."
+          why: "الـ structs لا مراجع فيها لتتعلّق؛ `first` يحمل قيمته الكاملة الخاصة."
+      answer: 0
+    - q: |-
+        ماذا يطبع هذا الكود؟
+        ```swift
+        enum Sync {
+            case idle
+            case syncing(progress: Double)
+            case failed(String)
+        }
+        let state: Sync = .syncing(progress: 0.4)
+        switch state {
+        case .idle: print("Idle")
+        case .syncing(let p) where p > 0.5: print("Almost")
+        case .syncing: print("Working")
+        case .failed(let message): print(message)
+        }
+        ```
+      options:
+        - text: "`Almost`"
+          why: "هذه الحالة تتطلّب تقدّمًا أكبر من 0.5، و0.4 لا تحقّق شرط `where`."
+        - text: "`Idle`"
+          why: "القيمة هي `.syncing`، فلا يمكن أن تطابقها الحالة `.idle`."
+        - text: لا شيء، لأن لا حالة تطابق 0.4.
+          why: "الحالة العادية `case .syncing:` تطابق أي تقدّم، فهناك دائمًا حالة مطابقة."
+        - text: "`Working`"
+          why: "صحيح. يفشل شرط `where`، فتنتقل المطابقة إلى حالة `.syncing` التالية."
+      answer: 3
+    - q: "الـ protocol المعرّف `protocol Exportable { func csvRow() -> String }` له خمسة أنواع متوافقة. يجب أن يحصل كلٌّ منها أيضًا على `csvLine`، أي `csvRow()` مع سطر جديد، دون كتابتها خمس مرات. ماذا تضيف؟"
+      options:
+        - text: "متطلّبًا `var csvLine: String { get }` في الـ protocol."
+          why: المتطلّب يُلزم كل نوع بتنفيذه، وهذا هو التكرار الذي أردت تجنّبه.
+        - text: '`extension Exportable { var csvLine: String { csvRow() + "\n" } }`'
+          why: صحيح. الـ protocol extension يعطي كل نوع متوافق التنفيذ دون أي جهد.
+        - text: "class أساسيًا `ExportableBase` ترث منه الأنواع الخمسة كلها."
+          why: الـ structs والـ enums لا تستطيع الوراثة، والوراثة أثقل مما تحتاجه هذه المشكلة.
+        - text: "دالة عامة `csvLine(_ item: Exportable)` في كل ملف."
+          why: كتابتها في كل ملف ما زالت تكرارًا، ولا تُقرأ كخاصية للنوع.
+      answer: 1
+    - q: "يخزّن `final class ReminderScheduler` الخاصية `var onFire: (() -> Void)?` ويضبط `onFire = { self.notify() }`. تُظهر أدوات الذاكرة أن الـ schedulers لا تُحرَّر أبدًا. ما الإصلاح؟"
+      options:
+        - text: "غيّر `onFire` من `var` إلى `let`."
+          why: "قابلية التغيير ليست المشكلة؛ فالـ closure المعرّف بـ `let` سيلتقط `self` بالقوة نفسها."
+        - text: "اضبط `onFire = nil` داخل `deinit`."
+          why: "`deinit` لا يُنفَّذ أبدًا ما دامت الدورة موجودة، فلن يُنفَّذ ذلك السطر أبدًا."
+        - text: "اجعل `ReminderScheduler` صنفًا فرعيًا من `NSObject`."
+          why: الـ classes في Objective-C تستخدم عدّ المراجع أيضًا؛ وتبقى الدورة.
+        - text: "التقط التقاطًا ضعيفًا: `onFire = { [weak self] in self?.notify() }`."
+          why: صحيح. لم يعد الـ closure يمتلك الـ scheduler، فيمكن أن يصل عدّاد المراجع إلى الصفر.
+      answer: 3
+    - q: |-
+        تقرأ `load()` المصاريف المحفوظة وترمي خطأً إن كان الملف تالفًا. ماذا يرى المستخدم حين يحدث ذلك؟
+        ```swift
+        let expenses = (try? load()) ?? []
+        ```
+      options:
+        - text: قائمة فارغة، دون أي إشارة إلى أن تحميل بياناته فشل.
+          why: "صحيح. تخلّصت `try?` من الخطأ وملأت `?? []` قيمة مكانه. التقط الخطأ وأخبر المستخدم."
+        - text: تنبيهًا يصف التلف.
+          why: "لا شيء هنا يعرض تنبيهًا؛ فقد تخلّصت `try?` من الخطأ."
+        - text: عطلًا مع وصف الخطأ.
+          why: "هذا ما تفعله `try!`. أما `try?` فلا تُسقط التطبيق أبدًا؛ بل تنتج `nil`."
+        - text: المصاريف التي حُمّلت قبل الجزء التالف.
+          why: "`load()` إما أن تعيد المصفوفة كاملة أو ترمي خطأً؛ لا توجد نتيجة جزئية."
+      answer: 0
+  s-sw-3:
+    - q: "يعلن view ابن اسمه `AmountField` عن `@State var amount: Decimal`، وينشئه الأب بـ `AmountField(amount: budget.limit)`. الكتابة في الحقل لا تغيّر حدّ الأب أبدًا. لماذا؟"
+      options:
+        - text: "`TextField` لا يستطيع تعديل قيم `Decimal`."
+          why: "مع `format:` يعدّل `TextField` قيم `Decimal` بلا مشكلة؛ النوع ليس المشكلة."
+        - text: "يجب أن يستدعي الأب `objectWillChange.send()`."
+          why: "هذا ينتمي إلى نظام `ObservableObject` الأقدم، ولن يربط القيمتين على أي حال."
+        - text: لا يحدّث SwiftUI الآباء إلا حين يختفي الابن.
+          why: يحدّث SwiftUI الشاشة بمجرّد تغيّر مصدر الحقيقة؛ لا توجد قاعدة تأخير كهذه.
+        - text: "أعطى `@State` الابن نسخته الخاصة؛ يجب أن يكون `@Binding`، ويمرّر الأب binding."
+          why: صحيح. يجب أن يستعير الابن مصدر الحقيقة الخاص بالأب، لا أن يبدأ مصدرًا جديدًا.
+      answer: 3
+    - q: أيّ كود يعرض مجموع الإنفاق بالطريقة التي يتوقّع المستخدمون في بلدان مختلفة قراءة المال بها؟
+      options:
+        - text: '`Text(total, format: .currency(code: "USD"))`'
+          why: صحيح. نمط التنسيق يطبّق الإعدادات المحلية للمستخدم في موضع الرمز والفواصل والمنازل العشرية.
+        - text: '`Text("$\(total)")`'
+          why: هذا يثبّت الرمز ويتجاهل فواصل المستخدم، فتبدو "$1234.5" خاطئة في معظم الأماكن.
+        - text: "`Text(String(describing: total))`"
+          why: هذا تمثيل مخصّص للتصحيح، بلا عملة ولا قواعد محلية.
+        - text: '`Text("\(total) USD")`'
+          why: "أفضل من لا شيء، لكنه ما زال غير منسّق: لا تجميع للخانات، ولا منازل عشرية ثابتة، ولا إعدادات محلية."
+      answer: 0
+    - q: "تستخدم القائمة `NavigationLink(value: expense)` و`.navigationDestination(for: Expense.self)`. بعد حفظ مصروف جديد، تريد فتح شاشة تفاصيله من الكود. ماذا تضيف؟"
+      options:
+        - text: "‏`NavigationLink` مخفيًا مع `isActive:` تبدّل قيمته."
+          why: "هذا نمط قديم مهجور؛ استبدله `NavigationStack` بالمسارات."
+        - text: "تستدعي `navigationDestination` مرة أخرى مع المصروف الجديد."
+          why: الـ modifier الخاص بالوجهة يُعلَن مرة واحدة؛ ولا يطلق التنقّل بنفسه.
+        - text: "‏`@State private var path: [Expense] = []`، و`NavigationStack(path: $path)`، ثم `path.append(saved)`."
+          why: صحيح. المسار state، فإضافة قيمة إليه تدفع شاشة وجهتها.
+        - text: "تعرض شاشة التفاصيل عبر `.sheet` بدلًا من ذلك."
+          why: هذا يحوّل التفاعل إلى عرض منبثق؛ ولا يدفع الشاشة إلى مكدّس التنقّل.
+      answer: 2
+    - q: "وُضع `BudgetStore` المعلّم بـ `@Observable` في الـ environment على مستوى التطبيق. ويحتاج view متداخل بعمق اسمه `LimitSettings` إلى `TextField` مربوط بـ `store.monthlyLimit`. ماذا يكتب هذا الـ view؟"
+      options:
+        - text: "`@EnvironmentObject var store: BudgetStore`"
+          why: "`@EnvironmentObject` ينتمي إلى `ObservableObject`؛ ولا يجد الكائنات المضافة عبر `.environment(_:)`."
+        - text: "`@State private var store = BudgetStore()`"
+          why: هذا ينشئ مخزنًا جديدًا كليًا يملكه هذا الـ view، منفصلًا عن بيانات التطبيق.
+        - text: "`@Binding var store: BudgetStore`"
+          why: الـ bindings يمرّرها الأب صراحةً؛ ولا تأتي من الـ environment.
+        - text: "`@Environment(BudgetStore.self) private var store`، ثم `@Bindable var store = store` داخل `body`."
+          why: "صحيح. يوفّر الـ environment المخزن المشترك، وينتج `@Bindable` القيمة `$store.monthlyLimit`."
+      answer: 3
+    - q: "يُعرض `AddExpenseView` كـ sheet ويجب أن يُغلق نفسه حين ينقر المستخدم Save. ما الطريقة القياسية؟"
+      options:
+        - text: 'اقرأ `@Environment(\.dismiss) private var dismiss` واستدعِ `dismiss()` بعد الحفظ.'
+          why: "صحيح. `dismiss` يغلق أيّ عرض يُظهر هذا الـ view، سواء كان sheet أو شاشة دُفعت إلى مكدّس التنقّل."
+        - text: "استدعِ `NavigationStack.pop()`."
+          why: لا يوجد API كهذا، والـ sheet ليست جزءًا من مكدّس التنقّل الخاص بالقائمة.
+        - text: "اضبط خاصية `isPresented` الخاصة بالـ view نفسه على `false`."
+          why: علامة الـ sheet ملك للأب؛ والابن لا يملك خاصية كهذه إلا إذا أُعطي binding.
+        - text: "احذف الـ view من أبيه عبر `removeFromSuperview()`."
+          why: هذا من UIKit؛ أما الـ views في SwiftUI فأوصاف، لا كائنات يمكنك حذفها.
+      answer: 0
+  s-sw-4:
+    - q: |-
+        كل عملية جلب تستغرق نحو ثانية. كيف تجعل هذا يستغرق نحو ثانية واحدة في المجمل؟
+        ```swift
+        func loadAll() async throws -> (Decimal, Decimal) {
+            let eur = try await service.fetchRate(from: "USD", to: "EUR")
+            let gbp = try await service.fetchRate(from: "USD", to: "GBP")
+            return (eur, gbp)
+        }
+        ```
+      options:
+        - text: "غلّف كل استدعاء في `Task { }` وأعِد فورًا."
+          why: ستعود الدالة قبل وجود النتائج، والمهام غير المهيكلة تفلت من الإلغاء.
+        - text: "علّم الدالة بـ `@MainActor`."
+          why: تغيير الـ actor لا يجعل عمليتَي انتظار متتاليتين تتداخلان.
+        - text: "استدعِ `fetchRate` من كتلة `DispatchQueue.main.async`."
+          why: هذا يخلط كود GCD القديم مع async/await، وما زال لا يشغّل الطلبين بالتوازي.
+        - text: "استخدم `async let eur = …` و`async let gbp = …`، ثم `try await (eur, gbp)`."
+          why: صحيح. تبدأ المهمتان الابنتان فورًا وتعملان في الوقت نفسه.
+      answer: 3
+    - q: "دالة مساعدة nonisolated تُسند قيمة إلى `model.state` في نموذج معلّم بـ `@MainActor`، فتُبلغ Swift 6 بالرسالة \"main actor-isolated property 'state' can not be mutated from a nonisolated context\". ما الإصلاح الصحيح؟"
+      options:
+        - text: "علّم الدالة المساعدة بـ `@MainActor`، فتعمل حيث تعيش الـ state الخاصة بالنموذج."
+          why: صحيح. الآن يستطيع الـ compiler أن يثبت أن كود الـ main actor وحده يلمس الـ state.
+        - text: "علّم النموذج بـ `@unchecked Sendable`."
+          why: هذا يُسكت الفحوصات دون أن يجعل أي شيء آمنًا؛ والسباق ما زال موجودًا.
+        - text: أعد الهدف إلى وضع اللغة Swift 5.
+          why: هذا يُخفي التشخيص بدل إصلاح سباق البيانات الذي يصفه.
+        - text: انسخ النموذج إلى متغيّر محلي قبل الإسناد.
+          why: النموذج class، فالنسخة هي الكائن نفسه والسباق نفسه.
+      answer: 0
+    - q: "يعيد API الأسعار الحالة HTTP 404 مع صفحة HTML لعملة غير معروفة. وكودك يفكّ ترميز `data` مباشرة بعد `URLSession.shared.data(from:)`. ماذا يرى المستخدمون؟"
+      options:
+        - text: "‏`URLError` يقول إن الصفحة غير موجودة."
+          why: لا يرمي URLSession أخطاءً لرموز حالة HTTP؛ فالـ 404 استجابة ناجحة على مستوى الشبكة.
+        - text: خطأ فكّ ترميز، مثل "data couldn't be read because it isn't in the correct format".
+          why: "صحيح. يصل الـ HTML إلى `JSONDecoder`. افحص رمز الحالة أولًا وارمِ خطأً أوضح."
+        - text: قائمة أسعار فارغة دون أي خطأ.
+          why: "فكّ ترميز HTML على أنه `RatesResponse` يفشل بصخب؛ ولا ينتج قيمة فارغة."
+        - text: صفحة الـ HTML معروضة داخل التطبيق.
+          why: لا شيء في الكود يعرض جسم الاستجابة.
+      answer: 1
+    - q: "تربط شاشة تعديل الحقول مباشرة بنموذج SwiftData عبر `@Bindable var expense: Expense`. ويريد فريق المنتج زر Cancel يتجاهل التغييرات. ما أنظف تصميم؟"
+      options:
+        - text: "أبقِ الربط المباشر، واستدعِ `context.insert(expense)` عند Cancel."
+          why: إضافة نموذج موجود لا تتراجع عن التعديلات؛ فالتغييرات صارت على الكائن أصلًا.
+        - text: أبقِ الربط المباشر؛ فالتعديلات لا تُحفظ إلا حين تُغلق الشاشة.
+          why: التعديلات تغيّر النموذج فورًا، والـ context الرئيسي يحفظها تلقائيًا.
+        - text: "حوّل `Expense` إلى struct فتكون التعديلات نسخًا."
+          why: "`@Model` يتطلّب class؛ لا يمكنك جعل نموذج SwiftData من نوع struct."
+        - text: "عدّل نسخ مسوّدة من الحقول في `@State`، ولا تكتبها في النموذج إلا عند Save."
+          why: "صحيح. إنه نمط المسوّدة نفسه الذي في نموذج الإضافة: Cancel يرمي المسوّدات."
+      answer: 3
+    - q: "أيّ اختبار يتحقّق من أن `record` ترمي `BudgetError.overLimit(by: 7)`؟"
+      options:
+        - text: '`#expect(throws: BudgetError.overLimit(by: 7)) { try food.record(title: "Dinner", amount: 45) }`'
+          why: "صحيح. لا ينجح إلا إن رُمي ذلك الخطأ بالضبط، وهذا يعمل لأن `BudgetError` من نوع `Equatable`."
+        - text: '`#expect(try food.record(title: "Dinner", amount: 45) == .overLimit(by: 7))`'
+          why: "`record` لا تعيد شيئًا؛ الأخطاء تُرمى ولا تُعاد، فلا يوجد ما تقارنه."
+        - text: '`do { try food.record(title: "Dinner", amount: 45) } catch { }`'
+          why: دون أي تحقّق، ينجح هذا سواء رُمي شيء أم لا.
+        - text: "`try #require(food.spent == 57)`"
+          why: "هذا يفحص الشيء الخطأ؛ فبعد فشل صحيح يجب أن تبقى `spent` دون تغيير."
+      answer: 0
+final:
+  - q: |-
+      `expenses` مصفوفة فارغة. ما قيمة `label`؟
+      ```swift
+      let label = expenses.first?.title.uppercased() ?? "NONE"
+      ```
+    options:
+      - text: يتعطّل التطبيق، لأن المصفوفة فارغة.
+        why: "`first` تعيد optional بدل أن تُسقط التطبيق، و`?.` تتوقّف بأمان عند `nil`."
+      - text: "`nil`"
+        why: "سلسلة الـ optional تنتج `nil`، لكن `?? \"NONE\"` تستبدلها بالقيمة الافتراضية."
+      - text: نص فارغ.
+        why: لا يوجد عنوان، فلا شيء يُحوَّل إلى أحرف كبيرة؛ وتُستخدم القيمة الافتراضية بدلًا من ذلك.
+      - text: '`"NONE"`'
+        why: "صحيح. `first` تساوي `nil`، فتتوقّف السلسلة مبكرًا، وتقدّم `??` القيمة الافتراضية."
+    answer: 3
+  - q: يحتاج Pocket Budget إلى إعداد لترتيب الفرز فيه ثلاثة خيارات بالضبط (الأحدث، الأقدم، الأكبر)، يُعرض في منتقٍ ويُحفظ على القرص. أيّ نوع هو الأنسب؟
+    options:
+      - text: "`enum SortOrder: String, CaseIterable { case newest, oldest, largest }`"
+        why: "صحيح. لا توجد إلا القيم الصالحة، و`allCases` تغذّي المنتقي، والقيمة الخام تُحفظ بسهولة."
+      - text: "`let sortOrder: String`"
+        why: أي نص يُترجَم، بما في ذلك الأخطاء الإملائية، والمنتقي لا يملك قائمة خيارات.
+      - text: "`struct SortOrder { var isNewest: Bool; var isLargest: Bool }`"
+        why: القيم المنطقية تسمح بتركيبات مستحيلة، مثل أن تكون العلامتان صحيحتين معًا.
+      - text: "‏`class SortOrder` مع ثلاثة أصناف فرعية."
+        why: الوراثة أثقل بكثير مما تحتاجه مجموعة ثابتة من الخيارات، وأصعب في الحفظ.
+    answer: 0
+  - q: "لماذا يحتفظ نموذج إضافة المصروف بـ `title` و`amount` و`category` في خصائص `@State` خاصة به بدل الكتابة في المخزن مع كل ضغطة مفتاح؟"
+    options:
+      - text: "لأن المخازن من نوع `@Observable` لا يمكن تعديلها من النماذج."
+        why: "النماذج تعدّل الكائنات المراقَبة عبر `@Bindable` طوال الوقت؛ ليس هذا هو السبب."
+      - text: "لأن `TextField` لا يعمل إلا مع `@State`."
+        why: "`TextField` يقبل أي binding، بما في ذلك binding إلى داخل كائن مراقَب."
+      - text: "لأن المخزن لا يقبل إلا قيم `Expense` مكتملة."
+        why: كان يمكن للمخزن أن يقبل تحديثات جزئية؛ السبب الحقيقي يتعلّق بنيّة المستخدم.
+      - text: "ليكون النموذج مسوّدة: Cancel يتجاهلها دون أن يمسّ البيانات المحفوظة."
+        why: صحيح. المسوّدات من أنواع القيم تجعل الإلغاء مجانيًا وتُبقي البيانات نصف المكتوبة خارج المخزن.
+    answer: 3
+  - q: "أضفت `case gifts` إلى `Category`. في المشروع ثلاث جمل `switch` على `Category`، ومع ذلك تنجح الترجمة دون أخطاء. ما التفسير الأرجح؟"
+    options:
+      - text: "لا تفحص Swift شمول جمل `switch` للـ enums ذات القيم الخام."
+        why: القيم الخام لا تُحدث فرقًا؛ كل switch على enum تُفحص للتحقّق من شمولها.
+      - text: لا تُفحص حالات الـ enum الجديدة إلا حين تشغّل التطبيق.
+        why: الشمول فحص وقت الترجمة، لا وقت التشغيل أبدًا.
+      - text: "جمل الـ switch تلك تستخدم `default:`، التي تبتلع الحالة الجديدة بصمت."
+        why: صحيح. لهذا يجب أن تسرد جمل switch على الـ enums الخاصة بك حالاتها صراحةً.
+      - text: لا يفحص Xcode إلا جمل switch في الملفات المفتوحة.
+        why: الـ compiler يفحص كل ملف يبنيه، مفتوحًا كان أم لا.
+    answer: 2
+  - q: عدة مهام تجلب الأسعار بالتوازي ويجب أن تحدّث كلها cache مشتركًا واحدًا. أيّ تعريف يُبقي الـ cache خاليًا من سباقات البيانات؟
+    options:
+      - text: "`actor RateCache { private var rates: [String: Decimal] = [:] }` مع methods للقراءة والحفظ."
+        why: "صحيح. الـ actor ينفّذ استدعاءً واحدًا في كل مرة على الـ state الخاصة به، والمستدعون يجب أن يستخدموا `await`."
+      - text: "`final class RateCache { var rates: [String: Decimal] = [:] }`"
+        why: "الـ class العادي ذو الـ state القابلة للتغيير ليس `Sendable`؛ ولن تسمح Swift 6 للمهام بمشاركته."
+      - text: "‏`struct RateCache { var rates: [String: Decimal] }` يُمرَّر إلى كل مهمة."
+        why: كل مهمة تحصل على نسختها الخاصة، فلا تصل تحديثاتها أبدًا إلى cache مشترك.
+      - text: "متغيّر عام `var rates: [String: Decimal]`."
+        why: الـ state العامة القابلة للتغيير هي بالضبط ما تعتبره Swift 6 غير آمن بين المهام.
+    answer: 0
+  - q: "يحتوي الـ JSON على `\"total_spent\": 12.5` وفي الـ struct الخاص بك `let totalSpent: Decimal`. يرمي فكّ الترميز `keyNotFound`. ما أنظف إصلاح؟"
+    options:
+      - text: "أعد تسمية الخاصية إلى `total_spent`."
+        why: يعمل، لكنه يُدخل أسلوب التسمية الخاص بالخادم إلى كود Swift الخاص بك.
+      - text: "غيّر النوع إلى `Double`."
+        why: النوع ليس المشكلة؛ اسم المفتاح هو الذي لا يتطابق.
+      - text: اجعل الخاصية optional.
+        why: "يختفي الخطأ، لكن القيمة تصبح `nil` دائمًا لأن المفتاح ما زال لا يتطابق."
+      - text: "اضبط `decoder.keyDecodingStrategy = .convertFromSnakeCase`."
+        why: صحيح. كل مفتاح بصيغة snake_case يُربط تلقائيًا بالخاصية المقابلة بصيغة camelCase.
+    answer: 3
+  - q: يريد المستخدمون السحب للأسفل على قائمة الأسعار لتحديثها. أيّ modifier يضيف ذلك؟
+    options:
+      - text: "`.task { await model.load() }`"
+        why: "`.task` تعمل حين يظهر الـ view؛ ولا تضيف إيماءة سحب."
+      - text: "`.refreshable { await model.load() }`"
+        why: صحيح. يضيف السحب للتحديث ويعرض مؤشّر التحميل حتى تعود الدالة غير المتزامنة.
+      - text: "`.onTapGesture { Task { await model.load() } }`"
+        why: هذا يحدّث عند النقر لا عند السحب، ولا يعرض مؤشّر التحديث الخاص بالنظام.
+      - text: "`.sheet(isPresented:)`"
+        why: الـ sheet تعرض شاشة أخرى؛ ولا علاقة لها بالتحديث.
+    answer: 1
+  - q: "في أيّ موقف تكون `try?` خيارًا جيدًا؟"
+    options:
+      - text: حذف ملف تصدير مؤقت قد يكون اختفى أصلًا، حيث لا يغيّر الفشل شيئًا.
+        why: صحيح. سبب الفشل لا يهم فعلًا، فتجاهله أمر صادق.
+      - text: حفظ المصروف الجديد للمستخدم.
+        why: "إن فشل الحفظ فيجب إخبار المستخدم؛ و`try?` ستُخفي ذلك."
+      - text: فكّ ترميز استجابة أسعار الصرف.
+        why: "فشل فكّ الترميز يجب أن يصبح حالة خطأ ظاهرة، لا `nil` صامتة."
+      - text: تسجيل مصروف مقابل حدّ الميزانية.
+        why: الخطأ المحدّد، مثل تجاوز الحدّ، هو ما يحدّد الرسالة التي يراها المستخدم.
+    answer: 0
+  - q: أيّ تعريف يعرض المصاريف المحفوظة الأحدث أولًا ويتحدّث من تلقاء نفسه حين تضيف شاشة أخرى مصروفًا؟
+    options:
+      - text: "`@State private var expenses: [Expense] = []`"
+        why: هذه مصفوفة في الذاكرة سيكون عليك ملؤها وتحديثها يدويًا.
+      - text: "`let expenses = try? context.fetch(FetchDescriptor<Expense>())`"
+        why: الجلب لمرة واحدة لا يتحدّث حين تتغيّر البيانات لاحقًا.
+      - text: "`@Environment(\\.modelContext) private var expenses`"
+        why: هذا هو الـ context المستخدم للكتابة، لا قائمة مصاريف.
+      - text: "`@Query(sort: \\Expense.date, order: .reverse) private var expenses: [Expense]`"
+        why: "صحيح. `@Query` يجلب ويرتّب ويُبقي النتيجة محدّثة كلما تغيّر المخزن."
+    answer: 3
+  - q: "ماذا يَعِد `some View` في `var body: some View`؟"
+    options:
+      - text: "أن `body` يمكن أن يعيد نوع view مختلفًا في كل مرة يُستدعى فيها."
+        why: "هذا ما تسمح به `any View`؛ أما `some` فتثبّت نوعًا واحدًا."
+      - text: أن الـ view هو class.
+        why: "`some` لا تقول شيئًا عن الـ classes؛ والـ views في SwiftUI عادةً structs."
+      - text: "أن `body` يعيد نوعًا واحدًا محدّدًا يتوافق مع `View`، يعرفه الـ compiler ولا تحتاج أنت إلى كتابته."
+        why: صحيح. إنه نوع مُعتِم (opaque type) يُخفي اسم generic طويلًا.
+      - text: أن الـ view سيُرسم على thread في الخلفية.
+        why: "`some` تتعلّق بالأنواع لا بالـ threads؛ والـ views تُرسم على الـ main actor."
+    answer: 2
+  - q: يفشل رفع نسخة جديدة إلى App Store Connect لأن رقم الـ Build ذاك استُخدم من قبل لهذا الإصدار. ماذا تفعل؟
+    options:
+      - text: زِد رقم الـ Build في إعدادات الهدف، وأرشِف مرة أخرى، ثم ارفع.
+        why: صحيح. كل رفع يحتاج إلى رقم Build جديد؛ ويمكن أن يبقى الـ Version كما هو.
+      - text: احذف النسخة السابقة من TestFlight وأعد المحاولة.
+        why: أرقام الـ Build تبقى مستخدمة حتى بعد إنهاء صلاحية النسخة.
+      - text: غيّر الـ bundle identifier.
+        why: هذا ينشئ تطبيقًا مختلفًا كليًا، فتخسر سجلّك في App Store Connect.
+      - text: انتظر 90 يومًا حتى تنتهي صلاحية النسخة القديمة.
+        why: انتهاء الصلاحية يُنهي الاختبار؛ ولا يحرّر رقم الـ Build.
+    answer: 0
+  - q: |-
+      هل يُترجَم هذا الكود؟
+      ```swift
+      @Observable
+      final class Settings {
+          var limit: Decimal = 100
+      }
+      let settings = Settings()
+      settings.limit = 200
+      ```
+    options:
+      - text: "لا، لأن `settings` ثابت معرّف بـ `let`."
+        why: "في الـ class، `let` تثبّت الكائن الذي يشير إليه الاسم، لا خصائص الكائن."
+      - text: "لا، لأن خصائص `@Observable` للقراءة فقط."
+        why: "الخصائص المراقَبة متغيّرات `var` عادية؛ والماكرو يضيف التتبّع فقط."
+      - text: "نعم، لكن التغيير يضيع لأن `settings` نُسخ."
+        why: الـ classes لا تُنسخ عند الإسناد؛ هناك كائن واحد وقد تغيّر.
+      - text: "نعم؛ المرجع ثابت، لكن خاصية `var` في الكائن ما زالت قابلة للتغيير."
+        why: "صحيح. هذا هو سلوك المرجع: `let` تجمّد المرجع فقط."
+    answer: 3

@@ -1,0 +1,16 @@
+{
+  "title": "Calm down and loosen up the homepage",
+  "prompt": "Ticketly's homepage scrolls artist names forever, forces a three-column grid of fixed 320px cards, and uses 16px stepper buttons. Fix it:\n\n1. Add a `@media (prefers-reduced-motion: reduce)` block that turns off the `.marquee__track` animation.\n2. Add a **button** whose text contains \"Pause\" that pauses the marquee when clicked (for example with `animation-play-state: paused`).\n3. Make the `.cards` grid reflow so nothing scrolls horizontally in a narrow viewport (the preview is only about 300px wide).\n4. Make both `.stepper` buttons at least 24 × 24 CSS pixels.",
+  "hints": [
+    "Inside the media query: .marquee__track { animation: none; }",
+    "Toggle a class such as .marquee--paused on the section from a button click, and set animation-play-state: paused on the track inside it. aria-pressed makes it a proper toggle.",
+    "grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)) lets the grid drop to one column. For the stepper, min-inline-size and min-block-size of 2.75rem give a comfortable 44px."
+  ],
+  "explanation": "The media query removes the marquee's movement for everyone who has asked their operating system for reduced motion, and the pause button covers everyone else, which is what 2.2.2 Pause, Stop, Hide requires. `auto-fit` with `minmax(min(100%, 16rem), 1fr)` lets the grid fall back to a single column, so a 400% zoom (or a phone) never needs horizontal scrolling. The stepper buttons grow to 44px, well above 2.5.8's 24px minimum, without making the icons themselves bigger.",
+  "checks": {
+    "reduced-motion": "A prefers-reduced-motion: reduce block stops the marquee animation",
+    "pause-control": "A Pause button pauses the marquee",
+    "reflow": "The page and the card grid don't scroll horizontally",
+    "target-size": "Both stepper buttons are at least 24 × 24 pixels"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Port a warehouse query to SQLite",
+  "prompt": "Huda found this query in the PostgreSQL warehouse and wants the same numbers from Cartwheel's SQLite database: for customers in **Dubai**, one row per month of **2025** with `month` ('YYYY-MM'), `orders` (non-cancelled orders) and `app_orders` (those placed through the mobile app). Sort by `month`. Order matters.\n\nThe starter fails in SQLite. Translate every PostgreSQL-only piece into SQLite and keep the logic the same.",
+  "hints": [
+    "Run it and read the first error. Then look for each PostgreSQL feature: `::` casts, `to_char`, `date_trunc`, `ILIKE` and `DATE '...'` literals.",
+    "A 'YYYY-MM' month label in SQLite is `strftime('%Y-%m', o.order_date)`. Dates are ISO text, so the date literals become plain strings.",
+    "SQLite's LIKE is already case-insensitive for ASCII, so `ILIKE` becomes `LIKE`. `COUNT(*) FILTER (WHERE ...)` works in both engines and can stay."
+  ],
+  "explanation": "Four things are PostgreSQL-only: the `::timestamp` cast, `to_char` with `date_trunc`, `ILIKE`, and typed `DATE '...'` literals. In SQLite the month label is `strftime('%Y-%m', ...)`, ISO text needs no cast, and LIKE already ignores ASCII case. `FILTER` is standard SQL and works unchanged. Notice the reverse trap if this query ever goes back: SQLite's `LIKE 'MOBILE%'` matches 'mobile_app', but in PostgreSQL that LIKE would match nothing, which is why the original used ILIKE. Dubai's busiest month was December, with 23 orders.",
+  "checks": {}
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<main class=\"page\">\n  <article class=\"card\" id=\"app-card\">\n    <h3>Route 18 · 6 stops</h3>\n    <button class=\"nw-button\" id=\"app-btn\">Dispatch</button>\n  </article>\n  <section class=\"hero\" data-theme=\"dark\">\n    <article class=\"card\" id=\"hero-card\">\n      <h3>Ship smarter with Northwind</h3>\n      <button class=\"nw-button\">Book a demo</button>\n    </article>\n  </section>\n</main>",
+    "css": ":root {\n  /* Primitives */\n  --nw-gray-0: #ffffff;\n  --nw-gray-100: #e4e7eb;\n  --nw-gray-900: #1f2933;\n  --nw-gray-950: #111827;\n  --nw-blue-400: #6b93f5;\n  --nw-blue-600: #1f5ae0;\n  --nw-space-1: 0.25rem;\n  --nw-space-2: 0.5rem;\n  --nw-space-3: 0.75rem;\n  --nw-space-4: 1rem;\n\n  /* Semantic tokens: light theme, comfortable density */\n  --nw-color-surface: var(--nw-gray-0);\n  --nw-color-text: var(--nw-gray-900);\n  --nw-color-action-bg: var(--nw-blue-600);\n  --nw-color-action-text: var(--nw-gray-0);\n  --nw-space-control-y: var(--nw-space-2);\n  --nw-space-control-x: var(--nw-space-4);\n}\n\n/* Add the dark theme here */\n\n/* Add the compact density here */\n\n/* Components (don't change these) */\n.card {\n  background: var(--nw-color-surface);\n  color: var(--nw-color-text);\n  padding: 16px;\n  border-radius: 8px;\n  margin-bottom: 16px;\n}\n.card h3 { margin: 0 0 12px; }\n.nw-button {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  padding: var(--nw-space-control-y) var(--nw-space-control-x);\n  border: 0;\n  border-radius: 6px;\n  font: inherit;\n}\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<main class=\"page\">\n  <article class=\"card\" id=\"app-card\">\n    <h3>Route 18 · 6 stops</h3>\n    <button class=\"nw-button\" id=\"app-btn\">Dispatch</button>\n  </article>\n  <section class=\"hero\" data-theme=\"dark\">\n    <article class=\"card\" id=\"hero-card\">\n      <h3>Ship smarter with Northwind</h3>\n      <button class=\"nw-button\">Book a demo</button>\n    </article>\n  </section>\n</main>",
+    "css": ":root {\n  /* Primitives */\n  --nw-gray-0: #ffffff;\n  --nw-gray-100: #e4e7eb;\n  --nw-gray-900: #1f2933;\n  --nw-gray-950: #111827;\n  --nw-blue-400: #6b93f5;\n  --nw-blue-600: #1f5ae0;\n  --nw-space-1: 0.25rem;\n  --nw-space-2: 0.5rem;\n  --nw-space-3: 0.75rem;\n  --nw-space-4: 1rem;\n\n  /* Semantic tokens: light theme, comfortable density */\n  --nw-color-surface: var(--nw-gray-0);\n  --nw-color-text: var(--nw-gray-900);\n  --nw-color-action-bg: var(--nw-blue-600);\n  --nw-color-action-text: var(--nw-gray-0);\n  --nw-space-control-y: var(--nw-space-2);\n  --nw-space-control-x: var(--nw-space-4);\n}\n\n[data-theme=\"dark\"] {\n  color-scheme: dark;\n  --nw-color-surface: var(--nw-gray-950);\n  --nw-color-text: var(--nw-gray-100);\n  --nw-color-action-bg: var(--nw-blue-400);\n  --nw-color-action-text: var(--nw-gray-950);\n}\n\n[data-density=\"compact\"] {\n  --nw-space-control-y: var(--nw-space-1);\n  --nw-space-control-x: var(--nw-space-3);\n}\n\n/* Components (don't change these) */\n.card {\n  background: var(--nw-color-surface);\n  color: var(--nw-color-text);\n  padding: 16px;\n  border-radius: 8px;\n  margin-bottom: 16px;\n}\n.card h3 { margin: 0 0 12px; }\n.nw-button {\n  --nw-button-bg: var(--nw-color-action-bg);\n  --nw-button-text: var(--nw-color-action-text);\n  background: var(--nw-button-bg);\n  color: var(--nw-button-text);\n  padding: var(--nw-space-control-y) var(--nw-space-control-x);\n  border: 0;\n  border-radius: 6px;\n  font: inherit;\n}\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "light-default",
+      "test": "return style('#app-card', 'background-color') === 'rgb(255, 255, 255)' && style('#app-btn', 'background-color') === 'rgb(31, 90, 224)';"
+    },
+    {
+      "id": "hero-dark",
+      "test": "return style('#hero-card', 'background-color') === 'rgb(17, 24, 39)' && style('#hero-card', 'color') === 'rgb(228, 231, 235)';"
+    },
+    {
+      "id": "dark-button",
+      "test": "const b = $('#hero-card .nw-button'); return style(b, 'background-color') === 'rgb(107, 147, 245)' && style(b, 'color') === 'rgb(17, 24, 39)';"
+    },
+    {
+      "id": "page-dark",
+      "test": "const root = document.documentElement; root.dataset.theme = 'dark'; const ok = style('#app-card', 'background-color') === 'rgb(17, 24, 39)' && getComputedStyle(root).colorScheme === 'dark'; delete root.dataset.theme; return ok;"
+    },
+    {
+      "id": "compact",
+      "test": "const root = document.documentElement; root.dataset.density = 'compact'; const ok = style('#app-btn', 'padding-top') === '4px' && style('#app-btn', 'padding-left') === '12px'; delete root.dataset.density; return ok && style('#app-btn', 'padding-top') === '8px';"
+    }
+  ]
+}

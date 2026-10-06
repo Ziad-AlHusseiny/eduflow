@@ -1,0 +1,29 @@
+{
+  "title": "Pick the undo",
+  "prompt": "Your most recent commit on `main`, `8f1e2aa Move nav into header`, broke the mobile menu. You pushed it an hour ago and two teammates have already pulled. `git status` shows a clean working tree.\n\n```text\n8f1e2aa (HEAD -> main, origin/main) Move nav into header\nc39be11 Add projects page\nb2e04f3 Add navigation bar with base styles\n```\n\nWhich command should you run before pushing again?",
+  "hints": [
+    "Ask where the mistake lives: your files, the index, a local commit, or a shared commit?",
+    "Anything that changes `8f1e2aa` itself would need a force-push to a branch others have pulled.",
+    "You want to add history, not rewrite it."
+  ],
+  "explanation": "The bad commit is already shared, so rewriting it (amend or reset) would force everyone else to repair their history. `git revert HEAD` adds a new commit that applies the exact opposite of `8f1e2aa`; push it normally and your teammates get the fix with an ordinary pull. Later you can fix the nav properly on a branch and bring the move back through a pull request.",
+  "options": {
+    "a": {
+      "text": "`git reset --hard HEAD~1`, then `git push --force`",
+      "why": "This deletes a commit your teammates already have. Their next push can bring it back, and the force-push may wipe out anything pushed in the meantime."
+    },
+    "b": {
+      "text": "`git revert HEAD`, then `git push`",
+      "why": "Correct. The new commit cancels `8f1e2aa` without rewriting shared history."
+    },
+    "c": {
+      "text": "`git restore index.html`",
+      "why": "The working tree is clean, so there's nothing to restore. The bug is inside a commit, and only a new commit can undo it publicly."
+    },
+    "d": {
+      "text": "`git commit --amend`",
+      "why": "Amend replaces the latest commit with a new ID, which is a rewrite of a pushed commit and would need a force-push."
+    }
+  },
+  "checks": {}
+}

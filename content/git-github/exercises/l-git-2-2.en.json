@@ -1,0 +1,29 @@
+{
+  "title": "Predict the merge",
+  "prompt": "This is the portfolio right now. Arrows point from each commit to its parent.\n\n:::figure Before the merge\n<svg viewBox=\"0 0 640 220\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">Commit a1 then b2. From b2, main continues to c3, which main and HEAD point to. Also from b2, the projects-grid branch has d4 then e5, and projects-grid points to e5.</title>\n  <circle class=\"d-box\" cx=\"50\" cy=\"110\" r=\"24\"/>\n  <text class=\"d-code\" x=\"50\" y=\"115\" text-anchor=\"middle\">a1</text>\n  <circle class=\"d-box\" cx=\"160\" cy=\"110\" r=\"24\"/>\n  <text class=\"d-code\" x=\"160\" y=\"115\" text-anchor=\"middle\">b2</text>\n  <circle class=\"d-box\" cx=\"290\" cy=\"55\" r=\"24\"/>\n  <text class=\"d-code\" x=\"290\" y=\"60\" text-anchor=\"middle\">c3</text>\n  <circle class=\"d-box\" cx=\"290\" cy=\"165\" r=\"24\"/>\n  <text class=\"d-code\" x=\"290\" y=\"170\" text-anchor=\"middle\">d4</text>\n  <circle class=\"d-box\" cx=\"410\" cy=\"165\" r=\"24\"/>\n  <text class=\"d-code\" x=\"410\" y=\"170\" text-anchor=\"middle\">e5</text>\n  <path class=\"d-arrow\" d=\"M136 110 L78 110\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M267 64 L188 100\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M267 156 L188 120\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M386 165 L318 165\" marker-end=\"url(#arrow)\"/>\n  <rect class=\"d-box-accent\" x=\"340\" y=\"38\" width=\"90\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"385\" y=\"60\" text-anchor=\"middle\">main</text>\n  <rect class=\"d-box-warn\" x=\"450\" y=\"38\" width=\"90\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"495\" y=\"60\" text-anchor=\"middle\">HEAD</text>\n  <path class=\"d-line\" d=\"M450 55 L430 55\"/>\n  <path class=\"d-line\" d=\"M340 55 L318 55\"/>\n  <rect class=\"d-box-accent\" x=\"460\" y=\"148\" width=\"150\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"535\" y=\"170\" text-anchor=\"middle\">projects-grid</text>\n  <path class=\"d-line\" d=\"M460 165 L438 165\"/>\n</svg>\n:::\n\nThe two branches touched different files. You run `git merge projects-grid`. What does the graph look like afterwards?",
+  "hints": [
+    "Which branch is HEAD on? That's the only branch that can move.",
+    "Has `main` gained commits since `projects-grid` split off at `b2`?",
+    "When both sides have new commits, a fast-forward is impossible."
+  ],
+  "explanation": "HEAD is on `main`, so `main` is the branch that moves. Both branches have commits since their merge base `b2` (`c3` on `main`; `d4` and `e5` on `projects-grid`), so a fast-forward is impossible. Git does a three-way merge from `b2` and records a new merge commit whose parents are `c3` and `e5`. `main` moves to it; `projects-grid` stays on `e5` until you delete it.",
+  "options": {
+    "a": {
+      "text": "`main` fast-forwards to `e5`; no new commit is made.",
+      "why": "A fast-forward needs `main` to be an ancestor of `e5`. `c3` isn't in `projects-grid`'s history, so Git can't slide `main` along a straight line."
+    },
+    "b": {
+      "text": "A new merge commit with parents `c3` and `e5` appears; `main` moves to it and `projects-grid` stays on `e5`.",
+      "why": "Correct. Both sides moved since `b2`, so Git creates a two-parent commit on the current branch only."
+    },
+    "c": {
+      "text": "A new merge commit appears and both `main` and `projects-grid` move to it.",
+      "why": "Only the branch you're on moves during a merge. `projects-grid` keeps pointing at `e5`."
+    },
+    "d": {
+      "text": "`d4` and `e5` are copied after `c3` with new IDs, keeping history linear.",
+      "why": "That's what a rebase does. A merge keeps the original commits and joins the two lines with a merge commit."
+    }
+  },
+  "checks": {}
+}

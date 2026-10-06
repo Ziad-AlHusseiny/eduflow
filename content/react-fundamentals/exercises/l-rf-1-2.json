@@ -1,0 +1,1 @@
+{ "kind": "order", "items": ["check-node", "scaffold", "enter-folder", "install", "start-dev", "edit-app"] }

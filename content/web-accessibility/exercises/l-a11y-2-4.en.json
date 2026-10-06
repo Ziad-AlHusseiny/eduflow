@@ -1,0 +1,18 @@
+{
+  "title": "Review Ticketly's alt text",
+  "prompt": "A teammate added alt text to every image on Ticketly and asked you to review it. Select **every decision that is correct** as written. Think about each image's purpose in its context, not just what it shows.",
+  "hints": [
+    "Ask of each image: informative, functional, decorative, text, or complex?",
+    "An image that is the only content of a link or button must name the destination or action.",
+    "Three of the six decisions are correct."
+  ],
+  "explanation": "The logo link names its destination, the ambient crowd photo is decorative because the headline and paragraph already say everything, and the badge image of the words \"Sold out\" repeats those words. The other three fail: \"Seat map\" says what the image is but none of the availability it shows, so it needs a short summary plus a list of blocks nearby; \"Image of nour_quartet_final.jpg\" is a file name with a redundant prefix; and the search icon with alt=\"\" leaves its button with no accessible name at all.",
+  "options": {
+    "logo-link": { "text": "Logo image inside `<a href=\"/\">`: `alt=\"Ticketly home\"`", "why": "Correct. The image is the link's only content, so its alt names where the link goes." },
+    "seat-map": { "text": "Seat map showing which blocks still have seats: `alt=\"Seat map\"`", "why": "Not enough. It names the image type but none of its information. Give a short summary and a text list of blocks and availability." },
+    "artist-file": { "text": "Artist photo on the Nour Quartet card: `alt=\"Image of nour_quartet_final.jpg\"`", "why": "Wrong. Screen readers already say \"image\", and a file name tells users nothing. Describe what the photo shows that matters, such as the band on stage." },
+    "hero-ambient": { "text": "Blurred crowd photo behind the headline \"Harbour Lights 2026\", whose paragraph already describes the event: `alt=\"\"`", "why": "Correct. In this context the photo is atmosphere; the text carries the meaning, so an empty alt lets screen readers skip it." },
+    "search-empty": { "text": "Magnifying-glass image as the only content of the search button: `alt=\"\"`", "why": "Wrong. The button now has no name and is announced as just \"button\". Use alt=\"Search\"." },
+    "sold-badge": { "text": "Image of the words \"Sold out\" on the Friday card: `alt=\"Sold out\"`", "why": "Correct. For images of text, the alt repeats the text. Even better would be real text styled with CSS." }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "title": "أعطِ الشجرة معدّلًا تقسم عليه",
+  "prompt": "ساعد شجرة قرار واحدة باثنين من الـ features المهندَسة.\n\n1. أكمل `add_features(df)` بحيث تُعيد **نسخة** من `df` مضافًا إليها `orders_per_month` (`orders / (tenure_days / 30.4)`) و`tickets_per_order` (`support_tickets / orders`). لا تعدّل الـ DataFrame المُمرَّر.\n2. `pipe`: `FunctionTransformer(add_features)` متبوعًا بـ `tree`.\n3. `plain_auc` و`engineered_auc`: متوسط الـ ROC AUC بالتحقق المتقاطع على بيانات التدريب (باستخدام `cv` المعطى) لـ `tree` وحدها ولـ `pipe`.",
+  "hints": [
+    "ابدأ الدالة بـ `df = df.copy()` كي تبقى بيانات المستدعي دون مساس.",
+    "`make_pipeline(FunctionTransformer(add_features), tree)`",
+    "`cross_val_score(model, X_train, y_train, cv=cv, scoring=\"roc_auc\").mean()` لكلٍّ منهما."
+  ],
+  "explanation": "متوسط الشجرة العادية نحو 0.72؛ ومع المعدّلين يصعد بعدة نقاط، ويعود الفضل في معظم ذلك إلى `orders_per_month`، الذي يصبح السؤال الأول في الشجرة. ولأن الـ features تعيش داخل الـ pipeline، يحسبها التحقق المتقاطع وأي تنبؤ لاحق بالطريقة نفسها، ولأن كل قيمة تعتمد على صفّها وحده، فلا شيء يتسرّب بين الطيّات. أجرِ المقارنة نفسها مع الانحدار اللوجستي ولن ترى تغييرًا يُذكر: النماذج المختلفة تحتاج إلى مساعدة مختلفة.",
+  "checks": {
+    "new-columns": "تضيف add_features العمودين الجديدين كليهما",
+    "values": "يحمل العمودان الجديدان القيم الصحيحة",
+    "no-mutation": "X_train نفسها لم تُعدَّل",
+    "pipeline": "pipe هو FunctionTransformer ← DecisionTreeClassifier",
+    "scores": "حُسبت نتيجتا التحقق المتقاطع، والشجرة المهندَسة تتفوّق على العادية"
+  }
+}

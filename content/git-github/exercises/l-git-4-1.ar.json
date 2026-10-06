@@ -1,0 +1,29 @@
+{
+  "title": "اختر طريقة التراجع",
+  "prompt": "أحدث commit لديك على `main`، وهو `8f1e2aa Move nav into header`، عطّل قائمة الجوال. رفعته قبل ساعة، وسحبه زميلان بالفعل. ويعرض `git status` working tree نظيفًا.\n\n```text\n8f1e2aa (HEAD -> main, origin/main) Move nav into header\nc39be11 Add projects page\nb2e04f3 Add navigation bar with base styles\n```\n\nأيّ أمر يجب أن تشغّله قبل أن ترفع مجددًا؟",
+  "hints": [
+    "اسأل أين يعيش الخطأ: في ملفاتك، أم في الـ index، أم في commit محلي، أم في commit مشارَك؟",
+    "أي شيء يغيّر `8f1e2aa` نفسه سيحتاج إلى رفع بالقوة إلى فرع سحبه آخرون.",
+    "تريد أن تضيف إلى السجلّ، لا أن تعيد كتابته."
+  ],
+  "explanation": "الـ commit السيئ مشارَك بالفعل، لذا فإعادة كتابته (بالـ amend أو الـ reset) ستجبر الجميع على إصلاح سجلّاتهم. أما `git revert HEAD` فيضيف commit جديدًا يطبّق عكس `8f1e2aa` تمامًا؛ ارفعه بشكل عادي فيحصل زملاؤك على الإصلاح بـ pull عادي. ولاحقًا تستطيع إصلاح قائمة التنقّل كما يجب على فرع، وإعادة النقل عبر pull request.",
+  "options": {
+    "a": {
+      "text": "`git reset --hard HEAD~1`، ثم `git push --force`",
+      "why": "هذا يحذف commit يملكه زملاؤك بالفعل. رفعهم التالي قد يعيده، والرفع بالقوة قد يمحو أي شيء رُفع في الأثناء."
+    },
+    "b": {
+      "text": "`git revert HEAD`، ثم `git push`",
+      "why": "صحيح. الـ commit الجديد يلغي `8f1e2aa` دون إعادة كتابة السجلّ المشترك."
+    },
+    "c": {
+      "text": "`git restore index.html`",
+      "why": "الـ working tree نظيف، فلا شيء يُسترجع. الخطأ داخل commit، ولا يستطيع التراجع عنه علنًا إلا commit جديد."
+    },
+    "d": {
+      "text": "`git commit --amend`",
+      "why": "الـ amend يستبدل آخر commit بمعرّف جديد، وهذه إعادة كتابة لـ commit مرفوع وستحتاج إلى رفع بالقوة."
+    }
+  },
+  "checks": {}
+}

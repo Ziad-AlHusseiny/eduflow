@@ -1,0 +1,55 @@
+{
+  "id": "python-data-analysis",
+  "project": "You are the new analyst at Cartwheel, an online home and outdoor store. Starting from plain Python and a messy spreadsheet export, you build a tested cleaning function, join the store's order tables, and answer the question leadership keeps asking: why did Q4 2025 revenue jump?",
+  "sections": [
+    {
+      "id": "s-pda-1",
+      "lessons": [
+        { "id": "l-pda-1-1", "minutes": 10 },
+        { "id": "l-pda-1-2", "minutes": 16 },
+        { "id": "l-pda-1-3", "minutes": 18 },
+        { "id": "l-pda-1-4", "minutes": 18 },
+        { "id": "l-pda-1-5", "minutes": 20 }
+      ]
+    },
+    {
+      "id": "s-pda-2",
+      "lessons": [
+        { "id": "l-pda-2-1", "minutes": 16 },
+        { "id": "l-pda-2-2", "minutes": 18 },
+        { "id": "l-pda-2-3", "minutes": 18 },
+        { "id": "l-pda-2-4", "minutes": 18 },
+        { "id": "l-pda-2-5", "minutes": 18 }
+      ]
+    },
+    {
+      "id": "s-pda-3",
+      "lessons": [
+        { "id": "l-pda-3-1", "minutes": 18 },
+        { "id": "l-pda-3-2", "minutes": 16 },
+        { "id": "l-pda-3-3", "minutes": 16 },
+        { "id": "l-pda-3-4", "minutes": 20 },
+        { "id": "l-pda-3-5", "minutes": 18 }
+      ]
+    },
+    {
+      "id": "s-pda-4",
+      "lessons": [
+        { "id": "l-pda-4-1", "minutes": 20 },
+        { "id": "l-pda-4-2", "minutes": 20 },
+        { "id": "l-pda-4-3", "minutes": 18 },
+        { "id": "l-pda-4-4", "minutes": 20 },
+        { "id": "l-pda-4-5", "minutes": 16 }
+      ]
+    },
+    {
+      "id": "s-pda-5",
+      "lessons": [
+        { "id": "l-pda-5-1", "minutes": 18 },
+        { "id": "l-pda-5-2", "minutes": 16 },
+        { "id": "l-pda-5-3", "minutes": 26 },
+        { "id": "l-pda-5-4", "minutes": 18 }
+      ]
+    }
+  ]
+}

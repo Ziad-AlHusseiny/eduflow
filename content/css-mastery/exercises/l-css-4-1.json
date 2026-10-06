@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<article class=\"session-card\">\n  <p class=\"status\"><span class=\"live-dot\" aria-hidden=\"true\"></span> Live now</p>\n  <h3>Motion With Manners</h3>\n  <p>Transitions, keyframes and reduced motion.</p>\n</article>",
+    "css": ".session-card {\n  padding: 12px 16px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n  background: white;\n}\n.session-card:hover {\n  translate: 0 -2px;\n  box-shadow: 0 6px 16px rgb(15 23 42 / 0.12);\n}\n.status { margin: 0; color: #b91c1c; font-weight: 600; }\n.live-dot {\n  position: relative;\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  background: currentColor;\n}\n.live-dot::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  border-radius: 50%;\n  background: currentColor;\n}\n\n/* Add the transition, the pulse animation and reduced-motion handling */\n"
+  },
+  "solution": {
+    "html": "<article class=\"session-card\">\n  <p class=\"status\"><span class=\"live-dot\" aria-hidden=\"true\"></span> Live now</p>\n  <h3>Motion With Manners</h3>\n  <p>Transitions, keyframes and reduced motion.</p>\n</article>",
+    "css": ".session-card {\n  padding: 12px 16px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n  background: white;\n}\n.session-card:hover {\n  translate: 0 -2px;\n  box-shadow: 0 6px 16px rgb(15 23 42 / 0.12);\n}\n.status { margin: 0; color: #b91c1c; font-weight: 600; }\n.live-dot {\n  position: relative;\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  background: currentColor;\n}\n.live-dot::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  border-radius: 50%;\n  background: currentColor;\n}\n\n@keyframes pulse {\n  0% { scale: 1; opacity: 1; }\n  70% { scale: 2.2; opacity: 0; }\n  100% { scale: 2.2; opacity: 0; }\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .session-card {\n    transition: translate 200ms ease-out, box-shadow 200ms ease-out;\n  }\n  .live-dot::after {\n    animation: pulse 1.6s ease-out infinite;\n  }\n}\n"
+  },
+  "checks": [
+    {
+      "id": "transition-specific",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion') ? r.conditionText : '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return all.some(({ r }) => r.style && /translate|transform/.test(r.style.transitionProperty || r.style.transition || '')); const props = style('.session-card', 'transition-property').split(',').map((s) => s.trim()); return props.some((p) => p === 'translate' || p === 'transform') && props.includes('box-shadow') && !props.includes('all');"
+    },
+    {
+      "id": "transition-duration",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion') ? r.conditionText : '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return true; const ds = style('.session-card', 'transition-duration').split(',').map((s) => parseFloat(s) * (s.trim().endsWith('ms') ? 0.001 : 1)); return ds.length > 0 && ds.every((d) => d >= 0.1 && d <= 0.4);"
+    },
+    {
+      "id": "pulse-loops",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion') ? r.conditionText : '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); const hasKeyframes = all.some(({ r }) => r instanceof CSSKeyframesRule); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return hasKeyframes; const s = getComputedStyle($('.live-dot'), '::after'); return hasKeyframes && s.animationName !== 'none' && s.animationIterationCount === 'infinite';"
+    },
+    {
+      "id": "pulse-cheap",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion') ? r.conditionText : '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); const kf = all.map(({ r }) => r).filter((r) => r instanceof CSSKeyframesRule); if (!kf.length) return false; const allowed = ['scale', 'opacity', 'transform', 'translate', 'rotate']; return kf.every((k) => [...k.cssRules].every((f) => [...f.style].every((p) => allowed.includes(p))));"
+    },
+    {
+      "id": "reduced-motion",
+      "test": "const all = []; const walk = (rules, media) => { for (const r of rules) { all.push({ r, media }); if (r.cssRules) walk(r.cssRules, media || (r instanceof CSSMediaRule && r.conditionText.includes('prefers-reduced-motion') ? r.conditionText : '')); } }; for (const s of document.styleSheets) walk(s.cssRules, ''); return all.some(({ r, media }) => media && r.style && (r.style.animation || r.style.animationName || r.style.transition || r.style.transitionProperty || r.style.animationDuration || r.style.transitionDuration));"
+    }
+  ]
+}

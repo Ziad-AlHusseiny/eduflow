@@ -1,0 +1,9 @@
+{
+  "title": "Why won't Pocket's modules load?",
+  "prompt": "Pocket was split into two modules, and now the page shows nothing and the console reports errors. The HTML loads `src/main.js` correctly with `type=\"module\"` from a plain static file server (no build tool such as Vite). Select the **two** lines that stop these modules from working in the browser.\n",
+  "hints": [
+    "One file uses a function from the other. Is it actually offered?",
+    "Look closely at the import path. In the browser, without a build tool, the path must point to the exact file."
+  ],
+  "explanation": "**Line 5:** `toCents` is not exported, so it is private to `money.js`. The import fails before any code runs, with an error like `The requested module './money.js' does not provide an export named 'toCents'`. Fix: `export function toCents(dollars) {`.\n\n**Line 10:** the browser requests exactly the URL you write, and `./money` is not a file (the file is `money.js`), so the request returns 404. Fix: `import { formatMoney, toCents } from \"./money.js\";`. Build tools such as Vite let you leave off the extension, but plain browser modules do not.\n"
+}

@@ -1,0 +1,17 @@
+{
+  "title": "استعلم عن الأرصدة كما يفعل المستخدم",
+  "prompt": "تعرض `renderBalances(container, balances)` قائمة تسميتها **Balances**: `\"Ana is owed $12.00\"`، `\"Ben owes $5.00\"`، `\"Cai is settled up\"`، مرتّبة حسب الاسم. وحين لا يوجد أشخاص تعرض `No expenses yet` دون أي قائمة.\n\nيبدأ الكود المبدئي ببدائل صغيرة لاستعلامات Testing Library (`getByRole` و`getAllByRole` و`queryByRole` و`getByText` و`queryByText`؛ وكلها تأخذ الحاوية معاملًا أول)، وينشئ `container` جديدة لكل اختبار. أضف اختبارات حتى تلتقط مجموعتك أربعة أخطاء مخفيّة: صياغة **owes**/**is owed** متبادلة، ونسخة **تُخفي** من سوّوا حساباتهم، ونسخة تطبع **إشارة سالب** (\"owes -$5.00\")، ونسخة **بلا حالة فارغة**.",
+  "hints": [
+    "اقرأ ما يقرؤه المستخدم: `getAllByRole(container, 'listitem').map((li) => li.textContent)` يعطيك كل سطر نص.",
+    "استخدم رصيدًا واحدًا من كل نوع (موجب، وسالب، وصفر)، كي يغطّي `toEqual` واحد على النصوص الصياغةَ والإشارةَ والشخصَ الذي سوّى حسابه.",
+    "للحالة الفارغة، استدعِ `renderBalances(container, {})`، ثم `getByText(container, 'No expenses yet')` و`expect(queryByRole(container, 'list')).toBeNull()`."
+  ],
+  "explanation": "أقوى assertion هنا يقارن النص الظاهر لكل عنصر مع رصيد واحد من كل نوع. هذا الـ `toEqual` الوحيد يلتقط الصياغة المتبادلة، وإشارة السالب الشاردة، وسطر الشخص المسوّى الغائب، لأن كلًّا منها يغيّر ما سيقرؤه المستخدم. ويستخدم اختبار الحالة الفارغة `getByText` لما يجب أن يوجد، و`queryByRole(...)` مع `toBeNull()` لما يجب ألا يوجد، وهذا هو التقسيم المعتاد بين `getBy` و`queryBy`. لا يعتمد أيّ من الاختبارات على تداخل الوسوم أو الأصناف: تستطيع عرض الأرصدة في `<div role=\"list\">` بصفوف `role=\"listitem\"`، أو تغيير التنسيق كله، وستظلّ تنجح.",
+  "checks": {
+    "passes": "كل اختباراتك تنجح على renderBalances الحقيقية",
+    "catches-swapped-wording": "تلتقط النسخة التي تبادل بين \"owes\" و\"is owed\"",
+    "catches-hides-settled": "تلتقط النسخة التي تُخفي من سوّوا حساباتهم",
+    "catches-minus-sign": "تلتقط النسخة التي تطبع \"owes -$5.00\"",
+    "catches-no-empty-state": "تلتقط النسخة التي لا تعرض حالة فارغة"
+  }
+}

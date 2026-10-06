@@ -1,0 +1,11 @@
+{
+  "title": "Cap the logs, wire the alarm",
+  "prompt": "Finish two commands from Lantern's launch checklist. Step 1 sets a 30-day retention period on the RSVP function's log group. Step 2 creates an alarm on the Lambda metric that counts failed invocations, and sends notifications to the `lantern-alerts` topic in the notification service that emails the maintainers.",
+  "hints": [
+    "Both subcommands start with `put-`: one sets a retention policy, the other a metric alarm.",
+    "The Lambda metric for failed invocations is a plural noun with a capital letter.",
+    "Alarm actions point at a topic in Amazon Simple Notification Service; look at the service part of the ARN."
+  ],
+  "explanation": "`aws logs put-retention-policy` sets how long CloudWatch Logs keeps the log group's data; without it, logs never expire and storage keeps growing on the bill. `aws cloudwatch put-metric-alarm` creates or updates an alarm. The `Errors` metric in the `AWS/Lambda` namespace counts invocations that ended in an error, and summing it over a 300-second period gives errors per five minutes. The alarm action is an Amazon SNS topic ARN (`arn:aws:sns:...`); subscribers to that topic, such as the maintainers' email addresses, receive the notification when the alarm changes to the ALARM state.",
+  "checks": {}
+}

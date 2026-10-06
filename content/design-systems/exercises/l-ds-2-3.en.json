@@ -1,0 +1,17 @@
+{
+  "title": "Add a dark theme and a compact mode",
+  "prompt": "The light theme and the components are done. Add two modes by remapping semantic tokens only (leave the components alone):\n\n- **Dark theme** for any element with `data-theme=\"dark\"`, not just `<html>`: surface → `--nw-gray-950`, text → `--nw-gray-100`, action background → `--nw-blue-400`, action text → `--nw-gray-950`. Also set `color-scheme: dark`.\n- **Compact density** for `data-density=\"compact\"`: control padding y → `--nw-space-1`, x → `--nw-space-3`.\n\nThe hero section already carries `data-theme=\"dark\"`, so it should turn dark as soon as your theme works.",
+  "hints": [
+    "Use attribute selectors on their own: `[data-theme=\"dark\"] { … }`. Adding `html` in front would stop the hero from matching.",
+    "Inside the block, redeclare the four semantic color tokens with `var()` pointing at the dark primitives.",
+    "The density block only needs `--nw-space-control-y` and `--nw-space-control-x`."
+  ],
+  "explanation": "Both modes are pure remappings: no component CSS changed, yet the hero card, its button and any page with `data-theme=\"dark\"` on `<html>` all switch. Because the selector is a bare attribute selector, the theme can start at any element, and because the button declares its component tokens on `.nw-button`, they resolve against the nearest theme. Density owns only spacing tokens, so it combines with either theme without extra rules.",
+  "checks": {
+    "light-default": "The page stays light by default",
+    "hero-dark": "The hero card (inside `data-theme=\"dark\"`) uses the dark surface and text",
+    "dark-button": "Buttons inside the dark hero use the lighter blue with dark text",
+    "page-dark": "`data-theme=\"dark\"` on `<html>` darkens the whole page and sets `color-scheme: dark`",
+    "compact": "`data-density=\"compact\"` shrinks the button padding to 4px by 12px"
+  }
+}

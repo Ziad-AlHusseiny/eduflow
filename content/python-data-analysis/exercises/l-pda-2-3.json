@@ -1,0 +1,30 @@
+{
+  "kind": "python",
+  "files": [
+    "products.csv"
+  ],
+  "starter": "import pandas as pd\n\nproducts = pd.read_csv(\"products.csv\", index_col=\"product_id\")\n\n# 1. Unit price of product 7 (a single number)\ngrinder_price = None\n\n# 2. Rows for products 11, 21 and 37, with only the name and unit_cost columns\nsubset = None\n\n# 3. The five most expensive products (all columns), most expensive first\ntop5 = None\n\n# 4. The name of the cheapest product\ncheapest_name = None\n",
+  "solution": "import pandas as pd\n\nproducts = pd.read_csv(\"products.csv\", index_col=\"product_id\")\n\ngrinder_price = products.loc[7, \"unit_price\"]\n\nsubset = products.loc[[11, 21, 37], [\"name\", \"unit_cost\"]]\n\nby_price = products.sort_values(\"unit_price\", ascending=False)\ntop5 = by_price.iloc[:5]\n\ncheapest_name = by_price.iloc[-1][\"name\"]\n",
+  "checks": [
+    {
+      "id": "grinder",
+      "test": "float(grinder_price) == 129.0"
+    },
+    {
+      "id": "subset",
+      "test": "isinstance(subset, pd.DataFrame) and list(subset.index) == [11, 21, 37] and list(subset.columns) == ['name', 'unit_cost']"
+    },
+    {
+      "id": "top5",
+      "test": "isinstance(top5, pd.DataFrame) and len(top5) == 5 and list(top5['unit_price']) == [449, 329, 289, 199, 189]"
+    },
+    {
+      "id": "top5-columns",
+      "test": "'name' in top5.columns and 'unit_cost' in top5.columns"
+    },
+    {
+      "id": "cheapest",
+      "test": "cheapest_name == 'Jump Rope Pro'"
+    }
+  ]
+}

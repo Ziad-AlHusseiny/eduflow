@@ -1,0 +1,10 @@
+{
+  "title": "Why does the hike log stutter?",
+  "prompt": "Trailhead's log stutters on a mid-range Android phone, even in production mode. The Performance Monitor shows the **JS thread** dropping frames while the UI thread is fine, and the Profiler shows every `HikeRow` re-rendering constantly. Select the **three** lines responsible.",
+  "hints": [
+    "Something makes the whole screen re-render many times a second. How often does 16 ms fire?",
+    "`memo` skips a re-render only when every prop is the same object as last time.",
+    "Look at how rows are identified, too: what happens to keys when a hike is inserted at the top?"
+  ],
+  "explanation": "Line 19 updates state every 16 ms, re-rendering the whole screen about 60 times a second just to show a clock with one-second precision; use a much longer interval, and move the clock into its own small component so only it re-renders. Line 29 passes `{ ...item }`, a brand-new object on every render, so `memo(HikeRow)` never gets to skip a row; pass `hike={item}`. Line 28 keys rows by index, so inserting a hike at the top shifts every key, and every row re-mounts; use `keyExtractor={(hike) => hike.id}`. The inline `style` objects inside `HikeRow` are not the problem: they're created only when the row actually renders."
+}

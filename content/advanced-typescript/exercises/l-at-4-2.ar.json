@@ -1,0 +1,17 @@
+{
+  "title": "أعِد الإخفاقات، لا ترمِها",
+  "prompt": "حوّل خطوة الكوبون في Cartwheel إلى إخفاقات متوقَّعة محدَّدة الأنواع:\n\n1. عرّف `Result<T, E>` كـ discriminated union على `ok`، مع الدالتين المساعدتين `ok(value)` و`err(error)`.\n2. اجعل `findCoupon` تُعيد `Result<Coupon, CouponError>`: `coupon-unknown` حين لا يوجد الرمز، و`coupon-expired` (مع `expiredOn`) حين يكون `expiresOn` قبل `today`.\n3. اجعل `checkout` تُعيد `Result<PricedCart, CheckoutError>`: افحص المخزون أولًا، ثم الكوبون (حين لا يكون `couponCode` هو `null`)، ثم أعِد السلة مع `totalCents` (المجموع الفرعي ناقص نسبة الكوبون، مقرّبًا).\n4. اجعل `errorMessage` تُعيد رسالة لكل نوع خطأ تتضمّن بياناته (الرمز، أو تاريخ الانتهاء، أو رمز المنتج SKU).",
+  "hints": [
+    "`type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };` و`const ok = <T>(value: T): { ok: true; value: T } => ({ ok: true, value });`.",
+    "في `checkout`، استخدم العودة المبكرة: `const stocked = checkStock(cart); if (!stocked.ok) return stocked;`. الإخفاق المضيَّق يناسب الـ union الأوسع `CheckoutError`.",
+    "علّق نوع إرجاع `checkout` صراحة، وتفرّع على `e.type` في `errorMessage` مع نوع إرجاع `: string` كي تكون الحالة المنسيّة خطأ ترجمة."
+  ],
+  "explanation": "حين يكون `Result` هو discriminated union، فإن `value` ببساطة غير موجودة حتى يفحص المستدعي `ok`، وهذا ما يثبته سطر `@ts-expect-error`. صارت `findCoupon` تعلن إخفاقَيها المتوقَّعين في توقيعها بدل إخفائهما في `throw`. والعودة المبكرة تُبقي `checkout` مسطّحة: كل إخفاق مضيَّق قابل للإسناد إلى `CheckoutError`، فيُعاد دون تغيير. ولأن الأخطاء union بمميِّز `type`، تستطيع `errorMessage` استخدام بيانات كل إخفاق، وإضافة نوع خطأ جديد لاحقًا تعلّم هذه الدالة تلقائيًا.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها كل اختبارات الأنواع",
+    "valid-coupon": "الكوبون الصالح يخفّض المجموع (خصم 10% من 10000 يعطي 9000)",
+    "expired": "الكوبون المنتهي يُعيد إخفاق `coupon-expired` مع تاريخ انتهائه",
+    "stock-first": "يُفحص المخزون قبل الكوبون",
+    "messages": "`errorMessage` تتضمّن بيانات كل إخفاق"
+  }
+}

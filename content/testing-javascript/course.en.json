@@ -1,0 +1,45 @@
+{
+  "title": "Testing JavaScript Apps",
+  "tagline": "Write tests that catch real bugs, run fast and never cry wolf.",
+  "description": [
+    "Most teams don't lack tests; they lack tests they trust. This course teaches you to write the kind that earn their place: unit tests that pin down behaviour, UI tests that act like a user, and end-to-end tests that don't flake. You use Vitest, Testing Library and Playwright, the tools most JavaScript teams run in 2026.",
+    "Everything is built around Splitwise-lite, a bill-splitting module with real money bugs waiting to happen: rounding, leftover cents, async saves and a settle-up algorithm. In the playground you write tests against working code, then prove them by catching deliberately broken versions, the same idea behind mutation testing, which you meet properly at the end."
+  ],
+  "audience": "JavaScript developers who can build a small app and want tests that give them real confidence to change it.",
+  "prerequisites": "Comfortable with modern JavaScript (functions, arrays, promises, async/await) and basic DOM or React.",
+  "learnItems": [
+    "Choose the right mix of unit, integration and end-to-end tests",
+    "Write clear Vitest tests with edge cases and table-driven cases",
+    "Test errors, async code and collaborators without over-mocking",
+    "Test UI the way users use it, with Testing Library queries",
+    "Write Playwright tests that wait correctly and don't flake",
+    "Judge a suite with coverage, mutation testing and CI signals"
+  ],
+  "sections": {
+    "s-tj-1": "Why and What to Test",
+    "s-tj-2": "Unit Tests That Matter",
+    "s-tj-3": "Testing the UI",
+    "s-tj-4": "End-to-End with Playwright",
+    "s-tj-5": "Testing Strategy"
+  },
+  "lessons": {
+    "l-tj-1-1": "What Tests Buy You",
+    "l-tj-1-2": "Setting Up Vitest",
+    "l-tj-1-3": "Anatomy of a Test and Reading Failures",
+    "l-tj-2-1": "Test Behaviour, Not Implementation",
+    "l-tj-2-2": "Edge Cases and Table-Driven Tests",
+    "l-tj-2-3": "Testing Errors and Async Code",
+    "l-tj-2-4": "Test Doubles and When Mocking Hurts",
+    "l-tj-3-1": "Querying the DOM Like a User",
+    "l-tj-3-2": "Simulating User Interaction",
+    "l-tj-3-3": "Testing Async UI",
+    "l-tj-3-4": "Testing React Components and the Network",
+    "l-tj-4-1": "Locators, Web-First Assertions and Auto-Waiting",
+    "l-tj-4-2": "Fixtures and Test Isolation",
+    "l-tj-4-3": "Debugging and Fixing Flaky Tests",
+    "l-tj-5-1": "Test-Driven Development as a Tool",
+    "l-tj-5-2": "Coverage and Its Limits",
+    "l-tj-5-3": "Mutation Testing",
+    "l-tj-5-4": "Testing in CI and Choosing What Not to Test"
+  }
+}

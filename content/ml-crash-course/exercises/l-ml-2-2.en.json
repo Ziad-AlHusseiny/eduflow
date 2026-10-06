@@ -1,0 +1,16 @@
+{
+  "title": "Train a line with gradient descent",
+  "prompt": "Finish the gradient descent loop so it fits `prediction = w * x + b` to the diabetes target, where `x` is standardised BMI.\n\nInside the loop, update `w` and `b` by subtracting `learning_rate` times their gradients. For mean squared error the gradients are `2 * mean(error * x)` for `w` and `2 * mean(error)` for `b`. Keep the `losses` list: the checks look at it.",
+  "hints": [
+    "Compute both gradients from the same `error` before changing either parameter.",
+    "`w -= learning_rate * 2 * np.mean(error * x)`",
+    "Do the same for `b` with `np.mean(error)`. The final values should land near `w ≈ 46` and `b ≈ 154`."
+  ],
+  "explanation": "Each pass computes the error of the current line, turns it into a slope for each parameter, and steps against that slope. With a learning rate of 0.05 the loss falls every step and the parameters settle where `LinearRegression` puts them (`w ≈ 45.97`, `b ≈ 154.34`). If you flip the sign (`+=`), the loss grows every step: you're walking uphill.",
+  "checks": {
+    "losses": "The loss never increases from one step to the next",
+    "loss-drops": "The final loss is under 20% of the starting loss",
+    "w": "w converges to about 45.97",
+    "b": "b converges to about 154.34"
+  }
+}

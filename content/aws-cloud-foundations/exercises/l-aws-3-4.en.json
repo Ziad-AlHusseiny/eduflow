@@ -1,0 +1,11 @@
+{
+  "title": "Review the security group script",
+  "prompt": "A volunteer wrote this script to create Lantern's security groups during the migration. The comments describe the intent, and the intent is right. Select every line where the code does **not** match a safe version of that intent.",
+  "hints": [
+    "Public HTTPS on the app servers is intended for now. Look at the other two rules.",
+    "Which rule exposes a port that attackers scan for constantly, to the whole internet?",
+    "The database comment says \"only the app servers\". What does `0.0.0.0/0` mean?"
+  ],
+  "explanation": "Line 18 opens SSH to every address on the internet. Maintainers should use AWS Systems Manager Session Manager, which needs no inbound rule at all; if SSH is unavoidable, restrict `--cidr` to a known office or VPN range such as `203.0.113.0/24`. Line 22 lets anything reach PostgreSQL. Replace the CIDR with a reference to the app tier's group, so the rule follows the app servers wherever they run:\n\n```bash\naws ec2 authorize-security-group-ingress --group-id \"$DB_SG\" \\\n  --protocol tcp --port 5432 --source-group \"$APP_SG\"\n```\n\nLine 14 is fine: during the migration visitors do reach the app over HTTPS. Being in a private subnet would reduce the damage of line 22, but defence in depth means each layer should be correct on its own.",
+  "checks": {}
+}

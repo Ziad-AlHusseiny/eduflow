@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<p>Basket: <span id=\"basket-count\">0</span> tickets</p>\n<article class=\"pass\">\n  <h2>Friday pass</h2>\n  <p>SAR 180, standing.</p>\n  <div class=\"btn\" onclick=\"addToBasket()\">Add to basket</div>\n  <a href=\"#\" class=\"text-btn\" onclick=\"removeFromBasket(); return false;\">Remove one</a>\n  <span class=\"link\" onclick=\"location.hash = '#lineup'\">See the Friday line-up</span>\n</article>\n<h2 id=\"lineup\">Friday line-up</h2>\n<p>Nour Quartet, The Saltmarsh Band.</p>",
+    "css": ".pass { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; display: grid; gap: 8px; justify-items: start; }\n.pass h2 { margin: 0; font-size: 1.2rem; }\n.pass p { margin: 0; }\n.btn { background: #5b3cc4; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font: inherit; cursor: pointer; }\n.text-btn { background: none; border: 0; padding: 0; font: inherit; color: #5b3cc4; text-decoration: underline; cursor: pointer; }\n.link { color: #5b3cc4; text-decoration: underline; cursor: pointer; }\n",
+    "js": "let count = 0;\nfunction addToBasket() {\n  count += 1;\n  document.querySelector('#basket-count').textContent = String(count);\n}\nfunction removeFromBasket() {\n  count = Math.max(0, count - 1);\n  document.querySelector('#basket-count').textContent = String(count);\n}\n"
+  },
+  "solution": {
+    "html": "<p>Basket: <span id=\"basket-count\">0</span> tickets</p>\n<article class=\"pass\">\n  <h2>Friday pass</h2>\n  <p>SAR 180, standing.</p>\n  <button type=\"button\" class=\"btn\" onclick=\"addToBasket()\">Add to basket</button>\n  <button type=\"button\" class=\"text-btn\" onclick=\"removeFromBasket()\">Remove one</button>\n  <a href=\"#lineup\" class=\"link\">See the Friday line-up</a>\n</article>\n<h2 id=\"lineup\">Friday line-up</h2>\n<p>Nour Quartet, The Saltmarsh Band.</p>",
+    "css": ".pass { border: 1px solid #c9c4dc; border-radius: 12px; padding: 12px 16px; display: grid; gap: 8px; justify-items: start; }\n.pass h2 { margin: 0; font-size: 1.2rem; }\n.pass p { margin: 0; }\n.btn { background: #5b3cc4; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font: inherit; cursor: pointer; }\n.text-btn { background: none; border: 0; padding: 0; font: inherit; color: #5b3cc4; text-decoration: underline; cursor: pointer; }\n.link { color: #5b3cc4; text-decoration: underline; cursor: pointer; }\n",
+    "js": "let count = 0;\nfunction addToBasket() {\n  count += 1;\n  document.querySelector('#basket-count').textContent = String(count);\n}\nfunction removeFromBasket() {\n  count = Math.max(0, count - 1);\n  document.querySelector('#basket-count').textContent = String(count);\n}\n"
+  },
+  "checks": [
+    {
+      "id": "add-is-button",
+      "test": "const find = (t) => $$('body *').filter((el) => el.children.length === 0 || el.matches('button, a')).find((el) => el.textContent.trim() === t); const el = find('Add to basket'); return !!el && !!el.closest('button');"
+    },
+    {
+      "id": "add-works",
+      "test": "const b = $$('button').find((x) => x.textContent.trim() === 'Add to basket'); if (!b) return false; const before = Number(text('#basket-count')); await click(b); return Number(text('#basket-count')) === before + 1;"
+    },
+    {
+      "id": "remove-is-button",
+      "test": "const find = (t) => $$('body *').filter((el) => el.children.length === 0 || el.matches('button, a')).find((el) => el.textContent.trim() === t); const el = find('Remove one'); const b = el && el.closest('button'); if (!b) return false; const before = Number(text('#basket-count')); await click(b); return Number(text('#basket-count')) === Math.max(0, before - 1);"
+    },
+    {
+      "id": "lineup-is-link",
+      "test": "const find = (t) => $$('body *').filter((el) => el.children.length === 0 || el.matches('button, a')).find((el) => el.textContent.trim() === t); const el = find('See the Friday line-up'); const a = el && el.closest('a[href]'); return !!a && a.getAttribute('href').endsWith('#lineup');"
+    },
+    {
+      "id": "no-fakes",
+      "test": "return $$('div[onclick], span[onclick], a[href=\"#\"], a:not([href])').length === 0;"
+    }
+  ]
+}

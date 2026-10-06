@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<article class=\"pass\">\n  <h2>Weekend pass</h2>\n  <p class=\"price\">SAR 320 for both nights</p>\n  <p class=\"note\">Includes entry to the <a href=\"#lounge\">harbour lounge</a> and a free drink token.</p>\n  <label for=\"qty\">Quantity</label>\n  <input id=\"qty\" type=\"number\" min=\"1\" max=\"6\" value=\"1\">\n  <button type=\"button\" class=\"btn\">Add to basket</button>\n</article>",
+    "css": "body { background: #ffffff; }\n.pass { display: grid; gap: 8px; justify-items: start; max-width: 340px; }\n.pass h2 { margin: 0; }\n.pass p { margin: 0; }\n.price { color: #9a9a9a; }\n.note a { color: #1b1830; text-decoration: none; font-weight: 600; }\ninput { font: inherit; padding: 6px 8px; border: 1px solid #dddddd; border-radius: 6px; background: #ffffff; }\n.btn { font: inherit; padding: 8px 16px; border: 0; border-radius: 8px; background: #f4a261; color: #ffffff; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<article class=\"pass\">\n  <h2>Weekend pass</h2>\n  <p class=\"price\">SAR 320 for both nights</p>\n  <p class=\"note\">Includes entry to the <a href=\"#lounge\">harbour lounge</a> and a free drink token.</p>\n  <label for=\"qty\">Quantity</label>\n  <input id=\"qty\" type=\"number\" min=\"1\" max=\"6\" value=\"1\">\n  <button type=\"button\" class=\"btn\">Add to basket</button>\n</article>",
+    "css": "body { background: #ffffff; }\n.pass { display: grid; gap: 8px; justify-items: start; max-width: 340px; }\n.pass h2 { margin: 0; }\n.pass p { margin: 0; }\n.price { color: #595959; }\n.note a { color: #1b1830; text-decoration: underline; font-weight: 600; }\ninput { font: inherit; padding: 6px 8px; border: 1px solid #77708f; border-radius: 6px; background: #ffffff; }\n.btn { font: inherit; padding: 8px 16px; border: 0; border-radius: 8px; background: #f4a261; color: #1b1830; }\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "price",
+      "test": "const rgb = (c) => { const cv = document.createElement('canvas'); cv.width = cv.height = 1; const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 1, 1); x.fillStyle = c; x.fillRect(0, 0, 1, 1); return [...x.getImageData(0, 0, 1, 1).data].slice(0, 3); }; const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m); return (hi + 0.05) / (lo + 0.05); }; const bg = (el) => { while (el) { const c = getComputedStyle(el).backgroundColor; if (c && c !== 'transparent' && !/rgba\\(.*,\\s*0\\)$/.test(c)) return c; el = el.parentElement; } return '#ffffff'; }; const el = $('.price'); return ratio(getComputedStyle(el).color, bg(el)) >= 4.5;"
+    },
+    {
+      "id": "button",
+      "test": "const rgb = (c) => { const cv = document.createElement('canvas'); cv.width = cv.height = 1; const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 1, 1); x.fillStyle = c; x.fillRect(0, 0, 1, 1); return [...x.getImageData(0, 0, 1, 1).data].slice(0, 3); }; const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m); return (hi + 0.05) / (lo + 0.05); }; const bg = (el) => { while (el) { const c = getComputedStyle(el).backgroundColor; if (c && c !== 'transparent' && !/rgba\\(.*,\\s*0\\)$/.test(c)) return c; el = el.parentElement; } return '#ffffff'; }; const el = $('.btn'); return ratio(getComputedStyle(el).color, bg(el)) >= 4.5;"
+    },
+    {
+      "id": "input-border",
+      "test": "const rgb = (c) => { const cv = document.createElement('canvas'); cv.width = cv.height = 1; const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 1, 1); x.fillStyle = c; x.fillRect(0, 0, 1, 1); return [...x.getImageData(0, 0, 1, 1).data].slice(0, 3); }; const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m); return (hi + 0.05) / (lo + 0.05); }; const bg = (el) => { while (el) { const c = getComputedStyle(el).backgroundColor; if (c && c !== 'transparent' && !/rgba\\(.*,\\s*0\\)$/.test(c)) return c; el = el.parentElement; } return '#ffffff'; }; const el = $('input'); const cs = getComputedStyle(el); return parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== 'none' && ratio(cs.borderTopColor, bg(el.parentElement)) >= 3;"
+    },
+    {
+      "id": "link-cue",
+      "test": "const rgb = (c) => { const cv = document.createElement('canvas'); cv.width = cv.height = 1; const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, 1, 1); x.fillStyle = c; x.fillRect(0, 0, 1, 1); return [...x.getImageData(0, 0, 1, 1).data].slice(0, 3); }; const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((m, n) => n - m); return (hi + 0.05) / (lo + 0.05); }; const bg = (el) => { while (el) { const c = getComputedStyle(el).backgroundColor; if (c && c !== 'transparent' && !/rgba\\(.*,\\s*0\\)$/.test(c)) return c; el = el.parentElement; } return '#ffffff'; }; const a = $('.note a'); const cs = getComputedStyle(a); const p = getComputedStyle(a.parentElement); const underlined = cs.textDecorationLine.includes('underline') || (parseFloat(cs.borderBottomWidth) > 0 && cs.borderBottomStyle !== 'none'); return underlined && ratio(cs.color, bg(a)) >= 4.5;"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Turn the booking modal into a real dialog",
+  "prompt": "Ticketly's booking modal is a `div` that appears when you press **Book now**. Focus stays behind it, the page underneath stays reachable, and screen readers aren't told a dialog opened.\n\nConvert `#booking` into a native `<dialog>` (keep the id) with an accessible name taken from its heading \"Book Friday pass\". Open it as a **modal** from the Book now button and close it from the Close button. When it closes, focus should be back on Book now.",
+  "hints": [
+    "Change the div to <dialog> and remove the hidden attribute; a closed dialog is hidden already.",
+    "Name it with aria-labelledby=\"booking-title\".",
+    "Use modal.showModal() to open and modal.close() to close. The browser moves focus in, makes the page inert, and restores focus on close."
+  ],
+  "explanation": "`showModal()` does the work that used to need a focus-trap library: it moves focus to the first focusable element (the quantity field), makes everything outside the dialog inert so neither Tab nor a screen reader's virtual cursor can wander behind it, closes on Escape, and returns focus to Book now when the dialog closes. `aria-labelledby` makes NVDA announce \"Book Friday pass, dialog\" on open. Notice that the JavaScript barely changed; the improvement comes from choosing the right element and method.",
+  "checks": {
+    "named-dialog": "#booking is a <dialog> named \"Book Friday pass\"",
+    "opens-modal": "Book now opens it as a modal dialog",
+    "focus-inside": "Focus moves inside the dialog when it opens",
+    "page-inert": "The page behind can't receive focus while the dialog is open",
+    "focus-returns": "Close closes the dialog and focus returns to Book now"
+  }
+}

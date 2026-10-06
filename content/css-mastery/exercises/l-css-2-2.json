@@ -1,0 +1,38 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"page\">\n  <header class=\"site-header\">Waypoint Conf 2026</header>\n  <nav class=\"filters\">Tracks</nav>\n  <main class=\"speakers\">\n    <div class=\"speaker featured\">Keynote · Ana Ortiz</div>\n    <div class=\"speaker\">Kenji Watanabe</div>\n    <div class=\"speaker\">Layla Haddad</div>\n    <div class=\"speaker\">Tom Becker</div>\n    <div class=\"speaker\">Priya Nair</div>\n    <div class=\"speaker\">Marcus Lee</div>\n  </main>\n</div>",
+    "css": ".page {\n  width: 860px; /* fixed for this exercise */\n  display: grid;\n  gap: 20px;\n}\n.site-header, .filters, .speaker {\n  padding: 12px;\n  border-radius: 10px;\n  background: #f5f3ff;\n}\n.page {\n  grid-template-columns: 200px minmax(0, 1fr);\n}\n\n.speakers {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}\n"
+  },
+  "solution": {
+    "html": "<div class=\"page\">\n  <header class=\"site-header\">Waypoint Conf 2026</header>\n  <nav class=\"filters\">Tracks</nav>\n  <main class=\"speakers\">\n    <div class=\"speaker featured\">Keynote · Ana Ortiz</div>\n    <div class=\"speaker\">Kenji Watanabe</div>\n    <div class=\"speaker\">Layla Haddad</div>\n    <div class=\"speaker\">Tom Becker</div>\n    <div class=\"speaker\">Priya Nair</div>\n    <div class=\"speaker\">Marcus Lee</div>\n  </main>\n</div>",
+    "css": ".page {\n  width: 860px; /* fixed for this exercise */\n  display: grid;\n  gap: 20px;\n}\n.site-header, .filters, .speaker {\n  padding: 12px;\n  border-radius: 10px;\n  background: #f5f3ff;\n}\n.page {\n  grid-template-columns: 200px minmax(0, 1fr);\n  grid-template-areas:\n    \"header  header\"\n    \"filters main\";\n}\n.site-header { grid-area: header; }\n.filters { grid-area: filters; }\n.speakers { grid-area: main; }\n\n.speakers {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 16px;\n}\n.speaker.featured {\n  grid-column: 1 / -1;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "uses-areas",
+      "test": "return style('.page', 'grid-template-areas') !== 'none';"
+    },
+    {
+      "id": "header-spans",
+      "test": "const box = (s) => (typeof s === 'string' ? $(s) : s).getBoundingClientRect(); const cols = () => new Set($$('.speaker:not(.featured)').filter((el) => style(el, 'display') !== 'none').map((el) => Math.round(box(el).left))).size; const h = box('.site-header'), f = box('.filters'), m = box('.speakers'); return Math.abs(h.width - 860) < 1 && f.top >= h.bottom && m.top >= h.bottom && f.right <= m.left;"
+    },
+    {
+      "id": "three-columns",
+      "test": "const box = (s) => (typeof s === 'string' ? $(s) : s).getBoundingClientRect(); const cols = () => new Set($$('.speaker:not(.featured)').filter((el) => style(el, 'display') !== 'none').map((el) => Math.round(box(el).left))).size; return cols() === 3;"
+    },
+    {
+      "id": "featured-spans",
+      "test": "const box = (s) => (typeof s === 'string' ? $(s) : s).getBoundingClientRect(); const cols = () => new Set($$('.speaker:not(.featured)').filter((el) => style(el, 'display') !== 'none').map((el) => Math.round(box(el).left))).size; return Math.abs(box('.speaker.featured').width - box('.speakers').width) < 1;"
+    },
+    {
+      "id": "narrow-two-columns",
+      "test": "const box = (s) => (typeof s === 'string' ? $(s) : s).getBoundingClientRect(); const cols = () => new Set($$('.speaker:not(.featured)').filter((el) => style(el, 'display') !== 'none').map((el) => Math.round(box(el).left))).size; const page = $('.page'); page.style.width = '620px'; await tick(16); const n = cols(); page.style.width = ''; await tick(16); return n === 2;"
+    },
+    {
+      "id": "few-items-stretch",
+      "test": "const box = (s) => (typeof s === 'string' ? $(s) : s).getBoundingClientRect(); const cols = () => new Set($$('.speaker:not(.featured)').filter((el) => style(el, 'display') !== 'none').map((el) => Math.round(box(el).left))).size; const hide = $$('.speaker').slice(0, 4); hide.forEach((el) => (el.style.display = 'none')); await tick(16); const w = box($$('.speaker')[4]).width; const main = box('.speakers').width; hide.forEach((el) => (el.style.display = '')); await tick(16); return Math.abs(w - (main - 16) / 2) < 1.5;"
+    }
+  ]
+}

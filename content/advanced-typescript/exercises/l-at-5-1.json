@@ -1,0 +1,17 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": [
+    "unchecked-index",
+    "exact-optional",
+    "implicit-override",
+    "skip-lib-check",
+    "verbatim-modules",
+    "allow-js"
+  ],
+  "correct": [
+    "unchecked-index",
+    "exact-optional",
+    "implicit-override"
+  ]
+}

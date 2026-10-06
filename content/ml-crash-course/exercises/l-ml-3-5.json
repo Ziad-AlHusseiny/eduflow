@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import make_scorer\nfrom sklearn.model_selection import TunedThresholdClassifierCV, train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\n# 1. Email campaign economics: each contacted churner is worth +16, each contacted stayer costs -4.\ndef profit(y_true, y_pred):\n    return 0\n\n# 2. Tune the threshold of a StandardScaler + LogisticRegression pipeline for profit (cv=5)\ntuned = None\n\n# 3. Test-set profit at the default 0.5 threshold and at the tuned threshold\nprofit_default = None\nprofit_tuned = None\n",
+  "solution": "import numpy as np\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import make_scorer\nfrom sklearn.model_selection import TunedThresholdClassifierCV, train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nfeatures = [\"tenure_days\", \"orders\", \"total_spent\", \"avg_order_value\",\n            \"days_since_last_order\", \"used_coupon\", \"support_tickets\", \"mobile_share\"]\nX_train, X_test, y_train, y_test = train_test_split(\n    churn[features], churn[\"churned\"], test_size=0.25, random_state=42,\n    stratify=churn[\"churned\"])\n\ndef profit(y_true, y_pred):\n    y_true, y_pred = np.asarray(y_true), np.asarray(y_pred)\n    tp = ((y_pred == 1) & (y_true == 1)).sum()\n    fp = ((y_pred == 1) & (y_true == 0)).sum()\n    return 16 * tp - 4 * fp\n\nbase = make_pipeline(StandardScaler(), LogisticRegression())\ntuned = TunedThresholdClassifierCV(base, scoring=make_scorer(profit), cv=5).fit(X_train, y_train)\n\ndefault = make_pipeline(StandardScaler(), LogisticRegression()).fit(X_train, y_train)\nprofit_default = profit(y_test, default.predict(X_test))\nprofit_tuned = profit(y_test, tuned.predict(X_test))\nprint(round(tuned.best_threshold_, 2), profit_default, profit_tuned)\n",
+  "checks": [
+    {
+      "id": "profit-fn",
+      "test": "int(profit([1, 1, 0, 0, 1], [1, 0, 1, 1, 1])) == 16 * 2 - 4 * 2 and int(profit([0, 1], [0, 0])) == 0"
+    },
+    {
+      "id": "tuned",
+      "test": "tuned is not None and hasattr(tuned, 'best_threshold_') and float(tuned.best_threshold_) < 0.5"
+    },
+    {
+      "id": "default-profit",
+      "test": "profit_default is not None and int(profit_default) == int(profit(y_test, (__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.linear_model', fromlist=['x']).LogisticRegression()).fit(X_train, y_train).predict_proba(X_test)[:, 1] >= 0.5).astype(int)))"
+    },
+    {
+      "id": "tuned-profit",
+      "test": "profit_tuned is not None and int(profit_tuned) == int(profit(y_test, tuned.predict(X_test))) and int(profit_tuned) > int(profit_default)"
+    }
+  ]
+}

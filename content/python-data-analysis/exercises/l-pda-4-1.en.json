@@ -1,0 +1,18 @@
+{
+  "title": "Build the per-order table",
+  "prompt": "Using `items` (revenue column already added), build `per_order`: one row per `order_id` with the columns `revenue` (sum), `lines` (number of order lines) and `units` (sum of `quantity`). Then set `avg_order_value` to the mean order revenue rounded to 2 decimals, `multi_line_share` to the share of orders with 2 or more lines rounded to 3 decimals, and `top_product` to the `product_id` with the highest total revenue.",
+  "hints": [
+    "`items.groupby(\"order_id\").agg(revenue=(\"revenue\", \"sum\"), ...)` with one keyword per output column.",
+    "Count lines with `(\"order_item_id\", \"count\")` or `(\"order_id\", \"size\")`. A share is the mean of a boolean: `(per_order[\"lines\"] >= 2).mean()`.",
+    "`items.groupby(\"product_id\")[\"revenue\"].sum().idxmax()` returns the label of the largest group."
+  ],
+  "explanation": "Named aggregation turns 3,991 lines into 2,066 orders in one call, with readable column names. The checks confirm the parts add up: the `lines` column sums back to 3,991 and units to the total quantity, so no line was lost or counted twice. Average order value is 228.43 dollars, and 55.1% of orders contain more than one product, a useful fact when someone proposes a promotion on single items. Product 21, the Standing Desk 140cm, is the top earner. `as_index=False` would also be accepted: then `order_id` is a column instead of the index.",
+  "checks": {
+    "shape": "`per_order` has 2,066 rows and the columns revenue, lines, units",
+    "order-1001": "Order 1001 has revenue 438.90",
+    "lines-units": "Lines and units add back up to the item table's totals",
+    "aov": "`avg_order_value` is 228.43",
+    "multi": "`multi_line_share` is 0.551",
+    "top": "`top_product` is 21"
+  }
+}

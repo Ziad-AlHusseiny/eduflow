@@ -1,0 +1,6 @@
+{
+  "kind": "choice",
+  "multiple": true,
+  "options": ["shared-kernel", "own-writable", "vm-each", "cgroups-see", "image-many"],
+  "correct": ["shared-kernel", "own-writable", "image-many"]
+}

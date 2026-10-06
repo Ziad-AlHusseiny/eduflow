@@ -1,0 +1,51 @@
+{
+  "id": "docker-kubernetes",
+  "project": "notes-api: a small Node.js 24 + TypeScript API backed by Postgres. You containerise it, harden the image, run it locally with Docker Compose, then deploy, scale, update and debug it on Kubernetes.",
+  "sections": [
+    {
+      "id": "s-dk-1",
+      "lessons": [
+        { "id": "l-dk-1-1", "minutes": 14 },
+        { "id": "l-dk-1-2", "minutes": 20 },
+        { "id": "l-dk-1-3", "minutes": 18 },
+        { "id": "l-dk-1-4", "minutes": 18 }
+      ]
+    },
+    {
+      "id": "s-dk-2",
+      "lessons": [
+        { "id": "l-dk-2-1", "minutes": 20 },
+        { "id": "l-dk-2-2", "minutes": 20 },
+        { "id": "l-dk-2-3", "minutes": 18 },
+        { "id": "l-dk-2-4", "minutes": 20 }
+      ]
+    },
+    {
+      "id": "s-dk-3",
+      "lessons": [
+        { "id": "l-dk-3-1", "minutes": 18 },
+        { "id": "l-dk-3-2", "minutes": 16 },
+        { "id": "l-dk-3-3", "minutes": 18 },
+        { "id": "l-dk-3-4", "minutes": 20 }
+      ]
+    },
+    {
+      "id": "s-dk-4",
+      "lessons": [
+        { "id": "l-dk-4-1", "minutes": 16 },
+        { "id": "l-dk-4-2", "minutes": 20 },
+        { "id": "l-dk-4-3", "minutes": 20 },
+        { "id": "l-dk-4-4", "minutes": 20 }
+      ]
+    },
+    {
+      "id": "s-dk-5",
+      "lessons": [
+        { "id": "l-dk-5-1", "minutes": 20 },
+        { "id": "l-dk-5-2", "minutes": 22 },
+        { "id": "l-dk-5-3", "minutes": 20 },
+        { "id": "l-dk-5-4", "minutes": 22 }
+      ]
+    }
+  ]
+}

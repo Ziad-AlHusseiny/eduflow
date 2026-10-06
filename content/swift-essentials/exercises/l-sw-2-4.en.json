@@ -1,0 +1,28 @@
+{
+  "title": "Follow the errors",
+  "prompt": "This uses the `CategoryBudget` and `BudgetError` from the lesson: `record` throws `.emptyTitle` for a blank title, `.nonPositiveAmount` for an amount of zero or less, and `.overLimit(by:)` when the new total would pass the limit. Predict everything the loop prints.\n\n```swift\nvar food = CategoryBudget(limit: 50)\nlet attempts: [(String, Decimal)] = [(\"Lunch\", 12), (\"\", 5), (\"Dinner\", 45)]\n\nfor (title, amount) in attempts {\n    do {\n        try food.record(title: title, amount: amount)\n        print(\"Saved \\(title)\")\n    } catch BudgetError.overLimit(let by) {\n        print(\"Over by \\(by)\")\n    } catch {\n        print(\"Rejected: \\(error)\")\n    }\n}\nprint(food.spent)\n```",
+  "hints": [
+    "Track `spent` after each attempt. Does a failed attempt change it?",
+    "The second attempt fails before the amount is even checked. Which guard comes first?",
+    "For the third attempt, the new total would be 12 + 45. How far is that over 50?"
+  ],
+  "explanation": "Lunch passes every guard, so `spent` becomes 12 and the line prints \"Saved Lunch\". The blank title fails the first guard; `.emptyTitle` doesn't match the `overLimit` pattern, so the bare `catch` prints \"Rejected: emptyTitle\". Dinner would bring the total to 57, so `record` throws `.overLimit(by: 7)` and the first catch prints \"Over by 7\".\n\nBecause `record` throws before it assigns `spent`, the failed attempts change nothing, and the final line prints 12. Writing all the checks first and the mutation last is what makes the function safe to call again after a failure.",
+  "options": {
+    "a": {
+      "text": "Saved Lunch / Saved / Saved Dinner / 62",
+      "why": "This ignores both guards. A blank title and a total of 57 against a limit of 50 both throw."
+    },
+    "b": {
+      "text": "Saved Lunch / Rejected: emptyTitle / Over by 7 / 57",
+      "why": "The over-limit attempt throws before `spent = newTotal` runs, so the total never reaches 57."
+    },
+    "c": {
+      "text": "Saved Lunch / Over by 7 / 12",
+      "why": "The blank title still produces output. It's caught by the final bare `catch`, which prints \"Rejected: emptyTitle\"."
+    },
+    "d": {
+      "text": "Saved Lunch / Rejected: emptyTitle / Over by 7 / 12",
+      "why": "Correct. Each failure is caught by the first matching clause, and failed attempts leave `spent` untouched."
+    }
+  }
+}

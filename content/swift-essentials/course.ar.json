@@ -1,0 +1,41 @@
+{
+  "title": "أساسيات Swift لتطبيقات iOS",
+  "tagline": "تعلّم Swift 6 وSwiftUI ببناء تطبيق حقيقي لتتبّع المصاريف، من أول ثابت تكتبه حتى TestFlight.",
+  "description": [
+    "لغة Swift تكافئك على الدقة. نظام الأنواع فيها والـ optionals وفحوصات الـ concurrency في Swift 6 تمنع فئات كاملة من الأعطال قبل أن يعمل تطبيقك أصلًا، لكن بشرط أن تفهم ما يقوله لك الـ compiler. تعلّمك هذه الدورة اللغة كما يستخدمها مهندسو iOS في عملهم اليومي: القيم أولًا، والأمان دائمًا، ولا سحر لا تستطيع تفسيره.",
+    "ستبني Pocket Budget، تطبيقًا صغيرًا لتتبّع المصاريف، درسًا بعد درس. تصمّم المصاريف باستخدام الـ structs والـ enums، وتبني الشاشات بـ SwiftUI وإطار Observation، وتجلب أسعار الصرف باستخدام async/await، وتحفظ البيانات بـ SwiftData، وتكتب الاختبارات بـ Swift Testing، ثم ترسل نسخة إلى المختبِرين عبر TestFlight."
+  ],
+  "audience": "المنتقلون إلى البرمجة من مجالات أخرى ومطوّرو الويب الذين يريدون بناء تطبيقات iPhone أصلية باستخدام Swift وSwiftUI الحديثتين.",
+  "prerequisites": "أساسيات البرمجة بأي لغة (المتغيّرات والدوال وحلقات التكرار)، وجهاز Mac مثبّت عليه Xcode.",
+  "learnItems": [
+    "اكتب Swift آمنة بالـ optionals وguard والـ switch الشامل",
+    "اختر بين الـ structs والـ classes والـ enums لبياناتك",
+    "ابنِ شاشات SwiftUI بالـ state والقوائم والتنقّل والنماذج",
+    "اجلب JSON وفكّ ترميزه باستخدام async/await وCodable",
+    "احفظ البيانات بـ SwiftData واختبرها بـ Swift Testing",
+    "افهم أخطاء الـ concurrency في Swift 6 وأصلح سباقات البيانات"
+  ],
+  "sections": {
+    "s-sw-1": "لغة Swift",
+    "s-sw-2": "تصميم البيانات بالأنواع",
+    "s-sw-3": "بناء الشاشات بـ SwiftUI",
+    "s-sw-4": "إطلاق تطبيق حقيقي"
+  },
+  "lessons": {
+    "l-sw-1-1": "الثوابت والمتغيّرات والأنواع",
+    "l-sw-1-2": "الـ optionals بلا أعطال",
+    "l-sw-1-3": "المجموعات والتحكّم في التدفّق",
+    "l-sw-1-4": "الدوال والـ closures",
+    "l-sw-2-1": "الـ structs والـ classes وسلوك القيمة",
+    "l-sw-2-2": "الـ enums مع القيم المرتبطة",
+    "l-sw-2-3": "الـ protocols والـ extensions",
+    "l-sw-2-4": "معالجة الأخطاء والـ typed throws",
+    "l-sw-3-1": "الـ views والـ modifiers",
+    "l-sw-3-2": "الـ state والـ bindings و@Observable",
+    "l-sw-3-3": "القوائم والتنقّل والنماذج",
+    "l-sw-4-1": "async/await والـ concurrency في Swift 6",
+    "l-sw-4-2": "الشبكات باستخدام URLSession وCodable",
+    "l-sw-4-3": "حفظ البيانات بـ SwiftData",
+    "l-sw-4-4": "الاختبار وTestFlight"
+  }
+}

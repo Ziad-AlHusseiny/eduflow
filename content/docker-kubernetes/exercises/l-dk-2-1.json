@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "dockerfile",
+  "code": "# syntax=docker/dockerfile:1\nFROM node:24-slim AS build\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci\nCOPY . .\nRUN npm run build\n\nFROM node:24-slim AS runtime\nENV NODE_ENV=production\nWORKDIR /app\nCOPY --from=build /app ./\nEXPOSE 3000\nCMD [\"node\", \"dist/server.js\"]",
+  "bugLines": [12]
+}

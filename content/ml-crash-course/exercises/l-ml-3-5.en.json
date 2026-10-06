@@ -1,0 +1,16 @@
+{
+  "title": "Tune the threshold for a cheap email",
+  "prompt": "Marketing switches from phone calls to a cheap email. Now each contacted churner is worth **+16** on average and each contacted loyal customer costs **4**.\n\n1. Write `profit(y_true, y_pred)` returning `16 * TP - 4 * FP`.\n2. `tuned`: a `TunedThresholdClassifierCV` around a `StandardScaler` + `LogisticRegression` pipeline, scored with `make_scorer(profit)`, `cv=5`, fitted on the training data.\n3. `profit_default`: test profit of the same pipeline with the default 0.5 threshold. `profit_tuned`: test profit of `tuned`.",
+  "hints": [
+    "Convert both inputs with `np.asarray`, then count `(y_pred == 1) & (y_true == 1)` for TP and `(y_pred == 1) & (y_true == 0)` for FP.",
+    "`TunedThresholdClassifierCV(base, scoring=make_scorer(profit), cv=5).fit(X_train, y_train)`",
+    "For the default, fit a fresh pipeline and pass its `predict(X_test)` to `profit`."
+  ],
+  "explanation": "When a contact is cheap and a saved churner valuable, it pays to cast a wider net, so the tuned threshold falls well below 0.5 (break-even for calibrated probabilities would be 0.2). The tuned model contacts more customers and earns more on the test set. Same model, same probabilities: only the policy changed, chosen from the economics on training data.",
+  "checks": {
+    "profit-fn": "profit returns 16·TP − 4·FP",
+    "tuned": "tuned is fitted and its threshold is below 0.5",
+    "default-profit": "profit_default is the test profit at threshold 0.5",
+    "tuned-profit": "profit_tuned is the tuned model's test profit, and it beats the default"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "tsx",
+  "code": "import { Image, ScrollView, Text, View } from 'react-native';\n\nexport function HikeSummary({ hike }) {\n  return (\n    <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>\n      <Image\n        source={{ uri: hike.photoUrl }}\n        style={{ width: '100%', height: 200 }}\n      />\n      <Text style={{ fontSize: 24, fontWeight: '700' }}>{hike.name}</Text>\n      <View style={{ flexDirection: 'row', gap: 12 }}>\n        <Text>{hike.distanceKm} km</Text>\n        {hike.elevationM} m up\n      </View>\n      {hike.photoCount && <Text>{hike.photoCount} photos</Text>}\n      <Text numberOfLines={3}>{hike.notes}</Text>\n    </ScrollView>\n  );\n}",
+  "bugLines": [
+    13,
+    15
+  ]
+}

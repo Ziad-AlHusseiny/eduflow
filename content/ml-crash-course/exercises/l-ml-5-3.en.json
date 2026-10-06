@@ -1,0 +1,36 @@
+{
+  "title": "Which tasks call for embeddings or an LLM?",
+  "prompt": "Cartwheel's data team has six requests. Select every one where **embeddings or an LLM** is a better first tool than a classic scikit-learn model on the existing tables.",
+  "hints": [
+    "Ask what the input is: a table of facts, or free text?",
+    "Ask what the output is: a calibrated number, or text or similarity?",
+    "Three requests involve free text; the other three are tabular or are experiments."
+  ],
+  "explanation": "Searching reviews by meaning, turning ticket text into a topic feature, and summarising reviews are all text problems: embeddings handle the first two cheaply, and an LLM is the natural tool for a written summary a person will read. Forecasting refunds and scoring churn are tabular predictions where scikit-learn gives cheap, testable, calibrated outputs. The coupon question is an experiment to analyse, not a prediction task at all.",
+  "options": {
+    "review-search": {
+      "text": "Let staff type \"arrived broken\" and find product reviews that describe damage in any wording.",
+      "why": "Good fit: embeddings + nearest-neighbour search match meaning, not exact words."
+    },
+    "refund-forecast": {
+      "text": "Forecast next month's refund amount from order and return tables.",
+      "why": "Tabular regression with numeric history; a scikit-learn model (with a time-based split) fits."
+    },
+    "ticket-topic-feature": {
+      "text": "Turn free-text support tickets into a 'complaint topic' column to test as a churn feature.",
+      "why": "Good fit: embed the tickets, cluster or classify them, then let cross-validation judge the new column."
+    },
+    "llm-churn-score": {
+      "text": "Ask a chat model to rate each customer's churn risk from their eight numeric columns.",
+      "why": "The labelled table already supports a cheaper, calibrated, testable model; the LLM adds cost and uncertainty."
+    },
+    "review-summary": {
+      "text": "Write a one-paragraph weekly summary of new product reviews for the merchandising team.",
+      "why": "Good fit: generating readable text from text is what LLMs do; a person reviews the result."
+    },
+    "coupon-ab": {
+      "text": "Decide whether the SPRING15 coupon increased order value, using a randomised test.",
+      "why": "That's experiment analysis (compare groups, check significance), not a modelling problem for an LLM."
+    }
+  }
+}

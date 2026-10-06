@@ -1,0 +1,28 @@
+{
+  "title": "Predict the monthly report",
+  "prompt": "Read this snippet from Pocket Budget's monthly report and predict exactly what it prints. Work through each category in order, tracking what the dictionary lookups return.\n\n```swift\nlet limits: [String: Decimal] = [\"Food\": 300, \"Transport\": 120]\nvar spent: [String: Decimal] = [\"Food\": 280]\nspent[\"Fun\", default: 0] += 15\n\nfor category in [\"Food\", \"Transport\", \"Fun\"] {\n    let used = spent[category] ?? 0\n    let limit = limits[category] ?? 0\n    switch used {\n    case 0:\n        print(\"\\(category): nothing yet\")\n    case let amount where amount > limit:\n        print(\"\\(category): over by \\(amount - limit)\")\n    default:\n        print(\"\\(category): ok\")\n    }\n}\n```",
+  "hints": [
+    "After line 3, `spent` has two keys. Which ones, and with what values?",
+    "A missing key with `?? 0` gives 0. That applies to both `spent` and `limits`.",
+    "\"Fun\" has no limit at all, so its limit is 0. Is 15 greater than 0?"
+  ],
+  "explanation": "`spent[\"Fun\", default: 0] += 15` adds a \"Fun\" entry, so `spent` is `[\"Food\": 280, \"Fun\": 15]`.\n\n- **Food**: used 280, limit 300. Not 0, not over the limit, so `default` prints \"Food: ok\".\n- **Transport**: no entry in `spent`, so used is 0 and the first case prints \"Transport: nothing yet\".\n- **Fun**: used 15, and there's no limit, so `limits[\"Fun\"] ?? 0` is 0. 15 > 0 prints \"Fun: over by 15\".\n\nThe last line is a real product question in disguise: should a category with no limit count as \"over\"? The code says yes because `?? 0` chose that default. Defaults are decisions.",
+  "options": {
+    "a": {
+      "text": "Food: ok / Transport: ok / Fun: ok",
+      "why": "Transport has nothing spent, so it matches `case 0` first. And Fun has no limit, which the code treats as 0."
+    },
+    "b": {
+      "text": "Food: ok / Transport: nothing yet / Fun: nothing yet",
+      "why": "The `default:` subscript on line 3 wrote 15 into \"Fun\", so it isn't 0 any more."
+    },
+    "c": {
+      "text": "Food: ok / Transport: nothing yet / Fun: over by 15",
+      "why": "Correct. Transport's missing key becomes 0, and Fun's missing limit becomes 0, so 15 counts as over."
+    },
+    "d": {
+      "text": "Food: over by 20 / Transport: nothing yet / Fun: over by 15",
+      "why": "280 is below Food's 300 limit, so the `where amount > limit` case doesn't match."
+    }
+  }
+}

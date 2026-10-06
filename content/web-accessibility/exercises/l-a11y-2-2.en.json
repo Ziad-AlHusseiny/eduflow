@@ -1,0 +1,17 @@
+{
+  "title": "Replace Ticketly's fake controls",
+  "prompt": "The Friday pass card has three controls, and none of them is the right element:\n\n- **Add to basket** is a `div` with `onclick`. It runs `addToBasket()`.\n- **Remove one** is an `<a href=\"#\">` that runs `removeFromBasket()`.\n- **See the Friday line-up** is a `span` that changes the URL hash to `#lineup`.\n\nRebuild each with the correct native element, keeping the visible text exactly as it is. The two actions must still update the basket count. Keep the class names if you like, so the styling stays.",
+  "hints": [
+    "Ask of each control: does it take the user somewhere, or does it do something here?",
+    "The two basket actions are buttons. Give them type=\"button\".",
+    "Navigating to #lineup is what a link with href=\"#lineup\" does on its own; it needs no JavaScript."
+  ],
+  "explanation": "Add to basket and Remove one change state on the page, so they are `<button type=\"button\">` elements: focusable, announced as buttons, and activated by Enter and Space with no extra code. See the Friday line-up moves the user to another place, so it is `<a href=\"#lineup\">`, which also works without JavaScript, shows the destination on hover and can be copied. Notice the solution has less code than the starter: the `return false` and the hash-setting script are gone, because the native elements already behave correctly.",
+  "checks": {
+    "add-is-button": "\"Add to basket\" is a real button",
+    "add-works": "Clicking \"Add to basket\" adds one ticket to the basket count",
+    "remove-is-button": "\"Remove one\" is a real button that lowers the count",
+    "lineup-is-link": "\"See the Friday line-up\" is a link with href ending in #lineup",
+    "no-fakes": "No div or span click handlers, and no links with href=\"#\" or no href, remain"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "react",
+  "starter": {
+    "jsx": "import { useEffect, useState } from 'react';\n\n// The page's own title, before the Watchlist changes it.\ndocument.title = 'Playground';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival', watched: true },\n  { id: 'p2', title: 'Past Lives', watched: false },\n  { id: 'd3', title: 'Dune: Part Two', watched: false },\n];\n\nfunction Watchlist() {\n  const [movies, setMovies] = useState(INITIAL);\n  const [left, setLeft] = useState(0);\n\n  // 1. This Effect only copies derived data into state. Replace it.\n  useEffect(() => {\n    setLeft(movies.filter((m) => !m.watched).length);\n  }, [movies]);\n\n  // 2. Sync document.title, and restore the old title on cleanup.\n\n  function toggle(id) {\n    setMovies(movies.map((m) => (m.id === id ? { ...m, watched: !m.watched } : m)));\n  }\n\n  return (\n    <section>\n      <p id=\"left\">{left} to watch</p>\n      <ul>\n        {movies.map((m) => (\n          <li key={m.id}>\n            {m.title}\n            <button onClick={() => toggle(m.id)}>{m.watched ? 'Watched' : 'Mark watched'}</button>\n          </li>\n        ))}\n      </ul>\n    </section>\n  );\n}\n\nexport default function App() {\n  const [show, setShow] = useState(true);\n  return (\n    <main>\n      <button id=\"hide\" onClick={() => setShow(false)}>Hide watchlist</button>\n      {show && <Watchlist />}\n    </main>\n  );\n}\n"
+  },
+  "solution": {
+    "jsx": "import { useEffect, useState } from 'react';\n\n// The page's own title, before the Watchlist changes it.\ndocument.title = 'Playground';\n\nconst INITIAL = [\n  { id: 'a1', title: 'Arrival', watched: true },\n  { id: 'p2', title: 'Past Lives', watched: false },\n  { id: 'd3', title: 'Dune: Part Two', watched: false },\n];\n\nfunction Watchlist() {\n  const [movies, setMovies] = useState(INITIAL);\n  const left = movies.filter((m) => !m.watched).length;\n\n  useEffect(() => {\n    const previous = document.title;\n    document.title = `${left} to watch · Watchlist`;\n    return () => {\n      document.title = previous;\n    };\n  }, [left]);\n\n  function toggle(id) {\n    setMovies(movies.map((m) => (m.id === id ? { ...m, watched: !m.watched } : m)));\n  }\n\n  return (\n    <section>\n      <p id=\"left\">{left} to watch</p>\n      <ul>\n        {movies.map((m) => (\n          <li key={m.id}>\n            {m.title}\n            <button onClick={() => toggle(m.id)}>{m.watched ? 'Watched' : 'Mark watched'}</button>\n          </li>\n        ))}\n      </ul>\n    </section>\n  );\n}\n\nexport default function App() {\n  const [show, setShow] = useState(true);\n  return (\n    <main>\n      <button id=\"hide\" onClick={() => setShow(false)}>Hide watchlist</button>\n      {show && <Watchlist />}\n    </main>\n  );\n}\n"
+  },
+  "checks": [
+    {
+      "id": "count-derived",
+      "test": "return text('#left') === '2 to watch';"
+    },
+    {
+      "id": "title-initial",
+      "test": "return document.title === '2 to watch · Watchlist';"
+    },
+    {
+      "id": "title-updates",
+      "test": "const toggle = (t) => $$('li').find((li) => text(li).startsWith(t)).querySelector('button'); await click(toggle('Past Lives')); return document.title === '1 to watch · Watchlist' && text('#left') === '1 to watch';"
+    },
+    {
+      "id": "title-cleanup",
+      "test": "await click('#hide'); return !$('#left') && document.title === 'Playground';"
+    }
+  ]
+}

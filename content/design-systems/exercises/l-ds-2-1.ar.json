@@ -1,0 +1,17 @@
+{
+  "title": "امنح الزر ثلاث طبقات",
+  "prompt": "الـ primitives جاهزة، لكن `.nw-button` يقفز مباشرة إلى `--nw-blue-600`، فلا يستطيع أي theme أن يغيّره. أضف الطبقتين الناقصتين:\n\n1. على `:root`، عرّف الـ semantic tokens المسمّاة `--nw-color-action-bg` و`--nw-color-action-text`، واجعلها تشير إلى الـ primitives المناسبة.\n2. على `.nw-button`، عرّف الـ component tokens المسمّاة `--nw-button-bg` و`--nw-button-text`، واجعلها تشير إلى الـ semantic tokens، واستخدمها في `background` و`color`.\n\nيجب أن يبدو الزر تمامًا كما هو الآن، ولا يجوز لأي قاعدة من قواعد `.nw-button` أن تذكر primitive من نوع `--nw-blue-…` أو `--nw-white`.",
+  "hints": [
+    "الـ semantic tokens تبدو هكذا داخل `:root`: `--nw-color-action-bg: var(--nw-blue-600);`.",
+    "الـ component tokens توضع داخل قاعدة `.nw-button { … }` لا على `:root`، حتى تُحسب قيمتها على كل زر.",
+    "ثم غيّر `background: var(--nw-blue-600)` إلى `background: var(--nw-button-bg)`، وافعل الشيء نفسه مع `color`."
+  ],
+  "explanation": "صار الزر يحسب `--nw-button-bg` ← `--nw-color-action-bg` ← `--nw-blue-600`. ولأن الـ component tokens معرّفة على `.nw-button`، يبحث كل زر عن الـ semantic token لدى أسلافه هو، فيغيّر تحديد `--nw-color-action-bg` على `.promo` لون زر الـ promo وحده. لو عرّفت `--nw-button-bg` على `:root` لحُسبت القيمة مرة واحدة عند الجذر، ولما فعل تخصيص الـ promo شيئًا.",
+  "checks": {
+    "still-blue": "ما زال الزر أزرق بنص أبيض",
+    "semantic": "يعرّف `:root` كلًّا من `--nw-color-action-bg` و`--nw-color-action-text`",
+    "component": "خلفية الزر تأتي من `--nw-button-bg`",
+    "follows-semantic": "تخصيص `--nw-color-action-bg` على `.promo` يغيّر لون زر الـ promo وحده",
+    "no-primitives": "لا توجد قاعدة من قواعد `.nw-button` تشير إلى primitive token"
+  }
+}

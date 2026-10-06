@@ -1,0 +1,15 @@
+{
+  "title": "Derive countries, check the tables",
+  "prompt": "Make Cartwheel's lookup tables precise without repeating yourself:\n\n1. Derive `Country` from the `COUNTRIES` array, so it is the union `'EG' | 'AE' | … | 'CA'`.\n2. Type `currencyByCountry` so it must have one entry per `Country`, and so `currencyByCountry.DE` has the exact type `'EUR'`.\n3. Type `coupons` so every value is checked against `Coupon` but the object only has the three keys you wrote, and `SPRING15` is known to be a percent coupon.\n\nKeep `isCountry` working at runtime for any string.",
+  "hints": [
+    "`as const` on the array keeps its literals; `(typeof COUNTRIES)[number]` turns them into a union.",
+    "Replace the annotations on the two objects with `satisfies`: `{ … } satisfies Record<Country, Currency>`. Because `Currency` is a union of literals, `satisfies` keeps `'EUR'` literal on its own; adding `as const` in front also makes the table readonly.",
+    "Once `COUNTRIES` is a readonly tuple, `includes` only accepts countries. Widen it for the check: `(COUNTRIES as readonly string[]).includes(value)`."
+  ],
+  "explanation": "`as const` freezes the array into a readonly tuple of literals, and indexing its type with `[number]` gives the union of its elements: one list drives both the runtime check and the type. The annotations on the two tables replaced their inferred types with general ones (any string key, `Currency` values, `Coupon` variants). `satisfies` keeps the check (a missing country, a misspelled `percentOff` or an unknown currency would still be flagged) while preserving exact keys and values. Because the contextual type `Currency` is a union of literals, `'EUR'` stays a literal instead of widening to `string`; `as const satisfies …` would additionally make the table readonly.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "is-country": "`isCountry` accepts Cartwheel countries and rejects others at runtime",
+    "currency": "`currencyFor` returns the right currency"
+  }
+}

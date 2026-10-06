@@ -1,0 +1,33 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv",
+    "orders.csv",
+    "products.csv",
+    "customers.csv"
+  ],
+  "starter": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nproducts = pd.read_csv(\"products.csv\")\ncustomers = pd.read_csv(\"customers.csv\")\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n\n# 1. sales: every item line with its order's columns, the product name (as \"product\"),\n#    and the customer's country. Use left merges with validate=\"many_to_one\".\n#    Then drop the lines of cancelled orders.\nsales = None\n\n# 2. Revenue by country, a Series sorted from highest to lowest\nrevenue_by_country = None\n",
+  "solution": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nproducts = pd.read_csv(\"products.csv\")\ncustomers = pd.read_csv(\"customers.csv\")\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\n\nsales = (\n    items.merge(orders, on=\"order_id\", how=\"left\", validate=\"many_to_one\")\n    .merge(products[[\"product_id\", \"name\"]].rename(columns={\"name\": \"product\"}),\n           on=\"product_id\", how=\"left\", validate=\"many_to_one\")\n    .merge(customers[[\"customer_id\", \"country\"]], on=\"customer_id\", how=\"left\", validate=\"many_to_one\")\n)\nprint(len(sales))\nsales = sales[sales[\"status\"] != \"cancelled\"]\n\nrevenue_by_country = sales.groupby(\"country\")[\"revenue\"].sum().sort_values(ascending=False)\nprint(revenue_by_country.round(2))\n",
+  "checks": [
+    {
+      "id": "columns",
+      "test": "isinstance(sales, pd.DataFrame) and {'revenue', 'order_date', 'status', 'product', 'country'} <= set(sales.columns)"
+    },
+    {
+      "id": "no-cancelled",
+      "test": "(sales['status'] != 'cancelled').all()"
+    },
+    {
+      "id": "row-count",
+      "test": "len(sales) == int((items['order_id'].map(orders.set_index('order_id')['status']) != 'cancelled').sum())"
+    },
+    {
+      "id": "revenue-total",
+      "test": "round(float(sales['revenue'].sum()), 2) == 446666.32"
+    },
+    {
+      "id": "by-country",
+      "test": "isinstance(revenue_by_country, pd.Series) and revenue_by_country.index[0] == 'United Arab Emirates' and abs(float(revenue_by_country.iloc[0]) - 74531.8) < 0.01 and revenue_by_country.is_monotonic_decreasing"
+    }
+  ]
+}

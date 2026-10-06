@@ -1,0 +1,16 @@
+{
+  "title": "A pipeline that survives real data",
+  "prompt": "Make the starter pipeline handle gaps and surprises.\n\n1. `preprocess`: scale the `numeric` columns; for `avg_satisfaction`, impute with the median **and add a missing indicator**, then scale; one-hot encode `segment` so that unseen categories are ignored instead of raising an error.\n2. `pipe`: steps named `\"prep\"` and `\"model\"` (a `LogisticRegression`), fitted on the training data. It should produce 13 model inputs.\n3. `cv_auc`: mean ROC AUC from `cross_val_score` with the provided `cv`.\n4. `new_prob`: the churn probability for `new_customer`, who comes from an unseen country, an unseen segment and has no satisfaction score.",
+  "hints": [
+    "`StandardScaler` alone can't handle NaN. Chain `make_pipeline(SimpleImputer(strategy=\"median\", add_indicator=True), StandardScaler())`.",
+    "`OneHotEncoder(handle_unknown=\"ignore\")`. The country column isn't listed in the transformer, so it's dropped.",
+    "Don't forget `pipe.fit(X_train, y_train)`; then `pipe.predict_proba(new_customer)[0, 1]`."
+  ],
+  "explanation": "Eight scaled numeric columns, the imputed satisfaction score plus its missing indicator, and three segment columns make 13 inputs. Columns a `ColumnTransformer` doesn't mention (here `country`) are dropped by default (`remainder=\"drop\"`). The new customer gets all-zero segment columns and a median satisfaction with the indicator set to 1, so the model still produces a probability. Without `handle_unknown=\"ignore\"` and the imputer, this one customer would crash a production service.",
+  "checks": {
+    "steps": "pipe has steps named prep and model",
+    "fitted": "The fitted preprocessor produces 13 inputs",
+    "cv-auc": "cv_auc is the mean cross-validated ROC AUC",
+    "unseen": "new_prob is a valid probability for the unseen customer"
+  }
+}

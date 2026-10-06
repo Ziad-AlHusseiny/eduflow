@@ -1,0 +1,1 @@
+{ "kind": "order", "items": ["build", "bucket", "upload", "cert", "distribution", "policy", "dns", "verify"] }

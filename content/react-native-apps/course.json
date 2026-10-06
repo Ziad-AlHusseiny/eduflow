@@ -1,0 +1,11 @@
+{
+  "id": "react-native-apps",
+  "project": "Trailhead, a hiking-log app built with Expo: a list of past hikes, trail detail screens, an add-hike form, GPS tracking, trail photos, reminders, offline storage, and a real release through EAS.",
+  "sections": [
+    { "id": "s-rn-1", "lessons": [ { "id": "l-rn-1-1", "minutes": 12 }, { "id": "l-rn-1-2", "minutes": 17 }, { "id": "l-rn-1-3", "minutes": 20 }, { "id": "l-rn-1-4", "minutes": 19 } ] },
+    { "id": "s-rn-2", "lessons": [ { "id": "l-rn-2-1", "minutes": 18 }, { "id": "l-rn-2-2", "minutes": 20 }, { "id": "l-rn-2-3", "minutes": 19 }, { "id": "l-rn-2-4", "minutes": 22 } ] },
+    { "id": "s-rn-3", "lessons": [ { "id": "l-rn-3-1", "minutes": 18 }, { "id": "l-rn-3-2", "minutes": 19 }, { "id": "l-rn-3-3", "minutes": 19 }, { "id": "l-rn-3-4", "minutes": 20 }, { "id": "l-rn-3-5", "minutes": 17 } ] },
+    { "id": "s-rn-4", "lessons": [ { "id": "l-rn-4-1", "minutes": 20 }, { "id": "l-rn-4-2", "minutes": 21 }, { "id": "l-rn-4-3", "minutes": 17 }, { "id": "l-rn-4-4", "minutes": 22 } ] },
+    { "id": "s-rn-5", "lessons": [ { "id": "l-rn-5-1", "minutes": 18 }, { "id": "l-rn-5-2", "minutes": 18 }, { "id": "l-rn-5-3", "minutes": 18 }, { "id": "l-rn-5-4", "minutes": 16 } ] }
+  ]
+}

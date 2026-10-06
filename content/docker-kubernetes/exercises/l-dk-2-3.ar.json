@@ -1,0 +1,20 @@
+{
+  "title": "اشحن الإصدار 1.4.0",
+  "prompt": "رتّب خطوات إطلاق notes-api 1.4.0، من الكود المصدري إلى نشر متحقَّق منه يشغّل فيه كل node البايتات نفسها تمامًا.",
+  "hints": [
+    "لا تستطيع اختبار image غير موجودة، ولا تستطيع قراءة digest لم يره الـ registry بعد.",
+    "يجب أن يشير الـ manifest إلى الـ digest، لذا يجب أن تعرف الـ digest قبل تعديله.",
+    "التحقّق يأتي في النهاية، بعد أن يحصل الـ cluster على المواصفات الجديدة."
+  ],
+  "explanation": "ابنِ الـ image، واختبرها، وادفعها مع tag الإصدار وtag الـ SHA، واقرأ الـ digest الذي عيّنه الـ registry، واكتب هذا الـ digest في الـ manifest الخاص بالـ Deployment، وطبّقه، ثم تحقّق من الـ rollout. الاختبار قبل الدفع يُبقي البناءات المعطوبة خارج الـ registry، والنشر بالـ digest يعني أن ما اختبرته هو بالضبط ما يعمل.",
+  "items": {
+    "build": "`docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/skylane/notes-api:1.4.0 -t ghcr.io/skylane/notes-api:sha-9f2c1ab .`",
+    "test": "شغّل مجموعة الاختبارات وفحصًا أمنيًا على الـ image المبنية",
+    "push": "ادفع كلا الـ tags إلى `ghcr.io`",
+    "digest": "الأمر `docker buildx imagetools inspect ghcr.io/skylane/notes-api:1.4.0` لقراءة الـ digest",
+    "manifest": "اضبط `image: ghcr.io/skylane/notes-api:1.4.0@sha256:…` في الـ manifest الخاص بالـ Deployment",
+    "apply": "`kubectl apply -f k8s/`",
+    "verify": "`kubectl rollout status deployment/notes-api`"
+  },
+  "checks": {}
+}

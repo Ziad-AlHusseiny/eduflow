@@ -1,0 +1,10 @@
+{
+  "title": "Two Compose bugs, one connection",
+  "prompt": "With this `compose.yaml`, the API logs `ECONNREFUSED 127.0.0.1:5432`, and a colleague on the office Wi-Fi just connected to your database with the password `notes`. Select the **two** lines responsible.",
+  "hints": [
+    "Inside the `api` container, what does `localhost` refer to?",
+    "Does the API need a published port to reach the database over the Compose network?"
+  ],
+  "explanation": "Line 7 points the API at `localhost`, which inside its container is the API itself. Use the service name: `postgres://notes:notes@db:5432/notes`.\n\nLine 11 publishes Postgres on every host interface, so anyone on your network can reach it. The API doesn't need it; containers talk over the project network. Remove the `ports:` block, or bind to loopback if you need a local SQL client:\n\n```yaml\n    ports:\n      - \"127.0.0.1:5432:5432\"\n```",
+  "checks": {}
+}

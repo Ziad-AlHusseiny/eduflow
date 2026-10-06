@@ -1,0 +1,15 @@
+{
+  "title": "Pick the next team model",
+  "prompt": "Year two at Northwind. Tokens and 14 core components are stable. The five-person core team has a nine-week backlog of component requests, and three product teams have each built a solid date picker on their own. Leadership asks you what should change. Pick the best move.",
+  "hints": [
+    "The core team is now the bottleneck, and product teams have proven they can build good components.",
+    "Look for the option that keeps someone accountable for quality while adding capacity."
+  ],
+  "explanation": "This is the classic moment to move from centralized to hybrid. The core keeps ownership of tokens, reviews, documentation and releases, which protects quality and coherence. Product teams add capacity by contributing through a defined process, and the best of the three date pickers becomes the system's version instead of a fourth one being built.",
+  "options": {
+    "grow-core": { "text": "Double the core team so it can build every requested component itself.", "why": "More people shortens the queue briefly, but a central team still can't match the context of 40 product teams, and headcount rarely doubles on request." },
+    "hybrid": { "text": "Keep the core for tokens, reviews and releases, and open a contribution process so product teams can upstream components like the date picker.", "why": "Correct. It adds capacity where the knowledge already is, while the core keeps the system coherent." },
+    "dissolve": { "text": "Move the core engineers into product teams and let everyone contribute to the system part-time.", "why": "This repeats the 2021 failure: without dedicated owners, reviews and releases lose to product deadlines." },
+    "freeze": { "text": "Freeze new component requests for a year so the core can polish what exists.", "why": "Teams keep building what they need anyway, so a freeze produces more one-off components and less adoption." }
+  }
+}

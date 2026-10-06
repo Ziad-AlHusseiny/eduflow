@@ -1,0 +1,10 @@
+{
+  "kind": "spot-bug",
+  "language": "text",
+  "code": "Components page\n  Section: Buttons\n    Button               component set   Type: Primary | Secondary | Ghost\n                                         State: Default | Pressed | Disabled\n                                         Label: text   Show icon: boolean   Icon: instance swap\n    Button 2             component       copy of Button/Primary with an icon\n  Section: Controls\n    Check button         component set   State: To do | Done | Missed\n    Chip                 component set   Selected: true | false   Label: text\n    Toggle               component set   State: Teal | Grey\n  Section: Rows\n    Habit row            component set   State: To do | Done | Missed\n                                         Name: text   Show streak: boolean\n      Row background     fill: #FFFFFF\n    Text field           component set   State: Default | Focused | Error | Disabled",
+  "bugLines": [
+    6,
+    10,
+    14
+  ]
+}

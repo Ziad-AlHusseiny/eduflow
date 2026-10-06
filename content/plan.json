@@ -1,0 +1,29 @@
+{
+  "_comment": "Authoritative course plan. sections/lessons/minutes are exact targets (PRD §8 for the first 12). engine = the hands-on practice type the course uses.",
+  "courses": [
+    { "id": "react-fundamentals", "abbrev": "rf", "title": "React Fundamentals", "sections": 4, "lessons": 18, "minutes": 320, "engines": ["web:react", "web:js"], "level": "beginner" },
+    { "id": "advanced-typescript", "abbrev": "at", "title": "Advanced TypeScript Patterns", "sections": 5, "lessons": 22, "minutes": 405, "engines": ["web:ts"], "level": "advanced" },
+    { "id": "css-mastery", "abbrev": "css", "title": "Modern CSS Mastery", "sections": 4, "lessons": 20, "minutes": 350, "engines": ["web:dom"], "level": "intermediate" },
+    { "id": "python-data-analysis", "abbrev": "pda", "title": "Python for Data Analysis", "sections": 5, "lessons": 24, "minutes": 430, "engines": ["python"], "level": "beginner" },
+    { "id": "sql-for-analysts", "abbrev": "sql", "title": "SQL for Analysts", "sections": 4, "lessons": 16, "minutes": 270, "engines": ["sql"], "level": "intermediate" },
+    { "id": "figma-ui-design", "abbrev": "fig", "title": "UI Design with Figma", "sections": 4, "lessons": 17, "minutes": 295, "engines": ["guided"], "level": "beginner" },
+    { "id": "design-systems", "abbrev": "ds", "title": "Design Systems That Scale", "sections": 5, "lessons": 19, "minutes": 365, "engines": ["guided", "web:dom"], "level": "advanced" },
+    { "id": "react-native-apps", "abbrev": "rn", "title": "Build Mobile Apps with React Native", "sections": 5, "lessons": 21, "minutes": 390, "engines": ["guided", "web:js"], "level": "intermediate" },
+    { "id": "swift-essentials", "abbrev": "sw", "title": "Swift Essentials for iOS", "sections": 4, "lessons": 15, "minutes": 255, "engines": ["guided"], "level": "beginner" },
+    { "id": "docker-kubernetes", "abbrev": "dk", "title": "Docker & Kubernetes: Ship with Confidence", "sections": 5, "lessons": 20, "minutes": 380, "engines": ["guided"], "level": "intermediate" },
+    { "id": "aws-cloud-foundations", "abbrev": "aws", "title": "AWS Cloud Foundations", "sections": 4, "lessons": 14, "minutes": 230, "engines": ["guided"], "level": "beginner" },
+    { "id": "ml-crash-course", "abbrev": "ml", "title": "Machine Learning Crash Course", "sections": 5, "lessons": 23, "minutes": 445, "engines": ["python"], "level": "intermediate" },
+    { "id": "javascript-fundamentals", "abbrev": "js", "title": "JavaScript Fundamentals", "sections": 5, "lessons": 22, "minutes": 370, "engines": ["web:js", "web:dom"], "level": "beginner" },
+    { "id": "git-github", "abbrev": "git", "title": "Git & GitHub", "sections": 4, "lessons": 16, "minutes": 250, "engines": ["guided"], "level": "beginner" },
+    { "id": "web-accessibility", "abbrev": "a11y", "title": "Web Accessibility in Practice", "sections": 5, "lessons": 18, "minutes": 315, "engines": ["web:dom", "guided"], "level": "intermediate" },
+    { "id": "testing-javascript", "abbrev": "tj", "title": "Testing JavaScript Apps", "sections": 5, "lessons": 18, "minutes": 330, "engines": ["web:test", "web:js"], "level": "intermediate" }
+  ],
+  "canonical": {
+    "react-fundamentals": [
+      { "title": "Getting Started", "lessons": [["Why React in 2026", 9], ["Setting Up with Vite", 14], ["Your First Component", 18], ["JSX Rules of the Road", 17]] },
+      { "title": "Components & Props", "lessons": [["Thinking in Components", 16], ["Props In Depth", 21], ["Composition Patterns", 19], ["Conditional Rendering", 14], ["Rendering Lists with Keys", 22]] },
+      { "title": "State & Events", "lessons": [["useState Fundamentals", 20], ["Handling Events", 15], ["Forms & Controlled Inputs", 24], ["Lifting State Up", 18], ["useEffect Essentials", 19]] },
+      { "title": "Shipping a Project", "lessons": [["Building the Watchlist App", 26], ["Styling with Tailwind", 17], ["Deploying to Vercel", 12], ["Where to Go Next", 19]] }
+    ]
+  }
+}

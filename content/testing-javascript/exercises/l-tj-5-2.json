@@ -1,0 +1,43 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "function splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n\n// Computes each person's balance in cents from a list of expenses.\n// Positive: the group owes them. Negative: they owe the group.\n// Each expense is { paidBy, amountCents, splitAmong: [names] }.\n// - The payer is credited the full amount.\n// - Each person in splitAmong is debited their share from splitEvenly\n//   (leftover cents go to the first names in the list).\n// - Balances accumulate across expenses and always add up to zero.\nfunction computeBalances(expenses) {\n  const balances = {};\n  for (const { paidBy, amountCents, splitAmong } of expenses) {\n    const shares = splitEvenly(amountCents, splitAmong.length);\n    balances[paidBy] = (balances[paidBy] ?? 0) + amountCents;\n    splitAmong.forEach((name, i) => {\n      balances[name] = (balances[name] ?? 0) - shares[i];\n    });\n  }\n  return balances;\n}\n",
+  "mutants": [
+    {
+      "id": "payer-debited",
+      "code": "function splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n\n// Computes each person's balance in cents from a list of expenses.\n// Positive: the group owes them. Negative: they owe the group.\n// Each expense is { paidBy, amountCents, splitAmong: [names] }.\n// - The payer is credited the full amount.\n// - Each person in splitAmong is debited their share from splitEvenly\n//   (leftover cents go to the first names in the list).\n// - Balances accumulate across expenses and always add up to zero.\nfunction computeBalances(expenses) {\n  const balances = {};\n  for (const { paidBy, amountCents, splitAmong } of expenses) {\n    const shares = splitEvenly(amountCents, splitAmong.length);\n    balances[paidBy] = (balances[paidBy] ?? 0) - amountCents;\n    splitAmong.forEach((name, i) => {\n      balances[name] = (balances[name] ?? 0) - shares[i];\n    });\n  }\n  return balances;\n}\n"
+    },
+    {
+      "id": "floored-shares",
+      "code": "function splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n\n// Computes each person's balance in cents from a list of expenses.\n// Positive: the group owes them. Negative: they owe the group.\n// Each expense is { paidBy, amountCents, splitAmong: [names] }.\n// - The payer is credited the full amount.\n// - Each person in splitAmong is debited their share from splitEvenly\n//   (leftover cents go to the first names in the list).\n// - Balances accumulate across expenses and always add up to zero.\nfunction computeBalances(expenses) {\n  const balances = {};\n  for (const { paidBy, amountCents, splitAmong } of expenses) {\n    const shares = splitEvenly(amountCents, splitAmong.length);\n    balances[paidBy] = (balances[paidBy] ?? 0) + amountCents;\n    splitAmong.forEach((name, i) => {\n      balances[name] = (balances[name] ?? 0) - Math.floor(amountCents / splitAmong.length);\n    });\n  }\n  return balances;\n}\n"
+    },
+    {
+      "id": "overwrites-payer",
+      "code": "function splitEvenly(totalCents, people) {\n  if (!Number.isInteger(people) || people < 1) {\n    throw new RangeError('people must be a positive integer');\n  }\n  const base = Math.floor(totalCents / people);\n  const remainder = totalCents % people;\n  return Array.from({ length: people }, (_, i) => (i < remainder ? base + 1 : base));\n}\n\n// Computes each person's balance in cents from a list of expenses.\n// Positive: the group owes them. Negative: they owe the group.\n// Each expense is { paidBy, amountCents, splitAmong: [names] }.\n// - The payer is credited the full amount.\n// - Each person in splitAmong is debited their share from splitEvenly\n//   (leftover cents go to the first names in the list).\n// - Balances accumulate across expenses and always add up to zero.\nfunction computeBalances(expenses) {\n  const balances = {};\n  for (const { paidBy, amountCents, splitAmong } of expenses) {\n    const shares = splitEvenly(amountCents, splitAmong.length);\n    balances[paidBy] = amountCents;\n    splitAmong.forEach((name, i) => {\n      balances[name] = (balances[name] ?? 0) - shares[i];\n    });\n  }\n  return balances;\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "// This suite gives computeBalances 100% line coverage.\n// It also catches almost nothing. Strengthen it.\ndescribe('computeBalances', () => {\n  test('computes balances', () => {\n    const balances = computeBalances([\n      { paidBy: 'Ana', amountCents: 3000, splitAmong: ['Ana', 'Ben', 'Cai'] },\n    ]);\n\n    expect(Object.keys(balances)).toHaveLength(3);\n  });\n});\n"
+  },
+  "solution": {
+    "js": "const sum = (balances) => Object.values(balances).reduce((a, b) => a + b, 0);\n\ndescribe('computeBalances', () => {\n  test('credits the payer and debits everyone their share', () => {\n    const balances = computeBalances([\n      { paidBy: 'Ana', amountCents: 3000, splitAmong: ['Ana', 'Ben', 'Cai'] },\n    ]);\n\n    expect(balances).toEqual({ Ana: 2000, Ben: -1000, Cai: -1000 });\n  });\n\n  test('balances add up to zero when the bill does not divide evenly', () => {\n    const balances = computeBalances([\n      { paidBy: 'Ana', amountCents: 1000, splitAmong: ['Ana', 'Ben', 'Cai'] },\n    ]);\n\n    expect(balances).toEqual({ Ana: 666, Ben: -333, Cai: -333 });\n    expect(sum(balances)).toBe(0);\n  });\n\n  test('accumulates several expenses paid by the same person', () => {\n    const balances = computeBalances([\n      { paidBy: 'Ana', amountCents: 2000, splitAmong: ['Ana', 'Ben'] },\n      { paidBy: 'Ana', amountCents: 1000, splitAmong: ['Ana', 'Ben'] },\n    ]);\n\n    expect(balances).toEqual({ Ana: 1500, Ben: -1500 });\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-payer-debited",
+      "suite": "payer-debited"
+    },
+    {
+      "id": "catches-floored-shares",
+      "suite": "floored-shares"
+    },
+    {
+      "id": "catches-overwrites-payer",
+      "suite": "overwrites-payer"
+    }
+  ]
+}

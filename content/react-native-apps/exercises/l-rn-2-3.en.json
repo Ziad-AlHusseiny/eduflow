@@ -1,0 +1,17 @@
+{
+  "title": "Fit the photo grid to any screen",
+  "prompt": "Trailhead's photo grid calls `gridLayout(width)` with the value from `useWindowDimensions()`. Fix `gridLayout(screenWidth, options)` so it returns `{ columns, cardWidth }` where:\n\n- the screen has `padding` on the left **and** right, and cards have `gap` points between them (no gap at the outer edges),\n- `columns` is the **largest** number of cards that are each at least `minCardWidth` wide, and never less than 1,\n- `cardWidth` is the width each card gets when the leftover space is shared equally, rounded **down** to a whole point.\n\nDefaults: `minCardWidth = 160`, `gap = 12`, `padding = 16`. For example, a 390-point iPhone gives `{ columns: 2, cardWidth: 173 }`.",
+  "hints": [
+    "Start with the space you can actually use: `screenWidth - padding * 2`.",
+    "n cards need n widths and n - 1 gaps. So n cards fit when `n * minCardWidth + (n - 1) * gap <= available`, which rearranges to `n <= (available + gap) / (minCardWidth + gap)`.",
+    "Then `cardWidth = Math.floor((available - gap * (columns - 1)) / columns)`, and wrap the column count in `Math.max(1, \u2026)`."
+  ],
+  "explanation": "The starter ignored padding and gaps, so cards overflowed the screen, and it could return zero columns on a narrow screen (dividing by zero gives `Infinity`). The fix starts from the usable width, counts how many card-plus-gap units fit (with one fewer gap than cards), guarantees at least one column, and shares the leftover width equally. Because it's a pure function of the width, the grid updates correctly on rotation and on foldables as soon as `useWindowDimensions` reports a new size.",
+  "checks": {
+    "phone": "A 390-point phone gets 2 columns of 173",
+    "small-phone": "A 320-point phone gets 1 column of 288",
+    "tablet": "An 820-point tablet gets 4 columns of 188",
+    "options": "Custom minCardWidth, gap and padding are respected",
+    "never-zero": "A screen narrower than one card still gets 1 column"
+  }
+}

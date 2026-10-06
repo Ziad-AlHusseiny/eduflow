@@ -1,0 +1,15 @@
+{
+  "title": "Keep the caller's literals",
+  "prompt": "Three definition helpers in Cartwheel's checkout lose the precise types their callers write. Make the type tests pass without changing the calls (no `as const` at the call sites):\n\n- `defineFlow(steps)` returns the steps as a readonly tuple of literal statuses, and still rejects unknown statuses.\n- `oneOf(values)` returns a type guard: after `if (isChannel(raw))`, `raw` is narrowed to the literal values passed in.\n- `defineFlags(flags)` keeps each flag's exact shape (including the `countries` tuple) while still checking every flag against `Flag`.\n\nAll three return their argument unchanged at runtime (`oneOf` returns a checking function).",
+  "hints": [
+    "A `const` type parameter infers the argument as if the caller had written `as const`.",
+    "Give each function a type parameter whose constraint is the old parameter type, for example `<const T extends readonly OrderStatus[]>(steps: T): T`.",
+    "For `oneOf`, the returned function's return type is a type predicate: `(input: string): input is T[number] => …`. Inside, widen the tuple for `includes`: `(values as readonly string[]).includes(input)`."
+  ],
+  "explanation": "Without a type parameter, each function's return type is just its parameter annotation, so the literals the caller wrote are gone. A `const` type parameter captures the argument with `as const` semantics: tuples stay ordered and readonly, strings stay literal. The constraint (`extends readonly OrderStatus[]`, `extends Record<string, Flag>`) still validates the argument, so `'refunded'` and a flag without `rollout` are rejected. In `oneOf`, `T[number]` is the union of the tuple's elements, and the type predicate hands that union to the caller's `if`.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "one-of": "`oneOf` returns a function that accepts only the listed values",
+    "identity": "`defineFlow` and `defineFlags` return their argument unchanged"
+  }
+}

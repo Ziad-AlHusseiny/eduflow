@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));\n\n// Run task(attempt). Retry failures with a doubling delay; give up fast on errors\n// that can't succeed later. `sleep` is injectable so tests don't really wait.\nasync function withRetry(task, { retries = 2, baseDelayMs = 1000, sleep = wait } = {}) {\n  return task(1);\n}\n\n// Demo: fails twice with a 503, then succeeds.\nlet calls = 0;\nconst flaky = async () => {\n  calls += 1;\n  if (calls < 3) throw Object.assign(new Error('Service unavailable'), { status: 503 });\n  return ['Ridge Loop', 'Lake Trail'];\n};\nwithRetry(flaky, { baseDelayMs: 10 }).then((v) => console.log('got', v, 'after', calls, 'calls'), (e) => console.log('failed:', e.message));\n"
+  },
+  "solution": {
+    "js": "const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));\n\nfunction isRetryable(error) {\n  const status = error && error.status;\n  if (typeof status !== 'number') return true; // network failure, timeout\n  if (status === 408 || status === 429) return true;\n  return status < 400 || status >= 500;\n}\n\nasync function withRetry(task, { retries = 2, baseDelayMs = 1000, sleep = wait } = {}) {\n  for (let attempt = 1; ; attempt++) {\n    try {\n      return await task(attempt);\n    } catch (error) {\n      if (attempt > retries || !isRetryable(error)) throw error;\n      await sleep(baseDelayMs * 2 ** (attempt - 1));\n    }\n  }\n}\n\nlet calls = 0;\nconst flaky = async () => {\n  calls += 1;\n  if (calls < 3) throw Object.assign(new Error('Service unavailable'), { status: 503 });\n  return ['Ridge Loop', 'Lake Trail'];\n};\nwithRetry(flaky, { baseDelayMs: 10 }).then((v) => console.log('got', v, 'after', calls, 'calls'), (e) => console.log('failed:', e.message));\n"
+  },
+  "checks": [
+    {
+      "id": "returns-value",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); const v = await withRetry(async () => 'ok', { sleep }); return v === 'ok' && delays.length === 0;"
+    },
+    {
+      "id": "retries-then-succeeds",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); let n = 0; const v = await withRetry(async (attempt) => { n++; if (attempt < 3) throw fail(503); return 'done'; }, { retries: 2, baseDelayMs: 100, sleep }); return v === 'done' && n === 3;"
+    },
+    {
+      "id": "backoff",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); let n = 0; try { await withRetry(async () => { n++; throw new Error('offline'); }, { retries: 3, baseDelayMs: 100, sleep }); } catch {} return n === 4 && delays.join() === '100,200,400';"
+    },
+    {
+      "id": "gives-up",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); let caught; try { await withRetry(async () => { throw fail(500); }, { retries: 1, baseDelayMs: 1, sleep }); } catch (e) { caught = e; } return caught instanceof Error && caught.status === 500;"
+    },
+    {
+      "id": "no-retry-4xx",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); let n = 0; let caught; try { await withRetry(async () => { n++; throw fail(404); }, { retries: 3, sleep }); } catch (e) { caught = e; } return n === 1 && caught?.status === 404 && delays.length === 0;"
+    },
+    {
+      "id": "retry-429",
+      "test": "const delays = []; const sleep = async (ms) => { delays.push(ms); }; const fail = (status) => Object.assign(new Error('x' + status), { status }); let n = 0; const v = await withRetry(async () => { n++; if (n === 1) throw fail(429); if (n === 2) throw fail(408); return 'ok'; }, { retries: 2, baseDelayMs: 50, sleep }); return v === 'ok' && n === 3 && delays.join() === '50,100';"
+    }
+  ]
+}

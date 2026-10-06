@@ -1,0 +1,26 @@
+{
+  "kind": "python",
+  "files": [
+    "churn.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\nfrom sklearn.cluster import KMeans\nfrom sklearn.datasets import load_wine\nfrom sklearn.decomposition import PCA\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nbehaviour = [\"orders\", \"total_spent\", \"avg_order_value\", \"days_since_last_order\",\n             \"tenure_days\", \"mobile_share\"]\n\n# 1. Segment customers into 4 clusters: StandardScaler, then KMeans(n_clusters=4, n_init=10, random_state=42)\nsegments = make_pipeline(KMeans(n_clusters=4, n_init=10, random_state=42))\nlabels = segments.fit_predict(churn[behaviour])\n\n# 2. Churn rate per cluster (a Series indexed by cluster label), and the highest rate\nchurn_by_cluster = None\nhighest_rate = None\n\n# 3. PCA on the wine data (13 scaled features): share of variance kept by the first 2 components\nX_wine, y_wine = load_wine(return_X_y=True)\nwine_var_2 = None\n",
+  "solution": "import numpy as np\nimport pandas as pd\nfrom sklearn.cluster import KMeans\nfrom sklearn.datasets import load_wine\nfrom sklearn.decomposition import PCA\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn.csv\")\nbehaviour = [\"orders\", \"total_spent\", \"avg_order_value\", \"days_since_last_order\",\n             \"tenure_days\", \"mobile_share\"]\n\nsegments = make_pipeline(StandardScaler(), KMeans(n_clusters=4, n_init=10, random_state=42))\nlabels = segments.fit_predict(churn[behaviour])\n\nchurn_by_cluster = churn.groupby(labels)[\"churned\"].mean()\nhighest_rate = churn_by_cluster.max()\n\nX_wine, y_wine = load_wine(return_X_y=True)\npca = make_pipeline(StandardScaler(), PCA(n_components=2)).fit(X_wine)\nwine_var_2 = pca[-1].explained_variance_ratio_.sum()\nprint(churn_by_cluster.round(2).to_dict(), round(wine_var_2, 3))\n",
+  "checks": [
+    {
+      "id": "scaled",
+      "test": "[type(s).__name__ for s in segments] == ['StandardScaler', 'KMeans']"
+    },
+    {
+      "id": "clusters",
+      "test": "labels is not None and len(labels) == 398 and len(set(labels)) == 4 and sorted(__import__('collections').Counter(labels).values()) == sorted(__import__('collections').Counter(__import__('sklearn.pipeline', fromlist=['x']).make_pipeline(__import__('sklearn.preprocessing', fromlist=['x']).StandardScaler(), __import__('sklearn.cluster', fromlist=['x']).KMeans(n_clusters=4, n_init=10, random_state=42)).fit_predict(churn[behaviour])).values()) and min(__import__('collections').Counter(labels).values()) > 20"
+    },
+    {
+      "id": "churn-rates",
+      "test": "churn_by_cluster is not None and len(churn_by_cluster) == 4 and sorted(float(v) for v in churn_by_cluster) == sorted(float(v) for v in churn.groupby(labels)['churned'].mean()) and abs(float(highest_rate) - float(max(churn_by_cluster))) < 1e-9 and 0.7 < float(highest_rate) < 0.9"
+    },
+    {
+      "id": "pca",
+      "test": "wine_var_2 is not None and abs(float(wine_var_2) - 0.554) < 0.005"
+    }
+  ]
+}

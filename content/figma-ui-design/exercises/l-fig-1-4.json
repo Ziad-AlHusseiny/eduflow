@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "text",
+  "code": "Today                    Frame 393×852\n  Header                 Frame   constraints: Left and right, Top\n    Title \"Today\"        Text    resizing: Auto width\n    Date                 Text    resizing: Auto width\n  Habit list             Frame   constraints: Left and right, Top and bottom\n    Habit row            Frame   constraints: Left and right, Top\n      Icon               Frame   constraints: Left, Center\n      Habit name         Text    resizing: Fixed size\n      Streak             Text    resizing: Auto width\n      Check button       Ellipse constraints: Right, Center\n  Add button             Frame   constraints: Left, Top\n  Tab bar                Frame   constraints: Left and right, Bottom",
+  "bugLines": [
+    8,
+    11
+  ]
+}

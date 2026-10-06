@@ -1,0 +1,1 @@
+{ "kind": "choice", "multiple": true, "options": ["rsvps", "reports", "ticket-lookup", "relational-admin", "rate-limit"], "correct": ["rsvps", "ticket-lookup", "rate-limit"] }

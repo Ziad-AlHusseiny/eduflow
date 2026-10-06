@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const amounts = [450, -300, 1220, 270, 899];\n\n// Total of all spending; negative amounts are refunds, skip them\nfunction totalSpent(amounts) {\n  let total = 0;\n  // loop here\n  return total;\n}\n\n// How many amounts are at least `minimum`\nfunction countAtLeast(amounts, minimum) {\n  return 0;\n}\n\n// The index of the expense at which the running total of spending\n// first goes over `budget`, or -1 if it never does (skip refunds here too)\nfunction firstOverBudget(amounts, budget) {\n  return -1;\n}\n\nconsole.log(totalSpent(amounts), countAtLeast(amounts, 500), firstOverBudget(amounts, 2000));\n"
+  },
+  "solution": {
+    "js": "const amounts = [450, -300, 1220, 270, 899];\n\nfunction totalSpent(amounts) {\n  let total = 0;\n  for (const amount of amounts) {\n    if (amount < 0) {\n      continue;\n    }\n    total += amount;\n  }\n  return total;\n}\n\nfunction countAtLeast(amounts, minimum) {\n  let count = 0;\n  for (const amount of amounts) {\n    if (amount >= minimum) {\n      count++;\n    }\n  }\n  return count;\n}\n\nfunction firstOverBudget(amounts, budget) {\n  let running = 0;\n  for (let i = 0; i < amounts.length; i++) {\n    if (amounts[i] < 0) {\n      continue;\n    }\n    running += amounts[i];\n    if (running > budget) {\n      return i;\n    }\n  }\n  return -1;\n}\n\nconsole.log(totalSpent(amounts), countAtLeast(amounts, 500), firstOverBudget(amounts, 2000));\n"
+  },
+  "checks": [
+    {
+      "id": "total",
+      "test": "return totalSpent([450, -300, 1220, 270, 899]) === 2839 && totalSpent([]) === 0 && totalSpent([100, 200]) === 300;\n"
+    },
+    {
+      "id": "count",
+      "test": "return countAtLeast([450, -300, 1220, 270, 899], 500) === 2 && countAtLeast([500, 499, 501], 500) === 2 && countAtLeast([], 1) === 0;\n"
+    },
+    {
+      "id": "first-over",
+      "test": "return firstOverBudget([450, -300, 1220, 270, 899], 2000) === 4 && firstOverBudget([3000], 2000) === 0;\n"
+    },
+    {
+      "id": "never-over",
+      "test": "return firstOverBudget([100, 200], 2000) === -1 && firstOverBudget([1000, 1000], 2000) === -1 && firstOverBudget([], 10) === -1;\n"
+    }
+  ]
+}

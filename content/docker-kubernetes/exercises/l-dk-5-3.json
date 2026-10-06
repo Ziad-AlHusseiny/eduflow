@@ -1,0 +1,11 @@
+{
+  "kind": "fill",
+  "language": "bash",
+  "template": "# Wait for the 1.5.0 rollout to finish (fails after 5 minutes)\nkubectl rollout {{0}} deployment/notes-api --timeout=5m\n\n# It's failing in production: list revisions, then go back one\nkubectl rollout {{1}} deployment/notes-api\nkubectl rollout {{2}} deployment/notes-api\n\n# On the Helm-managed staging cluster, return to release revision 4\nhelm {{3}} notes-api 4 -n notes",
+  "blanks": [
+    { "answers": ["status"] },
+    { "answers": ["history"] },
+    { "answers": ["undo"] },
+    { "answers": ["rollback"] }
+  ]
+}

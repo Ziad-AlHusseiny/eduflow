@@ -1,0 +1,28 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Three expenses, still in dollars\nconst coffee = 4.1;\nconst lunch = 12.2;\nconst bus = 2.7;\n// A fourth amount, typed into a text box, so it arrived as a string\nconst typedAmount = \"3\";\n\nconst budgetCents = 2500;\n\n// Fix this: it should be the exact total in whole cents\nconst totalCents = coffee + lunch + bus + typedAmount;\n\n// Declare isOverBudget and leftCents below\n"
+  },
+  "solution": {
+    "js": "const coffee = 4.1;\nconst lunch = 12.2;\nconst bus = 2.7;\nconst typedAmount = \"3\";\n\nconst budgetCents = 2500;\n\nconst totalCents =\n  Math.round(coffee * 100) +\n  Math.round(lunch * 100) +\n  Math.round(bus * 100) +\n  Math.round(Number(typedAmount) * 100);\n\nconst isOverBudget = totalCents > budgetCents;\nconst leftCents = budgetCents - totalCents;\nconsole.log(totalCents, isOverBudget, leftCents);\n"
+  },
+  "checks": [
+    {
+      "id": "total-number",
+      "test": "return typeof totalCents === 'number';"
+    },
+    {
+      "id": "total-exact",
+      "test": "return totalCents === 2200;"
+    },
+    {
+      "id": "over-budget",
+      "test": "return isOverBudget === false;"
+    },
+    {
+      "id": "left",
+      "test": "return leftCents === 300;"
+    }
+  ]
+}

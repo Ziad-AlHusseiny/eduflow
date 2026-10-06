@@ -1,0 +1,17 @@
+{
+  "title": "اكتب مسح التبنّي",
+  "prompt": "اكتب الدالة `measureAdoption(root)` بحيث تمسح عناصر `<button>` داخل `root` (مستند أو أي عنصر) وتعيد `{ total, system, percent }`:\n\n- `total`: عدد عناصر `<button>`،\n- `system`: عدد ما يحمل منها `data-nw-component=\"Button\"`، وهي العلامة التي لا يعرضها إلا المكوّن الحقيقي (الـ class المسمّى `nw-button` لا يُحتسب؛ فقد نسخته الفرق)،\n- `percent`: ناتج `system / total` كعدد صحيح مقرَّب بـ `Math.round`، أو `0` حين لا توجد أزرار.\n\nثم اكتب نتيجة الصفحة داخل `#report` بالشكل `4 of 8 buttons use Northwind UI (50%)`، مستخدمًا الأرقام التي حسبتها.",
+  "hints": [
+    "`[...root.querySelectorAll('button')]` يعطيك مصفوفة بكل زر داخل `root`.",
+    "`button.dataset.nwComponent` يقرأ `data-nw-component`. صفِّ على أن تكون قيمتها `'Button'`.",
+    "ابنِ التقرير بـ template literal: `${result.system} of ${result.total} buttons use Northwind UI (${result.percent}%)`."
+  ],
+  "explanation": "العدّ بالـ data attribute يقيس ما يهمّك فعلًا: العناصر التي عرضها مكوّن النظام الحقيقي. أما العدّ بالـ class المسمّى `nw-button` فسيُبلغ هنا عن 6 من 8 ‏(75%)، لأن فريقين نسخا الـ class إلى أزرارهما، ولن تعرف أبدًا أن هذه النسخ المنفصلة موجودة. وقبول أي `root` يسمح للدالة نفسها بالإبلاغ عن كل قسم من الصفحة أو منطقة كل فريق، والحساب عند الطلب يعني أن الأرقام تبقى صحيحة مع تغيّر الصفحة.",
+  "checks": {
+    "counts-page": "`measureAdoption(document)` تعيد 8 أزرار، 4 منها من النظام، أي 50%",
+    "ignores-copies": "الـ classes المنسوخة باسم `nw-button` لا تُحتسب تبنّيًا",
+    "scoped": "مسح `#settings` وحده يعيد 1 من 3 ‏(33%)",
+    "live": "يتحدّث العدد حين يُضاف زر من النظام إلى الصفحة",
+    "report": "يعرض `#report` النص «4 of 8» و«50%»"
+  }
+}

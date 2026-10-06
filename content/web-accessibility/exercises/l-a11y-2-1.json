@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<div class=\"top\">\n  <div class=\"logo\">Ticketly</div>\n  <div class=\"links\">\n    <a href=\"#events\">Events</a>\n    <a href=\"#faq\">FAQ</a>\n    <a href=\"#account\">Account</a>\n  </div>\n</div>\n<div class=\"content\">\n  <div class=\"title\">Harbour Lights 2026</div>\n  <p>Two nights of music on the old harbour wall, 12 and 13 June.</p>\n  <h4>Line-up</h4>\n  <ul>\n    <li>Nour Quartet</li>\n    <li>The Saltmarsh Band</li>\n  </ul>\n  <h4>Tickets</h4>\n  <h5>Friday pass</h5>\n  <p>SAR 180, standing.</p>\n  <h5>Weekend pass</h5>\n  <p>SAR 320, both nights.</p>\n</div>\n<div class=\"bottom\">© 2026 Ticketly · <a href=\"#terms\">Terms</a></div>",
+    "css": ".top { display: flex; justify-content: space-between; align-items: center; padding-block-end: 8px; border-block-end: 1px solid #ddd; }\n.logo { font-weight: 700; }\n.links { display: flex; gap: 12px; }\n.title { font-size: 1.75rem; font-weight: 700; margin: 16px 0 8px; }\nh2, h4 { font-size: 1.2rem; margin: 16px 0 4px; }\nh3, h5 { font-size: 1rem; margin: 8px 0 2px; }\n.bottom { margin-block-start: 24px; font-size: 0.875rem; color: #555; }\n",
+    "js": ""
+  },
+  "solution": {
+    "html": "<header class=\"top\">\n  <div class=\"logo\">Ticketly</div>\n  <nav class=\"links\" aria-label=\"Site\">\n    <a href=\"#events\">Events</a>\n    <a href=\"#faq\">FAQ</a>\n    <a href=\"#account\">Account</a>\n  </nav>\n</header>\n<main class=\"content\">\n  <h1 class=\"title\">Harbour Lights 2026</h1>\n  <p>Two nights of music on the old harbour wall, 12 and 13 June.</p>\n  <h2>Line-up</h2>\n  <ul>\n    <li>Nour Quartet</li>\n    <li>The Saltmarsh Band</li>\n  </ul>\n  <h2>Tickets</h2>\n  <h3>Friday pass</h3>\n  <p>SAR 180, standing.</p>\n  <h3>Weekend pass</h3>\n  <p>SAR 320, both nights.</p>\n</main>\n<footer class=\"bottom\">© 2026 Ticketly · <a href=\"#terms\">Terms</a></footer>",
+    "css": ".top { display: flex; justify-content: space-between; align-items: center; padding-block-end: 8px; border-block-end: 1px solid #ddd; }\n.logo { font-weight: 700; }\n.links { display: flex; gap: 12px; }\n.title { font-size: 1.75rem; font-weight: 700; margin: 16px 0 8px; }\nh2, h4 { font-size: 1.2rem; margin: 16px 0 4px; }\nh3, h5 { font-size: 1rem; margin: 8px 0 2px; }\n.bottom { margin-block-start: 24px; font-size: 0.875rem; color: #555; }\n",
+    "js": ""
+  },
+  "checks": [
+    {
+      "id": "one-main",
+      "test": "const m = $$('main, [role=\"main\"]'); return m.length === 1 && m[0].textContent.includes('Harbour Lights 2026') && m[0].textContent.includes('Weekend pass');"
+    },
+    {
+      "id": "banner-nav",
+      "test": "const h = $('header'); if (!h || h.closest('main, article, aside, nav, section')) return false; const nav = $('nav'); return !!nav && h.contains(nav) && nav.textContent.includes('Events') && nav.textContent.includes('Account');"
+    },
+    {
+      "id": "footer",
+      "test": "const f = $('footer'); return !!f && !f.closest('main, article, aside, nav, section') && f.textContent.includes('Terms');"
+    },
+    {
+      "id": "one-h1",
+      "test": "const h1 = $$('h1'); return h1.length === 1 && h1[0].textContent.trim() === 'Harbour Lights 2026';"
+    },
+    {
+      "id": "heading-order",
+      "test": "const hs = $$('h1, h2, h3, h4, h5, h6'); const names = hs.map((h) => h.textContent.trim()); if (!['Line-up', 'Tickets', 'Friday pass', 'Weekend pass'].every((n) => names.includes(n))) return false; const lv = hs.map((h) => Number(h.tagName[1])); if (lv[0] !== 1) return false; for (let i = 1; i < lv.length; i++) if (lv[i] - lv[i - 1] > 1) return false; const lvl = (n) => lv[names.indexOf(n)]; return lvl('Friday pass') === lvl('Tickets') + 1 && lvl('Line-up') === lvl('Tickets');"
+    }
+  ]
+}

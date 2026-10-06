@@ -1,0 +1,11 @@
+{
+  "title": "اربط الموقع الشخصي وزامِنه",
+  "prompt": "املأ الفراغات: سجّل الـ repository الموجود على GitHub باسم `origin`، وارفع `main` للمرة الأولى بحيث يتتبّع `origin/main`، ثم تحقّق لاحقًا من وجود commits جديدة على GitHub دون تغيير فرعك أو ملفاتك.",
+  "hints": [
+    "لدى `git remote` أمر فرعي يسجّل اسمًا جديدًا وعنوان URL.",
+    "خيار الرفع الذي يسجّل الـ upstream حرف واحد، اختصار لكلمة upstream.",
+    "أحد أوامر المزامنة الأربعة ينزّل دون أن يدمج."
+  ],
+  "explanation": "`git remote add origin <url>` يسمّي عنوان GitHub باسم `origin`. و `git push -u origin main` يرفع `main` ويضبط `origin/main` كـ upstream له، فيعمل `git push` أو `git pull` المجرّد من ذلك الحين. و `git fetch` يحدّث `origin/main` دون أن يلمس `main` أو ملفاتك؛ ثم يسرد `git log main..origin/main` بالضبط ما ستحصل عليه لو نفّذت pull.",
+  "checks": {}
+}

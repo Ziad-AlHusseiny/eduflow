@@ -1,0 +1,34 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<header class=\"site-header\">Waypoint Conf 2026 <button type=\"button\" id=\"tickets\">Get tickets</button></header>\n<main>\n  <article class=\"session-card\">\n    <h3><a href=\"#s1\" id=\"card-link\">Focus Styles That Work</a></h3>\n    <p>Rings, offsets and forced colors.</p>\n  </article>\n</main>",
+    "css": "/* Reset (from the prototype) */\n:focus { outline: none; }\n\n:root {\n  --focus: light-dark(#6d28d9, #c4b5fd);\n}\n.site-header {\n  position: sticky;\n  top: 0;\n  height: 64px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  background: white;\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n"
+  },
+  "solution": {
+    "html": "<header class=\"site-header\">Waypoint Conf 2026 <button type=\"button\" id=\"tickets\">Get tickets</button></header>\n<main>\n  <article class=\"session-card\">\n    <h3><a href=\"#s1\" id=\"card-link\">Focus Styles That Work</a></h3>\n    <p>Rings, offsets and forced colors.</p>\n  </article>\n</main>",
+    "css": ":root {\n  --focus: light-dark(#6d28d9, #c4b5fd);\n}\n.site-header {\n  position: sticky;\n  top: 0;\n  height: 64px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  background: white;\n}\n.session-card {\n  padding: 12px;\n  border: 1px solid #e5e7eb;\n  border-radius: 12px;\n}\n\n:focus-visible {\n  outline: 2px solid var(--focus);\n  outline-offset: 2px;\n}\n\n.session-card:has(a:focus-visible) {\n  outline: 2px solid var(--focus);\n  outline-offset: 4px;\n}\n.session-card a:focus-visible {\n  outline: none;\n}\n\nhtml {\n  scroll-padding-top: 64px;\n}\n"
+  },
+  "checks": [
+    {
+      "id": "button-ring",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const rules = all.filter((r) => r.selectorText); const b = $('#tickets'); b.focus(); await tick(16); let ok; if (b.matches(':focus-visible')) { ok = style(b, 'outline-style') === 'solid' && parseFloat(style(b, 'outline-width')) >= 2 && style(b, 'outline-color') === 'rgb(109, 40, 217)'; } else { ok = rules.some((r) => r.selectorText.includes(':focus-visible') && !r.selectorText.includes(':has(') && r.style.outlineStyle === 'solid'); } b.blur(); return ok;"
+    },
+    {
+      "id": "ring-offset",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const rules = all.filter((r) => r.selectorText); const b = $('#tickets'); b.focus(); await tick(16); let ok; if (b.matches(':focus-visible')) { ok = parseFloat(style(b, 'outline-offset')) >= 2; } else { ok = rules.some((r) => r.selectorText.includes(':focus-visible') && parseFloat(r.style.outlineOffset) >= 2); } b.blur(); return ok;"
+    },
+    {
+      "id": "no-ring-unfocused",
+      "test": "$('#tickets').blur(); await tick(16); return style('#tickets', 'outline-style') === 'none';"
+    },
+    {
+      "id": "card-ring",
+      "test": "const all = []; const walk = (rules) => { for (const r of rules) { all.push(r); if (r.cssRules) walk(r.cssRules); } }; for (const s of document.styleSheets) walk(s.cssRules); const rules = all.filter((r) => r.selectorText); const a = $('#card-link'); a.focus(); await tick(16); let ok; if (a.matches(':focus-visible')) { ok = style('.session-card', 'outline-style') === 'solid' && style('.session-card', 'outline-color') === 'rgb(109, 40, 217)'; } else { ok = rules.some((r) => r.selectorText.includes('.session-card:has(') && r.selectorText.includes(':focus-visible') && r.style.outlineStyle === 'solid'); } a.blur(); return ok;"
+    },
+    {
+      "id": "scroll-padding",
+      "test": "return parseFloat(style(document.documentElement, 'scroll-padding-top')) === 64;"
+    }
+  ]
+}

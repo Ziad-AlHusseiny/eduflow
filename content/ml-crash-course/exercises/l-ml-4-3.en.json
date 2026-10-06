@@ -1,0 +1,16 @@
+{
+  "title": "Tune k-nearest neighbours",
+  "prompt": "Find the best number of neighbours for a scaled k-NN pipeline.\n\n1. Fix `grid` so its keys address the pipeline's `knn` step (the starter keys would raise an invalid-parameter error).\n2. `search`: a `GridSearchCV` over `pipe` with the provided `cv` and `scoring=\"roc_auc\"`, fitted on the training data.\n3. `best_params`, `best_cv_auc`: the winning settings and their mean cross-validated AUC. `test_auc`: the refit winner's ROC AUC on the test set.",
+  "hints": [
+    "Pipeline parameters are `<step name>__<parameter>`: here `knn__n_neighbors` and `knn__weights`.",
+    "`GridSearchCV(pipe, grid, cv=cv, scoring=\"roc_auc\").fit(X_train, y_train)`",
+    "`search.best_params_`, `search.best_score_`, and `search.score(X_test, y_test)` (which uses the search's scoring)."
+  ],
+  "explanation": "Five neighbours is too few: each prediction rests on a handful of customers and the AUC is about 0.75. Around 25–35 neighbours the ranking improves to about 0.79, and the two weighting schemes barely differ. The winner (35, uniform) scores 0.795 in cross-validation and 0.785 on the test set: slightly lower, as expected for the best of ten tries. Still a touch behind logistic regression, so the simpler model keeps its place.",
+  "checks": {
+    "grid-names": "grid keys use the knn__ prefix",
+    "searched": "search tried all 10 combinations with ROC AUC",
+    "best": "best_params and best_cv_auc come from the search",
+    "test-auc": "test_auc is the refit winner's test ROC AUC"
+  }
+}

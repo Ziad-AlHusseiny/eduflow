@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "python",
+  "code": "import pandas as pd\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score, train_test_split\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nchurn = pd.read_csv(\"churn_export_january.csv\")\nchurn[\"lifetime_orders\"] = churn[\"orders\"] + churn[\"orders_oct_to_dec\"]\nX = churn.drop(columns=[\"customer_id\", \"churned\", \"country\", \"segment\", \"orders_oct_to_dec\"])\nX = SimpleImputer(strategy=\"median\").fit_transform(X)\ny = churn[\"churned\"]\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\nmodel = make_pipeline(StandardScaler(), LogisticRegression())\nprint(cross_val_score(model, X_train, y_train, cv=5, scoring=\"roc_auc\").mean())",
+  "bugLines": [
+    9,
+    11
+  ]
+}

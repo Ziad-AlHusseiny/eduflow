@@ -1,0 +1,10 @@
+{
+  "title": "البطاقة التي لا تتوسّع",
+  "prompt": "يجب أن تعرض هذه البطاقة التاريخ والتصنيف حين ينقر المستخدم More. لكنها لا تُبنى: يُبلغ Xcode عن \"cannot use mutating member on immutable value: 'self' is immutable\" عند استدعاء `toggle()`. اختر السطر الذي يجب تغييره لإصلاح المشكلة.",
+  "hints": [
+    "يظهر الخطأ في سطر الـ toggle، لكن هذا السطر مجرّد عَرَض. أين أُعلن `isExpanded`؟",
+    "الـ structs الخاصة بالـ views لا تستطيع تغيير خصائصها المخزّنة العادية من داخل `body`.",
+    "أيّ property wrapper يخبر SwiftUI أن يملك قيمة ويخزّنها لهذا الـ view؟"
+  ],
+  "explanation": "السطر 5 يعلن `isExpanded` كخاصية مخزّنة عادية في struct، فلا شيء داخل `body` يستطيع تغييرها، ولن يعرف SwiftUI أن عليه إعادة الرسم حتى لو استطاع. أعلنها كـ state يملكها الـ view:\n\n```swift\n@State private var isExpanded = false\n```\n\nالآن يخزّن SwiftUI القيمة خارج الـ struct، ويُترجَم `toggle()`، وكل نقرة تعيد رسم البطاقة. وتشير `private` إلى أن هذا الـ view وحده يملك القيمة؛ أما الأب الذي يحتاج إلى التحكّم بها فسيمرّر `@Binding` بدلًا من ذلك."
+}

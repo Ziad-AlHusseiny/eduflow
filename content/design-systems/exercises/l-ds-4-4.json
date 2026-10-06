@@ -1,0 +1,9 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "name: Release\non:\n  pull_request:\n    branches: [main]\njobs:\n  release:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: write\n      id-token: write\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 24\n          registry-url: https://registry.npmjs.org\n      - run: npm ci\n      - run: npm publish --workspace @northwind/ui\n      - run: npm run build\n      - run: npm test\n      - run: npm run test:visual",
+  "bugLines": [
+    3,
+    18
+  ]
+}

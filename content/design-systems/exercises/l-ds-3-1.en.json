@@ -1,0 +1,17 @@
+{
+  "title": "Style the Button's variants with component tokens",
+  "prompt": "The Button renders its props as `data-variant` and `data-size` attributes. The base `.nw-button` rule is the secondary variant. Add three rules that **only set `--nw-button-…` component tokens** (no `background`, `color` or `padding` declarations):\n\n- `data-variant=\"primary\"`: action background and text from the semantic tokens, transparent border.\n- `data-variant=\"danger\"`: danger background and text from the semantic tokens, transparent border.\n- `data-size=\"sm\"`: padding 4px vertically and 12px horizontally.\n\nThe small primary button must be both small and primary.",
+  "hints": [
+    "Select with the attribute: `.nw-button[data-variant=\"primary\"] { … }`.",
+    "Inside, override the tokens the base rule already uses, such as `--nw-button-bg: var(--nw-color-action-bg);`.",
+    "Set `--nw-button-border: transparent;` for primary and danger, and the two padding tokens for `sm`."
+  ],
+  "explanation": "Every variant is now a handful of token overrides. The base rule owns *how* tokens become CSS properties, and variants only change *which* values flow in. Because size and variant touch different tokens, `data-variant=\"primary\" data-size=\"sm\"` combines with no extra rule, and a team that needs a one-off tweak can override a single component token instead of fighting the cascade.",
+  "checks": {
+    "secondary-default": "A button with no variant stays secondary (white with a grey border)",
+    "primary": "`data-variant=\"primary\"` uses the action colors with a transparent border",
+    "danger": "`data-variant=\"danger\"` uses the danger colors with a transparent border",
+    "small": "`data-size=\"sm\"` shrinks the padding and combines with primary",
+    "tokens-only": "The variant and size rules set only `--nw-button-…` tokens"
+  }
+}

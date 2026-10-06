@@ -1,0 +1,16 @@
+{
+  "title": "طبّق الـ boosting مع إبقاء الفجوات",
+  "prompt": "درّب نموذج gradient boosting على الـ features التسعة كلها، بما فيها `avg_satisfaction` نصف الفارغ، واكتشف على ماذا يعتمد.\n\n1. `booster`: `HistGradientBoostingClassifier(max_depth=3, learning_rate=0.05, max_iter=200, random_state=42)` مدرَّبًا على `X_train` كاملة (دون حذف أي عمود).\n2. `test_acc`: دقته على بيانات الاختبار.\n3. `ranking`: قائمة بأسماء الـ features التسعة مرتّبة بحسب الـ permutation importance على بيانات الاختبار (`n_repeats=5, random_state=0`)، الأهم أولًا.",
+  "hints": [
+    "لا حاجة إلى ملء القيم المفقودة: `HistGradientBoostingClassifier` يوجّهها بنفسه.",
+    "تُعيد `permutation_importance(booster, X_test, y_test, n_repeats=5, random_state=0)` كائنًا فيه `importances_mean`.",
+    "ضع المتوسطات في `pd.Series` فهرسه `features`، ورتّبها تنازليًا، وخذ `.index.tolist()`."
+  ],
+  "explanation": "يصل الـ boosting اللطيف إلى نحو 0.78 على بيانات الاختبار، أي أعلى من الانحدار اللوجستي ببضع نقاط. وتضع الـ permutation importance العمود `days_since_last_order` متقدّمًا بفارق كبير على كل ما عداه، و`avg_satisfaction` قرب الصفر أو دونه: النموذج يستطيع استخدام العمود، لكن الاستبيان بالشكل الذي جُمع به لا يساعد. وحساب الأهمية على بيانات الاختبار يقيس ما يعمّم، لا ما حفظته الأشجار.",
+  "checks": {
+    "nine-features": "النموذج مدرَّب على الـ features التسعة كلها",
+    "settings": "يستخدم الـ booster الإعدادات اللطيفة",
+    "accuracy": "test_acc هي الدقة على بيانات الاختبار",
+    "ranking": "يسرد ranking الـ features التسعة بحسب الـ permutation importance، وحداثة آخر طلب أولًا"
+  }
+}

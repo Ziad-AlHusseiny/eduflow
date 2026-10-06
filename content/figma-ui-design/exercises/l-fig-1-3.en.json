@@ -1,0 +1,11 @@
+{
+  "title": "Fill in the contrast thresholds",
+  "prompt": "Sofia keeps a contrast checklist pinned beside every screen she designs. Complete Steady's copy with the WCAG 2.2 minimum ratios and the large-text size. Type numbers only (for example `4.5`).",
+  "hints": [
+    "Normal-size text has the strictest AA requirement; large text and UI component boundaries share a lower one.",
+    "Large text is 18 pt regular or 14 pt bold. In CSS pixels, 18 pt is 18 × 4/3.",
+    "AA: 4.5 for normal text, 3 for large text and non-text graphics. AAA for normal text: 7."
+  ],
+  "explanation": "A 17 px habit name is normal text, so it needs **4.5:1**, even when it is semibold (bold only counts as large from about 18.66 px). The 34 px title is large text, so **3:1** is the minimum, though you will usually exceed it. The checkbox outline is a visual boundary of a control, covered by SC 1.4.11 Non-text Contrast at **3:1**. AAA raises normal text to **7:1**. Large text starts at **24 px** regular (18 pt × 4/3).",
+  "checks": {}
+}

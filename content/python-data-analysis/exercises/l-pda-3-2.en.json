@@ -1,0 +1,17 @@
+{
+  "title": "Clean the export's text columns",
+  "prompt": "In `messy`: strip spaces from `customer`; strip and title-case `country`; in `channel`, replace the space with an underscore (`mobile app` \u2192 `mobile_app`) and fill missing values with `\"unknown\"`. Add a `first_name` column holding the first word of the cleaned customer name. Finally set `desk_lines` to the number of rows whose `product` contains \"desk\" in any capitalisation.",
+  "hints": [
+    "Chain `.str` methods and assign back to the same column: `messy[\"country\"] = messy[\"country\"].str.strip().str.title()`.",
+    "`.str.replace(\" \", \"_\")` leaves missing values missing, so you can chain `.fillna(\"unknown\")` right after it.",
+    "`messy[\"customer\"].str.split(\" \").str[0]` takes the first word. For the count, `str.contains(\"desk\", case=False).sum()`; and use `messy[\"product\"]`, not `messy.product`."
+  ],
+  "explanation": "After stripping and title-casing, the 22 country spellings collapse to exactly the eight countries Cartwheel sells to, and 122 distinct customer names remain once the padded duplicates match their trimmed twins. The channel now uses the same codes as the clean `orders` table, so the two can be compared or joined later. `str.split(\" \").str[0]` takes the first piece of each split; `expand=True` would give you all the pieces as columns. `case=False` finds `Standing Desk 140cm`, `Compact Writing Desk` and `Desk Mat XL` alike: 15 lines.",
+  "checks": {
+    "customer": "Customer names have no leading or trailing spaces",
+    "country": "`country` holds exactly the eight real countries",
+    "channel": "`channel` uses `web`, `mobile_app`, `marketplace` and `unknown`",
+    "first-name": "`first_name` holds one word per row, starting with Daniel",
+    "desk": "`desk_lines` is 15"
+  }
+}

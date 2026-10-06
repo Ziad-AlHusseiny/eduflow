@@ -1,0 +1,170 @@
+[
+  {
+    "id": "front-end-developer",
+    "title": { "en": "Front-End Developer", "ar": "تطوير الواجهات الأمامية" },
+    "tagline": {
+      "en": "From your first commit to typed, tested, accessible React apps.",
+      "ar": "من أول commit إلى تطبيقات React مختبَرة وسهلة الوصول ومكتوبة بـ TypeScript."
+    },
+    "description": {
+      "en": "For career switchers and self-taught developers who want a front-end job, not only a certificate. You start with Git and plain JavaScript, build up to React, then add the accessibility, testing and TypeScript skills reviewers look for in a junior hire.",
+      "ar": "لمن يغيّرون مسارهم المهني وللمطوّرين الذين تعلّموا بأنفسهم ويريدون وظيفة في الواجهات الأمامية، لا شهادة فحسب. تبدأ بـ Git وJavaScript الخالصة، وتتدرّج حتى React، ثم تضيف مهارات إمكانية الوصول والاختبارات وTypeScript التي يبحث عنها المراجعون عند توظيف مطوّر مبتدئ."
+    },
+    "outcomes": {
+      "en": [
+        "Build and deploy a React 19 app from an empty folder",
+        "Write responsive layouts with Grid, Flexbox and container queries",
+        "Meet WCAG 2.2 AA on forms, modals and navigation",
+        "Catch regressions with Vitest and Testing Library before they ship"
+      ],
+      "ar": [
+        "تبني تطبيق React 19 من مجلد فارغ وتنشره",
+        "تكتب تخطيطات متجاوبة باستخدام Grid وFlexbox والـ container queries",
+        "تحقّق معايير WCAG 2.2 بمستوى AA في النماذج والنوافذ المنبثقة والتنقّل",
+        "تلتقط الأخطاء التي تعود للظهور باستخدام Vitest وTesting Library قبل أن تصل إلى المستخدمين"
+      ]
+    },
+    "courses": ["git-github", "javascript-fundamentals", "css-mastery", "react-fundamentals", "web-accessibility", "testing-javascript", "advanced-typescript"],
+    "icon": "Code2"
+  },
+  {
+    "id": "data-analyst",
+    "title": { "en": "Data Analyst", "ar": "تحليل البيانات" },
+    "tagline": {
+      "en": "Answer real business questions with SQL, pandas and a first predictive model.",
+      "ar": "أجب عن أسئلة عمل حقيقية باستخدام SQL وpandas وأول نموذج تنبؤي لك."
+    },
+    "description": {
+      "en": "For people who live in spreadsheets and want to work with data properly. You query a real store database in SQL, clean and analyze it with pandas, then build a first model that predicts which customers will leave. By the end you can take a vague question from a manager and return an answer you can defend.",
+      "ar": "لمن يقضون يومهم في جداول البيانات ويريدون التعامل مع البيانات كما يجب. تكتب queries بـ SQL على قاعدة بيانات متجر حقيقية، وتنظّف البيانات وتحلّلها بـ pandas، ثم تبني أول model يتنبأ بالعملاء الذين سيغادرون. في النهاية تستطيع أن تأخذ سؤالًا مبهمًا من مديرك وتعود بإجابة تستطيع الدفاع عنها."
+    },
+    "outcomes": {
+      "en": [
+        "Write joins, CTEs and window functions without double-counting",
+        "Clean messy exports into tidy, tested pandas DataFrames",
+        "Turn a stakeholder's question into a chart and a one-page answer",
+        "Train and evaluate a churn model with scikit-learn"
+      ],
+      "ar": [
+        "تكتب عمليات JOIN والـ CTEs والـ window functions دون عدّ مكرّر",
+        "تحوّل الملفات المصدَّرة الفوضوية إلى DataFrames مرتّبة ومختبَرة في pandas",
+        "تحوّل سؤال صاحب القرار إلى رسم بياني وإجابة في صفحة واحدة",
+        "تدرّب model للتنبؤ بتوقّف العملاء وتقيّمه باستخدام scikit-learn"
+      ]
+    },
+    "courses": ["sql-for-analysts", "python-data-analysis", "ml-crash-course"],
+    "icon": "BarChart3"
+  },
+  {
+    "id": "product-designer",
+    "title": { "en": "Product Designer", "ar": "تصميم المنتجات" },
+    "tagline": {
+      "en": "Design in Figma, build a system, and speak fluent CSS with your developers.",
+      "ar": "صمّم في Figma، وابنِ نظام تصميم، وتحدّث لغة CSS بطلاقة مع المطوّرين."
+    },
+    "description": {
+      "en": "For designers and design-curious developers who want work that survives handoff. You design a real app in Figma, turn its parts into a design system that scales, learn to design for people who use a keyboard or a screen reader, and finish with enough CSS to know what is cheap and what is expensive to build.",
+      "ar": "للمصممين وللمطوّرين المهتمين بالتصميم ممن يريدون عملًا يصمد بعد التسليم. تصمّم تطبيقًا حقيقيًا في Figma، وتحوّل أجزاءه إلى نظام تصميم قابل للتوسّع، وتتعلّم التصميم لمن يستخدمون لوحة المفاتيح أو قارئ الشاشة، ثم تنتهي بما يكفي من CSS لتعرف ما السهل بناؤه وما المكلف."
+    },
+    "outcomes": {
+      "en": [
+        "Design complete mobile screens with auto layout and variables",
+        "Build a component library with variants, tokens and light and dark modes",
+        "Check contrast, focus order and touch targets before handoff",
+        "Read and write the CSS behind your own designs"
+      ],
+      "ar": [
+        "تصمّم شاشات جوال كاملة باستخدام الـ auto layout والـ variables",
+        "تبني مكتبة components بـ variants وtokens ووضعين فاتح وداكن",
+        "تتحقق من التباين وترتيب الـ focus ومساحات اللمس قبل التسليم",
+        "تقرأ وتكتب الـ CSS الذي يقف خلف تصاميمك"
+      ]
+    },
+    "courses": ["figma-ui-design", "design-systems", "web-accessibility", "css-mastery"],
+    "icon": "PenTool"
+  },
+  {
+    "id": "mobile-developer",
+    "title": { "en": "Mobile Developer", "ar": "تطوير تطبيقات الجوال" },
+    "tagline": {
+      "en": "Ship iOS and Android apps with React Native, then go native with Swift.",
+      "ar": "أطلق تطبيقات iOS وAndroid بـ React Native، ثم انتقل إلى التطوير الأصلي بـ Swift."
+    },
+    "description": {
+      "en": "For web developers and beginners who want their work on a phone's home screen. You version everything with Git from day one, learn JavaScript and React once, use them to ship cross-platform apps with React Native and Expo, then learn enough Swift and SwiftUI to understand the native side.",
+      "ar": "لمطوّري الويب وللمبتدئين ممن يريدون أن يروا عملهم على الشاشة الرئيسية للهاتف. تدير كل شيء بـ Git منذ اليوم الأول، وتتعلّم JavaScript وReact مرة واحدة، ثم تستخدمهما لإطلاق تطبيقات متعددة المنصّات بـ React Native وExpo، وتتعلّم بعدها ما يكفي من Swift وSwiftUI لفهم الجانب الأصلي (native)."
+    },
+    "outcomes": {
+      "en": [
+        "Build a cross-platform app with Expo Router and run it on your own phone",
+        "Render long lists and forms that stay smooth on real devices",
+        "Write SwiftUI screens with @Observable state and NavigationStack",
+        "Keep your app's code in Git with branches and reviewed pull requests"
+      ],
+      "ar": [
+        "تبني تطبيقًا متعدد المنصّات بـ Expo Router وتشغّله على هاتفك",
+        "تعرض قوائم طويلة ونماذج تبقى سلسة على الأجهزة الحقيقية",
+        "تكتب شاشات SwiftUI بـ state قائم على @Observable وتنقّل عبر NavigationStack",
+        "تحفظ كود تطبيقك في Git مع branches وpull requests تمرّ بالمراجعة"
+      ]
+    },
+    "courses": ["git-github", "javascript-fundamentals", "react-fundamentals", "react-native-apps", "swift-essentials"],
+    "icon": "Smartphone"
+  },
+  {
+    "id": "cloud-engineer",
+    "title": { "en": "Cloud Engineer", "ar": "هندسة الحوسبة السحابية" },
+    "tagline": {
+      "en": "Version it, containerize it, and run it on AWS without surprises.",
+      "ar": "أدِر الكود بـ Git، وضعه في containers، وشغّله على AWS دون مفاجآت."
+    },
+    "description": {
+      "en": "For developers and sysadmins who want to own what happens after the merge. You set up a solid Git workflow, learn the core AWS services and how IAM and networking fit together, then package and run services with Docker and Kubernetes.",
+      "ar": "للمطوّرين ومديري الأنظمة ممن يريدون تولّي ما يحدث بعد الـ merge. تبني سير عمل متينًا في Git، وتتعلّم خدمات AWS الأساسية وكيف تترابط IAM والشبكات، ثم تحزم الخدمات وتشغّلها بـ Docker وKubernetes."
+    },
+    "outcomes": {
+      "en": [
+        "Set up IAM Identity Center and least-privilege policies",
+        "Design a VPC with public and private subnets",
+        "Write small, secure multi-stage Docker images",
+        "Deploy, scale and debug workloads on Kubernetes with kubectl"
+      ],
+      "ar": [
+        "تُعدّ IAM Identity Center وسياسات تمنح أقل قدر لازم من الصلاحيات",
+        "تصمّم VPC بشبكات فرعية عامة وخاصة",
+        "تكتب Docker images صغيرة وآمنة باستخدام الـ multi-stage builds",
+        "تنشر أحمال العمل على Kubernetes وتوسّعها وتشخّص مشكلاتها باستخدام kubectl"
+      ]
+    },
+    "courses": ["git-github", "aws-cloud-foundations", "docker-kubernetes"],
+    "icon": "Cloud"
+  },
+  {
+    "id": "ml-engineer",
+    "title": { "en": "Machine Learning Engineer", "ar": "هندسة تعلّم الآلة" },
+    "tagline": {
+      "en": "Prepare data, train honest models, and package them to run anywhere.",
+      "ar": "جهّز البيانات، ودرّب نماذج صادقة، واحزمها لتعمل في أي مكان."
+    },
+    "description": {
+      "en": "For analysts and Python developers who want models that make it out of the notebook. You learn pandas and SQL to get clean data, train and evaluate models with scikit-learn, then put them in containers so they behave the same on your laptop and in production.",
+      "ar": "للمحلّلين ومطوّري Python ممن يريدون نماذج تخرج من دفتر التحليل إلى الاستخدام الفعلي. تتعلّم pandas وSQL للحصول على بيانات نظيفة، وتدرّب النماذج وتقيّمها بـ scikit-learn، ثم تضعها في containers لتتصرّف بالطريقة نفسها على جهازك وفي بيئة الإنتاج."
+    },
+    "outcomes": {
+      "en": [
+        "Prepare training data with pandas and SQL without leakage",
+        "Train, tune and cross-validate scikit-learn models",
+        "Choose metrics that match the real cost of a wrong prediction",
+        "Package a model as a service in a Docker container"
+      ],
+      "ar": [
+        "تجهّز بيانات التدريب بـ pandas وSQL دون تسرّب للبيانات",
+        "تدرّب نماذج scikit-learn وتضبطها وتتحقق منها بالـ cross-validation",
+        "تختار مقاييس تعكس التكلفة الحقيقية للتنبؤ الخاطئ",
+        "تحزم الـ model كخدمة داخل container في Docker"
+      ]
+    },
+    "courses": ["python-data-analysis", "sql-for-analysts", "ml-crash-course", "docker-kubernetes"],
+    "icon": "BrainCircuit"
+  }
+]

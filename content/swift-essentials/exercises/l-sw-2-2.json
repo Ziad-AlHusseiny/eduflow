@@ -1,0 +1,22 @@
+{
+  "kind": "fill",
+  "language": "swift",
+  "template": "enum Category: String, {{0}} {\n    case food, transport, fun\n}\nprint(Category.{{1}}.count)   // 3\n\nenum PaymentMethod {\n    case cash\n    case card(lastFour: String)\n}\n\nfunc label(for method: PaymentMethod) -> String {\n    switch method {\n    case .cash:\n        return \"Cash\"\n    case .card({{2}} lastFour):\n        return \"Card ending \\(lastFour)\"\n    }\n}",
+  "blanks": [
+    {
+      "answers": [
+        "CaseIterable"
+      ]
+    },
+    {
+      "answers": [
+        "allCases"
+      ]
+    },
+    {
+      "answers": [
+        "let"
+      ]
+    }
+  ]
+}

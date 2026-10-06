@@ -1,0 +1,11 @@
+{
+  "title": "Required values and a fast edit loop",
+  "prompt": "Fill in the blanks so that Compose refuses to start when `POSTGRES_PASSWORD` is missing, source edits are copied into the running API container, lockfile changes rebuild the image, and the stack starts in watch mode.",
+  "hints": [
+    "The interpolation operator for \"required, with an error message\" is two characters: a colon and a question mark.",
+    "One watch action copies files into the container; another rebuilds the image.",
+    "`docker compose up` takes a flag that turns on watch mode."
+  ],
+  "explanation": "```yaml\nPOSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}\n# …\n- action: sync\n  path: ./src\n  target: /app/src\n- action: rebuild\n  path: package-lock.json\n```\nThen `docker compose up --watch`. `:?` turns a silently empty value into a clear startup error. `sync` copies edited source files into the running container in about a second, while a dependency change needs `rebuild` because new packages must be installed into the image.",
+  "checks": {}
+}

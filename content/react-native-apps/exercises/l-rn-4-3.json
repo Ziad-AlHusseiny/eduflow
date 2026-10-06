@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// Decide what the tracking screen shows for a permission response.\n// Returns one of: 'wait' | 'proceed' | 'ask' | 'open-settings'\nfunction permissionAction(response) {\n  if (response.status === 'granted') return 'proceed';\n  return 'ask';\n}\n\nconsole.log(permissionAction({ status: 'denied', granted: false, canAskAgain: false, expires: 'never' }));\n"
+  },
+  "solution": {
+    "js": "function permissionAction(response) {\n  if (!response) return 'wait';\n  if (response.granted) return 'proceed';\n  if (response.status === 'undetermined') return 'ask';\n  return response.canAskAgain ? 'ask' : 'open-settings';\n}\n\nconsole.log(permissionAction({ status: 'denied', granted: false, canAskAgain: false, expires: 'never' }));\n"
+  },
+  "checks": [
+    {
+      "id": "loading",
+      "test": "return typeof permissionAction === 'function' && permissionAction(null) === 'wait' && permissionAction(undefined) === 'wait';"
+    },
+    {
+      "id": "granted",
+      "test": "return permissionAction({ status: 'granted', granted: true, canAskAgain: true, expires: 'never' }) === 'proceed';"
+    },
+    {
+      "id": "undetermined",
+      "test": "return permissionAction({ status: 'undetermined', granted: false, canAskAgain: true, expires: 'never' }) === 'ask';"
+    },
+    {
+      "id": "denied-can-ask",
+      "test": "return permissionAction({ status: 'denied', granted: false, canAskAgain: true, expires: 'never' }) === 'ask';"
+    },
+    {
+      "id": "denied-final",
+      "test": "return permissionAction({ status: 'denied', granted: false, canAskAgain: false, expires: 'never' }) === 'open-settings';"
+    }
+  ]
+}

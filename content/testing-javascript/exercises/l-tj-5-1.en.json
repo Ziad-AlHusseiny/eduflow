@@ -1,0 +1,19 @@
+{
+  "title": "Make the settleUp tests pass",
+  "prompt": "This is the **green** step of TDD: the tests are already written (they're the checks below), and your job is to make them pass.\n\n`settleUp(balances)` takes balances in cents (`{ Ana: 1500, Ben: -1000, Cai: -500 }`: positive means the person is owed money, negative means they owe) and returns transfers such as `[{ from: 'Ben', to: 'Ana', amountCents: 1000 }, { from: 'Cai', to: 'Ana', amountCents: 500 }]`.\n\nThe tests require that: settled groups need no transfers; one debtor pays one creditor; applying the transfers brings **everyone to zero** with positive whole-cent amounts; there are **at most people − 1** transfers (counting people with a non-zero balance); settled people never appear; balances that don't add up to zero **throw**; and the input object is **not modified**.\n\nWork through the checks in order, running after each change. The starter passes the first one.",
+  "hints": [
+    "First reject bad input: add up all the balances and throw an `Error` if the sum is not 0.",
+    "Split people into debtors (negative balances, stored as positive amounts they owe) and creditors (positive balances). Copy the numbers into new objects so you never change the input.",
+    "Loop while both lists have someone: transfer `Math.min(debtor.cents, creditor.cents)` from the current debtor to the current creditor, subtract it from both, and move to the next debtor or creditor when theirs reaches 0. Sorting both lists largest-first keeps the number of transfers small."
+  ],
+  "explanation": "The reference solution checks the sum first, then builds fresh `{ name, cents }` objects for debtors and creditors, which is why the input stays untouched. The loop always transfers the smaller of the two current amounts, so after each transfer at least one person reaches zero and is left behind; that guarantees termination and at most `people - 1` transfers. Sorting largest-first is a common heuristic that often produces fewer transfers in practice, but the tests deliberately don't demand an exact list for groups larger than two, because several answers are correct. That's a design choice worth copying: when many outputs are valid, assert the **properties** every valid output has (everyone ends at zero, amounts are positive, the count is small) instead of one specific answer.",
+  "checks": {
+    "settled": "Settled groups (and an empty one) need no transfers",
+    "two-people": "With two people, the debtor pays the creditor the full amount",
+    "settles-everyone": "Applying the transfers brings everyone to zero, with positive whole-cent amounts",
+    "few-transfers": "Uses at most people − 1 transfers",
+    "ignores-settled": "People with a zero balance never appear in a transfer",
+    "rejects-unbalanced": "Throws when the balances don't add up to zero",
+    "no-mutation": "Does not modify the balances object it was given"
+  }
+}

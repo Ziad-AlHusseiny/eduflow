@@ -1,0 +1,6 @@
+{
+  "kind": "sql",
+  "starter": "-- Every Jordan customer with their 2025 orders (zero included)\nSELECT\n  c.customer_id,\n  c.first_name,\n  COUNT(o.order_id) AS orders_2025\nFROM customers AS c\nLEFT JOIN orders AS o\n  ON o.customer_id = c.customer_id\nWHERE c.country = 'Jordan'\n  AND o.status <> 'cancelled'\n  AND o.order_date >= '2025-01-01'\n  AND o.order_date < '2026-01-01'\nGROUP BY c.customer_id;",
+  "solution": "SELECT\n  c.customer_id,\n  c.first_name,\n  COUNT(o.order_id) AS orders_2025\nFROM customers AS c\nLEFT JOIN orders AS o\n  ON o.customer_id = c.customer_id\n AND o.status <> 'cancelled'\n AND o.order_date >= '2025-01-01'\n AND o.order_date < '2026-01-01'\nWHERE c.country = 'Jordan'\nGROUP BY c.customer_id, c.first_name;",
+  "orderMatters": false
+}

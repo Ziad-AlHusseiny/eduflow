@@ -1,0 +1,17 @@
+{
+  "title": "One set of tokens, three themes",
+  "prompt": "Rewrite the theme so that:\n\n1. The root declares support for **both** schemes, and `--surface`, `--text` and `--card` are each defined **once** with `light-dark()` (light values: `#ffffff`, `#1f2937`, `#f8fafc`; dark: `#0f172a`, `#e5e7eb`, `#1e293b`). Remove the media query.\n2. `data-theme=\"light\"` or `data-theme=\"dark\"` on `<html>` forces that scheme; with no attribute, the page follows the system.\n3. The `.hero` is dark in every mode, using the same tokens (no hero-specific colors).\n\nThe checks set `data-theme` on `<html>` and read computed colors.",
+  "hints": [
+    "`light-dark()` only works when `color-scheme` allows dark. Start with `color-scheme: light dark` on `:root`.",
+    "The toggle rules only change `color-scheme`: `:root[data-theme=\"dark\"] { color-scheme: dark; }` and the same for light.",
+    "For the hero, add `color-scheme: dark;` to `.hero`. Its `var(--surface)` and the nested card's `var(--card)` then resolve to the dark values."
+  ],
+  "explanation": "`light-dark()` picks a value from the used color scheme of the element where the token is used, and `color-scheme` sets that scheme. `color-scheme: light dark` on the root follows the OS; the `data-theme` rules override it with a single property, so every token follows without a second token set. Because `light-dark()` resolves per element and `color-scheme` inherits, `color-scheme: dark` on `.hero` makes the hero and the keynote card inside it dark while the regular card stays light.",
+  "checks": {
+    "forced-dark": "data-theme=\"dark\" makes the page dark",
+    "forced-light": "data-theme=\"light\" makes the page light",
+    "scheme-follows-toggle": "The root's color-scheme follows the toggle",
+    "system-default": "With no data-theme, the root supports both schemes",
+    "hero-always-dark": "The hero and its card stay dark in light mode"
+  }
+}

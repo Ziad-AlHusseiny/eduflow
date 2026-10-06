@@ -1,0 +1,16 @@
+{
+  "title": "pipeline يصمد أمام البيانات الحقيقية",
+  "prompt": "اجعل الـ pipeline المبدئي يتعامل مع الفجوات والمفاجآت.\n\n1. `preprocess`: وحّد مقاييس الأعمدة `numeric`؛ وبالنسبة إلى `avg_satisfaction`، املأ القيم المفقودة بالوسيط **وأضف مؤشّر غياب**، ثم وحّد المقياس؛ وطبّق one-hot encoding على `segment` بحيث تُتجاهل الفئات غير المرئية بدل رفع خطأ.\n2. `pipe`: خطوتان باسمَي `\"prep\"` و`\"model\"` (نموذج `LogisticRegression`)، مدرَّب على بيانات التدريب. يجب أن ينتج 13 مُدخلًا للنموذج.\n3. `cv_auc`: متوسط الـ ROC AUC من `cross_val_score` باستخدام `cv` المعطى.\n4. `new_prob`: احتمال انقطاع `new_customer`، الذي يأتي من دولة غير مرئية وشريحة غير مرئية وليست لديه درجة رضا.",
+  "hints": [
+    "لا يستطيع `StandardScaler` وحده التعامل مع NaN. سلسِل `make_pipeline(SimpleImputer(strategy=\"median\", add_indicator=True), StandardScaler())`.",
+    "`OneHotEncoder(handle_unknown=\"ignore\")`. عمود الدولة غير مذكور في المحوّل، فيُحذف.",
+    "لا تنسَ `pipe.fit(X_train, y_train)`؛ ثم `pipe.predict_proba(new_customer)[0, 1]`."
+  ],
+  "explanation": "ثمانية أعمدة رقمية موحّدة المقاييس، ودرجة الرضا المملوءة مع مؤشّر غيابها، وثلاثة أعمدة للشرائح، تساوي 13 مُدخلًا. والأعمدة التي لا يذكرها `ColumnTransformer` (هنا `country`) تُحذف افتراضيًا (`remainder=\"drop\"`). يحصل العميل الجديد على أعمدة شرائح كلها أصفار ودرجة رضا تساوي الوسيط مع مؤشّر قيمته 1، فيظل النموذج ينتج احتمالًا. ودون `handle_unknown=\"ignore\"` والـ imputer، كان هذا العميل الواحد سيُسقط خدمة في بيئة الإنتاج.",
+  "checks": {
+    "steps": "في pipe خطوتان باسمَي prep وmodel",
+    "fitted": "ينتج المعالج المسبق المدرَّب 13 مُدخلًا",
+    "cv-auc": "cv_auc هو متوسط الـ ROC AUC بالتحقق المتقاطع",
+    "unseen": "new_prob احتمال صالح للعميل غير المرئي"
+  }
+}

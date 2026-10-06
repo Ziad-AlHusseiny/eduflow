@@ -1,0 +1,16 @@
+{
+  "title": "Fix the Weekend pass colours",
+  "prompt": "Edit only the CSS so the Weekend pass card meets WCAG 2.2 AA:\n\n- `.price` text needs at least **4.5:1** against the white background.\n- The `.btn` text needs at least **4.5:1** against the button's background (you may keep the orange).\n- The quantity `input` border needs at least **3:1** against the card background.\n- The link inside `.note` differs from the paragraph only by weight; give it a non-colour cue such as an underline, and keep its text at 4.5:1.\n\nThe checks compute real contrast ratios from your computed styles, so any passing colours are accepted.",
+  "hints": [
+    "On white, any grey at #767676 or darker passes 4.5:1.",
+    "White on #f4a261 is only 2.06:1. Dark text on the same orange is well above 8:1.",
+    "A border of #77708f gives about 4.7:1 on white. For the link, text-decoration: underline is the simplest cue."
+  ],
+  "explanation": "Darkening the price to #595959 takes it from 2.81:1 to 7:1. The button keeps its brand orange and switches to dark text (8.35:1), which is usually cheaper than changing a brand colour. The input border moves from 1.36:1 to 4.67:1, so people with low vision can find the field (1.4.11). The link gets its underline back, so it is identifiable without relying on colour or weight differences (1.4.1). You can paste any of these pairs into the contrast function from the lesson to see the numbers.",
+  "checks": {
+    "price": "Price text reaches 4.5:1 against its background",
+    "button": "Button text reaches 4.5:1 against the button colour",
+    "input-border": "The input border reaches 3:1 against the card background",
+    "link-cue": "The link has an underline (or bottom border) and 4.5:1 text contrast"
+  }
+}

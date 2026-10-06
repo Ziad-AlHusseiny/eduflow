@@ -1,0 +1,17 @@
+{
+  "title": "Motion with manners",
+  "prompt": "Add motion to the card, kindly:\n\n1. Transition the hover lift: animate **`translate`** (or `transform`) and **`box-shadow`** only, never `all`, with durations between 100ms and 400ms.\n2. Create a `@keyframes` animation that makes the `.live-dot::after` halo pulse **forever**, using only cheap properties (`scale`, `opacity`, `transform`, `translate`, `rotate`).\n3. Make the transition and the pulse respect **`prefers-reduced-motion`** (the opt-in pattern with `no-preference` is recommended).",
+  "hints": [
+    "`transition` accepts a comma-separated list: `translate 200ms ease-out, box-shadow 200ms ease-out`.",
+    "For the pulse, animate `scale` and `opacity` in `@keyframes`, and use `infinite` as the iteration count.",
+    "Put both the `transition` and the `animation` declarations inside `@media (prefers-reduced-motion: no-preference) { … }`."
+  ],
+  "explanation": "Listing `translate` and `box-shadow` means only the lift animates; theme or layout changes stay instant. The pulse keyframes touch only `scale` and `opacity`, which browsers can animate on the compositor without recalculating layout. Wrapping both inside `@media (prefers-reduced-motion: no-preference)` makes the motion opt-in: people who asked their OS to reduce motion get a static card and a static dot, while the \"Live now\" text still tells them what the dot meant.",
+  "checks": {
+    "transition-specific": "The hover transitions translate and box-shadow, not all",
+    "transition-duration": "Transition durations are between 100ms and 400ms",
+    "pulse-loops": "The Live dot halo pulses forever",
+    "pulse-cheap": "The keyframes animate only cheap properties",
+    "reduced-motion": "The motion respects prefers-reduced-motion"
+  }
+}

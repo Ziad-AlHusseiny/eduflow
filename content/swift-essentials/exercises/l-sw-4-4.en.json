@@ -1,0 +1,10 @@
+{
+  "title": "Test the amount parser",
+  "prompt": "Write Swift Testing tests for `parseAmount(_:)`, which returns a positive `Decimal` or `nil`. The first test must unwrap the parsed value and stop if it's `nil`, then check it equals 12.5. The second test must run once for each invalid input.",
+  "hints": [
+    "Every test function carries the same attribute as the one on the second test.",
+    "One macro unwraps an optional and ends the test if it's `nil`; it's used with `try`.",
+    "The other macro records a failure but lets the test continue. For the last blank, look at the parameter the second test receives."
+  ],
+  "explanation": "`@Test` marks a test function. `try #require(parseAmount(\"12.50\"))` unwraps the optional, and if parsing returned `nil` the test stops with a clear failure instead of crashing. `#expect(amount == 12.5)` then checks the result and, on failure, reports the actual value. `@Test(arguments:)` runs `rejectsInvalidAmounts` once per string, and each input shows up as its own test case, so a failure names the exact input that broke.\n\n```swift\n@Test func parsesValidAmount() throws {\n    let amount = try #require(parseAmount(\"12.50\"))\n    #expect(amount == 12.5)\n}\n```"
+}

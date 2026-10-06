@@ -1,0 +1,19 @@
+{
+  "title": "From screen appearance to rates on screen",
+  "prompt": "Put the steps of Pocket Budget's exchange-rate screen in the order they happen at runtime, from the moment the screen appears to the moment the rates are visible.",
+  "hints": [
+    "Nothing happens until SwiftUI starts the async work, and the user should see a spinner before any network call begins.",
+    "You can't fetch before you have a URL, and you shouldn't decode before you know the response is a success.",
+    "The last step is the one that makes SwiftUI redraw."
+  ],
+  "explanation": "`.task` starts `model.load()` when the view appears. The model sets `.loading` first so the spinner shows immediately. The client builds the URL with its query items, then `URLSession.shared.data(from:)` suspends until the response arrives. The status check comes before decoding, because URLSession doesn't throw for a 404 or 500 and an error page would fail to decode with a misleading message. Decoding produces a `RatesResponse`, and assigning `.loaded(response)` on the main actor is what makes SwiftUI re-render the list.\n\nIf any step after `set-loading` throws, the model's single `catch` sets `.failed(message)` instead.",
+  "items": {
+    "start-task": "SwiftUI runs `.task { await model.load() }` as the view appears",
+    "set-loading": "The model sets `state = .loading`, so the view shows a `ProgressView`",
+    "build-url": "Build the URL: `endpoint.appending(queryItems: [URLQueryItem(name: \"base\", value: \"USD\")])`",
+    "fetch": "`let (data, response) = try await URLSession.shared.data(from: url)`",
+    "check-status": "Check `(response as? HTTPURLResponse)?.statusCode == 200`, otherwise throw `RateError.badStatus`",
+    "decode": "`try decoder.decode(RatesResponse.self, from: data)` with snake_case and ISO 8601 strategies",
+    "set-loaded": "Assign `state = .loaded(response)` on the main actor, and SwiftUI redraws the list"
+  }
+}

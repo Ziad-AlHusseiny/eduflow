@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// A global counter: any code can break it. Move it into a closure.\nlet count = 0;\n\nfunction createIdGenerator(prefix) {\n  return () => {\n    count++;\n    return `${prefix}-${count}`;\n  };\n}\n\n// Return a function spend(cents) that subtracts from a private\n// remaining amount and returns what is left\nfunction createBudget(limitCents) {\n}\n\nconst nextId = createIdGenerator(\"exp\");\nconsole.log(nextId(), nextId());\n"
+  },
+  "solution": {
+    "js": "function createIdGenerator(prefix) {\n  let count = 0;\n  return () => {\n    count++;\n    return `${prefix}-${count}`;\n  };\n}\n\nfunction createBudget(limitCents) {\n  let remaining = limitCents;\n  return (spentCents) => {\n    remaining -= spentCents;\n    return remaining;\n  };\n}\n\nconst nextId = createIdGenerator(\"exp\");\nconsole.log(nextId(), nextId());\n"
+  },
+  "checks": [
+    {
+      "id": "ids-sequence",
+      "test": "const gen = createIdGenerator('x');\nreturn gen() === 'x-1' && gen() === 'x-2' && gen() === 'x-3';\n"
+    },
+    {
+      "id": "ids-independent",
+      "test": "const a = createIdGenerator('a');\nconst b = createIdGenerator('b');\na(); a();\nreturn a() === 'a-3' && b() === 'b-1';\n"
+    },
+    {
+      "id": "no-global-count",
+      "test": "return typeof count === 'undefined';\n"
+    },
+    {
+      "id": "budget",
+      "test": "const spend = createBudget(2000);\nif (typeof spend !== 'function') return false;\nreturn spend(450) === 1550 && spend(1220) === 330 && spend(500) === -170;\n"
+    },
+    {
+      "id": "budget-independent",
+      "test": "const s1 = createBudget(1000);\nconst s2 = createBudget(5000);\ns1(400);\nreturn s2(100) === 4900 && s1(100) === 500;\n"
+    }
+  ]
+}

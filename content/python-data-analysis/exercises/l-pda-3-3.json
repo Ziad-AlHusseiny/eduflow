@@ -1,0 +1,34 @@
+{
+  "kind": "python",
+  "files": [
+    "orders_messy.csv"
+  ],
+  "starter": "import pandas as pd\n\ndef parse_money(values):\n    \"\"\"Convert a Series of text like ' $1,234.50' to floats.\n    Values that cannot be converted become NaN.\"\"\"\n    return values\n\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\n# 1. Replace messy[\"total\"] with the parsed numbers\n\n# 2. Sum of all totals, rounded to 2 decimals\ntotal_sum = None\n\n# 3. Number of rows with a total above 200\nover_200 = None\n",
+  "solution": "import pandas as pd\n\ndef parse_money(values):\n    \"\"\"Convert a Series of text like ' $1,234.50' to floats.\n    Values that cannot be converted become NaN.\"\"\"\n    cleaned = (\n        values.astype(\"string\")\n        .str.strip()\n        .str.replace(\"$\", \"\", regex=False)\n        .str.replace(\",\", \"\", regex=False)\n    )\n    return pd.to_numeric(cleaned, errors=\"coerce\")\n\n\nmessy = pd.read_csv(\"orders_messy.csv\")\n\nmessy[\"total\"] = parse_money(messy[\"total\"])\ntotal_sum = round(float(messy[\"total\"].sum()), 2)\nover_200 = int((messy[\"total\"] > 200).sum())\n",
+  "checks": [
+    {
+      "id": "parse-basic",
+      "test": "[float(x) for x in parse_money(pd.Series(['$65.00', '18.00', ' $129.00 ']))] == [65.0, 18.0, 129.0]"
+    },
+    {
+      "id": "parse-thousands",
+      "test": "float(parse_money(pd.Series(['$1,234.50'])).iloc[0]) == 1234.5"
+    },
+    {
+      "id": "parse-bad",
+      "test": "pd.isna(parse_money(pd.Series(['N/A', '$12.00'])).iloc[0])"
+    },
+    {
+      "id": "column-numeric",
+      "test": "pd.api.types.is_float_dtype(messy['total']) and int(messy['total'].isna().sum()) == 0"
+    },
+    {
+      "id": "sum",
+      "test": "round(float(total_sum), 2) == 23500.67"
+    },
+    {
+      "id": "over-200",
+      "test": "int(over_200) == 31"
+    }
+  ]
+}

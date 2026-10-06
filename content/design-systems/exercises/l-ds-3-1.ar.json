@@ -1,0 +1,17 @@
+{
+  "title": "نسّق الـ variants الخاصة بالـ Button بالـ component tokens",
+  "prompt": "يعرض الـ Button قيم الـ props الخاصة به كسمتين `data-variant` و`data-size`. والقاعدة الأساسية `.nw-button` هي الـ variant الثانوي. أضف ثلاث قواعد **لا تحدّد إلا component tokens من نوع `--nw-button-…`** (بلا تعريفات `background` أو `color` أو `padding`):\n\n- `data-variant=\"primary\"`: خلفية الإجراء ونصّه من الـ semantic tokens، وحدّ شفاف.\n- `data-variant=\"danger\"`: خلفية الخطر ونصّه من الـ semantic tokens، وحدّ شفاف.\n- `data-size=\"sm\"`: حشوة 4px عموديًا و12px أفقيًا.\n\nيجب أن يكون الزر الأساسي الصغير صغيرًا وأساسيًا معًا.",
+  "hints": [
+    "اختر العنصر بالسمة: `.nw-button[data-variant=\"primary\"] { … }`.",
+    "في الداخل، خصّص الـ tokens التي تستخدمها القاعدة الأساسية أصلًا، مثل `--nw-button-bg: var(--nw-color-action-bg);`.",
+    "حدّد `--nw-button-border: transparent;` لـ primary وdanger، وtokens الحشوة الاثنين لـ `sm`."
+  ],
+  "explanation": "صار كل variant حفنة من تخصيصات الـ tokens. القاعدة الأساسية تملك *كيف* تتحوّل الـ tokens إلى خصائص CSS، والـ variants تغيّر فقط *أيّ* القيم تتدفّق إليها. ولأن الحجم والـ variant يلمسان tokens مختلفة، يتركّب `data-variant=\"primary\" data-size=\"sm\"` دون قاعدة إضافية، والفريق الذي يحتاج تعديلًا منفردًا يستطيع تخصيص component token واحد بدل مصارعة الـ cascade.",
+  "checks": {
+    "secondary-default": "الزر بلا variant يبقى ثانويًا (أبيض بحدّ رمادي)",
+    "primary": "`data-variant=\"primary\"` يستخدم ألوان الإجراء مع حدّ شفاف",
+    "danger": "`data-variant=\"danger\"` يستخدم ألوان الخطر مع حدّ شفاف",
+    "small": "`data-size=\"sm\"` يقلّص الحشوة ويتركّب مع primary",
+    "tokens-only": "قواعد الـ variant والحجم لا تحدّد إلا tokens من نوع `--nw-button-…`"
+  }
+}

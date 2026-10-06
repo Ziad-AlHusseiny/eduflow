@@ -1,0 +1,16 @@
+{
+  "title": "2025 against target",
+  "prompt": "`sales_2025` holds 2025's non-cancelled order lines, with `quarter` and `channel` columns, and `targets` is the finance team's wide sheet. Build `grid`, a pivot table of revenue with quarters 1 to 4 as rows and channels as columns. Melt `targets` into `targets_long` with the columns `channel`, `quarter` (an integer 1 to 4) and `target`. Then make `vs_target`: `targets_long` plus a `revenue` column with the actual revenue for each channel and quarter. Finally set `beat` to the number of rows where revenue reached the target.",
+  "hints": [
+    "`sales_2025.pivot_table(index=\"quarter\", columns=\"channel\", values=\"revenue\", aggfunc=\"sum\")`.",
+    "`targets.melt(id_vars=\"channel\", var_name=\"quarter\", value_name=\"target\")`, then turn `\"Q1\"` into `1` with `.str[1].astype(int)`.",
+    "Aggregate actuals to the same grain with `groupby([\"channel\", \"quarter\"], as_index=False)[\"revenue\"].sum()`, merge on both keys, and count `(vs_target[\"revenue\"] >= vs_target[\"target\"]).sum()`."
+  ],
+  "explanation": "The grid is for people; the long table is for computing. Melting the targets and aggregating the actuals to the same grain (one row per channel and quarter) makes the comparison a plain merge on two keys, and `validate=\"one_to_one\"` confirms each target met exactly one actual. Cartwheel hit 8 of 12 targets; all four misses came in the first half of the year, and then it beat Q4 everywhere by a wide margin: web Q4 revenue was 87,530 dollars against a 60,000 target. Another clue that something unusual happened in Q4.",
+  "checks": {
+    "grid": "`grid` is 4 quarters \u00d7 3 channels, with web Q4 at about 87,530",
+    "long": "`targets_long` has 12 rows with integer quarters",
+    "vs-target": "`vs_target` has 12 rows and actual revenue adding up to 2025's total",
+    "beat": "`beat` is 8"
+  }
+}

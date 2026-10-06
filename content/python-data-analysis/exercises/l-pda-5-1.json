@@ -1,0 +1,31 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv",
+    "orders.csv"
+  ],
+  "starter": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\norders = orders.merge(items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum(), on=\"order_id\", validate=\"one_to_one\")\norders = orders[orders[\"status\"] != \"cancelled\"]\nvalue = orders[\"revenue\"]\n\n# 1. Median and 90th percentile of order value, each rounded to 2 decimals\nmedian_value = None\np90_value = None\n\n# 2. Share of orders below the mean order value, rounded to 3 decimals\nbelow_mean_share = None\n\n# 3. Upper outlier fence (Q3 + 1.5 * IQR) and the number of orders above it\nupper_fence = None\nn_outliers = None\n\n# 4. A DataFrame indexed by channel with columns count, mean, median of order value\nby_channel = None\n",
+  "solution": "import pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\norders = orders.merge(items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum(), on=\"order_id\", validate=\"one_to_one\")\norders = orders[orders[\"status\"] != \"cancelled\"]\nvalue = orders[\"revenue\"]\n\nmedian_value = round(value.median(), 2)\np90_value = round(value.quantile(0.9), 2)\n\nbelow_mean_share = round((value < value.mean()).mean(), 3)\n\nq1, q3 = value.quantile([0.25, 0.75])\nupper_fence = q3 + 1.5 * (q3 - q1)\nn_outliers = int((value > upper_fence).sum())\n\nby_channel = orders.groupby(\"channel\")[\"revenue\"].agg([\"count\", \"mean\", \"median\"])\nprint(by_channel.round(1))\n",
+  "checks": [
+    {
+      "id": "median",
+      "test": "abs(float(median_value) - 147.26) < 0.01"
+    },
+    {
+      "id": "p90",
+      "test": "abs(float(p90_value) - 505.0) < 0.01"
+    },
+    {
+      "id": "below-mean",
+      "test": "round(float(below_mean_share), 3) == 0.663"
+    },
+    {
+      "id": "fence",
+      "test": "abs(float(upper_fence) - 656.625) < 0.01 and int(n_outliers) == 125"
+    },
+    {
+      "id": "by-channel",
+      "test": "isinstance(by_channel, pd.DataFrame) and list(by_channel.columns) == ['count', 'mean', 'median'] and int(by_channel.loc['web', 'count']) == 1089 and abs(float(by_channel.loc['marketplace', 'median']) - 132.2) < 0.1"
+    }
+  ]
+}

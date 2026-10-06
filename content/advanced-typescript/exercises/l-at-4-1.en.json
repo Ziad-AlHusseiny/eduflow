@@ -1,0 +1,17 @@
+{
+  "title": "Brand the ids, lock the currency",
+  "prompt": "Harden Cartwheel's checkout types:\n\n1. Brand `OrderId`, `CustomerId` and `Cents` so they are distinct from `number` and from each other, and make the three smart constructors return branded values.\n2. Make `add` reject `Money` values in different currencies.\n3. Make `describePayment` handle `cash-on-delivery` (return `'Cash on delivery'`) and add an exhaustiveness check that fails to compile if a payment kind is ever unhandled, and throws at runtime for an unknown kind.",
+  "hints": [
+    "A brand is an intersection with a type-only property: `declare const brand: unique symbol; type Brand<T, B extends string> = T & { readonly [brand]: B };`.",
+    "The smart constructors are the one place to cast: `return n as OrderId;`. For `add`, remember why `C` turns into a union: both arguments are inference sites.",
+    "Write `function assertNever(value: never): never { throw … }` and call it in a `default:` branch with the narrowed value."
+  ],
+  "explanation": "The intersection with a `unique symbol` property makes each branded type a strict subset of `number` that no plain number (or other brand) can satisfy, while costing nothing at runtime. Casting only inside validating constructors means every branded value has been checked. `Money<NoInfer<C>>` makes the second argument check-only, so `C` comes from the first argument and `Money<'EUR'>` is rejected. In `describePayment`, the `default` branch receives whatever the cases did not handle; when that is nothing, it is `never` and `assertNever` compiles, and if a kind slips through at runtime it throws instead of returning `undefined`.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "validates": "`toOrderId` rejects 999 and accepts 1042",
+    "adds": "`add` sums two amounts in the same currency",
+    "cash": "`describePayment` handles cash on delivery",
+    "throws-unknown": "`describePayment` throws for an unknown payment kind"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "services:\n  api:\n    build: .\n    ports:\n      - \"8080:3000\"\n    environment:\n      DATABASE_URL: postgres://notes:notes@localhost:5432/notes\n  db:\n    image: postgres:17\n    ports:\n      - \"5432:5432\"\n    environment:\n      POSTGRES_USER: notes\n      POSTGRES_PASSWORD: notes\n      POSTGRES_DB: notes",
+  "bugLines": [7, 11]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "اختر درجة كثير الحدود دون لمس بيانات الاختبار",
+  "prompt": "باستخدام أربعة features من بيانات السكري، اختر درجة كثير الحدود بأمانة.\n\n1. `val_scores`: قاموس (dict) يربط كل درجة من 1 إلى 6 بقيمة R² الخاصة بها على جزء التحقق. كل نموذج هو `PolynomialFeatures(degree=d, include_bias=False)` متبوعًا بـ `LinearRegression`، مدرَّب على `X_fit, y_fit` ومقيس على `X_val, y_val`.\n2. `best_degree`: الدرجة صاحبة أعلى R² على جزء التحقق.\n3. `test_r2`: أعد تدريب تلك الدرجة على `X_train, y_train` كاملة وقِسها مرة واحدة على `X_test, y_test`.",
+  "hints": [
+    "دالة مساعدة `poly_model(degree)` تُعيد `make_pipeline(PolynomialFeatures(...), LinearRegression())` تُبقي الحلقة قصيرة.",
+    "يعمل الـ dict comprehension هنا: `{d: poly_model(d).fit(X_fit, y_fit).score(X_val, y_val) for d in range(1, 7)}`.",
+    "تُعيد `max(val_scores, key=val_scores.get)` المفتاح صاحب أكبر قيمة."
+  ],
+  "explanation": "تتراجع نتائج التحقق كلما كبرت الدرجة، وبعض الدرجات العليا تصبح سالبة، فيستقر الإجراء على درجة منخفضة. وإعادة التدريب على `X_train` كاملة تستخدم كل صفوف التدريب في النموذج النهائي، ونتيجة الاختبار الوحيدة تقدير غير منحاز لأن بيانات الاختبار لم يكن لها أي دور في الاختيار.",
+  "checks": {
+    "degrees": "يحتوي val_scores على الدرجات من 1 إلى 6",
+    "validation": "نتائج التحقق تأتي من نماذج مدرَّبة على X_fit ومقيسة على X_val",
+    "best": "best_degree هي صاحبة أعلى نتيجة تحقق",
+    "test-score": "test_r2 يأتي من الدرجة المختارة بعد إعادة تدريبها على بيانات التدريب كلها"
+  }
+}

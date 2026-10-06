@@ -1,0 +1,18 @@
+{
+  "title": "أصلح نموذج الدفع في Ticketly",
+  "prompt": "يعتمد نموذج الدفع على الـ placeholders، ويضع سؤالًا عائمًا فوق أزرار radio بلا labels، ويعرض خطأ البريد الإلكتروني بطريقة لا يلاحظها إلا المبصرون. أصلحه:\n\n1. أعطِ `#full-name` و`#email` وزرّي الـ radio عنصر `<label>` حقيقيًا (\"Full name\"، \"Email\"، \"Standing\"، \"Seated\").\n2. اجمع أزرار الـ radio في `<fieldset>` يكون الـ `<legend>` فيه \"Ticket type\".\n3. أضف `autocomplete=\"name\"` و`autocomplete=\"email\"`، واجعل حقل البريد `type=\"email\"`.\n4. في السكربت، حين يكون البريد غير صالح: اضبط `aria-invalid=\"true\"`، واجعل `aria-describedby` تشير إلى `#email-error`، وانقل التركيز إلى حقل البريد. وحين يصبح صالحًا، احذف الخاصيتين.",
+  "hints": [
+    "إما <label for=\"email\">Email</label> قبل حقل الإدخال، أو لُفّ زر الـ radio بـ <label> … Standing</label>.",
+    "يجب أن يكون الـ legend أول عنصر ابن داخل الـ fieldset.",
+    "في فرع الخطأ: email.setAttribute('aria-invalid', 'true'); email.setAttribute('aria-describedby', 'email-error'); email.focus();"
+  ],
+  "explanation": "الـ labels تمنح كل حقل اسمًا يبقى بعد الكتابة، والـ fieldset يتيح لقارئات الشاشة أن تُعلن \"Ticket type, grouping\" قبل الخيارات. وقيم autocomplete تتيح للمتصفّحات ومديري كلمات المرور تعبئة النموذج، وهذا ما يطلبه معيار 1.3.5. صار السكربت يربط الخطأ بثلاث طرق: `aria-invalid` تقول إن الحقل خاطئ، و`aria-describedby` تجعل الرسالة وصفًا له، و`focus()` تأخذ المستخدم إليه مباشرة، فيقرأ NVDA: \"Email, edit text, invalid entry, Enter an email address like name@example.com\". وحذف الخاصيتين عند النجاح يمنع قراءة الخطأ القديم مرة أخرى، لأن العنصر المُشار إليه يُعلَن حتى وهو مخفي.",
+  "checks": {
+    "labels": "لحقول الإدخال الأربعة labels بالنص الصحيح",
+    "fieldset": "أزرار الـ radio داخل fieldset أول عنصر ابن فيه هو الـ legend \"Ticket type\"",
+    "autocomplete": "لحقلي الاسم والبريد قيم autocomplete، وحقل البريد type=\"email\"",
+    "error-linked": "البريد غير الصالح يضبط aria-invalid ويربط رسالة الخطأ المرئية بـ aria-describedby",
+    "error-focus": "ينتقل التركيز إلى حقل البريد بعد المحاولة الفاشلة",
+    "error-clears": "البريد الصالح يحذف aria-invalid ويُخفي رسالة الخطأ"
+  }
+}

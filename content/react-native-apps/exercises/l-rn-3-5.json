@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const ROUTES = [\n  '(tabs)/index',\n  '(tabs)/stats',\n  'settings/index',\n  'settings/units',\n  'hikes/new',\n  'hikes/[id]',\n  'hikes/[id]/photos',\n  'trails/[...path]',\n];\n\n// Return { route, params } for the best matching route file, or null.\nfunction matchRoute(url, routes) {\n  const path = url.replace(/^\\//, '');\n  const route = routes.find((r) => r === path);\n  return route ? { route, params: {} } : null;\n}\n\nconsole.log(JSON.stringify(matchRoute('/hikes/42?units=mi', ROUTES)));\n"
+  },
+  "solution": {
+    "js": "const ROUTES = [\n  '(tabs)/index',\n  '(tabs)/stats',\n  'settings/index',\n  'settings/units',\n  'hikes/new',\n  'hikes/[id]',\n  'hikes/[id]/photos',\n  'trails/[...path]',\n];\n\nfunction segmentsOf(route) {\n  const segs = route.split('/').filter((s) => !/^\\(.+\\)$/.test(s));\n  if (segs[segs.length - 1] === 'index') segs.pop();\n  return segs;\n}\n\nfunction tryMatch(route, parts) {\n  const pattern = segmentsOf(route);\n  const params = {};\n  let rank = '';\n  for (let i = 0; i < pattern.length; i++) {\n    const seg = pattern[i];\n    const catchAll = seg.match(/^\\[\\.\\.\\.(\\w+)\\]$/);\n    const dynamic = seg.match(/^\\[(\\w+)\\]$/);\n    if (catchAll) {\n      const rest = parts.slice(i);\n      if (rest.length === 0) return null;\n      params[catchAll[1]] = rest;\n      return { route, params, rank: rank + '1' };\n    }\n    if (i >= parts.length) return null;\n    if (dynamic) {\n      params[dynamic[1]] = parts[i];\n      rank += '2';\n    } else if (seg === parts[i]) {\n      rank += '3';\n    } else {\n      return null;\n    }\n  }\n  return pattern.length === parts.length ? { route, params, rank } : null;\n}\n\nfunction matchRoute(url, routes) {\n  const [path, query = ''] = url.split('?');\n  const parts = path.split('/').filter(Boolean);\n  let best = null;\n  for (const route of routes) {\n    const m = tryMatch(route, parts);\n    if (m && (!best || m.rank > best.rank)) best = m;\n  }\n  if (!best) return null;\n  const params = { ...best.params };\n  for (const [key, value] of new URLSearchParams(query)) params[key] = value;\n  return { route: best.route, params };\n}\n\nconsole.log(JSON.stringify(matchRoute('/hikes/42?units=mi', ROUTES)));\n"
+  },
+  "checks": [
+    {
+      "id": "groups-index",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); return typeof matchRoute === 'function' && m('/')?.route === '(tabs)/index' && m('/stats')?.route === '(tabs)/stats' && m('/settings')?.route === 'settings/index' && m('/settings/units')?.route === 'settings/units';"
+    },
+    {
+      "id": "dynamic",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); const a = m('/hikes/42'); const b = m('/hikes/42/photos'); return a?.route === 'hikes/[id]' && a.params.id === '42' && b?.route === 'hikes/[id]/photos' && b.params.id === '42';"
+    },
+    {
+      "id": "static-wins",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); return m('/hikes/new')?.route === 'hikes/new';"
+    },
+    {
+      "id": "catch-all",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); const a = m('/trails/alps/mont-blanc'); return a?.route === 'trails/[...path]' && Array.isArray(a.params.path) && a.params.path.join('/') === 'alps/mont-blanc' && m('/trails') === null;"
+    },
+    {
+      "id": "query-slash",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); const a = m('/hikes/7?units=mi'); return a?.route === 'hikes/[id]' && a.params.id === '7' && a.params.units === 'mi' && m('/stats/')?.route === '(tabs)/stats';"
+    },
+    {
+      "id": "no-match",
+      "test": "const R = ['(tabs)/index', '(tabs)/stats', 'settings/index', 'settings/units', 'hikes/new', 'hikes/[id]', 'hikes/[id]/photos', 'trails/[...path]']; const m = (u) => matchRoute(u, R); return m('/nope') === null && m('/settings/units/extra') === null;"
+    }
+  ]
+}

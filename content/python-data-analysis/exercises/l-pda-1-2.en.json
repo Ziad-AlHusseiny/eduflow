@@ -1,0 +1,16 @@
+{
+  "title": "Turn a messy row into numbers",
+  "prompt": "A row from the messy export gives you `price_text = \" $129.00\"`, `quantity_text = \"2\"` and `discount = 0.15`. Create `price` (a float), `quantity` (an int), `line_revenue` (quantity × price × (1 − discount), rounded to 2 decimals) and `is_large` (a boolean: `True` when `line_revenue` is 200 or more). Calculate from the variables; don't type the answers in by hand.",
+  "hints": [
+    "`float()` and `int()` convert text, but only clean text: digits and a decimal point.",
+    "Remove the space with `.strip()` and the dollar sign with `.replace(\"$\", \"\")` before calling `float()`.",
+    "`line_revenue = round(quantity * price * (1 - discount), 2)` and `is_large = line_revenue >= 200`."
+  ],
+  "explanation": "`price_text.strip().replace(\"$\", \"\")` produces `\"129.00\"`, which `float()` accepts. `int(\"2\")` gives the integer 2. The revenue formula multiplies three numbers; without `round()` you would get `219.29999999999998` because of how floats are stored. A comparison like `line_revenue >= 200` already evaluates to `True` or `False`, so you assign it directly; there is no need for an `if`.",
+  "checks": {
+    "price-float": "`price` is the float 129.0",
+    "quantity-int": "`quantity` is the integer 2",
+    "revenue": "`line_revenue` is 219.3",
+    "is-large": "`is_large` is `True`"
+  }
+}

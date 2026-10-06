@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\n\nconst hikes = [\n  { id: 'h1', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4 },\n  { id: 'h2', name: 'Old Mill Creek', date: '2026-09-12', distanceKm: 5.1 },\n  { id: 'h3', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2 },\n  { id: 'h4', name: 'Eagle Point', date: '2025-10-02', distanceKm: 14.0 },\n  { id: 'h5', name: 'Fern Gully', date: '2026-09-28', distanceKm: 3.6 },\n];\n\n// Return SectionList sections: [{ title: 'October 2026', data: [...] }, ...]\nfunction groupHikesByMonth(hikes) {\n  const sections = {};\n  for (const hike of hikes) {\n    const month = MONTHS[Number(hike.date.slice(5, 7))];\n    if (!sections[month]) sections[month] = [];\n    sections[month].push(hike);\n  }\n  return Object.keys(sections).map((title) => ({ title, data: sections[title] }));\n}\n\nconsole.log(JSON.stringify(groupHikesByMonth(hikes), null, 2));\n"
+  },
+  "solution": {
+    "js": "const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\n\nconst hikes = [\n  { id: 'h1', name: 'Ridge Loop', date: '2026-10-04', distanceKm: 8.4 },\n  { id: 'h2', name: 'Old Mill Creek', date: '2026-09-12', distanceKm: 5.1 },\n  { id: 'h3', name: 'Lake Trail', date: '2026-10-19', distanceKm: 11.2 },\n  { id: 'h4', name: 'Eagle Point', date: '2025-10-02', distanceKm: 14.0 },\n  { id: 'h5', name: 'Fern Gully', date: '2026-09-28', distanceKm: 3.6 },\n];\n\nfunction groupHikesByMonth(hikes) {\n  const sorted = [...hikes].sort((a, b) => b.date.localeCompare(a.date));\n  const sections = [];\n  for (const hike of sorted) {\n    const year = hike.date.slice(0, 4);\n    const month = MONTHS[Number(hike.date.slice(5, 7)) - 1];\n    const title = `${month} ${year}`;\n    const last = sections[sections.length - 1];\n    if (last && last.title === title) last.data.push(hike);\n    else sections.push({ title, data: [hike] });\n  }\n  return sections;\n}\n\nconsole.log(JSON.stringify(groupHikesByMonth(hikes), null, 2));\n"
+  },
+  "checks": [
+    {
+      "id": "titles",
+      "test": "const sample = [{ id: 'a', date: '2026-10-04' }, { id: 'b', date: '2026-09-12' }, { id: 'c', date: '2026-10-19' }, { id: 'd', date: '2025-10-02' }, { id: 'e', date: '2026-09-28' }]; const s = groupHikesByMonth(sample); return Array.isArray(s) && s.map((x) => x.title).join('|') === 'October 2026|September 2026|October 2025';"
+    },
+    {
+      "id": "items-newest-first",
+      "test": "const sample = [{ id: 'a', date: '2026-10-04' }, { id: 'b', date: '2026-09-12' }, { id: 'c', date: '2026-10-19' }, { id: 'd', date: '2025-10-02' }, { id: 'e', date: '2026-09-28' }]; const s = groupHikesByMonth(sample); return s[0].data.map((h) => h.id).join() === 'c,a' && s[1].data.map((h) => h.id).join() === 'e,b' && s[2].data.map((h) => h.id).join() === 'd';"
+    },
+    {
+      "id": "january-december",
+      "test": "const s = groupHikesByMonth([{ id: 'x', date: '2026-01-31' }, { id: 'y', date: '2025-12-01' }]); return s.length === 2 && s[0].title === 'January 2026' && s[1].title === 'December 2025';"
+    },
+    {
+      "id": "no-mutation",
+      "test": "const sample = [{ id: 'a', date: '2026-10-04' }, { id: 'b', date: '2026-09-12' }, { id: 'c', date: '2026-10-19' }, { id: 'd', date: '2025-10-02' }, { id: 'e', date: '2026-09-28' }]; const ids = sample.map((h) => h.id).join(); groupHikesByMonth(sample); return sample.map((h) => h.id).join() === ids;"
+    },
+    {
+      "id": "empty",
+      "test": "const s = groupHikesByMonth([]); return Array.isArray(s) && s.length === 0;"
+    }
+  ]
+}

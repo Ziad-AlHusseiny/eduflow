@@ -1,0 +1,18 @@
+{
+  "title": "Triage Ticketly against WCAG 2.2 AA",
+  "prompt": "A tester sent you six findings from Ticketly's checkout. Your team targets **WCAG 2.2 Level AA**. Select every finding that is a real AA (or A) failure and belongs in the bug tracker. Leave out anything that passes, or that only fails a AAA criterion.",
+  "hints": [
+    "For each finding, name the success criterion first, then check its level in the quick reference.",
+    "Focus Appearance (2.4.13) is AAA. Target Size (Minimum) has an exception for links inside a sentence.",
+    "Four of the six are AA or A failures."
+  ],
+  "explanation": "Four findings fail Level AA: the drag-only seat range (2.5.7 Dragging Movements), the banner that fully covers a focused button (2.4.11 Focus Not Obscured), the 16 px adjacent quantity buttons (2.5.8 Target Size), and the reverse-the-letters login challenge, a cognitive function test with no alternative (3.3.8 Accessible Authentication). The thin dotted focus ring is visible, so it passes 2.4.7 Focus Visible; the stricter 2.4.13 Focus Appearance is AAA. The small link inside the terms paragraph is covered by the inline exception in 2.5.8. Triage matters: a report that mixes AAA nice-to-haves with AA failures gets ignored.",
+  "options": {
+    "seat-drag": { "text": "Choosing a block of seats only works by dragging a selection rectangle across the seat map.", "why": "Fails 2.5.7 Dragging Movements (AA). Users need a single-pointer way, such as clicking seats one at a time." },
+    "focus-hidden": { "text": "When you Tab to the \"Checkout\" button, the sticky cookie banner covers it completely.", "why": "Fails 2.4.11 Focus Not Obscured (Minimum) (AA): the focused component is entirely hidden by author content." },
+    "tiny-qty": { "text": "The ticket quantity \"−\" and \"+\" icon buttons are 16 × 16 px and touch each other.", "why": "Fails 2.5.8 Target Size (Minimum) (AA). They are under 24 × 24 px and have no spacing to compensate." },
+    "focus-thin": { "text": "The focus ring is a 1 px dotted outline with good contrast against the background.", "why": "Passes AA. Focus is visible (2.4.7). Only 2.4.13 Focus Appearance, a AAA criterion, asks for a thicker indicator." },
+    "reverse-code": { "text": "To sign in, users must type the letters of a displayed word in reverse order, with no other option.", "why": "Fails 3.3.8 Accessible Authentication (Minimum) (AA): it is a cognitive function test with no alternative or helper." },
+    "inline-link": { "text": "A \"refund policy\" link inside a paragraph of terms is only 14 px tall.", "why": "Passes. Targets inside a sentence or block of text are exempt from 2.5.8 under the inline exception." }
+  }
+}

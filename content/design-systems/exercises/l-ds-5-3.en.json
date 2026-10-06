@@ -1,0 +1,17 @@
+{
+  "title": "Write the adoption scan",
+  "prompt": "Write `measureAdoption(root)` so it scans the `<button>` elements inside `root` (a document or any element) and returns `{ total, system, percent }`:\n\n- `total`: the number of `<button>` elements,\n- `system`: how many have `data-nw-component=\"Button\"`, the marker only the real component renders (the `nw-button` class doesn't count; teams copied it),\n- `percent`: `system / total` as a whole number rounded with `Math.round`, or `0` when there are no buttons.\n\nThen write the page result into `#report` as `4 of 8 buttons use Northwind UI (50%)`, using your computed numbers.",
+  "hints": [
+    "`[...root.querySelectorAll('button')]` gives you an array of every button inside `root`.",
+    "`button.dataset.nwComponent` reads `data-nw-component`. Filter on it being `'Button'`.",
+    "Build the report with a template literal: `${result.system} of ${result.total} buttons use Northwind UI (${result.percent}%)`."
+  ],
+  "explanation": "Counting by the data attribute measures what you actually care about: elements rendered by the real system component. Counting the `nw-button` class would report 6 of 8 (75%) here, because two teams copied the class into their own buttons, and you'd never find out that those forks exist. Accepting any `root` lets the same function report per page section or per team area, and computing on demand means the numbers stay right as the page changes.",
+  "checks": {
+    "counts-page": "`measureAdoption(document)` returns 8 buttons, 4 from the system, 50%",
+    "ignores-copies": "Copied `nw-button` classes don't count as adoption",
+    "scoped": "Scanning `#settings` alone returns 1 of 3 (33%)",
+    "live": "The count updates when a system button is added to the page",
+    "report": "`#report` shows \"4 of 8\" and \"50%\""
+  }
+}

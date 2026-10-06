@@ -1,0 +1,18 @@
+{
+  "title": "Add revenue and labels to order lines",
+  "prompt": "Add three columns to `items`: `revenue` (quantity \u00d7 unit price \u00d7 (1 \u2212 discount)), `discount_band` (`\"none\"` when the discount is 0, `\"small\"` when it is above 0 and at most 0.10, `\"big\"` when it is above 0.10), and `is_bulk` (a boolean, `True` when quantity is 4 or more). Then set `total_revenue` to the sum of `revenue`, rounded to 2 decimals. Keep all 3,991 rows.",
+  "hints": [
+    "Assigning to a new column name, `items[\"revenue\"] = ...`, creates the column for every row.",
+    "For the bands, set `items[\"discount_band\"] = \"none\"` first, then overwrite with `items.loc[mask, \"discount_band\"] = \"small\"` and again for `\"big\"`, broadest condition first.",
+    "A comparison already returns booleans: `items[\"is_bulk\"] = items[\"quantity\"] >= 4`."
+  ],
+  "explanation": "Column arithmetic computes every line's revenue at once, and the total, 471,940.08, matches the lesson. The bands follow the default-then-overwrite pattern: every row starts as `none`, discounted rows become `small`, and rows above 10% are overwritten to `big`, giving 3,367 / 231 / 393. `np.select` with a list of conditions would also work. `is_bulk` needs no `np.where` at all: a comparison is already a boolean column. Every change was a direct assignment to `items`, which is the Copy-on-Write-safe way to modify a DataFrame.",
+  "checks": {
+    "revenue-col": "`revenue` exists and line 4 (index 3) is 270.90",
+    "revenue-discounted": "Discounts are applied in `revenue`",
+    "bands": "`discount_band` splits lines into none 3,367 / small 231 / big 393",
+    "bulk": "`is_bulk` is a boolean column with 126 bulk lines",
+    "total": "`total_revenue` is 471,940.08",
+    "rows-kept": "`items` still has all 3,991 rows"
+  }
+}

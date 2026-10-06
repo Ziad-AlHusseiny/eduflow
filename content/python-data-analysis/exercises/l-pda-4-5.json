@@ -1,0 +1,27 @@
+{
+  "kind": "python",
+  "files": [
+    "order_items.csv",
+    "orders.csv"
+  ],
+  "starter": "import numpy as np\nimport pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\norders = orders.merge(items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum(), on=\"order_id\", validate=\"one_to_one\")\norders = orders[orders[\"status\"] != \"cancelled\"]\n\n# 1. cust: one row per customer_id with columns orders (count) and spend (sum of revenue)\ncust = None\n\n# 2. Column \"rank\": 1 for the highest spender, ties share the lowest rank (\"min\")\n\n# 3. Column \"band\": spend bands with edges 0, 250, 500, 1000, 2000, infinity\n#    and labels \"<250\", \"250-500\", \"500-1k\", \"1k-2k\", \"2k+\"\n\n# 4. Share of all revenue from the top 10% of customers by spend (top 50), rounded to 3 decimals\ntop10_share = None\n",
+  "solution": "import numpy as np\nimport pandas as pd\n\nitems = pd.read_csv(\"order_items.csv\")\norders = pd.read_csv(\"orders.csv\", parse_dates=[\"order_date\"])\nitems[\"revenue\"] = items[\"quantity\"] * items[\"unit_price\"] * (1 - items[\"discount\"])\norders = orders.merge(items.groupby(\"order_id\", as_index=False)[\"revenue\"].sum(), on=\"order_id\", validate=\"one_to_one\")\norders = orders[orders[\"status\"] != \"cancelled\"]\n\ncust = orders.groupby(\"customer_id\").agg(orders=(\"order_id\", \"count\"), spend=(\"revenue\", \"sum\"))\n\ncust[\"rank\"] = cust[\"spend\"].rank(ascending=False, method=\"min\")\n\ncust[\"band\"] = pd.cut(cust[\"spend\"], bins=[0, 250, 500, 1000, 2000, np.inf],\n                      labels=[\"<250\", \"250-500\", \"500-1k\", \"1k-2k\", \"2k+\"])\n\ntop = cust.nlargest(50, \"spend\")\ntop10_share = round(top[\"spend\"].sum() / cust[\"spend\"].sum(), 3)\nprint(cust[\"band\"].value_counts().sort_index(), top10_share)\n",
+  "checks": [
+    {
+      "id": "cust",
+      "test": "isinstance(cust, pd.DataFrame) and len(cust) == 503 and {'orders', 'spend'} <= set(cust.columns)"
+    },
+    {
+      "id": "rank",
+      "test": "'rank' in cust.columns and int(cust['rank'].min()) == 1 and int((cust.set_index('customer_id') if 'customer_id' in cust.columns else cust).loc[331, 'rank']) == 2"
+    },
+    {
+      "id": "band",
+      "test": "'band' in cust.columns and int(cust['band'].isna().sum()) == 0 and cust['band'].astype(str).value_counts().to_dict() == {'<250': 143, '500-1k': 118, '1k-2k': 93, '250-500': 92, '2k+': 57}"
+    },
+    {
+      "id": "top10",
+      "test": "round(float(top10_share), 3) == np.float64(0.355)"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Replace the loops with closures",
+  "prompt": "Pocket Budget's summary screen needs four values. Fill each blank so that `large` holds the expenses over 50, `titles` holds their titles, `spent` is the total of all amounts, and `biggestFirst` lists every expense from the largest amount to the smallest.",
+  "hints": [
+    "Each of the first three blanks is the name of a collection method from this lesson.",
+    "`reduce` takes a starting value and a closure that combines the running total (`$0`) with the next element (`$1`).",
+    "`sorted(by:)` asks \"should `$0` come before `$1`?\". For largest first, the answer is yes when `$0` is bigger."
+  ],
+  "explanation": "`filter` keeps elements for which the closure returns `true`, `map` turns each expense into its title, and `reduce(0)` folds every amount into one total. `sorted` puts `$0` first whenever the closure returns `true`, so `$0.amount > $1.amount` gives descending order; `<` would put the cheapest first.\n\n```swift\nlet large = expenses.filter { $0.amount > 50 }\nlet titles = large.map { $0.title }\nlet spent = expenses.reduce(0) { $0 + $1.amount }\nlet biggestFirst = expenses.sorted { $0.amount > $1.amount }\n```"
+}

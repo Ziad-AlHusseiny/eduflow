@@ -1,0 +1,14 @@
+{
+  "title": "أعِد بناء الـ utility types",
+  "prompt": "باستخدام الـ mapped types وحدها (بلا `Partial` أو `Required` أو `Pick` أو `Omit` أو `Record` المدمجة)، نفّذ:\n\n- `MyPartial<T>` و`MyRequired<T>` و`MyPick<T, K>` و`MyOmit<T, K>`، بسلوك يطابق المدمجة.\n- `FieldState<T>`: لكل خاصية، `{ value: T[K]; error: string | null; touched: boolean }`.\n- `Setters<T>`: لكل خاصية `name`، خاصية `setName` هي دالة تأخذ نوع تلك الخاصية وتُعيد `void`.\n\nثم اجعل `initialState` تمرّ في الترجمة بنوع إرجاعها الجديد.",
+  "hints": [
+    "الحلقة الأساسية هي `{ [K in keyof T]: … }`. أضف `?` بعد المفتاح للاختيارية، و`-?` لإزالتها.",
+    "في `MyOmit`، أعِد تسمية المفاتيح بـ `as` وأرسل المحذوفة منها إلى `never`: `as Exclude<P, K>`. استخدام `Exclude` المدمجة مسموح.",
+    "في `Setters`، أعِد التسمية بـ template literal: ``as `set${Capitalize<K & string>}` ``. وفي `initialState`، تُعيد `Object.fromEntries` النوع `{ [k: string]: … }`، فحوّل نتيجتها مرة واحدة إلى `FieldState<T>`."
+  ],
+  "explanation": "كل utility type حلقة تكرار على المفاتيح. المرور على `keyof T` ينسخ المعدِّلات، فتضيف `MyPartial` الرمز `?`، وتُزيله `MyRequired` بـ `-?` (التي تُسقط أيضًا الـ `undefined` الضمني)، وتحتفظ `MyPick` بالمعدِّلات الأصلية لأن `K` مقيَّد بـ `keyof T`. وتعمل `MyOmit` لأن المفتاح المحوَّل إلى `never` يختفي. أما `Setters` فتُظهر الاستخدام الآخر لـ `as`: إعادة تسمية كل مفتاح بـ template literal، حيث تصفّي `K & string` مفاتيح `number` و`symbol` التي لا تستطيع `Capitalize` التعامل معها. ولا تستطيع `Object.fromEntries` معرفة مفاتيحك، فيمنح تحويلٌ واحد موثّق داخل `initialState` المستدعين نوعًا دقيقًا.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ، بما فيها كل اختبارات الأنواع",
+    "runtime": "`initialState` تبني لكل حقل حالة غير ملموسة وخالية من الأخطاء"
+  }
+}

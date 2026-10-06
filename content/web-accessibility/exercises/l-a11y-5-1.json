@@ -1,0 +1,11 @@
+{
+  "kind": "spot-bug",
+  "language": "html",
+  "code": "<main>\n  <h1>Harbour Lights 2026</h1>\n  <img src=\"crowd.jpg\" alt=\"image\">\n  <p class=\"section-title\">Tickets</p>\n  <label for=\"qty\">Quantity</label>\n  <input id=\"qty\" type=\"number\" min=\"1\" max=\"6\" value=\"1\">\n  <button type=\"button\" onclick=\"addToBasket()\">Add to basket</button>\n  <p id=\"basket-status\"></p>\n  <button type=\"button\" aria-label=\"Book\">Reserve seats</button>\n  <a href=\"/faq\">Festival FAQ</a>\n</main>",
+  "bugLines": [
+    3,
+    4,
+    8,
+    9
+  ]
+}

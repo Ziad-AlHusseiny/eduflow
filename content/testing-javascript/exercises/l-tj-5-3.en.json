@@ -1,0 +1,17 @@
+{
+  "title": "Kill the surviving mutants",
+  "prompt": "This `settleUp` suite passes, but Stryker's report (copied into the starter's comment) lists three mutants that **survived** it: `Math.min` changed to `Math.max`, the zero-sum check disabled, and the minus sign dropped when recording what a debtor owes. Last month's code review found a fourth bug the suite also misses: `from`/`to` swapped in each transfer.\n\nWrite the tests that kill all four, without breaking the suite on the real code. The subject is the `settleUp` you built in the TDD lesson.",
+  "hints": [
+    "`toHaveLength(1)` can't tell a correct transfer from a wrong one. Assert the whole transfer with `toEqual([{ from: 'Ben', to: 'Ana', amountCents: 500 }])`; that kills two mutants at once.",
+    "`Math.min` and `Math.max` agree whenever the debtor owes exactly what the creditor is owed. Use one debtor and two creditors with different amounts, such as `{ Ana: -1000, Ben: 600, Cai: 400 }`.",
+    "For the disabled check, pass balances that don't add up to zero and expect a throw: `expect(() => settleUp({ Ana: 500, Ben: -400 })).toThrow()`."
+  ],
+  "explanation": "Each survivor maps to one missing assertion. The swapped direction and the dropped minus sign both survived because `toHaveLength(1)` never looked inside the transfer; asserting the exact transfer kills both (one produces Ana paying Ben, the other a transfer of -500). `Math.max` survived because in every test the debtor owed exactly what the creditor was owed, so `min` and `max` agreed; with one debtor owing 1000 and creditors owed 600 and 400, `max` pays Ben 1000 and stops, so the exact list fails. The zero-sum check survived because no test ever sent unbalanced input. Notice what you **didn't** need: a test of the sort order for large groups. That mutant would be equivalent in many cases, and pinning it would test the implementation, not the behaviour.",
+  "checks": {
+    "passes": "All your tests pass against the real settleUp",
+    "catches-min-to-max": "Kills the Math.min → Math.max mutant",
+    "catches-no-balance-check": "Kills the mutant with the zero-sum check disabled",
+    "catches-unary-sign": "Kills the mutant that drops the minus sign for debtors",
+    "catches-swapped-direction": "Kills the mutant that swaps from and to"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "title": "حوّل الطلب إلى discriminated union",
+  "prompt": "استبدل `Order` المليء بالحقول الاختيارية بـ discriminated union من خمسة أشكال (واحد لكل `status`)، يكون فيه كل حقل تملكه الحالة إلزاميًا، والحقول التي لا تملكها غائبة:\n\n- `processing`: `id`\n- `shipped`: `id`، `trackingNumber`\n- `delivered`: `id`، `trackingNumber`، `deliveredAt`\n- `cancelled`: `id`، `cancelReason`\n- `returned`: `id`، `trackingNumber`، `deliveredAt`، `refundCents`\n\nثم غيّر `ship` بحيث لا تقبل إلا طلبًا قيد المعالجة وتُعيد طلبًا مشحونًا. يجب أن تصبح أسطر `@ts-expect-error` الثلاثة أخطاءً حقيقية، وألّا تحتاج `describe` إلى `!` بعد الآن.",
+  "hints": [
+    "اكتب نوع كائن لكل حالة، يكون فيه `status` قيمة نصية حرفية واحدة، واجمعها بـ `|`.",
+    "تسمية الأشكال (`ProcessingOrder` و`ShippedOrder`…) تتيح لك استخدامها في توقيع `ship`.",
+    "`function ship(order: ProcessingOrder, trackingNumber: string): ShippedOrder`"
+  ],
+  "explanation": "صار كل شكل يحمل البيانات التي تملكها حالته بالضبط، فالكائن الحرفي الذي لا يحتوي `trackingNumber` لا يمكن أن يكون طلبًا مشحونًا، والحقل الزائد `deliveredAt` في طلب ملغى يُعلَّم. داخل كل `case`، يضيّق فحص `status` النوعَ `order` إلى شكل واحد، فيصبح `refundCents` من نوع `number` عادي ولا حاجة إلى `!`. وتحديد نوع `ship` بـ `ProcessingOrder` مدخلًا و`ShippedOrder` مخرجًا ينقل القاعدة \"لا تُشحن إلا الطلبات قيد المعالجة\" من تعليق في مراجعة الكود إلى الـ compiler.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ: الحالات المستحيلة الثلاث كلها مرفوضة",
+    "ships": "`ship` تُعيد طلبًا مشحونًا فيه رقم التتبّع والمعرّف نفسه",
+    "describes": "`describe` ما زالت تصف الطلبات المرتجعة والملغاة"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Connect and sync the portfolio",
+  "prompt": "Fill in the blanks: register the GitHub repository as `origin`, push `main` for the first time so it tracks `origin/main`, and later check for new commits on GitHub without changing your branch or files.",
+  "hints": [
+    "`git remote` has a subcommand that registers a new name and URL.",
+    "The push flag that records the upstream is a single letter, short for upstream.",
+    "One of the four sync commands downloads without integrating."
+  ],
+  "explanation": "`git remote add origin <url>` names the GitHub URL `origin`. `git push -u origin main` uploads `main` and sets `origin/main` as its upstream, so a bare `git push` or `git pull` works from then on. `git fetch` updates `origin/main` without touching `main` or your files; `git log main..origin/main` then lists exactly what you'd get by pulling.",
+  "checks": {}
+}

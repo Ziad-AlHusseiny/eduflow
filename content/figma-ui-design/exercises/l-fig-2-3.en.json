@@ -1,0 +1,11 @@
+{
+  "title": "Audit the Habit detail spacing",
+  "prompt": "A contractor sent the spacing spec for Steady's Habit detail screen as JSON. Steady uses an 8-point scale with a 4-point half step: **4, 8, 12, 16, 20, 24, 32, 48**, and line heights on multiples of 4. Select every line with a value that is off the system.",
+  "hints": [
+    "Check every number against the scale, including padding inside small components.",
+    "Radius and cell sizes count too, but they are all fine here. Look closely at the paddings.",
+    "Two lines have a padding value that is not a multiple of 4."
+  ],
+  "explanation": "Line 5: `statCard` padding **14** is off the scale. Use **16**, the same padding as other cards, so the stat cards line up with the streak banner. Line 8: `editButton` horizontal padding **18** is off the scale. Use **16** (or 20 if the label needs more air); with a 48 px height and a 12 px radius, 16 matches the rest of the kit. Everything else is on the system: 20, 24 and 32 for the screen, 16 and 8 for gaps, a 40 px calendar cell, and line heights of 36 and 16.",
+  "checks": {}
+}

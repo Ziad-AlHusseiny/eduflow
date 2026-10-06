@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cascade",
+    "term": "Cascade",
+    "definition": "الخوارزمية التي يستخدمها المتصفّح لاختيار قيمة واحدة حين تستهدف عدّة تصريحات الخاصية نفسها على العنصر نفسه: المصدر والأهمية، ثم الأنماط المضمّنة، ثم الـ layers، ثم الـ specificity، ثم ترتيب الظهور.",
+    "lesson": "l-css-1-1"
+  },
+  {
+    "id": "inheritance",
+    "term": "الوراثة (Inheritance)",
+    "definition": "حين لا يستهدف أيّ تصريح خاصيةً موروثة مثل `color` أو `font-family`، يأخذ العنصر القيمة المحسوبة لعنصره الأب؛ أما الخصائص غير الموروثة فترجع إلى قيمتها الابتدائية.",
+    "lesson": "l-css-1-1"
+  },
+  {
+    "id": "specificity",
+    "term": "Specificity",
+    "definition": "وزن الـ selector، ويُحسب ثلاثة أعداد منفصلة (الـ IDs؛ ثم الـ classes والسمات والـ pseudo-classes؛ ثم الأنواع والـ pseudo-elements) تُقارَن عمودًا بعمود، ولا تُجمع معًا أبدًا.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "where-pseudo-class",
+    "term": ":where()",
+    "definition": "pseudo-class تطابق كما تطابق `:is()` لكن الـ specificity فيها صفر دائمًا، ما يجعلها مثالية لأنماط إعادة الضبط والأنماط الأساسية التي يجب أن تتجاوزها الـ components بسهولة.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "is-pseudo-class",
+    "term": ":is()",
+    "definition": "pseudo-class تطابق أيّ selector في قائمتها وتأخذ specificity أدقّ وسيط فيها؛ وتستخدم قائمة selectors متسامحة، فلا يُسقط وسيط واحد غير صالح القاعدة كلها.",
+    "lesson": "l-css-1-2"
+  },
+  {
+    "id": "cascade-layer",
+    "term": "طبقة الـ cascade (Cascade layer)",
+    "definition": "مجموعة مسمّاة من القواعد تُنشأ بـ `@layer`. الـ layers المُعلنة لاحقًا تتغلّب على السابقة قبل مقارنة الـ specificity، والأنماط خارج الـ layers تتغلّب على كل الـ layers في التصريحات العادية.",
+    "lesson": "l-css-1-3"
+  },
+  {
+    "id": "custom-property",
+    "term": "Custom property",
+    "definition": "خاصية يبدأ اسمها بشرطتين، مثل `--track-color`، وتُقرأ بـ `var()`. وهي موروثة افتراضيًا، وتُستبدل حيث تُستخدم، في وقت حساب القيمة.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "invalid-at-computed-value-time",
+    "term": "غير صالح في وقت حساب القيمة (Invalid at computed-value time)",
+    "definition": "ما يحدث حين يُنتج الاستبدال في `var()` قيمة لا تستطيع الخاصية استخدامها: تتصرّف الخاصية كأنها غير مضبوطة، فتأخذ قيمتها الموروثة أو الابتدائية بدل تصريح سابق.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "at-property",
+    "term": "@property",
+    "definition": "قاعدة at-rule تسجّل custom property بصيغة وعلامة للوراثة وقيمة ابتدائية، فيستطيع المتصفّح فحص صحّتها والانتقال بين قيمها تدريجيًا في الـ transitions والحركات.",
+    "lesson": "l-css-1-4"
+  },
+  {
+    "id": "css-nesting",
+    "term": "CSS nesting",
+    "definition": "صيغة أصلية لكتابة القواعد داخل قواعد أخرى، حيث تمثّل `&` الـ selector الأب. وهي تعمل على الـ selectors لا على النص، فلا تستطيع بناء أسماء classes على طريقة BEM كما يفعل Sass.",
+    "lesson": "l-css-1-5"
+  },
+  {
+    "id": "has-pseudo-class",
+    "term": ":has()",
+    "definition": "pseudo-class علائقية تطابق العنصر حين يجد الـ selector النسبي بداخلها تطابقًا، فتتيح تنسيق عنصر أب أو شقيق سابق بحسب أبنائه أو أشقّائه اللاحقين.",
+    "lesson": "l-css-1-5"
+  },
+  {
+    "id": "flex-basis",
+    "term": "flex-basis",
+    "definition": "الحجم الذي يبدأ منه عنصر flex على امتداد المحور الرئيسي، قبل أن تتقاسم `flex-grow` المساحة المتبقية أو تستردّ `flex-shrink` النقص.",
+    "lesson": "l-css-2-1"
+  },
+  {
+    "id": "automatic-minimum-size",
+    "term": "الحجم الأدنى التلقائي (Automatic minimum size)",
+    "definition": "القيمة الافتراضية `min-width: auto` لعناصر flex وgrid، التي تمنعها من التقلّص تحت حجم محتواها. وضبط `min-width: 0` يتيح للنص الطويل أن يُقتطع بدل أن يفيض.",
+    "lesson": "l-css-2-1"
+  },
+  {
+    "id": "grid-template-areas",
+    "term": "grid-template-areas",
+    "definition": "خاصية grid تسمّي مناطق الشبكة بسلاسل نصية، سلسلة لكل صف، فتستطيع وضع العناصر بأسمائها وإعادة ترتيب التخطيط بإعادة رسم السلاسل.",
+    "lesson": "l-css-2-2"
+  },
+  {
+    "id": "auto-fit",
+    "term": "auto-fit",
+    "definition": "كلمة مفتاحية لـ `repeat()` تنشئ أكبر عدد من الـ tracks يتّسع وتطوي الفارغة منها، فتتمدّد العناصر القليلة لتملأ الصف؛ أما `auto-fill` فتحتفظ بالـ tracks الفارغة.",
+    "lesson": "l-css-2-2"
+  },
+  {
+    "id": "subgrid",
+    "term": "Subgrid",
+    "definition": "القيمة `subgrid` لـ `grid-template-rows` أو `grid-template-columns`، التي تجعل الشبكة المتداخلة تستخدم tracks الأب التي تمتدّ عليها، فيصطفّ المحتوى عبر الـ components الشقيقة.",
+    "lesson": "l-css-2-3"
+  },
+  {
+    "id": "fit-content",
+    "term": "fit-content",
+    "definition": "كلمة مفتاحية للتحجيم الذاتي تجعل حجم العنصر بعرض max-content الخاص به، محدودًا بالمساحة المتاحة، فتستطيع الكتلة أن تحتضن محتواها دون أن تفيض.",
+    "lesson": "l-css-2-4"
+  },
+  {
+    "id": "clamp",
+    "term": "clamp()",
+    "definition": "دالة رياضية تُرجع قيمة مفضّلة محصورة بين حدّ أدنى وحدّ أقصى، وتُكتب `clamp(MIN, PREFERRED, MAX)`. وهي تساوي `max(MIN, min(PREFERRED, MAX))`.",
+    "lesson": "l-css-2-4"
+  },
+  {
+    "id": "container-query",
+    "term": "Container query",
+    "definition": "قاعدة `@container` تطبّق الأنماط بحسب حجم حاوية من الأسلاف أو نمطها بدل الـ viewport، فيتكيّف الـ component مع الخانة التي يجلس فيها.",
+    "lesson": "l-css-2-5"
+  },
+  {
+    "id": "container-units",
+    "term": "وحدات الحاوية (Container query units)",
+    "definition": "وحدات مثل `cqi` و`cqb` تساوي 1% من الحجم الأفقي أو الرأسي لأقرب حاوية حجم، وترجع إلى وحدات الـ viewport الصغيرة حين لا توجد حاوية.",
+    "lesson": "l-css-2-5"
+  },
+  {
+    "id": "fluid-type",
+    "term": "الخطوط المرنة (Fluid type)",
+    "definition": "أحجام خطوط تتغيّر باستمرار مع العرض المتاح، وتُكتب عادةً بـ `clamp()` مع حدّ أدنى بـ rem، وقيمة مفضّلة خطية تجمع rem مع `vw` أو `cqi`، وحدّ أقصى بـ rem.",
+    "lesson": "l-css-3-1"
+  },
+  {
+    "id": "logical-properties",
+    "term": "الخصائص المنطقية (Logical properties)",
+    "definition": "خصائص مسمّاة بحسب سير النص لا بحسب الجهات الفيزيائية، مثل `margin-inline-start` و`inline-size`، فتنعكس التخطيطات بشكل صحيح في اللغات التي تُكتب من اليمين إلى اليسار مثل العربية.",
+    "lesson": "l-css-3-2"
+  },
+  {
+    "id": "oklch",
+    "term": "oklch()",
+    "definition": "دالة ألوان تستخدم الإضاءة والتشبّع ودرجة اللون الإدراكية، فتبدو الألوان المتساوية في الإضاءة متساوية في السطوع. وتستطيع أيضًا التعبير عن ألوان خارج نطاق sRGB.",
+    "lesson": "l-css-3-3"
+  },
+  {
+    "id": "relative-color-syntax",
+    "term": "صيغة الألوان النسبية (Relative color syntax)",
+    "definition": "طريقة لاشتقاق لون من آخر بفكّ قنواته باستخدام `from`، كما في `oklch(from var(--brand) calc(l - 0.1) c h)`، وتغيير ما تحتاج إليه فقط.",
+    "lesson": "l-css-3-3"
+  },
+  {
+    "id": "light-dark",
+    "term": "light-dark()",
+    "definition": "دالة ألوان تُرجع قيمتها الأولى حين يكون النظام اللوني المستخدم في العنصر فاتحًا، والثانية حين يكون داكنًا. وتحتاج إلى أن تسمح `color-scheme` بالداكن.",
+    "lesson": "l-css-3-4"
+  },
+  {
+    "id": "focus-visible",
+    "term": ":focus-visible",
+    "definition": "pseudo-class تطابق العنصر الذي عليه الـ focus فقط حين يرى المتصفّح أن مؤشّر الـ focus مفيد، مثل focus لوحة المفاتيح أو أيّ حقل نصي، لا عند نقرة فأرة على زر.",
+    "lesson": "l-css-3-5"
+  },
+  {
+    "id": "starting-style",
+    "term": "@starting-style",
+    "definition": "قاعدة at-rule تحدّد الأنماط التي ينطلق منها العنصر في الـ transition حين يُرسم أول مرة أو ينتقل من `display: none` إلى الظهور، فتتيح حركات الدخول بـ CSS وحدها.",
+    "lesson": "l-css-4-1"
+  },
+  {
+    "id": "view-transition",
+    "term": "View transition",
+    "definition": "حركة تُنشئها `document.startViewTransition()`: يلتقط المتصفّح صورتين للحالتين القديمة والجديدة في تحديث الـ DOM، ويحرّك الانتقال بينهما عبر pseudo-elements تستطيع تنسيقها.",
+    "lesson": "l-css-4-2"
+  },
+  {
+    "id": "scroll-driven-animation",
+    "term": "الحركة المرتبطة بالتمرير (Scroll-driven animation)",
+    "definition": "حركة CSS يتبع تقدّمها خط زمن للتمرير، يُضبط بـ `animation-timeline: scroll()` أو `view()`، بدل الزمن المنقضي.",
+    "lesson": "l-css-4-3"
+  },
+  {
+    "id": "compositing",
+    "term": "التركيب (Compositing)",
+    "definition": "المرحلة الأخيرة من الرسم، حيث تُجمَّع الطبقات المرسومة على الـ GPU. وكثيرًا ما يمكن معالجة تغييرات `transform` و`opacity` هنا وحدها، بتخطّي التخطيط والرسم.",
+    "lesson": "l-css-4-5"
+  }
+]

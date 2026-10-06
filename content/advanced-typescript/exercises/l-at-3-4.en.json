@@ -1,0 +1,15 @@
+{
+  "title": "Type event names and URL patterns",
+  "prompt": "Use template literal types to type Cartwheel's strings:\n\n- `CheckoutEvent`: `order.<status>` for every `OrderStatus`, plus `payment.<outcome>` for every `PaymentOutcome`.\n- `FlagEnvVar`: `CHECKOUT_` followed by each `Feature` in upper case.\n- `PathParams<P>`: the names of every `:param` in a route pattern (`never` when there are none).\n\nThen implement `buildPath(pattern, params)` at runtime: replace each `:param` with its value from `params`, URL-encoded with `encodeURIComponent`.",
+  "hints": [
+    "`` `order.${OrderStatus}` `` expands to one string per status. `Uppercase<Feature>` works inside a placeholder.",
+    "`PathParams` has two cases: a parameter followed by `/` and more path (capture it and recurse on the rest), or a parameter at the very end.",
+    "At runtime, `pattern.replace(/:(\\w+)/g, (_, name) => …)` visits each parameter name. Treat `params` as `Record<string, string | number>` inside with one commented cast."
+  ],
+  "explanation": "A union inside a template literal expands into one string per member, so both event families are derived from the existing unions. `Uppercase` transforms each feature name. `PathParams` pattern-matches the route: `infer Param` captures the text after a colon up to the next `/`, and the recursive call handles the rest of the path; the final branch catches a parameter at the end. `Record<PathParams<P>, …>` then makes every parameter a required key of `params`, so a missing `lineId` is a compile error rather than a request to `/orders/1042/lines/undefined`.",
+  "checks": {
+    "types": "The file type-checks with zero errors, including all type tests",
+    "builds": "`buildPath` fills in every parameter and leaves parameter-free paths alone",
+    "encodes": "Parameter values are URL-encoded"
+  }
+}

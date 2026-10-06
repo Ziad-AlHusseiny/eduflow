@@ -1,0 +1,28 @@
+{
+  "title": "struct أم class: توقّع الناتج",
+  "prompt": "`Limit` هو struct و`Wallet` هو class. اقرأ المقطع وتوقّع السطر الوحيد الذي يطبعه.\n\n```swift\nimport Foundation\n\nstruct Limit {\n    var amount: Decimal\n}\n\nfinal class Wallet {\n    var balance: Decimal\n    init(balance: Decimal) { self.balance = balance }\n}\n\nvar food = Limit(amount: 300)\nvar fun = food\nfun.amount = 100\n\nlet mine = Wallet(balance: 500)\nlet shared = mine\nshared.balance -= 50\n\nprint(food.amount, fun.amount, mine.balance)\n```",
+  "hints": [
+    "تعامل مع النصفين كلٌّ على حدة: الـ struct أولًا، ثم الـ class.",
+    "بعد `var fun = food`، كم قيمة من النوع `Limit` توجد؟",
+    "بعد `let shared = mine`، كم كائنًا من النوع `Wallet` يوجد؟"
+  ],
+  "explanation": "`var fun = food` تنسخ الـ struct، فتغيير `fun.amount` إلى 100 يترك `food.amount` على 300. أما `let shared = mine` فتنسخ المرجع فقط: ما زال هناك `Wallet` واحد، وطرح 50 عبر `shared` يظهر عبر `mine`. الناتج هو `300 100 450`.\n\nلاحظ أن `shared` معرّف بـ `let` ومع ذلك تُرجمت عملية الطرح. `let` تثبّت الكائن الذي يشير إليه `shared`، لا خصائص الكائن المعرّفة بـ `var`.",
+  "options": {
+    "a": {
+      "text": "`100 100 450`",
+      "why": "هذا يعامل الـ struct كأنه class. `var fun = food` أنشأت نسخة منفصلة، فيحتفظ `food` بالقيمة 300."
+    },
+    "b": {
+      "text": "`300 100 450`",
+      "why": "صحيح. نسخة الـ struct مستقلّة، ومرجعا الـ class يتشاركان محفظة واحدة."
+    },
+    "c": {
+      "text": "`300 100 500`",
+      "why": "هذا يعامل الـ class كأنه struct. `shared` و`mine` هما الكائن نفسه، فتختفي الـ 50 من كليهما."
+    },
+    "d": {
+      "text": "لا يُترجَم: `shared` معرّف بـ `let`.",
+      "why": "`let` يجمّد المرجع، لا خصائص الكائن المعرّفة بـ `var`، لذلك `shared.balance -= 50` مسموح."
+    }
+  }
+}

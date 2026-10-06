@@ -1,0 +1,363 @@
+checkpoints:
+  s-sql-1:
+    - q: "Huda wants web orders placed in December 2025 that used any coupon. Which WHERE clause is correct?"
+      options:
+        - text: "channel = 'web' AND coupon_code <> NULL AND order_date BETWEEN '2025-12-01' AND '2025-12-31'"
+          why: "Comparing with NULL using <> is always unknown, so no row passes, and the BETWEEN bound would also drop every order on 31 December after midnight."
+        - text: "channel = 'web' AND coupon_code IS NOT NULL AND order_date BETWEEN '2025-12-01' AND '2025-12-31'"
+          why: "The NULL test is right, but '2025-12-31' sorts before any time on that day, so orders on 31 December are lost."
+        - text: "channel = 'web' AND coupon_code IS NOT NULL AND order_date >= '2025-12-01' AND order_date < '2026-01-01'"
+          why: "Correct. IS NOT NULL finds orders with a coupon, and the half-open range includes every moment of December."
+        - text: "channel = 'web' OR coupon_code IS NOT NULL AND order_date >= '2025-12-01' AND order_date < '2026-01-01'"
+          why: "AND binds tighter than OR, so this returns every web order ever, plus December coupon orders from other channels."
+      answer: 2
+    - q: "`SELECT COUNT(*), COUNT(closed_at) FROM support_tickets` returns 873 and 817. What do the 56 missing tickets represent?"
+      options:
+        - text: "Tickets that are still open, because closed_at is NULL until a ticket is closed."
+          why: "Correct. COUNT(column) skips NULLs, so the difference is exactly the rows where closed_at is NULL."
+        - text: "Tickets that were closed on the same day they were opened."
+          why: "Same-day tickets still have a closed_at value, so COUNT(closed_at) counts them."
+        - text: "Duplicate tickets that COUNT(closed_at) removes."
+          why: "COUNT(column) doesn't deduplicate; that would need COUNT(DISTINCT closed_at)."
+        - text: "Tickets with no satisfaction score."
+          why: "Satisfaction is a different column; its NULLs don't affect COUNT(closed_at)."
+      answer: 0
+    - q: |
+        What does this expression return for a ticket whose `satisfaction` is NULL?
+        ```sql
+        CASE
+          WHEN satisfaction >= 4 THEN 'happy'
+          WHEN satisfaction <= 2 THEN 'unhappy'
+        END
+        ```
+      options:
+        - text: "'happy'"
+          why: "NULL >= 4 is unknown, not TRUE, so the first branch isn't taken."
+        - text: "'unhappy'"
+          why: "NULL <= 2 is unknown as well, so the second branch isn't taken either."
+        - text: "An error, because CASE can't handle NULL inputs"
+          why: "CASE handles NULLs fine; a branch whose condition is unknown is simply skipped."
+        - text: "NULL, because no WHEN is TRUE and there's no ELSE"
+          why: "Correct. Without an ELSE, unmatched rows get NULL. Add ELSE 'unrated' (and a 3 label) to cover every case on purpose."
+      answer: 3
+    - q: "`WHERE strftime('%w', opened_at) = 0` returns no tickets, although many were opened on Sundays. Why?"
+      options:
+        - text: "In SQLite, '%w' counts Monday as 0."
+          why: "SQLite's '%w' uses 0 for Sunday, so the day numbering isn't the problem."
+        - text: "strftime returns text, so the comparison should be with '0', not the number 0."
+          why: "Correct. strftime always returns text, and the text '0' is not equal to the integer 0 in this comparison."
+        - text: "strftime can't read the time part of opened_at."
+          why: "strftime accepts full 'YYYY-MM-DD HH:MM:SS' values; the time part is no obstacle."
+        - text: "Weekday filters need julianday() instead."
+          why: "julianday returns a day count; strftime with '%w' is the right tool once the comparison type is fixed."
+      answer: 1
+    - q: "A report pages through the newest orders 25 at a time. Which ORDER BY gives stable pages?"
+      options:
+        - text: "ORDER BY order_date DESC LIMIT 25 OFFSET 25"
+          why: "Rows that share an order_date can come back in a different order on each query, so a row can appear on two pages."
+        - text: "ORDER BY channel, order_date DESC LIMIT 25 OFFSET 25"
+          why: "This sorts by channel first, so the first pages aren't the newest orders, and ties are still possible."
+        - text: "ORDER BY order_date DESC, order_id DESC LIMIT 25 OFFSET 25"
+          why: "Correct. order_id is unique, so it breaks every tie and the order is the same on every run."
+        - text: "LIMIT 25 OFFSET 25 with no ORDER BY, since the table is already in date order"
+          why: "Without ORDER BY there's no guaranteed order at all; storage order is not a promise."
+      answer: 2
+  s-sql-2:
+    - q: "Karim asks for the average shipping fee per order by channel. A colleague joins orders to order_items and uses AVG(o.shipping_fee). What's wrong?"
+      options:
+        - text: "Each order's fee appears once per item line, so orders with many lines weigh more in the average."
+          why: "Correct. The join changed the grain to lines. Compute AVG(shipping_fee) from orders alone, where each order is one row."
+        - text: "AVG can't be used together with a join."
+          why: "Aggregates work on any FROM clause; the issue is what each row represents after the join."
+        - text: "Nothing; an average isn't affected by duplicated rows."
+          why: "An average is affected whenever rows are duplicated unevenly, which is exactly what a fan-out does."
+        - text: "The fee should be divided by the number of items first."
+          why: "Splitting the fee and then averaging would answer a different question, the fee per line."
+      answer: 0
+    - q: "Which query lists customers with at least 5 non-cancelled orders?"
+      options:
+        - text: "SELECT customer_id FROM orders WHERE COUNT(*) >= 5 AND status <> 'cancelled' GROUP BY customer_id"
+          why: "WHERE runs before grouping, so COUNT(*) can't be used there; this is an error."
+        - text: "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(*) >= 5"
+          why: "This counts cancelled orders too, because nothing removes them before grouping."
+        - text: "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(*) >= 5 AND status <> 'cancelled'"
+          why: "status isn't grouped, so in SQLite it's a bare column from an arbitrary row; the filter is meaningless."
+        - text: "SELECT customer_id FROM orders WHERE status <> 'cancelled' GROUP BY customer_id HAVING COUNT(*) >= 5"
+          why: "Correct. The row filter goes in WHERE before grouping; the condition on the count goes in HAVING."
+      answer: 3
+    - q: "Every category should appear with its number of active products, zero included. Which join is right?"
+      options:
+        - text: "categories c JOIN products p ON p.category_id = c.category_id WHERE p.is_active = 1, then COUNT(*)"
+          why: "An inner join drops categories with no products, so the zeros never appear."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id AND p.is_active = 1, then COUNT(p.product_id)"
+          why: "Correct. The active filter is on the right table, so it belongs in ON, and counting a right-table key gives 0 for no match."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id WHERE p.is_active = 1, then COUNT(*)"
+          why: "The WHERE test is NULL for unmatched categories, which removes them; this behaves like an inner join."
+        - text: "categories c LEFT JOIN products p ON p.category_id = c.category_id AND p.is_active = 1, then COUNT(*)"
+          why: "The join is right, but COUNT(*) counts the unmatched row, so empty categories show 1 instead of 0."
+      answer: 1
+    - q: "Which query finds products that have never been returned?"
+      options:
+        - text: "SELECT p.name FROM products p LEFT JOIN returns r ON r.order_item_id = p.product_id WHERE r.return_id IS NULL"
+          why: "This joins a product id to an order item id, two unrelated keys, so the result is meaningless."
+        - text: "SELECT p.name FROM products p JOIN order_items oi ON oi.product_id = p.product_id JOIN returns r ON r.order_item_id = oi.order_item_id WHERE r.return_id IS NULL"
+          why: "Inner joins keep only returned lines, so the IS NULL test can never be true."
+        - text: "SELECT p.name FROM products p WHERE NOT EXISTS (SELECT 1 FROM order_items oi JOIN returns r ON r.order_item_id = oi.order_item_id WHERE oi.product_id = p.product_id)"
+          why: "Correct. The subquery looks for any return of this product through its order lines; NOT EXISTS keeps products with none."
+      answer: 2
+    - q: "To list employees hired before their own manager, which condition fits `employees e JOIN employees m ON m.employee_id = e.manager_id`?"
+      options:
+        - text: "WHERE e.hire_date < m.hire_date"
+          why: "Correct. e is the employee and m the manager, so the employee's date must be earlier than the manager's."
+        - text: "WHERE m.hire_date < e.hire_date"
+          why: "That's the normal case, managers hired first; it returns the opposite set."
+        - text: "WHERE e.hire_date < e.manager_id"
+          why: "This compares a date with an id, which is meaningless; the manager's date lives on the m alias."
+        - text: "WHERE e.employee_id < m.employee_id"
+          why: "Ids reflect insertion order at best, not hire dates, so this answers a different question."
+      answer: 0
+  s-sql-3:
+    - q: "You need each customer's most recent order. Which approach is correct?"
+      options:
+        - text: "SELECT customer_id, MAX(order_date), order_id FROM orders GROUP BY customer_id"
+          why: "SQLite happens to fill bare columns from the MAX row, but PostgreSQL rejects this query and ties leave it ambiguous, so it isn't a dependable pattern."
+        - text: "Filter WHERE ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) = 1"
+          why: "Window functions can't appear in WHERE, because they're computed after it."
+        - text: "Use RANK() OVER (PARTITION BY customer_id ORDER BY order_date DESC) and keep rank 1"
+          why: "Two orders at the same timestamp would both get rank 1, returning two rows for one customer."
+        - text: "Compute ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, order_id DESC) in a CTE, then keep rn = 1"
+          why: "Correct. One row per partition, with a unique tie-breaker, filtered in the outer query."
+      answer: 3
+    - q: "Which expression gives a running total of daily revenue that restarts at the beginning of each month?"
+      options:
+        - text: "SUM(revenue) OVER (PARTITION BY day ORDER BY day)"
+          why: "Each partition holds a single day, so every row just shows its own revenue."
+        - text: "SUM(revenue) OVER (PARTITION BY strftime('%Y-%m', day) ORDER BY day)"
+          why: "Correct. The month partition makes it restart, and ORDER BY day makes it accumulate."
+        - text: "SUM(revenue) OVER (ORDER BY day)"
+          why: "This never restarts; it accumulates across the whole period."
+        - text: "SUM(revenue) OVER (PARTITION BY strftime('%Y-%m', day))"
+          why: "Without ORDER BY inside OVER, every day shows the month's full total rather than a running one."
+      answer: 1
+    - q: "A recursive CTE builds the category tree, starting from categories with parent_id IS NULL. What should the recursive step join on?"
+      options:
+        - text: "c.category_id = tree.parent_id"
+          why: "That walks upwards, from a category to its parent, but the anchor already starts at the top."
+        - text: "c.parent_id IS NULL"
+          why: "That repeats the anchor condition, so it would keep re-adding the top-level categories."
+        - text: "c.parent_id = tree.category_id"
+          why: "Correct. Each iteration adds categories whose parent was found in the previous iteration, walking down the tree."
+        - text: "c.category_id = tree.category_id"
+          why: "This matches each row to itself, so the recursion would never add anything new."
+      answer: 2
+    - q: "2025 sessions: desktop checkout rate (purchases per cart) is 56%, mobile 37%, and mobile has the most sessions. Which conclusion does this support?"
+      options:
+        - text: "Mobile shoppers who reach the cart abandon far more often, so the mobile checkout is worth investigating first."
+          why: "Correct. The step rate isolates the cart-to-purchase step, and the large mobile volume makes the gap valuable."
+        - text: "Mobile traffic is lower quality and should be cut from the ad budget."
+          why: "The checkout gap says nothing about the earlier steps, and cutting the largest channel ignores a fixable problem."
+        - text: "Desktop users spend more per order."
+          why: "Checkout rate counts purchases, not their value; order value would need revenue data."
+        - text: "The funnel data must be wrong because the rates differ."
+          why: "Different devices genuinely convert differently; a difference isn't a data error."
+      answer: 0
+    - q: "A cohort table shows 130% retention in month 1 for one cohort. What's the most likely cause?"
+      options:
+        - text: "The cohort was too small for percentages."
+          why: "Small cohorts are noisy, but a correct retention rate still can't exceed 100%."
+        - text: "Month numbers were computed with julianday instead of a month index."
+          why: "That could misplace orders between months, but it wouldn't push a share of people above 100% on its own."
+        - text: "The numerator counts orders instead of distinct customers."
+          why: "Correct. Customers with several orders in month 1 are counted several times. Count distinct customers in both numerator and denominator."
+        - text: "LEFT JOIN was used instead of INNER JOIN."
+          why: "The join type changes which customers appear, not how many times each is counted per month."
+      answer: 2
+  s-sql-4:
+    - q: "Which query is a correct data-quality check for the rule 'every order has at least one item'?"
+      options:
+        - text: "SELECT COUNT(DISTINCT order_id) FROM order_items"
+          why: "This counts orders that do have items, without naming those that don't."
+        - text: "SELECT o.* FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE oi.order_item_id IS NULL"
+          why: "An inner join has already removed orders without items, so this always returns nothing."
+        - text: "SELECT * FROM order_items WHERE order_id IS NULL"
+          why: "This checks items without an order, a different rule, and order_id is NOT NULL anyway."
+        - text: "SELECT o.* FROM orders o WHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id = o.order_id)"
+          why: "Correct. It returns exactly the orders that break the rule; an empty result means the check passes."
+      answer: 3
+    - q: "`EXPLAIN QUERY PLAN` shows SCAN for `SELECT * FROM orders WHERE customer_id + 0 = 42`, although customer_id is indexed. What's the fix?"
+      options:
+        - text: "Add a second index on customer_id."
+          why: "The existing index is fine; the expression around the column is what prevents its use."
+        - text: "Write WHERE customer_id = 42 so the indexed column stands alone."
+          why: "Correct. Any arithmetic or function on the column hides it from the index; the bare comparison becomes a SEARCH."
+        - text: "Add ORDER BY customer_id."
+          why: "Sorting doesn't change how the filter is evaluated."
+        - text: "Run ANALYZE so SQLite notices the index."
+          why: "Statistics help the optimizer choose between usable plans, but no statistics make an expression match a plain column index."
+      answer: 1
+    - q: "A SQLite query counts returned orders with SUM(status = 'returned'). It must move to PostgreSQL. What's the portable rewrite?"
+      options:
+        - text: "COUNT(*) FILTER (WHERE status = 'returned')"
+          why: "Correct. FILTER works in both engines, while summing a boolean fails in PostgreSQL."
+        - text: "SUM(IIF(status = 'returned', 1, 0))"
+          why: "IIF is a SQLite function that PostgreSQL doesn't have."
+        - text: "COUNT(status = 'returned')"
+          why: "COUNT counts every non-NULL value, and the comparison is never NULL here, so this counts all rows."
+        - text: "Keep it; PostgreSQL treats booleans as 0 and 1."
+          why: "PostgreSQL booleans are their own type, and SUM(boolean) is an error there."
+      answer: 0
+    - q: "Reviewing a colleague's query, which change most reduces the risk of a wrong number?"
+      options:
+        - text: "Converting all keywords to uppercase."
+          why: "Consistent casing helps reading, but it can't change the result."
+        - text: "Replacing GROUP BY 1 with the column name."
+          why: "Names are more robust to edits, but the current result is the same either way."
+        - text: "Removing a join to a table none of whose columns are used."
+          why: "Correct. An unused join can still multiply or drop rows, so removing it eliminates a real source of error."
+        - text: "Adding a comment above every line."
+          why: "Comments that restate the SQL add noise; only comments that explain decisions help reviewers."
+      answer: 2
+    - q: "Your check finds products ordered before their launched_on date. What's the best way to handle this in a product-launch analysis due tomorrow?"
+      options:
+        - text: "Delete the offending order lines from the analysis without mentioning it."
+          why: "Silently removing rows changes the totals and leaves nobody able to reproduce your numbers."
+        - text: "Set launched_on to the first order date in your query and say nothing."
+          why: "That replaces the recorded value with your guess and hides the discrepancy."
+        - text: "Ignore it, because launch dates don't affect revenue."
+          why: "Launch dates are the core of a launch analysis, so ignoring a contradiction undermines it."
+        - text: "Report the discrepancy, state how you treated those products, and ask the product team what launched_on really records."
+          why: "Correct. The owner can explain the field, and a stated assumption keeps your analysis honest and reproducible."
+      answer: 3
+final:
+  - q: "`SELECT COUNT(*) FROM support_tickets WHERE agent_id NOT IN (SELECT manager_id FROM employees)` returns 0. Why?"
+    options:
+      - text: "Every agent is also someone's manager."
+        why: "Support specialists manage nobody; the zero has a different cause."
+      - text: "The CEO's manager_id is NULL, and NOT IN against a list containing NULL is never TRUE."
+        why: "Correct. One NULL in the subquery makes every NOT IN test unknown. Use NOT EXISTS or filter the NULLs out."
+      - text: "agent_id is NULL for every ticket."
+        why: "Every ticket in Cartwheel's data has an agent; the NULL is on the other side."
+      - text: "NOT IN can't be used with a subquery."
+        why: "NOT IN accepts a subquery; it just behaves badly when that subquery returns NULL."
+    answer: 1
+  - q: "A monthly trend groups by `strftime('%m', order_date)`. January shows about twice the expected orders. What happened?"
+    options:
+      - text: "The label has no year, so January 2024 and January 2025 were merged into one group."
+        why: "Correct. Group by strftime('%Y-%m', order_date) so each calendar month is its own row."
+      - text: "strftime counted each order twice."
+        why: "strftime transforms a value per row; it can't duplicate rows."
+      - text: "January has more days than other months."
+        why: "January has 31 days like several others; that can't double a count."
+      - text: "The query needed ORDER BY to group correctly."
+        why: "ORDER BY sorts the output; it doesn't change which rows fall in each group."
+    answer: 0
+  - q: "`SELECT c.country, COUNT(*) FROM customers c JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.country` is presented as 'customers per country'. What's wrong?"
+    options:
+      - text: "It should use a LEFT JOIN."
+        why: "A LEFT JOIN would add customers without orders but would still count orders for everyone else."
+      - text: "GROUP BY must list customer_id."
+        why: "That would give one row per customer, not per country."
+      - text: "Nothing; each row is a customer."
+        why: "After the join each row is an order, so customers with many orders are counted many times."
+      - text: "It counts orders; use COUNT(DISTINCT c.customer_id), or query customers alone if every customer should count."
+        why: "Correct. The join made the grain one row per order, so the label and the number disagree."
+    answer: 3
+  - q: "A query joins orders, order_items and returns to report per country. Which sum is safe in that join?"
+    options:
+      - text: "SUM(o.shipping_fee)"
+        why: "The fee sits on orders, the coarsest table here, so it repeats once per item line."
+      - text: "COUNT(*) as the number of orders"
+        why: "Each row is an item line (or returned line), so COUNT(*) counts lines, not orders."
+      - text: "SUM(r.refund_amount)"
+        why: "Correct. Each return belongs to one item line, the most detailed grain in the join, so each refund appears once."
+      - text: "SUM(DISTINCT o.shipping_fee)"
+        why: "DISTINCT removes equal values, merging different orders that happen to share a fee."
+    answer: 2
+  - q: "A report should show every product with its 2025 refund total, zero for products never refunded. It uses LEFT JOINs from products to order_items to returns, then WHERE r.return_date >= '2025-01-01'. What happens?"
+    options:
+      - text: "It works; LEFT JOIN keeps every product regardless of WHERE."
+        why: "WHERE runs after the join and drops rows whose r.return_date is NULL, including every product without returns."
+      - text: "Products without 2025 returns disappear; the date test must move into the ON clause of the returns join."
+        why: "Correct. A right-table condition in WHERE turns the LEFT JOIN into an inner join."
+      - text: "The query fails because LEFT JOIN can't be chained."
+        why: "LEFT JOINs chain without any problem; the issue is where the filter sits."
+      - text: "Refund totals double because of the date filter."
+        why: "The filter removes rows; it can't duplicate them."
+    answer: 1
+  - q: "Revenue per customer is needed in two later steps of an analysis. What's the best structure?"
+    options:
+      - text: "Define it once as a CTE and reference it in both steps."
+        why: "Correct. One definition keeps both steps consistent and makes later changes safe."
+      - text: "Copy the same subquery into both places."
+        why: "Duplicated logic drifts: someone updates one copy and not the other."
+      - text: "Use a correlated subquery for each row instead."
+        why: "That recomputes revenue per row and still duplicates the logic; it's harder to read and usually slower."
+      - text: "Create a permanent table with the results."
+        why: "Possible in a warehouse, but it adds maintenance and goes stale; a CTE is the right first tool."
+    answer: 0
+  - q: "Huda wants the top 3 products by units in each category, keeping any product tied for third place. Which function fits?"
+    options:
+      - text: "ROW_NUMBER() OVER (PARTITION BY category ORDER BY units DESC)"
+        why: "ROW_NUMBER breaks ties arbitrarily, so a product tied for third may be cut."
+      - text: "NTILE(3) OVER (PARTITION BY category ORDER BY units DESC)"
+        why: "NTILE splits each category into three buckets of rows, which isn't a top-3 list."
+      - text: "RANK() OVER (PARTITION BY category ORDER BY units DESC), keeping rank 3 or better"
+        why: "Correct. RANK gives tied products the same position, so everyone tied for third is kept."
+      - text: "DENSE_RANK() OVER (ORDER BY units DESC)"
+        why: "Without PARTITION BY, the ranking runs across all categories at once."
+    answer: 2
+  - q: "Year-over-year growth uses LAG(revenue, 12) OVER (ORDER BY month), but one month had no orders at all. What's the risk and the fix?"
+    options:
+      - text: "No risk; LAG looks up the month 12 months earlier by date."
+        why: "LAG counts rows, not calendar months, so it can't skip over a missing month."
+      - text: "LAG returns 0 for the missing month, which is correct."
+        why: "A missing month has no row at all, so LAG doesn't return anything for it; later rows shift instead."
+      - text: "Use LEAD instead of LAG."
+        why: "LEAD looks forward, which doesn't fix the missing row and compares with the future."
+      - text: "Every comparison after the gap shifts by a month; generate a calendar of months and LEFT JOIN revenue to it first."
+        why: "Correct. With one row per month guaranteed, 12 rows back is always the same month last year."
+    answer: 3
+  - q: "Over a monthly revenue table with one row per month, which frame gives a 3-month moving average?"
+    options:
+      - text: "AVG(revenue) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)"
+        why: "Correct. Two previous rows plus the current one make three months."
+      - text: "AVG(revenue) OVER (ORDER BY month ROWS BETWEEN 3 PRECEDING AND CURRENT ROW)"
+        why: "That's four rows, the current month plus three before it."
+      - text: "AVG(revenue) OVER (PARTITION BY month)"
+        why: "Each partition is one month, so the average is just that month's revenue."
+      - text: "AVG(revenue) OVER (ORDER BY month)"
+        why: "With no frame this averages everything from the first month to the current one, a cumulative average."
+    answer: 0
+  - q: "`WHERE strftime('%Y', order_date) = '2025'` is slow on a large orders table with an index on order_date. Which rewrite returns the same rows and can use the index?"
+    options:
+      - text: "WHERE order_date LIKE '2025%'"
+        why: "It matches the same rows, but SQLite only uses an index for LIKE under special collation settings, so by default this still scans."
+      - text: "WHERE order_date >= '2025-01-01' AND order_date < '2026-01-01'"
+        why: "Correct. The bare column compared with constants gives a range the index can seek into."
+      - text: "WHERE date(order_date) BETWEEN '2025-01-01' AND '2025-12-31'"
+        why: "Wrapping the column in date() still hides it from the index, so this remains a scan."
+      - text: "WHERE CAST(strftime('%Y', order_date) AS INTEGER) = 2025"
+        why: "Adding a cast keeps the function around the column, so nothing improves."
+    answer: 1
+  - q: "A SQLite query finds Dubai customers with `WHERE city LIKE 'dubai'`. After moving to PostgreSQL it returns no rows. Why?"
+    options:
+      - text: "PostgreSQL doesn't support LIKE."
+        why: "PostgreSQL supports LIKE; the difference is how it treats letter case."
+      - text: "The city column was converted to a number."
+        why: "Nothing in the move changes the column's type; the comparison semantics differ."
+      - text: "PostgreSQL needs double quotes around text values."
+        why: "Double quotes are for identifiers in PostgreSQL; text values use single quotes, as here."
+      - text: "PostgreSQL's LIKE is case-sensitive, so 'dubai' doesn't match 'Dubai'; use ILIKE or the exact value."
+        why: "Correct. SQLite's LIKE ignores ASCII case by default, which hid the mismatch."
+    answer: 3
+  - q: "The final review shows the December 2025 cohort with 0% month-1 retention and Jordan with +627% Q4 growth. How should both be reported?"
+    options:
+      - text: "Report both as they are; the numbers came from the database."
+        why: "Accurate arithmetic can still mislead when the reader lacks context about what the numbers can show."
+      - text: "Drop the December cohort and Jordan from the slides."
+        why: "Omitting them hides real information and changes totals; context is the fix, not removal."
+      - text: "Show December's month 1 as not yet observable, and show Jordan's growth next to its small absolute values."
+        why: "Correct. Unobserved periods are unknown, not zero, and a percentage needs its base to be interpreted."
+      - text: "Average both with the other cohorts and countries to smooth them out."
+        why: "Averaging replaces real values with invented ones and hides the reasons they look odd."
+    answer: 2

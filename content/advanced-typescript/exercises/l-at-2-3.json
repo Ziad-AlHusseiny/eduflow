@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "ts",
+  "starter": {
+    "ts": "function applyCoupon<C extends string>(available: C[], code: C): string {\n  return available.includes(code) ? `Applied ${code}` : `Unknown coupon ${code}`;\n}\n\nfunction createMachine<S extends string>(config: { states: S[]; initial: S }) {\n  return { states: config.states, initial: config.initial };\n}\n\nfunction formatPrice(cents: number | number[]): string | string[] {\n  return Array.isArray(cents) ? cents.map(toDollars) : toDollars(cents);\n}\n\nfunction toDollars(cents: number): string {\n  return `$${(cents / 100).toFixed(2)}`;\n}\n\n// ---- Type tests (do not edit) ----\napplyCoupon(['WELCOME10', 'LOYAL5'], 'LOYAL5');\n// @ts-expect-error: 'WELCOM10' is a typo, not an available coupon\napplyCoupon(['WELCOME10', 'LOYAL5'], 'WELCOM10');\n\nconst machine = createMachine({ states: ['cart', 'shipping', 'payment'], initial: 'cart' });\ntype T1 = Expect<Equal<typeof machine.initial, 'cart' | 'shipping' | 'payment'>>;\n// @ts-expect-error: 'checkout' is not one of the declared states\ncreateMachine({ states: ['cart', 'shipping', 'payment'], initial: 'checkout' });\n\nconst one = formatPrice(4500);\nconst many = formatPrice([4500, 1299]);\ntype T2 = Expect<Equal<typeof one, string>>;\ntype T3 = Expect<Equal<typeof many, string[]>>;\n\nconsole.log(applyCoupon(['WELCOME10'], 'WELCOME10'), machine.initial, one, many);\n"
+  },
+  "solution": {
+    "ts": "function applyCoupon<C extends string>(available: C[], code: NoInfer<C>): string {\n  return available.includes(code) ? `Applied ${code}` : `Unknown coupon ${code}`;\n}\n\nfunction createMachine<S extends string>(config: { states: S[]; initial: NoInfer<S> }) {\n  return { states: config.states, initial: config.initial };\n}\n\nfunction formatPrice(cents: number): string;\nfunction formatPrice(cents: number[]): string[];\nfunction formatPrice(cents: number | number[]): string | string[] {\n  return Array.isArray(cents) ? cents.map(toDollars) : toDollars(cents);\n}\n\nfunction toDollars(cents: number): string {\n  return `$${(cents / 100).toFixed(2)}`;\n}\n\n// ---- Type tests (do not edit) ----\napplyCoupon(['WELCOME10', 'LOYAL5'], 'LOYAL5');\n// @ts-expect-error: 'WELCOM10' is a typo, not an available coupon\napplyCoupon(['WELCOME10', 'LOYAL5'], 'WELCOM10');\n\nconst machine = createMachine({ states: ['cart', 'shipping', 'payment'], initial: 'cart' });\ntype T1 = Expect<Equal<typeof machine.initial, 'cart' | 'shipping' | 'payment'>>;\n// @ts-expect-error: 'checkout' is not one of the declared states\ncreateMachine({ states: ['cart', 'shipping', 'payment'], initial: 'checkout' });\n\nconst one = formatPrice(4500);\nconst many = formatPrice([4500, 1299]);\ntype T2 = Expect<Equal<typeof one, string>>;\ntype T3 = Expect<Equal<typeof many, string[]>>;\n\nconsole.log(applyCoupon(['WELCOME10'], 'WELCOME10'), machine.initial, one, many);\n"
+  },
+  "checks": [
+    {
+      "id": "types",
+      "typecheck": true
+    },
+    {
+      "id": "format",
+      "test": "return formatPrice(4500) === '$45.00' && formatPrice([1299, 5]).join() === '$12.99,$0.05';"
+    },
+    {
+      "id": "coupon",
+      "test": "return applyCoupon(['A', 'B'], 'B') === 'Applied B';"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "اجعل MovieCard قابلًا لإعادة الاستخدام",
+  "prompt": "كل البطاقات تقول \"Arrival\". امنح `MovieCard` ثلاثة props، هي `title` و`year` و`watched`، واستخدمها:\n\n- يعرض `<h2>` العنوان، ويعرض `<p>` السنة.\n- ويعرض `<p>` آخر النص **Watched** حين تكون `watched` صحيحة، والنص **To watch** في غير ذلك. اجعل القيمة الافتراضية لـ `watched` هي `false`.\n\nثم اعرض هذه البطاقات الثلاث في `App` بهذا الترتيب:\n\n| title | year | watched |\n|---|---|---|\n| Arrival | 2016 | true |\n| Past Lives | 2023 | *(لا تمرّرها)* |\n| Paddington 2 | 2017 | false |",
+  "hints": [
+    "فكّك الـ props في قائمة المعاملات: `function MovieCard({ title, year, watched = false })`.",
+    "الأرقام والقيم المنطقية توضع بين أقواس معقوصة: `year={2016}`. والخاصية المجرّدة `watched` تعني `watched={true}`.",
+    "اختر نص الحالة بالمعامل الثلاثي: `{watched ? 'Watched' : 'To watch'}`."
+  ],
+  "explanation": "صار `MovieCard` الآن دالة في الـ props الخاصة به. القيمة الافتراضية `watched = false` تغطّي بطاقة Past Lives التي لا تمرّر هذا الـ prop أصلًا، فتصل `watched` بقيمة `undefined` وتُطبَّق القيمة الافتراضية. الأرقام والقيم المنطقية تحتاج إلى أقواس معقوصة؛ أمّا `year=\"2016\"` بين علامتي اقتباس فيمرّر نصًا، يبدو متطابقًا هنا لكنه يتصرّف بشكل مختلف في العمليات الحسابية والمقارنات.",
+  "checks": {
+    "titles": "ثلاث بطاقات بالعناوين Arrival وPast Lives وPaddington 2، بهذا الترتيب",
+    "years": "كل بطاقة تعرض سنتها الخاصة",
+    "watched-status": "تعرض بطاقة Arrival النص \"Watched\"",
+    "default-status": "تعرض بطاقتا Past Lives وPaddington 2 النص \"To watch\""
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Fix the portfolio's .gitignore",
+  "prompt": "This `.gitignore` sits at the root of the portfolio repository, which contains `index.html`, `styles.css`, `projects.html`, a `.env` with an API key, `secrets.json`, and macOS `.DS_Store` files in several folders. Three lines don't do what their author intended. Select them.",
+  "hints": [
+    "One pattern hides a file the site needs to work.",
+    "Comments in `.gitignore` only work in one position on a line.",
+    "`.DS_Store` files appear in every folder macOS has opened, not only the root."
+  ],
+  "explanation": "Line 5, `*.css`, ignores every CSS file, including your hand-written `styles.css`; ignore only the real build output folder instead (for example `/dist/`). Line 9 has a trailing comment, but `#` starts a comment only at the beginning of a line, so the pattern is the literal text `secrets.json   # API keys` and `secrets.json` is not ignored; move the comment to its own line. Line 13, `/.DS_Store`, is anchored to the root, so `.DS_Store` files in subfolders still show up; drop the leading slash (`.DS_Store`), or better, put it in your global ignore file. The `!.env.example` line is fine: it keeps the template file other developers need.",
+  "checks": {}
+}

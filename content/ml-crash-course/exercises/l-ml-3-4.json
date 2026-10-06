@@ -1,0 +1,23 @@
+{
+  "kind": "python",
+  "starter": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.metrics import confusion_matrix, precision_score, recall_score, roc_auc_score\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\ndata = load_breast_cancer()\nprint(data.target_names)          # index 0 = malignant, 1 = benign\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\n\nmodel = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train, y_train)\npred = model.predict(X_test)\n\n# 1. Confusion matrix (rows = actual, columns = predicted)\ncm = None\n\n# 2. Recall and precision for MALIGNANT tumours\nrecall_malignant = recall_score(y_test, pred)\nprecision_malignant = precision_score(y_test, pred)\n\n# 3. ROC AUC of the model's scores\nauc = None\n",
+  "solution": "from sklearn.datasets import load_breast_cancer\nfrom sklearn.metrics import confusion_matrix, precision_score, recall_score, roc_auc_score\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.tree import DecisionTreeClassifier\n\ndata = load_breast_cancer()\nprint(data.target_names)          # index 0 = malignant, 1 = benign\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)\n\nmodel = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train, y_train)\npred = model.predict(X_test)\n\ncm = confusion_matrix(y_test, pred)\n\nrecall_malignant = recall_score(y_test, pred, pos_label=0)\nprecision_malignant = precision_score(y_test, pred, pos_label=0)\n\nauc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])\nprint(cm, recall_malignant, precision_malignant, auc)\n",
+  "checks": [
+    {
+      "id": "cm",
+      "test": "cm is not None and [list(map(int, r)) for r in cm] == [[50, 3], [10, 80]]"
+    },
+    {
+      "id": "recall",
+      "test": "abs(float(recall_malignant) - 50 / 53) < 1e-6"
+    },
+    {
+      "id": "precision",
+      "test": "abs(float(precision_malignant) - 50 / 60) < 1e-6"
+    },
+    {
+      "id": "auc",
+      "test": "auc is not None and 0.9 < float(auc) < 0.97"
+    }
+  ]
+}

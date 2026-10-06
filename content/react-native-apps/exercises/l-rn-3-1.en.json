@@ -1,0 +1,10 @@
+{
+  "title": "Map Trailhead's URLs to files",
+  "prompt": "Fill in the file names (without `.tsx`) so Expo Router renders each URL from the right file, wraps the settings screens in their own layout, and shows a friendly screen for unknown URLs. Then pick the `router` method that returns from `/settings/units` to `/settings` after a save without stacking a duplicate screen.",
+  "hints": [
+    "The route for a folder itself (`/` or `/settings`) comes from a file with the same name in both places.",
+    "Layout files and the not-found file have special prefixes: an underscore and a plus sign.",
+    "The header's back arrow does the same thing as the method you need."
+  ],
+  "explanation": "`index.tsx` renders a folder's own URL, so both `/` and `/settings` come from an `index` file. `units.tsx` inside `settings/` becomes `/settings/units`. `_layout.tsx` wraps its sibling routes in a navigator, and `+not-found.tsx` catches unmatched URLs. After saving, `router.back()` pops the units screen and reveals the settings screen that was already underneath; `push('/settings')` would stack a second copy."
+}

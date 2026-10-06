@@ -1,0 +1,6 @@
+{
+  "kind": "spot-bug",
+  "language": "yaml",
+  "code": "services:\n  api:\n    build: .\n    depends_on:\n      - db\n    environment:\n      DATABASE_URL: postgres://notes:notes@db:5432/notes\n  db:\n    image: postgres:17\n    environment:\n      POSTGRES_USER: notes\n      POSTGRES_PASSWORD: notes\n      POSTGRES_DB: notes\n    healthcheck:\n      test: [\"CMD\", \"pg_isready -U notes -d notes\"]\n      interval: 10s\n      retries: 5",
+  "bugLines": [5, 15]
+}

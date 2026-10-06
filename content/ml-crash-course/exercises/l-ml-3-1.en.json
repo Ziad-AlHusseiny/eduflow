@@ -1,0 +1,16 @@
+{
+  "title": "Build Monday's call list",
+  "prompt": "Marketing can call 20 customers. Give them the right 20.\n\n1. `model`: a pipeline of `StandardScaler` then `LogisticRegression`, fitted on the training data.\n2. `churn_prob`: the churn probability (class 1) for each test customer.\n3. `call_list`: the `customer_id` values of the 20 test customers with the highest churn probability.\n4. `hit_rate`: the share of those 20 who actually churned.",
+  "hints": [
+    "`make_pipeline(StandardScaler(), LogisticRegression())`",
+    "`predict` gives labels. `predict_proba(X_test)[:, 1]` gives the churn column of probabilities.",
+    "`X_test` keeps the original row index, so `churn.loc[X_test.index, \"customer_id\"]` lines up with `churn_prob`. Add the probabilities as a column, sort descending, take `head(20)`."
+  ],
+  "explanation": "Ranking by probability concentrates the call budget: well over 80% of the 20 riskiest test customers really churned, against 55% for a random pick. `predict` would only have said \"1\" for dozens of customers without any order among them. Keeping the original index from `train_test_split` is what lets you join predictions back to ids.",
+  "checks": {
+    "pipeline": "model is StandardScaler → LogisticRegression",
+    "probs": "churn_prob holds the class-1 probabilities",
+    "call-list": "call_list has the 20 highest-risk customer ids",
+    "hit-rate": "hit_rate is the share of the call list who churned"
+  }
+}

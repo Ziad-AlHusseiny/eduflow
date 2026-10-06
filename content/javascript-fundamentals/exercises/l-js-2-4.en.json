@@ -1,0 +1,17 @@
+{
+  "title": "Private counters with closures",
+  "prompt": "The starter's id generator shares one global `count`, so two generators interfere and any code can reset it. Rewrite `createIdGenerator(prefix)` so each generator has its **own private counter** and there is no global `count` any more: a new generator's first id is always `prefix-1`.\n\nThen write `createBudget(limitCents)`, which returns a function `spend(cents)`. Each call subtracts `cents` from a private remaining amount (starting at `limitCents`) and returns what is left. It may go negative.\n",
+  "hints": [
+    "Variables declared inside `createIdGenerator` are created fresh on every call. Move `let count = 0;` there and delete the global one.",
+    "`createBudget` has the same shape: declare `let remaining = limitCents;`, then `return (cents) => { … };`.",
+    "Inside the returned function: `remaining -= cents; return remaining;`."
+  ],
+  "explanation": "Declaring `count` inside `createIdGenerator` means every call creates a new variable, and the arrow function returned from that call closes over its own copy. That is why two generators no longer interfere and why the first id is always 1. With the global gone, nothing outside the closure can touch the counter. `createBudget` uses the same pattern: `remaining` survives between calls to `spend` because the returned function still refers to it, yet no other code can read or change it except through `spend`.\n",
+  "checks": {
+    "ids-sequence": "A generator returns prefix-1, prefix-2, prefix-3…",
+    "ids-independent": "Two generators keep separate counts",
+    "no-global-count": "There is no global `count` variable any more",
+    "budget": "`spend` subtracts and returns what is left",
+    "budget-independent": "Two budgets keep separate remaining amounts"
+  }
+}

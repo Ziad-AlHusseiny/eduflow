@@ -1,0 +1,32 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "const expenses = [\n  { label: \"coffee\", amount: 450, category: \"food\" },\n  { label: \"Train\", amount: 1220, category: \"travel\" },\n  { label: \"Lunch\", amount: 1350, category: \"food\" },\n  { label: \"Museum\", amount: 99, category: \"fun\" },\n];\n\n// Sum of all amounts (0 for an empty list)\nfunction totalCents(expenses) {\n  return 0;\n}\n\n// An object like { food: 1800, travel: 1220, fun: 99 }\nfunction totalsByCategory(expenses) {\n  return {};\n}\n\n// A NEW array, most expensive first; do not reorder the original\nfunction biggestFirst(expenses) {\n  return expenses.sort();\n}\n\n// A NEW array sorted by label, A to Z, ignoring upper/lower case\nfunction alphabetical(expenses) {\n  return expenses;\n}\n\nconsole.log(totalCents(expenses), totalsByCategory(expenses));\n"
+  },
+  "solution": {
+    "js": "const expenses = [\n  { label: \"coffee\", amount: 450, category: \"food\" },\n  { label: \"Train\", amount: 1220, category: \"travel\" },\n  { label: \"Lunch\", amount: 1350, category: \"food\" },\n  { label: \"Museum\", amount: 99, category: \"fun\" },\n];\n\nfunction totalCents(expenses) {\n  return expenses.reduce((sum, e) => sum + e.amount, 0);\n}\n\nfunction totalsByCategory(expenses) {\n  return expenses.reduce((totals, e) => {\n    totals[e.category] = (totals[e.category] ?? 0) + e.amount;\n    return totals;\n  }, {});\n}\n\nfunction biggestFirst(expenses) {\n  return expenses.toSorted((a, b) => b.amount - a.amount);\n}\n\nfunction alphabetical(expenses) {\n  return expenses.toSorted((a, b) => a.label.localeCompare(b.label));\n}\n\nconsole.log(totalCents(expenses), totalsByCategory(expenses));\n"
+  },
+  "checks": [
+    {
+      "id": "total",
+      "test": "return totalCents(expenses) === 3119 && totalCents([]) === 0;\n"
+    },
+    {
+      "id": "by-category",
+      "test": "const t = totalsByCategory(expenses);\nreturn t.food === 1800 && t.travel === 1220 && t.fun === 99 && Object.keys(t).length === 3;\n"
+    },
+    {
+      "id": "biggest",
+      "test": "const out = biggestFirst(expenses);\nreturn Array.isArray(out) && out.map((e) => e.amount).join() === '1350,1220,450,99';\n"
+    },
+    {
+      "id": "alpha",
+      "test": "const out = alphabetical(expenses);\nreturn Array.isArray(out) && out.map((e) => e.label).join() === 'coffee,Lunch,Museum,Train';\n"
+    },
+    {
+      "id": "no-mutation",
+      "test": "const list = [{ label: 'b', amount: 1 }, { label: 'a', amount: 2 }];\nconst a = biggestFirst(list);\nconst b = alphabetical(list);\nreturn list[0].label === 'b' && a !== list && b !== list;\n"
+    }
+  ]
+}

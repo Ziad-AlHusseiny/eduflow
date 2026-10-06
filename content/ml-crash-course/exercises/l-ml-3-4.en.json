@@ -1,0 +1,16 @@
+{
+  "title": "Metrics for the class that matters",
+  "prompt": "A depth-2 tree screens breast tumours. In this dataset **0 means malignant** and 1 means benign. Measure the model from a doctor's point of view.\n\n1. `cm`: the confusion matrix of `y_test` against `pred`.\n2. `recall_malignant` and `precision_malignant`: recall and precision with malignant as the positive class.\n3. `auc`: ROC AUC from the model's predicted probabilities.",
+  "hints": [
+    "`confusion_matrix(y_test, pred)`: true labels first.",
+    "The starter computes the metrics for label 1 (benign). Add `pos_label=0`.",
+    "`roc_auc_score` wants scores for the positive label of `y_test` (1). Use `model.predict_proba(X_test)[:, 1]`, not `predict`."
+  ],
+  "explanation": "The matrix `[[50, 3], [10, 80]]` shows 3 malignant tumours called benign: the dangerous error. Recall for malignant is 50/53 ≈ 0.94; precision is 50/60 ≈ 0.83, because 10 benign tumours were flagged. With the default `pos_label=1` you'd have reported benign recall (0.89) as if it were about cancer. AUC is about 0.94: the tree's four leaves give a coarse but useful ranking.",
+  "checks": {
+    "cm": "cm is the confusion matrix",
+    "recall": "recall_malignant uses malignant (0) as positive",
+    "precision": "precision_malignant uses malignant (0) as positive",
+    "auc": "auc is computed from probabilities"
+  }
+}

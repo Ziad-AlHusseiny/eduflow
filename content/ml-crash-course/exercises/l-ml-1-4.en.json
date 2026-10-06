@@ -1,0 +1,16 @@
+{
+  "title": "Beat the baselines, or don't",
+  "prompt": "Put a k-nearest-neighbours model next to its two baselines on the same split.\n\n1. `dummy_acc`: test accuracy of a `DummyClassifier` that predicts the most frequent class.\n2. `best_days`: the cut-off from `range(30, 301, 10)` that gives the best accuracy **on the training data** for the rule \"churned if `days_since_last_order` > cut-off\". Then `rule_acc`: that rule's accuracy on the test data.\n3. `knn_acc`: test accuracy of `KNeighborsClassifier()` with default settings.",
+  "hints": [
+    "`DummyClassifier(strategy=\"most_frequent\").fit(X_train, y_train).score(X_test, y_test)`",
+    "Write a helper `rule_accuracy(days, X, y)` that compares `(X[\"days_since_last_order\"] > days).astype(int)` with `y` and takes the mean.",
+    "`max(range(30, 301, 10), key=lambda d: rule_accuracy(d, X_train, y_train))` picks the cut-off using training data only."
+  ],
+  "explanation": "The dummy scores 0.55, the 80-day rule 0.72 and k-NN 0.72. k-nearest neighbours, with eight features, does no better than one line of logic on one column. That's a real finding: either the other features carry little extra signal, or this model can't use it (k-NN is distorted by features on very different scales, which you'll fix in section 2). Choosing the cut-off on the training data keeps the comparison fair.",
+  "checks": {
+    "dummy": "dummy_acc is the majority-class test accuracy",
+    "best-days": "best_days is the best cut-off on the training data",
+    "rule-acc": "rule_acc is that rule's test accuracy",
+    "knn": "knn_acc is the k-NN model's test accuracy"
+  }
+}

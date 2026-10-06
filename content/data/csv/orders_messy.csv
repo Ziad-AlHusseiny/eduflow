@@ -1,0 +1,169 @@
+order_id,order_date,customer,country,product,quantity,total,channel
+2574,2024-01-02,Daniel Schmidt,Canada,Blackout Curtains,1,$65.00,mobile app
+2069,2024-02-11,Liam Nasser,United States,Jump Rope Pro,1,18.00,mobile app
+1200,2024-02-22,Layla Mansour,united kingdom,Folding Camp Chair,1,33.00,mobile app
+1809,2024-03-04,Chloe Evans,United States,Wireless Charging Pad,1,35.00,web
+1434,2024-03-17,Jonas Ibrahim,Saudi Arabia,Cork Yoga Mat,1,72.00,N/A
+2089,2024-03-28,Hana Weber,UNITED KINGDOM,Pruning Shears,2,58.00,marketplace
+2490,08/04/2024,Karim Hussein,United Arab Emirates,Nonstick Saucepan Set,1,$89.00,web
+2985,2024-04-14,Felix Müller,United Kingdom,Insulated Travel Mug,1,24.00,web
+2544,2024-04-26,Sara Khalil,Jordan,Resistance Bands Set,2,58.00,mobile app
+2375,06/05/2024,Felix Schmidt,United Kingdom,Ergonomic Task Chair,1,329.00,mobile app
+1129,17/05/2024,Dina Saleh,United States,Desk Mat XL,1,$29.00,web
+1176,29/05/2024,Ivy Hussein,United States,Folding Camp Chair,1,44.00,web
+2610,07/06/2024,Reem Taylor,united arab emirates,Meditation Cushion,1,46.00,mobile app
+1940,2024-06-20,Ella Hussein,Canada,Bamboo Cutting Board,4,112.00,mobile app
+3016,2024-06-29,Chloe Rahman,United States,Burr Coffee Grinder,1,$129.00,web
+1820,2024-07-08,Mariam Youssef,United Arab Emirates,Glass Teapot 1L,1,27.00,mobile app
+1475,2024-07-15,Ethan Smith,United States,Jute Area Rug 160x230,1,199.00,web
+1060,21/07/2024,Hana Brown,Canada,Herb Planter Trio,1,36.00,mobile app
+2743,02/11/2025,  Mia Ahmed ,Saudi Arabia,Pour-Over Coffee Kit,1,$35.70,mobile app
+2085,07/31/2024,Mia Rahman,United States,Enamel Dutch Oven 5L,1,$119.00,N/A
+2514,08/08/2024,Layla Hussein,UNITED ARAB EMIRATES,Kettlebell 12kg,1,54.00,web
+2079,2024-08-17,Hannah Khalil,United States,Resistance Bands Set,1,$29.00,web
+1026,02/10/2025,Ali Evans,saudi arabia,Arc Floor Lamp,3,$500.85,web
+2865,23/08/2024,Hassan Martin,United Arab Emirates,Pour-Over Coffee Kit,1,34.00,mobile app
+2788,2024-08-30,Ethan Tremblay,Saudi Arabia,Chef Knife 20cm,2,128.00,mobile app
+2438,2024-09-06,Sophie Rahman,Germany,Cast Iron Skillet 26cm,3,$117.00,web
+1179,2024-09-13,Ivy Hussein,United States,Ceramic Pour-Over Dripper,1,22.00,mobile app
+1434,2024-03-17,Jonas Ibrahim,Saudi Arabia,Cork Yoga Mat,1,72.00,N/A
+2391,26/09/2024,Leo Smith,Germany,Resistance Bands Set,1,$29.00,mobile app
+2790,04/10/2024,Ethan Tremblay,Saudi Arabia,Bamboo Cutting Board,1,$28.00,web
+2787,12/10/2024,Ethan Tremblay,Saudi Arabia,Smart LED Bulb (4),1,$49.00,web
+1181,2024-10-18,Ivy Hussein,UNITED STATES,Meditation Cushion,3,$138.00,mobile app
+1322,2024-10-24,Tariq Evans,Saudi Arabia,Desk Mat XL,1,$29.00,mobile app
+1395,2024-11-02,Karim Aziz,United Arab Emirates,Blackout Curtains,,195.00,web
+2222,2025-10-19,Ella Evans,United Kingdom,Hose Reel Cart,1,$77.70,mobile app
+2172,2024-11-05,Layla Brown,Germany,Burr Coffee Grinder,2,258.00,mobile app
+2208,09/11/2024,Grace Taylor,Germany,Desk Mat XL,1,29.00,mobile app
+2316,2024-11-12,  Chloe Rahman ,Germany,Enamel Dutch Oven 5L,1,89.25,mobile app
+1440,13/11/2024,Ella Weber,United States,Laptop Stand,1,49.00,mobile app
+1639,11/16/2024,Ryan Smith,Saudi Arabia,Ultralight Sleeping Bag,1,152.15,marketplace
+2051,19/11/2024,Sara Nasser,United Kingdom,Standing Desk 140cm,2,$898.00,marketplace
+2510,2024-11-22,Salma Clarke,United States,Wool Throw Blanket,2,$158.00,marketplace
+1433,25/11/2024,Jonas Ibrahim,Saudi Arabia,Pruning Shears,1,21.75,web
+2286,2024-11-28,Ryan Taylor,Canada,Picnic Blanket,4,$152.00,web
+1489,05/12/2024,Ivy Schmidt,SAUDI ARABIA,Ceramic Pour-Over Dripper,1,$22.00,web
+2021,2024-12-11,Farah Brown,United Arab Emirates,Herb Planter Trio,3,108.00,web
+2268,2024-12-18,Noah Mostafa,Germany,Jump Rope Pro,1,18.00,web
+2767,2024-12-24,Lea Walker,UNITED ARAB EMIRATES,Kettlebell 12kg,1,$54.00,mobile app
+2206,28/12/2024,Grace Taylor,Germany,Raised Garden Bed,1,99.00,web
+1059,02/01/2025,Hana Brown,Canada,Monitor Arm,4,356.00,web
+1775,08/01/2025,Liam Hughes,GERMANY,Standing Desk 140cm,2,898.00,marketplace
+2441,2025-01-12,Sophie Rahman,GERMANY,Standing Desk 140cm,1,449.00,marketplace
+1844,2025-01-16,Hassan Schmidt,Germany,Jute Area Rug 160x230,1,199.00,web
+1027,01/20/2025,Lukas Farouk,germany,Ergonomic Task Chair,1,$329.00,web
+2764,2025-01-23,Ivy Smith,Canada,Cork Yoga Mat,1,$72.00,web
+1701,2025-01-29,Sara Walker,Saudi Arabia,Standing Desk 140cm,1,$449.00,web
+1542,2025-02-04,Felix Khalil,CANADA,Camping Stove,1,$50.15,mobile app
+2401,02/08/2025,Nour Rahman,Saudi Arabia,Blackout Curtains,1,$65.00,web
+1591,2025-02-12,Ahmed Nasser,Canada,Resistance Bands Set,1,29.00,web
+2521,02/20/2025,Khaled Müller,United Kingdom,Cable Management Kit,1,19.00,mobile app
+2281,27/02/2025,  Hassan Fischer ,egypt,Carbon Steel Wok,4,180.00,web
+1468,03/03/2025,James Khalil,United States,Kettlebell 12kg,1,$56.70,web
+2214,2025-03-11,Hassan Roy,United Kingdom,Wall Sconce Pair,1,$93.45,mobile app
+2119,16/03/2025,Salma Farouk,Egypt,Ergonomic Task Chair,1,$345.45,mobile app
+1355,21/03/2025,Liam Gagnon,Saudi Arabia,Meditation Cushion,3,$144.90,web
+1743,2025-03-26,  Liam Aziz ,United States,Solar Path Lights (6),2,88.20,web
+2294,2025-03-31,Ryan Taylor,Canada,Raised Garden Bed,1,103.95,web
+1254,2025-04-03,Ali Evans,Germany,Desk Mat XL,1,30.45,web
+2130,2025-04-07,James Khalil,Egypt,Monitor Arm,3,280.35,mobile app
+2082,2025-04-13,  Ava Tremblay ,Egypt,Ultralight Sleeping Bag,1,187.95,web
+2707,2025-04-17,Hannah Fischer,EGYPT,2-Person Dome Tent,1,140.81,web
+1264,2025-04-23,Ryan Nasser,United States,Solar Path Lights (6),1,44.10,mobile app
+1921,2025-04-29,Youssef Mansour,Germany,Ergonomic Task Chair,1,328.18,N/A
+1082,2025-05-04,  Farah Brown ,Egypt,Ceramic Pour-Over Dripper,1,$23.10,web
+2675,05/08/2025,Farah Farouk,United States,Laptop Stand,1,43.73,web
+1564,05/14/2025,Noah Aziz,United Kingdom,Adjustable Dumbbells 24kg,,$303.45,mobile app
+1415,2025-05-18,Ahmed Brown,Egypt,Laptop Stand,1,51.45,web
+1474,2025-05-25,Youssef Fischer,United States,Pour-Over Coffee Kit,,35.70,web
+1164,30/05/2025,Grace Schmidt,Germany,Wall Sconce Pair,1,$93.45,web
+1416,2025-06-05,Ahmed Brown,Egypt,Kettlebell 12kg,,56.70,marketplace
+1090,2025-06-10,  Karim Hussein ,GERMANY,2-Person Dome Tent,2,$312.90,mobile app
+2048,2025-06-14,Lukas Müller,Egypt,Monitor Arm,1,93.45,N/A
+1412,2025-06-18,Ahmed Brown,Egypt,Arc Floor Lamp,1,166.95,N/A
+1725,2025-06-24,  Hassan Hughes ,United States,Blackout Curtains,3,204.75,mobile app
+2941,27/06/2025,Salma Müller,United Kingdom,Herb Planter Trio,1,37.80,web
+1097,2025-07-04,Zoe Weber,United Arab Emirates,Resistance Bands Set,2,$60.90,mobile app
+2757,2025-07-07,Ella Taylor,CANADA,Cotton Cushion Covers (2),1,30.24,web
+1900,12/07/2025,Reem Müller,SAUDI ARABIA,Jute Area Rug 160x230,1,$208.95,marketplace
+3024,2025-07-15,Felix Khalil,UNITED STATES,Cast Iron Skillet 26cm,1,$40.95,mobile app
+2336,07/20/2025,Felix Weber,united kingdom,Laptop Stand,1,43.73,web
+2666,24/07/2025,Zoe Youssef,United Kingdom,Jump Rope Pro,1,18.90,mobile app
+1100,2025-07-27,Zoe Weber,United Arab Emirates,Standing Desk 140cm,1,$471.45,marketplace
+1168,2025-07-31,Grace Schmidt,Germany,Meditation Cushion,1,$48.30,web
+1533,2025-08-06,Karim Taylor,Saudi Arabia,Jute Area Rug 160x230,1,$208.95,web
+2741,09/08/2025,Mia Ahmed,Saudi Arabia,Wall Sconce Pair,1,93.45,web
+1109,2025-08-11,Tariq Taylor,Egypt,Glass Teapot 1L,2,56.70,web
+1226,2025-08-13,James Ibrahim,United Arab Emirates,Laptop Stand,3,154.35,mobile app
+2170,2025-08-16,Layla Weber,United Kingdom,Ergonomic Task Chair,3,$880.90,web
+2898,2025-08-20,Jonas Khalil,Saudi Arabia,LED Headlamp,2,$46.20,web
+2009,2025-08-23,Ryan Walker,Germany,Raised Garden Bed,,$207.90,web
+2676,26/08/2025,Farah Farouk,UNITED STATES,Nonstick Saucepan Set,4,$373.80,mobile app
+2913,2025-08-28,Lea Mansour,Germany,Folding Camp Chair,1,46.20,marketplace
+1179,2024-09-13,Ivy Hussein,United States,Ceramic Pour-Over Dripper,1,22.00,mobile app
+2195,12/09/2025,Felix Hughes,United Kingdom,Arc Floor Lamp,1,$166.95,web
+1025,01/09/2025,Ali Evans,Saudi Arabia,Kettlebell 12kg,1,$56.70,mobile app
+2273,03/09/2025,  Khaled Aziz ,United Arab Emirates,Kettlebell 12kg,,56.70,marketplace
+2218,06/09/2025,Sophie Mansour,United Kingdom,Wireless Charging Pad,1,36.75,mobile app
+1451,2025-09-09,Ella Weber,United States,Meditation Cushion,1,$48.30,web
+2195,12/09/2025,Felix Hughes,United Kingdom,Arc Floor Lamp,1,$166.95,web
+2742,15/09/2025,Mia Ahmed,Saudi Arabia,Espresso Tamper,3,59.85,web
+2864,2025-09-21,Hassan Martin,United Arab Emirates,Resistance Bands Set,1,30.45,marketplace
+2784,24/09/2025,  Jonas Aziz ,UNITED KINGDOM,Hose Reel Cart,1,77.70,mobile app
+1478,2025-09-28,Jonas Nasser,egypt,Ultralight Sleeping Bag,1,187.95,web
+1026,02/10/2025,Ali Evans,saudi arabia,Arc Floor Lamp,3,$500.85,web
+2264,04/10/2025,Liam Haddad,United Kingdom,Wall Sconce Pair,1,93.45,web
+3050,2025-10-07,Oliver Roy,UNITED STATES,Bamboo Cutting Board,1,$29.40,web
+1494,2025-10-10,Lukas Mansour,Canada,Kettlebell 12kg,1,56.70,mobile app
+2603,2025-10-13,Jonas Evans,Egypt,Desk Mat XL,1,30.45,web
+2392,2025-10-15,Ethan Youssef,United Arab Emirates,Ergonomic Task Chair,1,$345.45,marketplace
+2979,2025-12-28,Ivy Khalil,UNITED KINGDOM,Wall Sconce Pair,1,88.78,web
+2222,2025-10-19,Ella Evans,United Kingdom,Hose Reel Cart,1,$77.70,mobile app
+2507,10/23/2025,Salma Clarke,united states,Jump Rope Pro,,37.80,mobile app
+1684,25/10/2025,Daniel Ibrahim,United States,Standing Desk 140cm,2,$942.90,mobile app
+2216,2025-10-28,Zoe Farouk,United Kingdom,Monitor Arm,1,$93.45,mobile app
+3026,2025-10-30,Felix Khalil,United States,Chef Knife 20cm,1,$67.20,mobile app
+1463,2025-11-01,Adam Hughes,UNITED KINGDOM,Jump Rope Pro,2,37.80,marketplace
+2743,02/11/2025,  Mia Ahmed ,Saudi Arabia,Pour-Over Coffee Kit,1,$35.70,mobile app
+1711,2025-11-04,Leo Ahmed,Canada,Ultralight Sleeping Bag,1,$187.95,mobile app
+2727,11/05/2025,Liam Saleh,Saudi Arabia,Wall Sconce Pair,2,$186.90,mobile app
+1670,06/11/2025,Nour Evans,United Arab Emirates,Nonstick Saucepan Set,1,84.11,mobile app
+2802,2025-11-07,Nour Nasser,Egypt,Laptop Stand,3,$146.63,web
+2502,2025-11-08,Layla Fischer,jordan,Desk Mat XL,2,60.90,web
+2327,2025-11-09,Lukas Khalil,Germany,Foam Roller,2,$54.60,web
+2673,11/10/2025,Farah Farouk,United States,Resistance Bands Set,1,30.45,marketplace
+2559,11/11/2025,Ryan Wilson,Germany,Cast Iron Skillet 26cm,,40.95,marketplace
+2629,2025-11-12,  Jonas Haddad ,EGYPT,Standing Desk 140cm,1,$471.45,N/A
+2485,14/11/2025,Ivy Aziz,United Arab Emirates,Espresso Tamper,1,$19.95,web
+1671,2025-11-15,Nour Evans,United Arab Emirates,Wall Sconce Pair,4,373.80,web
+1524,16/11/2025,Hannah Ibrahim,United Arab Emirates,Ergonomic Task Chair,2,656.35,mobile app
+1960,2025-11-17,Liam Weber,United States,Jump Rope Pro,2,$37.80,web
+2790,04/10/2024,Ethan Tremblay,Saudi Arabia,Bamboo Cutting Board,1,$28.00,web
+2095,19/11/2025,Layla Tremblay,Germany,Ultralight Sleeping Bag,1,187.95,web
+2793,2025-11-20,Nour Nasser,Egypt,Carbon Steel Wok,1,$47.25,web
+2569,2025-11-21,Ryan Ibrahim,United Kingdom,Desk Mat XL,1,30.45,web
+1479,22/11/2025,Jonas Nasser,Egypt,Ultralight Sleeping Bag,1,$187.95,web
+1489,05/12/2024,Ivy Schmidt,SAUDI ARABIA,Ceramic Pour-Over Dripper,1,$22.00,web
+1794,11/24/2025,Nour Evans,Germany,Resistance Bands Set,1,22.84,web
+2631,2025-11-25,Youssef Youssef,Saudi Arabia,Wireless Charging Pad,2,$55.13,marketplace
+1735,11/25/2025,Farah Youssef,Canada,Adjustable Dumbbells 24kg,1,$227.59,marketplace
+2307,2025-11-26,  Layla Roy ,United Arab Emirates,Pull-Up Bar,1,$30.71,mobile app
+2182,2025-11-27,Dina Farouk,United Kingdom,Glass Teapot 1L,1,21.26,mobile app
+2890,11/28/2025,Mariam Gagnon,Egypt,Blackout Curtains,1,51.19,marketplace
+1738,2025-11-29,Liam Walker,egypt,Pull-Up Bar,1,$30.71,web
+2040,30/11/2025,Farah Evans,UNITED STATES,Wall Sconce Pair,2,186.90,web
+1991,2025-12-03,Sara Farouk,Saudi Arabia,Smart LED Bulb (4),1,$51.45,mobile app
+1232,04/12/2025,Grace Hussein,United States,Ceramic Pour-Over Dripper,2,$46.20,web
+2489,2025-12-07,Karim Hussein,United Arab Emirates,Folding Camp Chair,2,92.40,mobile app
+1788,12/09/2025,Nour Evans,Germany,Raised Garden Bed,1,103.95,web
+1580,2025-12-11,Ryan Mostafa,united arab emirates,Hose Reel Cart,1,$73.82,mobile app
+1674,2025-12-14,Ahmed Johnson,United States,Insulated Travel Mug,1,$25.20,web
+2931,12/16/2025,Emily Mansour,United Arab Emirates,Adjustable Dumbbells 24kg,1,303.45,mobile app
+2678,2025-12-17,Farah Farouk,United States,Hose Reel Cart,1,77.70,web
+1092,2025-12-18,Hana Roy,UNITED KINGDOM,Picnic Blanket,1,$39.90,web
+1787,2025-12-19,Nour Evans,Germany,Camping Stove,2,$123.90,mobile app
+2754,2025-12-22,Adam Clarke,UNITED ARAB EMIRATES,Standing Desk 140cm,,707.18,web
+2620,2025-12-25,Liam Wilson,United Arab Emirates,Cork Yoga Mat,3,226.80,web
+2057,2025-12-27,Sara Nasser,United Kingdom,Wall Sconce Pair,2,186.90,web
+2979,2025-12-28,Ivy Khalil,UNITED KINGDOM,Wall Sconce Pair,1,88.78,web

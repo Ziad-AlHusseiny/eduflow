@@ -1,0 +1,13 @@
+{
+  "kind": "python",
+  "files": [],
+  "starter": "def parse_money(text):\n    \"\"\"' $1,234.50' -> 1234.5\"\"\"\n    pass\n\n\ndef line_revenue(quantity, unit_price, discount=0.0):\n    \"\"\"quantity x unit_price x (1 - discount), rounded to 2 decimals\"\"\"\n    pass\n\n\ndef format_money(amount):\n    \"\"\"1234.5 -> '$1,234.50'\"\"\"\n    pass\n\n\nprint(parse_money(\" $1,234.50\"), line_revenue(2, 129.0, 0.15), format_money(1234.5))\n",
+  "solution": "def parse_money(text):\n    \"\"\"' $1,234.50' -> 1234.5\"\"\"\n    return float(text.strip().replace(\"$\", \"\").replace(\",\", \"\"))\n\n\ndef line_revenue(quantity, unit_price, discount=0.0):\n    \"\"\"quantity x unit_price x (1 - discount), rounded to 2 decimals\"\"\"\n    return round(quantity * unit_price * (1 - discount), 2)\n\n\ndef format_money(amount):\n    \"\"\"1234.5 -> '$1,234.50'\"\"\"\n    return f\"${amount:,.2f}\"\n\n\nprint(parse_money(\" $1,234.50\"), line_revenue(2, 129.0, 0.15), format_money(1234.5))\n",
+  "checks": [
+    { "id": "parse-simple", "test": "parse_money('18.00') == 18.0 and parse_money(' $129.00') == 129.0" },
+    { "id": "parse-thousands", "test": "parse_money('$1,234.50') == 1234.5" },
+    { "id": "revenue", "test": "line_revenue(2, 129.0, 0.15) == 219.3 and line_revenue(3, 24.0, 0.25) == 54.0" },
+    { "id": "revenue-default", "test": "line_revenue(1, 39.0) == 39.0" },
+    { "id": "format", "test": "format_money(1234.5) == '$1,234.50' and format_money(18) == '$18.00'" }
+  ]
+}

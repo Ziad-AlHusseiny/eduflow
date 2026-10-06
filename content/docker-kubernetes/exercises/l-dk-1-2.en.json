@@ -1,0 +1,10 @@
+{
+  "title": "Review a teammate's first Dockerfile",
+  "prompt": "This Dockerfile builds, but the files end up in the wrong place and the app is killed hard every time the container stops. Select the **two** lines that cause these problems.",
+  "hints": [
+    "Each `RUN` executes in a fresh shell. Does a `cd` in one `RUN` affect the next instruction?",
+    "Which instruction decides what becomes PID 1, and in which form is it written?"
+  ],
+  "explanation": "Line 4: `RUN cd /app` changes directory only inside that one `RUN` step's shell, so `COPY . .` and `npm ci` still run in `/`, dumping the project into the image root. Use `WORKDIR /app`, which also creates the directory (so line 3 can go too).\n\nLine 9: `CMD npm start` is shell form, so `/bin/sh -c` and then npm sit between Docker and Node. `SIGTERM` doesn't reach the server, and after the grace period it is killed mid-request. Use exec form and run Node directly:\n\n```dockerfile\nWORKDIR /app\n# …\nCMD [\"node\", \"dist/server.js\"]\n```",
+  "checks": {}
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "vite",
+    "term": "Vite",
+    "definition": "A build tool and dev server for front-end projects. It serves your source files with instant updates during development and bundles them into optimized static files in dist/ for production.",
+    "lesson": "l-rf-1-2"
+  },
+  {
+    "id": "strict-mode",
+    "term": "StrictMode",
+    "definition": "A React wrapper component that adds development-only checks, such as rendering components twice and running Effects twice, to expose impure code and missing cleanups. It has no effect in production.",
+    "lesson": "l-rf-1-2"
+  },
+  {
+    "id": "component",
+    "term": "Component",
+    "definition": "A JavaScript function whose name starts with a capital letter and that returns JSX. You use it like a tag, and React calls it to find out what to show.",
+    "lesson": "l-rf-1-3"
+  },
+  {
+    "id": "fragment",
+    "term": "Fragment",
+    "definition": "A wrapper written as <>…</> or <Fragment> that groups several elements without adding a DOM node, so a component can return siblings as one root.",
+    "lesson": "l-rf-1-3"
+  },
+  {
+    "id": "jsx",
+    "term": "JSX",
+    "definition": "A syntax extension that lets you write HTML-like markup in JavaScript. A compiler turns each tag into a function call that creates a React element.",
+    "lesson": "l-rf-1-4"
+  },
+  {
+    "id": "react-element",
+    "term": "React element",
+    "definition": "A plain JavaScript object, created by JSX, that describes what should appear on screen: a type such as \"h2\" or a component, plus its props. React turns elements into DOM.",
+    "lesson": "l-rf-1-4"
+  },
+  {
+    "id": "derived-value",
+    "term": "Derived value",
+    "definition": "Data calculated during render from props or state, such as a count or a filtered list. It is never stored in state, so it can never drift out of sync with its source.",
+    "lesson": "l-rf-2-1"
+  },
+  {
+    "id": "props",
+    "term": "Props",
+    "definition": "The inputs a parent passes to a component as attributes, received as one object. Props are read-only: a component never changes them, it receives new ones when the parent re-renders.",
+    "lesson": "l-rf-2-2"
+  },
+  {
+    "id": "children-prop",
+    "term": "children",
+    "definition": "The prop that holds whatever is nested between a component's opening and closing tags. Rendering {children} lets a component wrap content it knows nothing about.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "slot",
+    "term": "Slot prop",
+    "definition": "A prop that accepts JSX, such as actions={<button>Shuffle</button>}, so the caller decides what appears and the component decides where it goes.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "prop-drilling",
+    "term": "Prop drilling",
+    "definition": "Passing a prop through several components that don't use it, only to reach a deeply nested one. Composition with elements or context can often remove it.",
+    "lesson": "l-rf-2-3"
+  },
+  {
+    "id": "conditional-rendering",
+    "term": "Conditional rendering",
+    "definition": "Choosing what a component outputs based on data, using an early return, the ternary operator, or && in JSX. Returning null renders nothing.",
+    "lesson": "l-rf-2-4"
+  },
+  {
+    "id": "unmount",
+    "term": "Unmount",
+    "definition": "When React removes a component from the tree, destroying its DOM and its state. A conditionally rendered component unmounts when its condition becomes false.",
+    "lesson": "l-rf-2-4"
+  },
+  {
+    "id": "key",
+    "term": "Key",
+    "definition": "A special prop on list items that tells React which item is which between renders. It must be unique among siblings and stable, usually an id from the data.",
+    "lesson": "l-rf-2-5"
+  },
+  {
+    "id": "state",
+    "term": "State",
+    "definition": "Data a component remembers between renders, declared with useState. Calling its setter stores a new value and makes React render the component again.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "hook",
+    "term": "Hook",
+    "definition": "A function whose name starts with \"use\", such as useState or useEffect, that lets a component use React features. Hooks must be called at the top level of a component.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "state-snapshot",
+    "term": "State snapshot",
+    "definition": "The fixed set of state values a single render sees. Setting state does not change the current variables; it schedules a new render with new values.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "updater-function",
+    "term": "Updater function",
+    "definition": "A function passed to a state setter, as in setCount((c) => c + 1). React calls it with the latest pending value, so several updates in a row add up correctly.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "immutable-update",
+    "term": "Immutable update",
+    "definition": "Changing state by creating new arrays or objects (with spread, map or filter) instead of modifying the existing ones, so React can detect the change.",
+    "lesson": "l-rf-3-1"
+  },
+  {
+    "id": "event-handler",
+    "term": "Event handler",
+    "definition": "A function passed to a prop such as onClick or onSubmit that React calls when the event happens. Handlers are where side effects caused by user actions belong.",
+    "lesson": "l-rf-3-2"
+  },
+  {
+    "id": "event-bubbling",
+    "term": "Event bubbling",
+    "definition": "The way an event travels from the element where it happened up through its ancestors, triggering their handlers too. e.stopPropagation() stops it.",
+    "lesson": "l-rf-3-2"
+  },
+  {
+    "id": "controlled-input",
+    "term": "Controlled input",
+    "definition": "A form field whose value comes from React state and whose onChange handler updates that state, making state the single source of truth for what the field shows.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "form-action",
+    "term": "Form action",
+    "definition": "A React 19 feature where a function passed to a form's action prop receives the submitted FormData. React prevents the page reload and resets uncontrolled fields afterwards.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "use-action-state",
+    "term": "useActionState",
+    "definition": "A React 19 Hook that wraps an action function and returns the latest result it produced, a dispatch function to pass to a form, and an isPending flag.",
+    "lesson": "l-rf-3-3"
+  },
+  {
+    "id": "lifting-state-up",
+    "term": "Lifting state up",
+    "definition": "Moving state from a component into the closest common parent of every component that needs it, then passing the value down and change handlers down as props.",
+    "lesson": "l-rf-3-4"
+  },
+  {
+    "id": "effect",
+    "term": "Effect",
+    "definition": "Code passed to useEffect that runs after React updates the screen, used to synchronize with something outside React such as the document title, storage, timers or subscriptions.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "dependency-array",
+    "term": "Dependency array",
+    "definition": "The second argument to useEffect listing every value the Effect reads. React re-runs the Effect only when one of those values has changed since the last render.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "cleanup-function",
+    "term": "Cleanup function",
+    "definition": "A function returned from an Effect that undoes it, such as removing a listener or clearing a timer. React runs it before the Effect runs again and on unmount.",
+    "lesson": "l-rf-3-5"
+  },
+  {
+    "id": "utility-class",
+    "term": "Utility class",
+    "definition": "A small CSS class that does one thing, such as p-4 for padding or text-slate-600 for color. Tailwind CSS generates the utilities your files use.",
+    "lesson": "l-rf-4-2"
+  },
+  {
+    "id": "preview-deployment",
+    "term": "Preview deployment",
+    "definition": "A deployment of a non-production branch or pull request at its own unique URL, so changes can be checked before they are merged and reach the production site.",
+    "lesson": "l-rf-4-3"
+  }
+]

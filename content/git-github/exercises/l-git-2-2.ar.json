@@ -1,0 +1,29 @@
+{
+  "title": "توقّع نتيجة الدمج",
+  "prompt": "هذا هو الموقع الشخصي الآن. الأسهم تتّجه من كل commit إلى أبيه.\n\n:::figure قبل الدمج\n<svg viewBox=\"0 0 640 220\" role=\"img\" aria-labelledby=\"ex1\">\n  <title id=\"ex1\">الـ commit ذو المعرّف a1 ثم b2. من b2 يكمل main إلى c3، ويشير إليه main والـ HEAD. ومن b2 أيضًا، في فرع projects-grid الـ commit ذو المعرّف d4 ثم e5، ويشير projects-grid إلى e5.</title>\n  <circle class=\"d-box\" cx=\"50\" cy=\"110\" r=\"24\"/>\n  <text class=\"d-code\" x=\"50\" y=\"115\" text-anchor=\"middle\">a1</text>\n  <circle class=\"d-box\" cx=\"160\" cy=\"110\" r=\"24\"/>\n  <text class=\"d-code\" x=\"160\" y=\"115\" text-anchor=\"middle\">b2</text>\n  <circle class=\"d-box\" cx=\"290\" cy=\"55\" r=\"24\"/>\n  <text class=\"d-code\" x=\"290\" y=\"60\" text-anchor=\"middle\">c3</text>\n  <circle class=\"d-box\" cx=\"290\" cy=\"165\" r=\"24\"/>\n  <text class=\"d-code\" x=\"290\" y=\"170\" text-anchor=\"middle\">d4</text>\n  <circle class=\"d-box\" cx=\"410\" cy=\"165\" r=\"24\"/>\n  <text class=\"d-code\" x=\"410\" y=\"170\" text-anchor=\"middle\">e5</text>\n  <path class=\"d-arrow\" d=\"M136 110 L78 110\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M267 64 L188 100\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M267 156 L188 120\" marker-end=\"url(#arrow)\"/>\n  <path class=\"d-arrow\" d=\"M386 165 L318 165\" marker-end=\"url(#arrow)\"/>\n  <rect class=\"d-box-accent\" x=\"340\" y=\"38\" width=\"90\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"385\" y=\"60\" text-anchor=\"middle\">main</text>\n  <rect class=\"d-box-warn\" x=\"450\" y=\"38\" width=\"90\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"495\" y=\"60\" text-anchor=\"middle\">HEAD</text>\n  <path class=\"d-line\" d=\"M450 55 L430 55\"/>\n  <path class=\"d-line\" d=\"M340 55 L318 55\"/>\n  <rect class=\"d-box-accent\" x=\"460\" y=\"148\" width=\"150\" height=\"34\" rx=\"8\"/>\n  <text class=\"d-code\" x=\"535\" y=\"170\" text-anchor=\"middle\">projects-grid</text>\n  <path class=\"d-line\" d=\"M460 165 L438 165\"/>\n</svg>\n:::\n\nلمس الفرعان ملفات مختلفة. تشغّل `git merge projects-grid`. كيف يبدو الرسم بعد ذلك؟",
+  "hints": [
+    "على أيّ فرع يقف الـ HEAD؟ هذا هو الفرع الوحيد الذي يمكن أن يتحرّك.",
+    "هل كسب `main` أي commits منذ انفصل عنه `projects-grid` عند `b2`؟",
+    "حين يكون في الطرفين commits جديدة، يصبح الـ fast-forward مستحيلًا."
+  ],
+  "explanation": "الـ HEAD على `main`، إذن `main` هو الفرع الذي يتحرّك. في الفرعين commits منذ الـ merge base المشترك `b2` (`c3` على `main`؛ و `d4` و `e5` على `projects-grid`)، لذا فالـ fast-forward مستحيل. ينفّذ Git دمجًا ثلاثيًا انطلاقًا من `b2` ويسجّل merge commit جديدًا أبواه `c3` و `e5`. يتحرّك `main` إليه؛ ويبقى `projects-grid` على `e5` حتى تحذفه.",
+  "options": {
+    "a": {
+      "text": "يتقدّم `main` بـ fast-forward إلى `e5`؛ ولا يُنشأ أي commit جديد.",
+      "why": "الـ fast-forward يتطلّب أن يكون `main` سلفًا لـ `e5`. لكن `c3` ليس في سجلّ `projects-grid`، فلا يستطيع Git أن ينزلق بـ `main` على خط مستقيم."
+    },
+    "b": {
+      "text": "يظهر merge commit جديد أبواه `c3` و `e5`؛ يتحرّك `main` إليه ويبقى `projects-grid` على `e5`.",
+      "why": "صحيح. تحرّك الطرفان منذ `b2`، فينشئ Git commit له أبوان على الفرع الحالي وحده."
+    },
+    "c": {
+      "text": "يظهر merge commit جديد ويتحرّك `main` و `projects-grid` كلاهما إليه.",
+      "why": "لا يتحرّك أثناء الدمج إلا الفرع الذي أنت عليه. ويظل `projects-grid` يشير إلى `e5`."
+    },
+    "d": {
+      "text": "يُنسخ `d4` و `e5` بعد `c3` بمعرّفات جديدة، فيبقى السجلّ خطيًا.",
+      "why": "هذا ما يفعله الـ rebase. أما الـ merge فيحتفظ بالـ commits الأصلية ويصل الخطّين بـ merge commit."
+    }
+  },
+  "checks": {}
+}

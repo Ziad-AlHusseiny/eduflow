@@ -1,0 +1,24 @@
+{
+  "kind": "web",
+  "mode": "js",
+  "starter": {
+    "js": "// 1. Log the text: Welcome to Pocket\n// 2. Log the result of adding three expenses: 450, 1200 and 899\n"
+  },
+  "solution": {
+    "js": "console.log(\"Welcome to Pocket\");\nconsole.log(450 + 1200 + 899);\n"
+  },
+  "checks": [
+    {
+      "id": "logs-welcome",
+      "test": "return logs.some((l) => l.toLowerCase().includes('welcome to pocket'));"
+    },
+    {
+      "id": "logs-total",
+      "test": "return logs.some((l) => l.trim() === '2549');"
+    },
+    {
+      "id": "welcome-first",
+      "test": "const w = logs.findIndex((l) => l.toLowerCase().includes('welcome to pocket'));\nconst t = logs.findIndex((l) => l.trim() === '2549');\nreturn w !== -1 && t !== -1 && w < t;\n"
+    }
+  ]
+}

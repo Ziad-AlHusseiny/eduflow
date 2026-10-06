@@ -1,0 +1,22 @@
+{
+  "kind": "fill",
+  "language": "swift",
+  "template": "NavigationStack {\n    List(store.expenses) { expense in\n        NavigationLink({{0}}: expense) {\n            ExpenseRow(expense: expense)\n        }\n    }\n    .navigationTitle(\"Expenses\")\n    .{{1}}(for: Expense.self) { expense in\n        ExpenseDetail(expense: expense)\n    }\n    .toolbar {\n        Button(\"Add expense\", systemImage: \"plus\") { isAdding = true }\n    }\n    .{{2}}(isPresented: $isAdding) {\n        AddExpenseView(store: store)\n    }\n}",
+  "blanks": [
+    {
+      "answers": [
+        "value"
+      ]
+    },
+    {
+      "answers": [
+        "navigationDestination"
+      ]
+    },
+    {
+      "answers": [
+        "sheet"
+      ]
+    }
+  ]
+}

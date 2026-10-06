@@ -1,0 +1,11 @@
+{
+  "title": "Day-to-day container commands",
+  "prompt": "Fill in the blanks to run notes-api in the background on host port **8080**, follow its logs, open a shell inside it, and stop it with a 30-second grace period.",
+  "hints": [
+    "One flag detaches the container; the host port is the left side of `-p`.",
+    "The subcommands are the ones you'd use to read output and to run an extra process in a running container.",
+    "`docker stop` takes a flag for the number of seconds to wait before SIGKILL."
+  ],
+  "explanation": "```bash\ndocker run -d --name notes -p 8080:3000 notes-api:dev\ndocker logs -f notes\ndocker exec -it notes sh\ndocker stop -t 30 notes\n```\n`-d` detaches. In `-p 8080:3000` the host side comes first. `logs -f` follows stdout and stderr. `exec -it` runs an interactive process inside the running container. `stop -t 30` (long form `--timeout`) waits 30 seconds after SIGTERM before sending SIGKILL, which gives a draining app time to finish in-flight requests.",
+  "checks": {}
+}

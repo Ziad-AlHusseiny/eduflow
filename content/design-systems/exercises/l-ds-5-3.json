@@ -1,0 +1,36 @@
+{
+  "kind": "web",
+  "mode": "dom",
+  "starter": {
+    "html": "<header class=\"bar\">\n  <button class=\"nw-button\" data-nw-component=\"Button\" data-variant=\"primary\">New shipment</button>\n  <button class=\"btn-legacy\">Export</button>\n</header>\n<main>\n  <button class=\"nw-button\" data-nw-component=\"Button\">Filter</button>\n  <button class=\"nw-button\" data-nw-component=\"Button\">Sort</button>\n  <button class=\"nw-button\">Refresh</button>\n  <section id=\"settings\">\n    <button class=\"nw-button\" data-nw-component=\"Button\">Save</button>\n    <button class=\"btn-legacy\">Reset</button>\n    <button class=\"nw-button\">Advanced</button>\n  </section>\n</main>\n<p id=\"report\"></p>",
+    "css": "button { margin: 4px; }\n#report { font-weight: 600; }",
+    "js": "// Every real Northwind component renders data-nw-component=\"…\".\n// Some teams copied the nw-button class into their own components.\nfunction measureAdoption(root) {\n  const total = 0;\n  const system = 0;\n  const percent = 0;\n  return { total, system, percent };\n}\n\nconst result = measureAdoption(document);\ndocument.querySelector('#report').textContent = '';\n"
+  },
+  "solution": {
+    "html": "<header class=\"bar\">\n  <button class=\"nw-button\" data-nw-component=\"Button\" data-variant=\"primary\">New shipment</button>\n  <button class=\"btn-legacy\">Export</button>\n</header>\n<main>\n  <button class=\"nw-button\" data-nw-component=\"Button\">Filter</button>\n  <button class=\"nw-button\" data-nw-component=\"Button\">Sort</button>\n  <button class=\"nw-button\">Refresh</button>\n  <section id=\"settings\">\n    <button class=\"nw-button\" data-nw-component=\"Button\">Save</button>\n    <button class=\"btn-legacy\">Reset</button>\n    <button class=\"nw-button\">Advanced</button>\n  </section>\n</main>\n<p id=\"report\"></p>",
+    "css": "button { margin: 4px; }\n#report { font-weight: 600; }",
+    "js": "// Every real Northwind component renders data-nw-component=\"…\".\n// Some teams copied the nw-button class into their own components.\nfunction measureAdoption(root) {\n  const buttons = [...root.querySelectorAll('button')];\n  const total = buttons.length;\n  const system = buttons.filter((b) => b.dataset.nwComponent === 'Button').length;\n  const percent = total === 0 ? 0 : Math.round((system / total) * 100);\n  return { total, system, percent };\n}\n\nconst result = measureAdoption(document);\ndocument.querySelector('#report').textContent =\n  `${result.system} of ${result.total} buttons use Northwind UI (${result.percent}%)`;\n"
+  },
+  "checks": [
+    {
+      "id": "counts-page",
+      "test": "const r = window.measureAdoption(document); return r.total === 8 && r.system === 4 && r.percent === 50;"
+    },
+    {
+      "id": "ignores-copies",
+      "test": "const r = window.measureAdoption(document); return r.system === $$('[data-nw-component=\"Button\"]').length && r.system < $$('.nw-button').length;"
+    },
+    {
+      "id": "scoped",
+      "test": "const r = window.measureAdoption($('#settings')); return r.total === 3 && r.system === 1 && r.percent === 33;"
+    },
+    {
+      "id": "live",
+      "test": "const b = document.createElement('button'); b.dataset.nwComponent = 'Button'; $('main').append(b); const r = window.measureAdoption(document); b.remove(); return r.total === 9 && r.system === 5 && r.percent === 56;"
+    },
+    {
+      "id": "report",
+      "test": "const t = text('#report'); return t.includes('4 of 8') && t.includes('50%');"
+    }
+  ]
+}

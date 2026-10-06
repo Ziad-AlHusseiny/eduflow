@@ -1,0 +1,34 @@
+{
+  "id": "web-accessibility",
+  "project": "Ticketly, a one-page event-booking site selling seats for Harbour Lights, a weekend music festival. It starts out the way many real pages do: div soup, unlabeled inputs, a mouse-only seat picker, a modal that traps nobody and a checkout that screen readers can't follow. Each lesson audits one part of Ticketly and fixes it, until the whole page passes a WCAG 2.2 AA audit.",
+  "sections": [
+    { "id": "s-a11y-1", "lessons": [
+      { "id": "l-a11y-1-1", "minutes": 12 },
+      { "id": "l-a11y-1-2", "minutes": 17 },
+      { "id": "l-a11y-1-3", "minutes": 17 }
+    ] },
+    { "id": "s-a11y-2", "lessons": [
+      { "id": "l-a11y-2-1", "minutes": 18 },
+      { "id": "l-a11y-2-2", "minutes": 17 },
+      { "id": "l-a11y-2-3", "minutes": 20 },
+      { "id": "l-a11y-2-4", "minutes": 17 }
+    ] },
+    { "id": "s-a11y-3", "lessons": [
+      { "id": "l-a11y-3-1", "minutes": 18 },
+      { "id": "l-a11y-3-2", "minutes": 20 },
+      { "id": "l-a11y-3-3", "minutes": 18 },
+      { "id": "l-a11y-3-4", "minutes": 21 }
+    ] },
+    { "id": "s-a11y-4", "lessons": [
+      { "id": "l-a11y-4-1", "minutes": 18 },
+      { "id": "l-a11y-4-2", "minutes": 17 },
+      { "id": "l-a11y-4-3", "minutes": 18 },
+      { "id": "l-a11y-4-4", "minutes": 17 }
+    ] },
+    { "id": "s-a11y-5", "lessons": [
+      { "id": "l-a11y-5-1", "minutes": 16 },
+      { "id": "l-a11y-5-2", "minutes": 18 },
+      { "id": "l-a11y-5-3", "minutes": 16 }
+    ] }
+  ]
+}

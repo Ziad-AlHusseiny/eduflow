@@ -1,0 +1,18 @@
+{
+  "title": "Write your own style flattener",
+  "prompt": "React Native merges a `style` prop the same way every time: arrays are read left to right, later keys win, falsy entries are skipped, and arrays can nest. Implement `flattenStyle(style)` so it follows those rules and returns **one new plain object**.\n\n- An object returns a copy of itself.\n- A falsy value (`false`, `null`, `undefined`) or an empty array returns `{}`.\n- It must never mutate the style objects you pass in.\n\nThe starter is close but has three bugs. Find them.",
+  "hints": [
+    "`Object.assign(style[0], \u2026)` writes into the first object. What happens to a shared `styles.card` the next time it's used?",
+    "Handle the simple cases first: falsy input returns `{}`, and a non-array object returns `{ ...style }`.",
+    "For arrays, start from `const result = {}` and `Object.assign(result, flattenStyle(entry))` for each entry; the recursive call takes care of nesting and falsy entries."
+  ],
+  "explanation": "The solution is recursive: every entry is flattened on its own, which handles nested arrays and falsy values with the same two base cases, and is merged into a fresh object so the caller's styles are never touched. Mutating `style[0]` is the dangerous bug: `styles.card` is shared by every card, so one favorite card would quietly change all of them. This is the same contract as `StyleSheet.flatten`, and knowing it lets you predict exactly what any style array will render.",
+  "checks": {
+    "single-object": "A single object comes back with the same keys",
+    "later-wins": "Later entries override earlier ones",
+    "skips-falsy": "false, null and undefined entries are skipped",
+    "nested-arrays": "Nested arrays are flattened in order",
+    "no-mutation": "Input style objects are never modified",
+    "falsy-input": "Falsy input and empty arrays return {}"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Docker وKubernetes: انشر وأنت مطمئن",
+  "tagline": "حوّل API حقيقيًا إلى image صغيرة وآمنة، وشغّله على Kubernetes دون مفاجآت في الثالثة فجرًا.",
+  "description": [
+    "الـ containers هي الطريقة التي تُشحن بها معظم البرمجيات في 2026، وKubernetes هو المكان الذي يعمل فيه جزء كبير منها. تأخذ هذه الدورة خدمة صغيرة واحدة، notes-api (مبنية بـ Node.js وPostgres)، من جهازك الشخصي إلى cluster حقيقي. تكتب الـ Dockerfile، وتصغّر الـ image وتحصّنها، وتجهّز بيئة محلية كاملة بـ Docker Compose، ثم تنشر الخدمة على Kubernetes وتوسّعها وتحدّثها وتتراجع عن التحديث عند الحاجة.",
+    "مدرّبتك هي Amara Diallo، مهندسة معمارية سحابية (cloud architect) في Skylane، تتولّى المناوبة على clusters الإنتاج. كل توصية في هذه الدورة مربوطة بحادث حقيقي تمنعه: الـ cache الذي رفع زمن البناء من أربعين ثانية إلى ثماني دقائق، والسرّ الذي دُمج في image عامة، والـ rollout الذي أرسل الطلبات إلى Pods لم تكن جاهزة بعد. ستتعلّم الإعدادات الافتراضية التي تجعل خدماتك مملّة بالمعنى الجيد."
+  ],
+  "audience": "مطوّرون يستطيعون بناء API ويب صغير، ويحتاجون الآن إلى تغليفه وتشغيله وإدارته باستخدام الـ containers.",
+  "prerequisites": "الراحة مع سطر الأوامر وGit ولغة واحدة للواجهة الخلفية؛ الأمثلة مكتوبة بـ Node.js.",
+  "learnItems": [
+    "اكتب Dockerfiles سريعة تستفيد من الـ cache مع multi-stage builds",
+    "اشحن images صغيرة بمستخدم غير root، مثبّتة بالـ digest ومفحوصة من الثغرات",
+    "شغّل التطبيق وقاعدة بياناته محليًا باستخدام Docker Compose",
+    "انشر بالـ Deployments والـ Services والـ ConfigMaps والـ Secrets",
+    "أضف probes وresource requests وتوسّعًا تلقائيًا يصمد تحت الضغط",
+    "انشر وتراجع وافحص إصدارًا معطوبًا باستخدام kubectl وHelm"
+  ],
+  "sections": {
+    "s-dk-1": "الـ Containers من المبادئ الأولى",
+    "s-dk-2": "Images جاهزة للإنتاج",
+    "s-dk-3": "بيئات محلية مع Docker Compose",
+    "s-dk-4": "أساسيات Kubernetes",
+    "s-dk-5": "التشغيل في الإنتاج"
+  },
+  "lessons": {
+    "l-dk-1-1": "ما هو الـ container حقًا",
+    "l-dk-1-2": "أول Dockerfile لك",
+    "l-dk-1-3": "الـ Layers والـ Build Cache",
+    "l-dk-1-4": "تشغيل الـ Containers: المنافذ ومتغيّرات البيئة والسجلات والإشارات",
+    "l-dk-2-1": "الـ Multi-Stage Builds وملف .dockerignore",
+    "l-dk-2-2": "Base images صغيرة ومستخدمون غير root",
+    "l-dk-2-3": "الـ Tags والـ Digests والـ Registries",
+    "l-dk-2-4": "فحص الـ Images وإبعاد الأسرار عنها",
+    "l-dk-3-1": "أساسيات Compose: الخدمات والشبكات",
+    "l-dk-3-2": "الـ Volumes: بيانات تبقى",
+    "l-dk-3-3": "ترتيب الإقلاع مع الـ Healthchecks",
+    "l-dk-3-4": "ملفات env والـ Overrides ووضع Watch",
+    "l-dk-4-1": "حلقة التحكّم وأول cluster لك",
+    "l-dk-4-2": "الـ Pods والـ ReplicaSets والـ Deployments",
+    "l-dk-4-3": "الـ Services: عناوين ثابتة لـ Pods متنقّلة",
+    "l-dk-4-4": "الـ ConfigMaps والـ Secrets والـ Namespaces",
+    "l-dk-5-1": "الـ Probes والإيقاف الآمن",
+    "l-dk-5-2": "الـ Requests والـ Limits والتوسّع التلقائي",
+    "l-dk-5-3": "التحديثات المتدرّجة والتراجع وHelm",
+    "l-dk-5-4": "الحركة إلى الداخل والمشاكل إلى الخارج: Gateway API والتشخيص"
+  }
+}

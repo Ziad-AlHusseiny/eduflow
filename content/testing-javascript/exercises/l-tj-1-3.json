@@ -1,0 +1,43 @@
+{
+  "kind": "web",
+  "mode": "test",
+  "subject": "// Adds a tip to a subtotal. Money is in integer cents; percent is a\n// number such as 15 or 12.5. The tip is rounded to the nearest cent\n// (a half cent rounds up). A zero tip is allowed; a negative one is not.\nfunction withTip(subtotalCents, percent) {\n  if (percent < 0) throw new RangeError('Tip percent cannot be negative');\n  const tipCents = Math.round((subtotalCents * percent) / 100);\n  return { tipCents, totalCents: subtotalCents + tipCents };\n}\n",
+  "mutants": [
+    {
+      "id": "floors-tip",
+      "code": "// Adds a tip to a subtotal. Money is in integer cents; percent is a\n// number such as 15 or 12.5. The tip is rounded to the nearest cent\n// (a half cent rounds up). A zero tip is allowed; a negative one is not.\nfunction withTip(subtotalCents, percent) {\n  if (percent < 0) throw new RangeError('Tip percent cannot be negative');\n  const tipCents = Math.floor((subtotalCents * percent) / 100);\n  return { tipCents, totalCents: subtotalCents + tipCents };\n}\n"
+    },
+    {
+      "id": "allows-negative",
+      "code": "// Adds a tip to a subtotal. Money is in integer cents; percent is a\n// number such as 15 or 12.5. The tip is rounded to the nearest cent\n// (a half cent rounds up). A zero tip is allowed; a negative one is not.\nfunction withTip(subtotalCents, percent) {\n  \n  const tipCents = Math.round((subtotalCents * percent) / 100);\n  return { tipCents, totalCents: subtotalCents + tipCents };\n}\n"
+    },
+    {
+      "id": "rejects-zero",
+      "code": "// Adds a tip to a subtotal. Money is in integer cents; percent is a\n// number such as 15 or 12.5. The tip is rounded to the nearest cent\n// (a half cent rounds up). A zero tip is allowed; a negative one is not.\nfunction withTip(subtotalCents, percent) {\n  if (percent <= 0) throw new RangeError('Tip percent cannot be negative');\n  const tipCents = Math.round((subtotalCents * percent) / 100);\n  return { tipCents, totalCents: subtotalCents + tipCents };\n}\n"
+    }
+  ],
+  "starter": {
+    "js": "describe('withTip', () => {\n  test('adds a 15% tip to the subtotal', () => {\n    // Arrange\n    const subtotalCents = 2000;\n\n    // Act\n    const result = withTip(subtotalCents, 15);\n\n    // Assert\n    expect(result).toEqual({ tipCents: 300, totalCents: 2300 });\n  });\n\n  // Add: a half-cent tip that must round up,\n  // a zero tip, and a negative percent that must throw.\n});\n"
+  },
+  "solution": {
+    "js": "describe('withTip', () => {\n  test('adds a 15% tip to the subtotal', () => {\n    const subtotalCents = 2000;\n\n    const result = withTip(subtotalCents, 15);\n\n    expect(result).toEqual({ tipCents: 300, totalCents: 2300 });\n  });\n\n  test('rounds a half-cent tip up to the next cent', () => {\n    const result = withTip(1980, 12.5);\n\n    expect(result).toEqual({ tipCents: 248, totalCents: 2228 });\n  });\n\n  test('allows a zero tip', () => {\n    const result = withTip(2000, 0);\n\n    expect(result).toEqual({ tipCents: 0, totalCents: 2000 });\n  });\n\n  test('rejects a negative tip percent', () => {\n    expect(() => withTip(2000, -5)).toThrow(RangeError);\n  });\n});\n"
+  },
+  "checks": [
+    {
+      "id": "passes",
+      "suite": "subject"
+    },
+    {
+      "id": "catches-floors-tip",
+      "suite": "floors-tip"
+    },
+    {
+      "id": "catches-allows-negative",
+      "suite": "allows-negative"
+    },
+    {
+      "id": "catches-rejects-zero",
+      "suite": "rejects-zero"
+    }
+  ]
+}

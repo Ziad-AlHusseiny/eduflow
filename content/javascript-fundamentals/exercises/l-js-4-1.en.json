@@ -1,0 +1,17 @@
+{
+  "title": "Render Pocket's list",
+  "prompt": "Write the body of `renderExpenses(expenses)` so it rebuilds the page from the data:\n\n1. Clear `#expense-list`.\n2. Append one `<li>` per expense with the text `Coffee: $4.50` (label, colon, formatted amount), its `data-id` set to the expense's `id`, and the class `big` when the amount is 10000 cents or more.\n3. Set `#total` to `Total: ` followed by the formatted sum.\n\nCalling `renderExpenses` again must replace the list, not add to it, and labels must be shown as plain text.\n",
+  "hints": [
+    "Select the two containers once at the top: `document.querySelector(\"#expense-list\")` and `document.querySelector(\"#total\")`.",
+    "For each expense: `document.createElement(\"li\")`, set `textContent`, set `li.dataset.id`, maybe `li.classList.add(\"big\")`, then `list.append(li)`.",
+    "Start the function with `list.replaceChildren();` so a second render does not duplicate items, and compute the total with `reduce`."
+  ],
+  "explanation": "The render function is the single place that decides what the list looks like. Clearing first with `replaceChildren()` means calling it again, after the data changes, produces exactly one item per expense instead of appending duplicates. `textContent` puts the label in as plain text, so a label like `<b>Tea</b>` is shown literally instead of becoming bold (or, with nastier input, running code). The `big` class only flags the item; the stylesheet decides how flagged items look. `dataset.id` writes a `data-id` attribute you will use in the next lesson to know which expense a click belongs to.\n",
+  "checks": {
+    "items": "One <li> per expense, like \"Coffee: $4.50\"",
+    "data-id": "Each item has its expense id in data-id",
+    "big-class": "Only expenses of 10000 cents or more get the class \"big\"",
+    "total": "#total shows \"Total: $207.00\"",
+    "rerender": "Rendering again replaces the list and shows labels as plain text"
+  }
+}

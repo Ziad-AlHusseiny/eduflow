@@ -1,0 +1,14 @@
+{
+  "title": "Close the listener loophole",
+  "prompt": "`CheckoutListener` declares `onEvent` with method syntax, so TypeScript checks its parameter bivariantly and happily accepts `failuresOnly`, a listener that would crash on an `OrderShipped` event. Change how `onEvent` is declared (not its parameter type) so that assigning `failuresOnly` to a `CheckoutListener` is a type error, while the two existing `subscribe` calls keep compiling and the shipped event still reaches them.",
+  "hints": [
+    "The fix is one line inside the interface.",
+    "Method syntax is `name(arg: T): void`. Property syntax is `name: (arg: T) => void`.",
+    "Write `onEvent: (event: CheckoutEvent) => void;`."
+  ],
+  "explanation": "With method syntax, `strictFunctionTypes` does not apply, so a listener that accepts only `PaymentFailed` passes as one that accepts every `CheckoutEvent`. Declared as a property with a function type, the parameter is checked contravariantly: the listener must accept at least everything the bus can send. `(e) => …` gets its parameter type from context and `() => …` ignores the argument, so both keep compiling. The `@ts-expect-error` line now has a real error to expect.",
+  "checks": {
+    "types": "The file type-checks with zero errors: the unsafe listener is rejected",
+    "still-delivers": "Both safe listeners still receive the shipped event"
+  }
+}

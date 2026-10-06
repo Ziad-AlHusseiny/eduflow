@@ -1,0 +1,16 @@
+{
+  "title": "أصلح ثلاثة أخطاء في الـ narrowing",
+  "prompt": "في هذا الملف مشكلات الـ narrowing الثلاث من الدرس. أصلحها دون استخدام تأكيد عدم الفراغ `!` (non-null assertion) أو `as` أو `any`:\n\n1. يجب أن تُعيد `shippingLabel` القيمة `'Free'` حين تكون `shippingFeeCents` تساوي `0`، و`'Calculated at checkout'` حين تكون `null`، ومبلغًا بالدولار مثل `'$4.99'` في غير ذلك.\n2. يجب أن تُعيد `usedCoupons` مصفوفة `string[]` حقيقية من رموز الكوبونات غير الفارغة.\n3. يجب أن تمرّ `couponBanner` في الترجمة وأن تبقى تحوّل الرمز إلى أحرف كبيرة داخل الـ callback.",
+  "hints": [
+    "في 1، قارن مع `null` بدل الاعتماد على الصدقية.",
+    "في 2، يستنتج TypeScript 5.5 وما بعده type predicate من `(c) => c !== null`، لكن ليس من `(c) => c`.",
+    "في 3، انسخ `order.couponCode` إلى `const` قبل فحصه، واستخدم ذلك الـ `const` داخل الدالة السهمية."
+  ],
+  "explanation": "`!fee` صادقة مع `0`، فسقط الشحن المجاني في فرع `null`؛ والفحص بـ `=== null` يفصل بين المعنيين. تُستنتج `filter((c) => c !== null)` على أنها الـ predicate `c is string`، فتضيق المصفوفة إلى `string[]`، أما الـ callback القائم على الصدقية فليس predicate. وفي `couponBanner`، لا ينجو تضييق الخاصية القابلة للتغيير `order.couponCode` إلى داخل الـ callback، لكن الـ `const` لا يتغيّر أبدًا، فينجو نوعه المضيَّق.",
+  "checks": {
+    "types": "الملف يجتاز فحص الأنواع بلا أي خطأ",
+    "free-shipping": "`shippingLabel` تُعيد 'Free' مع 0، و'Calculated at checkout' مع null، و'$4.99' مع 499",
+    "used-coupons": "`usedCoupons` تُبقي الرموز غير الفارغة فقط، بالترتيب نفسه",
+    "banner": "`couponBanner` تحوّل الرمز إلى أحرف كبيرة وتُعيد [] حين لا يوجد كوبون"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Logistic regression or k-NN?",
+  "prompt": "Settle a model choice with cross-validation, then use the test set once.\n\n1. Cross-validate `logistic` and `knn` on the training data with the provided `cv`, scoring `\"accuracy\"` and `\"roc_auc\"`.\n2. `logistic_auc` and `knn_auc`: each model's mean ROC AUC across the folds. `knn_auc_std`: the standard deviation of k-NN's fold AUCs.\n3. `final_test_acc`: fit whichever model has the higher mean AUC on all of `X_train`, then compute its test accuracy.",
+  "hints": [
+    "`cross_validate(model, X_train, y_train, cv=cv, scoring=[\"accuracy\", \"roc_auc\"])` returns a dict with a `\"test_roc_auc\"` array.",
+    "`.mean()` and `.std()` work directly on those arrays.",
+    "Pick the winner with a plain `if`, then `winner.fit(X_train, y_train).score(X_test, y_test)`."
+  ],
+  "explanation": "Scaled k-NN with 15 neighbours ranks customers a little worse than logistic regression on average, and its fold scores vary noticeably. Because both models faced identical folds, the comparison is fair. The winner is refitted on all training rows and scored once on the test set (0.72): that's the number you report, and it played no part in the choice.",
+  "checks": {
+    "logistic-auc": "logistic_auc is the mean cross-validated ROC AUC",
+    "knn-auc": "knn_auc is k-NN's mean ROC AUC on the same folds",
+    "knn-std": "knn_auc_std is the spread of k-NN's fold AUCs",
+    "final": "final_test_acc is the winner's test accuracy"
+  }
+}

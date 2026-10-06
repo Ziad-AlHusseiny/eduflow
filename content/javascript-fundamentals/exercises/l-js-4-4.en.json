@@ -1,0 +1,17 @@
+{
+  "title": "Save and load Pocket safely",
+  "prompt": "Pocket's storage helpers lose data. Fix them, using the real `localStorage` (in this playground it works but starts empty on every run):\n\n- Fix `saveExpenses(expenses)` so it stores the expenses as JSON under `STORAGE_KEY`.\n- Fix `loadExpenses()` so it returns the saved array, and returns an empty array `[]` instead of crashing when nothing is saved, when the saved text is not valid JSON, or when it is valid JSON but not an array.\n",
+  "hints": [
+    "Log what the starter stores: `[object Object]`. Wrap the data in `JSON.stringify(...)` before `setItem`.",
+    "`getItem` returns `null` when nothing was saved. Check for that before parsing.",
+    "Put the parse inside `try { … } catch { return []; }`, and finish with `return Array.isArray(data) ? data : [];`."
+  ],
+  "explanation": "`localStorage` only keeps strings, so the array has to be serialised with `JSON.stringify` on the way in; otherwise it is converted with `String()` and becomes `[object Object]`. Loading guards against three different failures: a missing key (`getItem` returns `null`), text that is not JSON (`JSON.parse` throws, which the `catch` turns into an empty list), and JSON of the wrong shape (`Array.isArray` rejects it). The same `try` also catches browsers that block storage entirely, so a page load can never crash here.\n",
+  "checks": {
+    "saves-json": "`saveExpenses` stores the expenses as JSON text",
+    "round-trip": "Saved expenses load back unchanged",
+    "missing": "Loading with nothing saved returns []",
+    "corrupt": "Loading invalid JSON returns [] instead of throwing",
+    "wrong-shape": "Loading JSON that is not an array returns []"
+  }
+}

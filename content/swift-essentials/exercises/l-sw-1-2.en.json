@@ -1,0 +1,10 @@
+{
+  "title": "Find the crash",
+  "prompt": "This early version of Pocket Budget's add-expense logic works in every demo, then crashes for a real user. Select the line that causes the crash.",
+  "hints": [
+    "Run it in your head with the second call: what does `Decimal(string: \"\")` return?",
+    "Look for the one character that says \"I promise this is never nil\".",
+    "The crash message would be \"Unexpectedly found nil while unwrapping an Optional value\"."
+  ],
+  "explanation": "Line 4 force unwraps the result of `Decimal(string:)`. For an empty string that result is `nil`, so `!` crashes the app. Make the function admit it can fail and let the caller decide:\n\n```swift\nfunc addExpense(_ amountText: String, to total: Decimal) -> Decimal? {\n    guard let amount = Decimal(string: amountText) else {\n        return nil\n    }\n    return total + amount\n}\n```\n\nThe caller now has to unwrap the result, which is exactly where you show the user \"Enter an amount\" instead of crashing."
+}
