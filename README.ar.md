@@ -22,9 +22,9 @@
 
 ### ▶ فيديو قصير في 28 ثانية
 
-<a href="https://raw.githubusercontent.com/Ziad-AlHusseiny/eduflow/main/docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="شغّل فيديو EduFlow: حاسوب محمول يتوهّج بالبنفسجي على مكتب في الليل"></a>
+https://github.com/user-attachments/assets/f5d29dee-abf0-408b-9332-2ad390d5944e
 
-<sub>تسجيلات حقيقية للموقع، وتعليق صوتي بالإنجليزية، ولقطتان مولّدتان بالذكاء الاصطناعي عبر Higgsfield (بلا أشخاص)، ومونتاج بـ Remotion.</sub>
+<sub>تسجيلات حقيقية للموقع، وتعليق صوتي بالإنجليزية، ولقطتان مولّدتان بالذكاء الاصطناعي عبر Higgsfield (بلا أشخاص)، ومونتاج بـ Remotion. · <a href="https://raw.githubusercontent.com/Ziad-AlHusseiny/eduflow/main/docs/reel/eduflow-reel.mp4">تنزيل بدقة 1080p</a></sub>
 
 </div>
 

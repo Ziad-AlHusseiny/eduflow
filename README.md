@@ -28,9 +28,9 @@
 
 ### ▶ The 28-second reel
 
-<a href="https://raw.githubusercontent.com/Ziad-AlHusseiny/eduflow/main/docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="Play the EduFlow reel: 'Learning to code shouldn't start with installing ten things.' over a laptop glowing violet on a desk at night"></a>
+https://github.com/user-attachments/assets/f5d29dee-abf0-408b-9332-2ad390d5944e
 
-<sub>Real screen recordings of the live site, an English voiceover, two AI shots made with Higgsfield (no people), edited in Remotion.</sub>
+<sub>Real screen recordings of the live site, an English voiceover, two AI shots made with Higgsfield (no people), edited in Remotion. · <a href="https://raw.githubusercontent.com/Ziad-AlHusseiny/eduflow/main/docs/reel/eduflow-reel.mp4">Download in 1080p</a></sub>
 
 </div>
 
