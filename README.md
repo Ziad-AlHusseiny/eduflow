@@ -24,6 +24,16 @@
 
 <a href="https://eduflow-lf-2.vercel.app"><img src="docs/screenshots/hero.jpg" width="100%" alt="EduFlow: the home page in a browser window and a CSS lesson on a phone, with tags for 16 courses and 303 lessons, code, SQL and Python running in the browser, and dark mode, Arabic and offline"></a>
 
+<br><br>
+
+### ▶ The 28-second reel
+
+<video src="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/eduflow-reel.mp4" poster="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/reel-poster.jpg" width="320" controls muted playsinline></video>
+
+<a href="docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="Play the EduFlow reel: 'Learning to code shouldn't start with installing ten things.' over a laptop glowing violet on a desk at night"></a>
+
+<sub>Real screen recordings of the live site, an English voiceover, two AI shots made with Higgsfield (no people), edited in Remotion.</sub>
+
 </div>
 
 ## Why EduFlow

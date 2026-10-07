@@ -18,6 +18,16 @@
 
 <a href="https://eduflow-lf-2.vercel.app/ar"><img src="docs/screenshots/bilingual.jpg" width="100%" alt="الصفحة الرئيسية لـ EduFlow بالإنجليزية، وأمامها الصفحة نفسها بالعربية من اليمين إلى اليسار"></a>
 
+<br><br>
+
+### ▶ فيديو قصير في 28 ثانية
+
+<video src="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/eduflow-reel.mp4" poster="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/reel-poster.jpg" width="320" controls muted playsinline></video>
+
+<a href="docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="شغّل فيديو EduFlow: حاسوب محمول يتوهّج بالبنفسجي على مكتب في الليل"></a>
+
+<sub>تسجيلات حقيقية للموقع، وتعليق صوتي بالإنجليزية، ولقطتان مولّدتان بالذكاء الاصطناعي عبر Higgsfield (بلا أشخاص)، ومونتاج بـ Remotion.</sub>
+
 </div>
 
 ## لماذا EduFlow؟
