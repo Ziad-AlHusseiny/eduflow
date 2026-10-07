@@ -28,9 +28,7 @@
 
 ### ▶ The 28-second reel
 
-<video src="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/eduflow-reel.mp4" poster="https://github.com/Ziad-AlHusseiny/eduflow/raw/main/docs/reel/reel-poster.jpg" width="320" controls muted playsinline></video>
-
-<a href="docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="Play the EduFlow reel: 'Learning to code shouldn't start with installing ten things.' over a laptop glowing violet on a desk at night"></a>
+<a href="https://raw.githubusercontent.com/Ziad-AlHusseiny/eduflow/main/docs/reel/eduflow-reel.mp4"><img src="docs/reel/reel-poster.jpg" width="320" alt="Play the EduFlow reel: 'Learning to code shouldn't start with installing ten things.' over a laptop glowing violet on a desk at night"></a>
 
 <sub>Real screen recordings of the live site, an English voiceover, two AI shots made with Higgsfield (no people), edited in Remotion.</sub>
 
